@@ -1,0 +1,17 @@
+<mizu-directive id="show" directory="show">
+  <code #name><span class="hljs-keyword">*show</span><wbr /><span class="muted">="expression"</span></code>
+  <p #description>
+    Conditionally display an element.
+  </p>
+  <code #example *skip>
+    <div *show="true">
+      <!--...-->
+    </div>
+  </code>
+  <mizu-note #note>
+    The <a href="https://developer.mozilla.org/docs/Web/CSS/display">CSS <code>display</code> property</a> is set to <code>none !important</code> when hidden.
+  </mizu-note>
+  <mizu-note #note>
+    Unlike <a href="#if"><code class="hljs-keyword">*if</code></a> and <a href="#else"><code class="hljs-keyword">*else</code></a> directives, element is not removed from the DOM when hidden.
+  </mizu-note>
+</mizu-directive>

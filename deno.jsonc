@@ -99,7 +99,7 @@
     // "@mizu/ref",
     // "@mizu/refresh",
     // "@mizu/set",
-    // "@mizu/show",
+    "@mizu/show",
     // "@mizu/skip",
     "@mizu/test",
     "@mizu/text"

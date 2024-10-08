@@ -1,0 +1,54 @@
+<load directives="@mizu/show,@mizu/test"></load>
+
+<test name="[*show] displays elements on truthy expressions">
+  <render>
+    <p *show="true">foo</p>
+  </render>
+  <expect>
+    <p>foo</p>
+  </expect>
+</test>
+
+<test name="[*show] hides elements on falsy expressions">
+  <render>
+    <p *show="false">foo</p>
+  </render>
+  <expect>
+    <p style="display: none">foo</p>
+  </expect>
+</test>
+
+<test name="[*show] is reactive">
+  <script>
+    context.value = false
+  </script>
+  <render>
+    <p *show="value">foo</p>
+  </render>
+  <expect>
+    <p style="display: none">foo</p>
+  </expect>
+  <script>
+    context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <p>foo</p>
+  </expect>
+  <script>
+    context.value = false
+  </script>
+  <render></render>
+  <expect>
+    <p style="display: none">foo</p>
+  </expect>
+</test>
+
+<test name="[*show] skips commented elements">
+  <render>
+    <p ~test.comment *show="true">foo</p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
