@@ -1,0 +1,159 @@
+<load directives="@mizu/for/empty,@mizu/test"></load>
+
+<test name="[*empty] renders elements when previous iterative directive yielded no iterations">
+  <script>
+    context.value = [0, 1, 2]
+  </script>
+  <render>
+    <ul>
+      <li *for="const i of value" *id="i"></li>
+      <li *empty>foo</li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li *id="0"></li>
+      <li *id="1"></li>
+      <li *id="2"></li>
+    </ul>
+  </expect>
+  <script>
+    context.value = []
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li>foo</li>
+    </ul>
+  </expect>
+  <script>
+    context.value = [0]
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li *id="0"></li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*empty] with `.not` modifier inverts logic">
+  <script>
+    context.value = [0, 1, 2]
+  </script>
+  <render>
+    <ul>
+      <li *for="const i of value" *id="i"></li>
+      <li *empty.not>foo</li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li *id="0"></li>
+      <li *id="1"></li>
+      <li *id="2"></li>
+      <li>foo</li>
+    </ul>
+  </expect>
+  <script>
+    context.value = []
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul></ul>
+  </expect>
+  <script>
+    context.value = [0]
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li *id="0"></li>
+      <li>foo</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*empty] supports consecutive directives">
+  <script>
+    context.value = [0, 1, 2]
+  </script>
+  <render>
+    <ul>
+      <li *for="const i of value" *id="i"></li>
+      <li *empty>foo</li>
+      <li *empty.not>bar</li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li *id="0"></li>
+      <li *id="1"></li>
+      <li *id="2"></li>
+      <li>bar</li>
+    </ul>
+  </expect>
+  <script>
+    context.value = []
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li>foo</li>
+    </ul>
+  </expect>
+  <script>
+    context.value = [0]
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li *id="0"></li>
+      <li>bar</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*empty] exposes `$generated` variable">
+  <render>
+    <p *for="const i of []"></p>
+    <b *empty ~test[content].text="$generated"></b>
+  </render>
+  <script>
+    expect(Number(document.querySelector("b").textContent)).toBe(0)
+  </script>
+  <render>
+    <p *for="const i of [0, 1, 2]"></p>
+    <b *empty.not ~test[content].text="$generated"></b>
+  </render>
+  <script>
+    expect(Number(document.querySelector("b").textContent)).toBe(3)
+  </script>
+</test>
+
+<test name="[*empty] (error) must be immediately preceded by a [*for] or [*empty] directive">
+  <render>
+    <p *empty></p>
+  </render>
+  <expect>
+    <p *warn="[*empty] must be immediately preceded by a [*for] or [*empty] directive, ignoring"></p>
+  </expect>
+  <render>
+    <p *for="const i of []"></p>
+    <hr />
+    <p *empty></p>
+  </render>
+  <expect comments="false">
+    <hr />
+    <p *warn="[*empty] must be immediately preceded by a [*for] or [*empty] directive, ignoring"></p>
+  </expect>
+  <render>
+    <p *for="const i of []"></p>
+    non-empty text node
+    <p *empty></p>
+  </render>
+  <expect comments="false">
+    non-empty text node
+    <p *warn="[*empty] must be immediately preceded by a [*for] or [*empty] directive, ignoring"></p>
+  </expect>
+</test>
