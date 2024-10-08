@@ -1,0 +1,45 @@
+<load directives="@mizu/if"></load>
+
+<test name="[*if] renders elements on truthy expressions">
+  <render>
+    <p *if="true">foo</p>
+  </render>
+  <expect>
+    <p>foo</p>
+  </expect>
+</test>
+
+<test name="[*if] comments out elements on falsy expressions">
+  <render>
+    <p *if="false">foo</p>
+  </render>
+  <expect>
+    <!--[*if="false"]-->
+  </expect>
+</test>
+
+<test name="[*if] is reactive">
+  <script>
+    context.value = false
+  </script>
+  <render>
+    <p *if="value">foo</p>
+  </render>
+  <expect>
+    <!--[*if="value"]-->
+  </expect>
+  <script>
+    context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <p>foo</p>
+  </expect>
+  <script>
+    context.value = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+  </expect>
+</test>

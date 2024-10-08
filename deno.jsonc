@@ -90,7 +90,7 @@
     // "@mizu/for",
     // "@mizu/html",
     // "@mizu/http",
-    // "@mizu/if",
+    "@mizu/if",
     // "@mizu/is",
     // "@mizu/markdown",
     "@mizu/mizu",

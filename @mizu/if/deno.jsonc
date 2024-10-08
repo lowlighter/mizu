@@ -1,0 +1,8 @@
+{
+  "name": "@mizu/if",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./mod.ts",
+    "./else": "./else/mod.ts"
+  }
+}
