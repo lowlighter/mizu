@@ -1,0 +1,104 @@
+<load directives="@mizu/clean,@mizu/test"></load>
+
+<test name="[*clean] with `.spaces` modifier trims and condenses spacing but preserves non-breaking spaces">
+  <render>
+    <pre *clean.spaces[true]>
+      <a>  foo  bar  </a>
+      <b> &nbsp; </b> &nbsp; <c>foo &nbsp; bar &nbsp; &nbsp; baz </c>
+    </pre>
+    <pre *clean.spaces[false]>
+      <a>  foo  bar  </a>
+      <b> &nbsp; </b> &nbsp; <c>foo &nbsp; bar &nbsp; &nbsp; baz </c>
+    </pre>
+  </render>
+  <render></render>
+  <expect format="false">
+    <pre><a>foo bar</a><b>&nbsp;</b>&nbsp;<c>foo&nbsp;bar&nbsp;&nbsp;baz</c></pre>
+    <pre>
+      <a>  foo  bar  </a>
+      <b> &nbsp; </b> &nbsp; <c>foo &nbsp; bar &nbsp; &nbsp; baz </c>
+    </pre>
+  </expect>
+</test>
+
+<test name="[*clean] with `.comments` modifier removes comments">
+  <render>
+    <div *clean.comments[true]>
+      <!-- comment -->
+      <p ~test.comment></p>
+    </div>
+    <div *clean.comments[false]>
+      <!-- comment -->
+      <p ~test.comment></p>
+    </div>
+  </render>
+  <render></render>
+  <expect>
+    <div>
+      <!--[~test.comment=""]-->
+    </div>
+    <div>
+      <!-- comment -->
+      <!--[~test.comment=""]-->
+    </div>
+  </expect>
+</test>
+
+<test name="[*clean] with `.directives` modifier removes all known directives from element">
+  <render>
+    <p *foo *clean.directives[true]>
+      <span *bar ~test.text="'foo'"></span>
+    </p>
+    <p *foo *clean.directives[false]>
+      <span *bar ~test.text="'bar'"></span>
+    </p>
+  </render>
+  <render></render>
+  <expect directive="preserve">
+    <p *foo>
+      <span *bar>foo</span>
+    </p>
+    <p *foo *clean.directives[false]>
+      <span *bar ~test.text="'bar'">bar</span>
+    </p>
+  </expect>
+</test>
+
+<test name="[*clean] with `.directives.comments` modifiers removes comments from directives">
+  <render>
+    <div *clean.directives[true].comments[true]>
+      <p ~test.comment="true"></p>
+    </div>
+  </render>
+  <render></render>
+  <expect>
+    <div></div>
+  </expect>
+</test>
+
+<test name="[*clean] with `.templates` modifier removes all templates from element">
+  <render>
+    <p ~test *clean.templates[true]>
+      <template></template>
+    </p>
+    <p ~test *clean.templates[false]>
+      <template></template>
+    </p>
+  </render>
+  <render></render>
+  <expect directives="~test">
+    <p ~test></p>
+    <p ~test>
+      <template></template>
+    </p>
+  </expect>
+</test>
+
+<test name="[*clean] skips commented elements">
+  <render>
+    <p ~test.comment *clean></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
