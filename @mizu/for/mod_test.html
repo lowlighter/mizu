@@ -1,0 +1,356 @@
+<load directives="@mizu/for,@mizu/test"></load>
+
+<test name="[*for] generates `for` loops">
+  <render>
+    <ul>
+      <li *for="let i = 0; i &lt; 3; i++" *id="i" ~test[content].text="i*2"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li *id="0">0</li>
+      <li *id="1">2</li>
+      <li *id="2">4</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] generates `for..of` loops">
+  <render>
+    <ul>
+      <li *for="const [k, v] of Object.entries({a:'foo', b:'bar'})" *id="k" ~test[content].text="v"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li *id="a">foo</li>
+      <li *id="b">bar</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] generates `for..in` loops">
+  <render>
+    <ul>
+      <li *for="const k in ({foo:true, bar:true})" *id="k" ~test[content].text="k"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li *id="foo">foo</li>
+      <li *id="bar">bar</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] is reactive">
+  <script>
+    context.value = ["foo", "bar"]
+  </script>
+  <render>
+    <ul>
+      <li *for="const v of value" *id="v" ~test[content].text="v"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li *id="foo">foo</li>
+      <li *id="bar">bar</li>
+    </ul>
+  </expect>
+  <script>
+    context.value = ["bar", "baz"]
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li *id="bar">bar</li>
+      <li *id="baz">baz</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] supports nested loops">
+  <render>
+    <table>
+      <tbody>
+        <tr *for="let y = 0; y &lt; 3; y++">
+          <td *for="let x = 0; x &lt; 3; x++" ~test[content].text="`${x};${y}`"></td>
+        </tr>
+      </tbody>
+    </table>
+  </render>
+  <expect comments="false">
+    <table>
+      <tbody>
+        <tr>
+          <td>0;0</td>
+          <td>1;0</td>
+          <td>2;0</td>
+        </tr>
+        <tr>
+          <td>0;1</td>
+          <td>1;1</td>
+          <td>2;1</td>
+        </tr>
+        <tr>
+          <td>0;2</td>
+          <td>1;2</td>
+          <td>2;2</td>
+        </tr>
+      </tbody>
+    </table>
+  </expect>
+</test>
+
+<test name="[*for] supports iterable objects shorthand with exposed `$key` and `$value` variables">
+  <script>
+    context.value = ["foo", "bar", "baz"]
+  </script>
+  <render>
+    <ul>
+      <li *for="value" ~test[content].text="`${$key}: ${$value}`"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>0: foo</li>
+      <li>1: bar</li>
+      <li>2: baz</li>
+    </ul>
+  </expect>
+  <script>
+    context.value = { foo: true, bar: false, baz: null }
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li>foo: true</li>
+      <li>bar: false</li>
+      <li>baz: null</li>
+    </ul>
+  </expect>
+  <script>
+    context.value = "foo"
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li>0: f</li>
+      <li>1: o</li>
+      <li>2: o</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] supports number shorthand">
+  <render>
+    <ul>
+      <li *for="3" ~test[content].text="`${$i}`"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>0</li>
+      <li>1</li>
+      <li>2</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] exposes `$id` variable">
+  <script>
+    context.value = ["foo", "bar", "baz"]
+  </script>
+  <render>
+    <ul>
+      <li *for="const x of value" ~test[content].text="$id"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>0</li>
+      <li>1</li>
+      <li>2</li>
+    </ul>
+  </expect>
+  <render>
+    <ul>
+      <li *for="const x of value" *id="x" ~test[content].text="$id"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li *id="foo">foo</li>
+      <li *id="bar">bar</li>
+      <li *id="baz">baz</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] exposes `$i` variable">
+  <render>
+    <ul>
+      <li *for="const x of ['foo', 'bar', 'baz']" ~test[content].text="$i"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>0</li>
+      <li>1</li>
+      <li>2</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] exposes `$I` variable">
+  <render>
+    <ul>
+      <li *for="const x of ['foo', 'bar', 'baz']" ~test[content].text="$I"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] exposes `$iterations` variable">
+  <render>
+    <ul>
+      <li *for="const x of ['foo', 'bar', 'baz']" ~test[content].text="`${$I}/${$iterations}`"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>1/3</li>
+      <li>2/3</li>
+      <li>3/3</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] exposes `$first` variable">
+  <render>
+    <ul>
+      <li *for="const x of ['foo', 'bar', 'baz']" ~test[content].text="$first"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>true</li>
+      <li>false</li>
+      <li>false</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] exposes `$last` variable">
+  <render>
+    <ul>
+      <li *for="const x of ['foo', 'bar', 'baz']" ~test[content].text="$last"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>false</li>
+      <li>false</li>
+      <li>true</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] handles commented elements">
+  <script>
+    context.value = false
+  </script>
+  <render>
+    <p *for="2" *id="$i" ~test[toggle].comment="!value" ~test[content].text="$i"></p>
+  </render>
+  <expect>
+    <!--[*for="2"]-->
+    <!--[~test[toggle].comment="!value"] [~test[content].text="$i"]-->
+    <!--[~test[toggle].comment="!value"] [~test[content].text="$i"]-->
+  </expect>
+  <script>
+    context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[*for="2"]-->
+    <p *id="0">0</p>
+    <p *id="1">1</p>
+  </expect>
+</test>
+
+<test name="[*for] (error) syntax error in expression">
+  <render>
+    <ul>
+      <li *for="invalid"></li>
+    </ul>
+  </render>
+  <expect>
+    <ul>
+      <li *warn="[*for] syntax error in expression: invalid"></li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] (error) error while evaluating expression">
+  <render>
+    <ul>
+      <li *for="const k of unknown"></li>
+    </ul>
+  </render>
+  <expect>
+    <ul>
+      <li *warn="[*for] error while evaluating expression: ReferenceError: unknown is not defined"></li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*id] deduplicates content and references">
+  <script>
+    context.value = [
+      { id: 0, text: "foo" },
+      { id: 1, text: "bar" },
+    ]
+  </script>
+  <render>
+    <ul>
+      <li *for="const {id, text} of value" *id="id" ~test[content].text="text"></li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li *id="0">foo</li>
+      <li *id="1">bar</li>
+    </ul>
+  </expect>
+  <script>
+    storage.elements = Array.from(document.querySelectorAll("li"))
+  </script>
+  <script>
+    context.value = [
+      { id: 0, text: "foo" },
+      { id: 1, text: "bar" },
+      { id: 1, text: "baz" },
+      { id: 2, text: "qux" },
+    ]
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li *id="0">foo</li>
+      <li *id="1">baz</li>
+      <li *id="2">qux</li>
+    </ul>
+  </expect>
+  <script>
+    expect(storage.elements[0]).toBe(document.querySelector("li:nth-child(1)"))
+    expect(storage.elements[1]).toBe(document.querySelector("li:nth-child(2)"))
+  </script>
+</test>
