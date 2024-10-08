@@ -94,7 +94,7 @@
     // "@mizu/is",
     "@mizu/markdown",
     "@mizu/mizu",
-    // "@mizu/model",
+    "@mizu/model",
     "@mizu/once",
     "@mizu/ref",
     // "@mizu/refresh",
