@@ -1,0 +1,137 @@
+<load directives="@mizu/if/else"></load>
+
+<test name="[*else] comments out elements when a previous conditional directive is truthy">
+  <render>
+    <p *if="true">foo</p>
+    <p *else="true">bar</p>
+    <p *else>baz</p>
+  </render>
+  <expect>
+    <p>foo</p>
+    <!--[*else="true"]-->
+    <!--[*else=""]-->
+  </expect>
+  <render>
+    <p *if="false">foo</p>
+    <p *else="true">bar</p>
+    <p *else>baz</p>
+  </render>
+  <expect>
+    <!--[*if="false"]-->
+    <p>bar</p>
+    <!--[*else=""]-->
+  </expect>
+</test>
+
+<test name="[*else] renders elements when all previous conditional directives are falsy">
+  <render>
+    <p *if="false">foo</p>
+    <p *else="false">bar</p>
+    <p *else="true">baz</p>
+    <p *else>qux</p>
+  </render>
+  <expect>
+    <!--[*if="false"]-->
+    <!--[*else="false"]-->
+    <p>baz</p>
+    <!--[*else=""]-->
+  </expect>
+</test>
+
+<test name="[*else] is truthy when empty">
+  <render>
+    <p *if="false">foo</p>
+    <p *else>bar</p>
+  </render>
+  <expect>
+    <!--[*if="false"]-->
+    <p>bar</p>
+  </expect>
+</test>
+
+<test name="[*else] is reactive">
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p *if="value === 0">foo</p>
+    <p *else="value === 1">bar</p>
+    <p *else>baz</p>
+  </render>
+  <expect>
+    <p>foo</p>
+    <!--[*else="value === 1"]-->
+    <!--[*else=""]-->
+  </expect>
+  <script>
+    context.value = 1
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value === 0"]-->
+    <p>bar</p>
+    <!--[*else=""]-->
+  </expect>
+  <script>
+    context.value = 2
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value === 0"]-->
+    <!--[*else="value === 1"]-->
+    <p>baz</p>
+  </expect>
+  <script>
+    context.value = 1
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value === 0"]-->
+    <p>bar</p>
+    <!--[*else=""]-->
+  </expect>
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p *if="value === 0">foo</p>
+    <p *else="value === 1">bar</p>
+    <p *else>baz</p>
+  </render>
+  <expect>
+    <p>foo</p>
+    <!--[*else="value === 1"]-->
+    <!--[*else=""]-->
+  </expect>
+</test>
+
+<test name="[*else] (error) must be immediately preceded by either a [*if] or another [*else] directive">
+  <render>
+    <p *else>foo</p>
+    <p *else>bar</p>
+  </render>
+  <expect>
+    <p *warn="[*else] must be immediately preceded by another [*if] or [*else], ignoring">foo</p>
+    <!--[*else=""]-->
+  </expect>
+  <render>
+    <p *if="false">foo</p>
+    <hr />
+    <p *else>bar</p>
+  </render>
+  <expect>
+    <!--[*if="false"]-->
+    <hr />
+    <p *warn="[*else] must be immediately preceded by another [*if] or [*else], ignoring">bar</p>
+  </expect>
+  <render>
+    <p *if="false">foo</p>
+    non-empty text node
+    <p *else>bar</p>
+  </render>
+  <expect>
+    <!--[*if="false"]-->
+    non-empty text node
+    <p *warn="[*else] must be immediately preceded by another [*if] or [*else], ignoring">bar</p>
+  </expect>
+</test>
