@@ -1,0 +1,16 @@
+<load directives="@mizu/skip,@mizu/test"></load>
+
+<test name="[*skip] skips processing">
+  <render>
+    <p ~test.text="'foo'">bar</p>
+  </render>
+  <expect>
+    <p>foo</p>
+  </expect>
+  <render>
+    <p *skip ~test.text="'foo'">bar</p>
+  </render>
+  <expect>
+    <p>bar</p>
+  </expect>
+</test>
