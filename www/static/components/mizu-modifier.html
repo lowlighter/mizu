@@ -1,0 +1,17 @@
+<small class="block mb-.25">
+  <code *clean.spaces>
+    <span *if="$attrs.name" *text="`.${$attrs.name}`" class="hljs-title"></span>
+    <span *if="($attrs.name !== '..')" *set="{typings:meta?.typings?.modifiers?.[$attrs.name] ?? {}}" class="hljs-attr"
+    >[
+      <span *text="typings.allowed ? typings.allowed.map(v => `&quot;${v}&quot;`).join(' | ') : typings.type ?? 'string'"></span>
+      <span *if="('default' in typings) || (typings.enforce)" class="hljs-comment">
+        <span *if="typings.type === 'duration'">≈</span>
+        <span *else>=</span>
+        <span
+          *text="`${('default' in typings) ? ((typings.type ?? 'string') === 'string' ? `&quot;${typings.default}&quot;` : typings.default) : typings.allowed ? typings.allowed[0] : {boolean:true, duration:0, number:0, string:''}[typings.type]}${{duration:'ms'}[typings.type] ?? ''}`"
+        ></span>
+      </span>
+      ]</span>
+  </code>
+  <slot></slot>
+</small>

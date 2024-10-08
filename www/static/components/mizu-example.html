@@ -1,0 +1,15 @@
+<div class="carbon-like">
+  <div class="title">
+    <slot name="title"></slot>
+    <svg xmlns="http://www.w3.org/2000/svg" width="54" height="14" viewBox="0 0 54 14">
+      <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+        <circle cx="6" cy="6" r="6.5" fill="var(--danger)"></circle>
+        <circle cx="26" cy="6" r="6.5" fill="var(--attention)"></circle>
+        <circle cx="46" cy="6" r="6.5" fill="var(--success)"></circle>
+      </g>
+    </svg>
+  </div>
+  <pre>
+    <code *code[html]="$slots.example.querySelector('code')?.innerHTML.replace(/&amp;lt;/g, '&lt;').replace(/&amp;gt;/g, '&gt;') ?? ''" *once></code>
+  </pre>
+</div>

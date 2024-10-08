@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>mizu.js | Lightweight HTML templating library for any-side rendering</title>
+    <meta charset="UTF-8" />
+    <meta name="description" content="mizu.js is a TypeScript/JavaScript library designed to provide a simple and efficient way to create dynamic web pages without the need for a complex framework." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://mizu.sh" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="mizu.js | Lightweight HTML templating library for any-side rendering" />
+    <meta property="og:image" content="/og.png" />
+    <link rel="stylesheet" href="/matcha.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/180x180.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/32x32.png" />
+  </head>
+  <body class="layout-simple" *clean.directives.comments.templates>
+    <header %http="/html/_/header.html" %response.html></header>
+    <template *for="['directive', 'example', 'import', 'modifier', 'note', 'restriction', 'variable', 'warn']" *custom-element="`mizu-${$value}`" %http="`/components/mizu-${$value}.html`" %response.html></template>
+    <main>
+      <section class="app">
+        <hgroup *if="page !== 'playground'">
+          <h1 id=""><a href="#">mizu<span class="muted">.js</span></a></h1>
+          <p>
+            Lightweight HTML templating library for any-side rendering.
+          </p>
+          <img class="logo" src="/logo.png" alt="" />
+        </hgroup>
+        <section *if="page === 'index'" *for="['about', 'examples', 'why', 'usage']" %http="`/html/mizu/${$value}.html`" %response.html></section>
+      </section>
+      <section *if="page === 'index'" *for="['concepts', 'directives', 'api', 'faq']" %http="`/html/mizu/${$value}.html`" %response.html></section>
+      <section *if="page === 'build'" %http="/html/build.html" %response.html></section>
+      <section *if="page === 'playground'" %http="/html/playground.html" %response.html></section>
+    </main>
+    <aside *if="page === 'index'" data-expandable="☰ Quick navigation">
+      <nav class="toc" *toc></nav>
+    </aside>
+    <footer %http="/html/_/footer.html" %response.html></footer>
+  </body>
+</html>
