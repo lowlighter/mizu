@@ -1,0 +1,71 @@
+<load directives="@mizu/refresh,@mizu/test"></load>
+
+<test name="[*refresh] rerenders element at specified intervals">
+  <script>
+    context.foo = () => null
+    context.interval = .100
+  </script>
+  <render>
+    <p *refresh="(foo(), interval)"></p>
+  </render>
+  <script>
+    context.foo = fn()
+    await delay(context.interval * 1000)
+    expect(context.foo).toHaveBeenCalled()
+  </script>
+  <script>
+    context.interval = .105
+  </script>
+  <render></render>
+  <script>
+    context.foo = fn()
+    await delay(context.interval * 1000)
+    expect(context.foo).toHaveBeenCalled()
+  </script>
+  <render></render>
+  <script>
+    context.interval = null
+  </script>
+  <render></render>
+  <script>
+    context.foo = fn()
+    await delay(context.interval * 1000)
+    expect(context.foo).not.toHaveBeenCalled()
+  </script>
+</test>
+
+<test name="[*refresh] handles commented elements">
+  <script>
+    context.value = true
+    context.foo = () => null
+    context.interval = .100
+  </script>
+  <render>
+    <p ~test[toggle].comment="!value" *refresh="(foo(), interval)"></p>
+  </render>
+  <script>
+    context.value = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[~test[toggle].comment="!value"]-->
+  </expect>
+  <script>
+    context.foo = fn()
+    await delay(context.interval * 1000)
+    expect(context.foo).not.toHaveBeenCalled()
+  </script>
+</test>
+
+<test name="[*refresh] (error) expects a finite positive number">
+  <render>
+    <p *refresh="NaN"></p>
+    <p *refresh="-1"></p>
+    <p *refresh="Infinity"></p>
+  </render>
+  <expect>
+    <p *warn="[*refresh] expects a finite positive number but got NaN, ignoring"></p>
+    <p *warn="[*refresh] expects a finite positive number but got -1, ignoring"></p>
+    <p *warn="[*refresh] expects a finite positive number but got Infinity, ignoring"></p>
+  </expect>
+</test>
