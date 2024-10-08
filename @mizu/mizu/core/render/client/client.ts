@@ -2,27 +2,27 @@
 import type { Arg, Directive } from "@mizu/mizu/core/engine"
 import { Context, Renderer } from "@mizu/mizu/core/engine"
 import _mizu from "@mizu/mizu"
-// import _bind from "@mizu/bind"
-// import _clean from "@mizu/clean"
-// import _code from "@mizu/code"
-// import _custom_element from "@mizu/custom-element"
-// import _eval from "@mizu/eval"
-// import _event from "@mizu/event"
-// import _for from "@mizu/for/empty"
-// import _html from "@mizu/html"
-// import _http from "@mizu/http"
-// import _if from "@mizu/if/else"
-// import _is from "@mizu/is"
-// import _markdown from "@mizu/markdown"
-// import _model from "@mizu/model"
-// import _once from "@mizu/once"
-// import _ref from "@mizu/ref"
-// import _refresh from "@mizu/refresh"
-// import _set from "@mizu/set"
-// import _show from "@mizu/show"
-// import _skip from "@mizu/skip"
-// import _text from "@mizu/text"
-// import _toc from "@mizu/toc"
+import _bind from "@mizu/bind"
+import _clean from "@mizu/clean"
+import _code from "@mizu/code"
+import _custom_element from "@mizu/custom-element"
+import _eval from "@mizu/eval"
+import _event from "@mizu/event"
+import _for from "@mizu/for/empty"
+import _html from "@mizu/html"
+import _http from "@mizu/http"
+import _if from "@mizu/if/else"
+import _is from "@mizu/is"
+import _markdown from "@mizu/markdown"
+import _model from "@mizu/model"
+import _once from "@mizu/once"
+import _ref from "@mizu/ref"
+import _refresh from "@mizu/refresh"
+import _set from "@mizu/set"
+import _show from "@mizu/show"
+import _skip from "@mizu/skip"
+import _text from "@mizu/text"
+import _toc from "@mizu/toc"
 export type * from "@mizu/mizu/core/engine"
 
 /**
@@ -36,27 +36,27 @@ export class Client {
   static defaults = {
     directives: [
       _mizu,
-      // _bind,
-      // _clean,
-      // _code,
-      // _custom_element,
-      // _eval,
-      // _event,
-      // _for,
-      // _html,
-      // _http,
-      // _if,
-      // _is,
-      // _markdown,
-      // _model,
-      // _once,
-      // _ref,
-      // _refresh,
-      // _set,
-      // _show,
-      // _skip,
-      // _text,
-      // _toc,
+      _bind,
+      _clean,
+      _code,
+      _custom_element,
+      _eval,
+      _event,
+      _for,
+      _html,
+      _http,
+      _if,
+      _is,
+      _markdown,
+      _model,
+      _once,
+      _ref,
+      _refresh,
+      _set,
+      _show,
+      _skip,
+      _text,
+      _toc,
     ] as Array<Partial<Directive> | string>,
   }
 
