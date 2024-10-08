@@ -102,8 +102,8 @@
     "@mizu/show",
     "@mizu/skip",
     "@mizu/test",
-    "@mizu/text"
-    // "@mizu/toc"
+    "@mizu/text",
+    "@mizu/toc"
   ],
   "fmt": {
     "semiColons": false,
