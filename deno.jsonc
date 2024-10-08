@@ -19,7 +19,7 @@
     // Serve website
     "serve": "deno serve --allow-read --allow-env --allow-net --allow-run --port=4649 --location=http://localhost:4649 www/serve.ts",
     // Build website
-    "build": "deno run --allow-read --allow-env --allow-net --allow-run --allow-write=.pages --location=http://localhost:4649 www/build.ts",
+    "build": "deno run --allow-read --allow-env --allow-net --allow-run --allow-write=.pages --location=http://localhost:4649 www/build.ts"
   },
   "imports": {
     // Mizu core
@@ -71,13 +71,12 @@
     "@std/regexp": "jsr:@std/regexp@1",
     "@std/text": "jsr:@std/text@1",
     // External dependencies
-    "@cross/fs": "jsr:@cross/fs@^0.1",
     "@dprint/formatter": "jsr:@dprint/formatter@^0.4",
     "@libs/bundle/ts": "jsr:@libs/bundle@12/ts",
     "@libs/logger": "jsr:@libs/logger@3",
     "@libs/reactive": "jsr:@libs/reactive@4",
     "@libs/testing": "jsr:@libs/testing@3",
-    "@libs/typing": "jsr:@libs/typing@3.1",
+    "@libs/typing": "jsr:@libs/typing@3",
     "@npm/jsdom": "npm:jsdom@25"
   },
   "workspace": [
