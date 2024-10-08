@@ -1,0 +1,24 @@
+<load directives="@mizu/html,@mizu/test"></load>
+
+<test name="[*html] sets html content">
+  <script>
+    context.value = `<b>foo</b>`
+  </script>
+  <render>
+    <p *html="value"></p>
+  </render>
+  <expect>
+    <p>
+      <b>foo</b>
+    </p>
+  </expect>
+</test>
+
+<test name="[*html] skips commented elements">
+  <render>
+    <p ~test.comment *html="'foo'"></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>

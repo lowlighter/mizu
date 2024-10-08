@@ -1,0 +1,14 @@
+<mizu-directive id="html" directory="html">
+  <code #name><span class="hljs-keyword">*html</span><wbr /><span class="muted">="content"</span></code>
+  <p #description>
+    Set element's <var><a href="https://developer.mozilla.org/docs/Web/API/Element/innerHTML">innerHTML</a></var>.
+  </p>
+  <code #example *skip>
+    <template *html="'&lt;p&gt;...&lt;/p&gt;'">
+      <!--<p>...</p>-->
+    </template>
+  </code>
+  <mizu-warn #note>
+    Raw HTML may lead to <a href="https://developer.mozilla.org/docs/Glossary/Cross-site_scripting">XSS vulnerabilities</a>.
+  </mizu-warn>
+</mizu-directive>
