@@ -1,0 +1,491 @@
+<load directives="@mizu/bind,@mizu/test"></load>
+
+<test name="[:attribute] binds generic attributes">
+  <script>
+    context.value = "foo"
+  </script>
+  <render>
+    <p :data-value="value"></p>
+  </render>
+  <expect>
+    <p data-value="foo"></p>
+  </expect>
+  <script>
+    context.value = "bar"
+  </script>
+  <render></render>
+  <expect>
+    <p data-value="bar"></p>
+  </expect>
+</test>
+
+<test name="[:attribute] binds html boolean attributes according to specification">
+  <script>
+    context.value = true
+  </script>
+  <render>
+    <p :disabled="value"></p>
+  </render>
+  <expect>
+    <p disabled="true"></p>
+  </expect>
+  <render>
+    <link :disabled="value" />
+    <form :novalidate="value">
+      <fieldset :disabled="value"></fieldset>
+      <input :disabled="value" :checked="value" :formnovalidate="value" :readonly="value" />
+      <textarea :disabled="value" :readonly="value" :required="value"></textarea>
+      <select :disabled="value" :required="value" :multiple="value">
+        <optgroup :disabled="value">
+          <option :disabled="value" :selected="value"></option>
+        </optgroup>
+      </select>
+      <button :disabled="value" :formnovalidate="value"></button>
+    </form>
+    <img :ismap="value" />
+    <video :playsinline="value" :autoplay="value" :controls="value" :loop="value" :muted="value"></video>
+    <audio :autoplay="value" :controls="value" :loop="value" :muted="value">
+      <track :default="value" />
+    </audio>
+    <template :shadowrootdelegatesfocus="value" :shadowrootclonable="value" :shadowrootserializable="value"></template>
+    <script :async="value" :defer="value" :nomodule="value"></script>
+    <iframe :allowfullscreen="value"></iframe>
+    <ol :reversed="value"></ol>
+    <details :open="value"></details>
+    <dialog :open="value"></dialog>
+    <p :autofocus="value" :inert="value" :itemscope="value"></p>
+  </render>
+  <expect>
+    <link disabled />
+    <form novalidate>
+      <fieldset disabled></fieldset>
+      <input disabled checked formnovalidate readonly />
+      <textarea disabled readonly required></textarea>
+      <select disabled required multiple>
+        <optgroup disabled>
+          <option disabled selected></option>
+        </optgroup>
+      </select>
+      <button disabled formnovalidate></button>
+    </form>
+    <img ismap />
+    <video playsinline autoplay controls loop muted></video>
+    <audio autoplay controls loop muted>
+      <track default />
+    </audio>
+    <template shadowrootdelegatesfocus shadowrootclonable shadowrootserializable></template>
+    <script async defer nomodule></script>
+    <iframe allowfullscreen></iframe>
+    <ol reversed></ol>
+    <details open></details>
+    <dialog open></dialog>
+    <p autofocus inert itemscope></p>
+  </expect>
+  <script>
+    context.value = false
+  </script>
+  <render></render>
+  <expect>
+    <link />
+    <form>
+      <fieldset></fieldset>
+      <input />
+      <textarea></textarea>
+      <select>
+        <optgroup>
+          <option></option>
+        </optgroup>
+      </select>
+      <button></button>
+    </form>
+    <img />
+    <video></video>
+    <audio>
+      <track />
+    </audio>
+    <template></template>
+    <script></script>
+    <iframe></iframe>
+    <ol></ol>
+    <details></details>
+    <dialog></dialog>
+    <p></p>
+  </expect>
+  <render>
+    <p :disabled="value"></p>
+  </render>
+  <expect>
+    <p disabled="false"></p>
+  </expect>
+</test>
+
+<test name="[:attribute] cleans nullish bound attributes">
+  <render>
+    <a :data-value="0"></a>
+    <b :data-value="-0"></b>
+    <c :data-value="0n"></c>
+    <d :data-value="NaN"></d>
+    <e :data-value="false"></e>
+    <f :data-value="''"></f>
+    <g :data-value="null"></g>
+    <h :data-value="undefined"></h>
+  </render>
+  <expect>
+    <a data-value="0"></a>
+    <b data-value="0"></b>
+    <c data-value="0"></c>
+    <d data-value="NaN"></d>
+    <e data-value="false"></e>
+    <f data-value=""></f>
+    <g></g>
+    <h></h>
+  </expect>
+</test>
+
+<test name="[:attribute] skips commented elements">
+  <render>
+    <p ~test.comment :data-value="'foo'"></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
+
+<test name="[:class] with string notation binds class attribute">
+  <script>
+    context.classlist = "foo bar"
+  </script>
+  <render>
+    <p :class="classlist"></p>
+  </render>
+  <expect>
+    <p class="foo bar"></p>
+  </expect>
+</test>
+
+<test name="[:class] with string notation ignores extra spacing">
+  <script>
+    context.classlist = " foo  bar "
+  </script>
+  <render>
+    <p :class="classlist"></p>
+  </render>
+  <expect>
+    <p class="foo bar"></p>
+  </expect>
+</test>
+
+<test name="[:class] with string notation preserves original class attribute">
+  <script>
+    context.classlist = "bar"
+  </script>
+  <render>
+    <p class="foo" :class="classlist"></p>
+  </render>
+  <expect>
+    <p class="foo bar"></p>
+  </expect>
+</test>
+
+<test name="[:class] with string notation is reactive">
+  <script>
+    context.classlist = "bar baz"
+  </script>
+  <render>
+    <p class="foo" :class="classlist"></p>
+  </render>
+  <expect>
+    <p class="foo bar baz"></p>
+  </expect>
+  <script>
+    context.classlist = "baz"
+  </script>
+  <render></render>
+  <expect>
+    <p class="foo baz"></p>
+  </expect>
+</test>
+
+<test name="[:class] with object notation binds class attribute">
+  <script>
+    context.classlist = { foo: true, bar: true, baz: false }
+  </script>
+  <render>
+    <p :class="classlist"></p>
+  </render>
+  <expect>
+    <p class="foo bar"></p>
+  </expect>
+</test>
+
+<test name="[:class] with object notation ignores nullish objects">
+  <script>
+    context.classlist = null
+  </script>
+  <render>
+    <p :class="classlist"></p>
+  </render>
+  <expect>
+    <p class=""></p>
+  </expect>
+</test>
+
+<test name="[:class] with object notation preserves original class attribute">
+  <script>
+    context.classlist = { bar: true }
+  </script>
+  <render>
+    <p class="foo" :class="classlist"></p>
+  </render>
+  <expect>
+    <p class="foo bar"></p>
+  </expect>
+</test>
+
+<test name="[:class] with object notation is reactive">
+  <script>
+    context.classlist = { bar: true, baz: true }
+  </script>
+  <render>
+    <p class="foo" :class="classlist"></p>
+  </render>
+  <expect>
+    <p class="foo bar baz"></p>
+  </expect>
+  <script>
+    context.classlist = { baz: true }
+  </script>
+  <render></render>
+  <expect>
+    <p class="foo baz"></p>
+  </expect>
+</test>
+
+<test name="[:class] with mixed notation binds class attribute">
+  <script>
+    context.classlist = ["bar", { baz: true }, ["qux", { quux: true }, "", {}, []]]
+  </script>
+  <render>
+    <p class="foo" :class="classlist"></p>
+  </render>
+  <expect>
+    <p class="foo bar baz qux quux"></p>
+  </expect>
+  <script>
+    context.classlist = null
+  </script>
+  <render></render>
+  <expect>
+    <p class="foo"></p>
+  </expect>
+</test>
+
+<test name="[:class] with mixed notation merges states gracefully">
+  <script>
+    context.classlist = ["bar", { foo: false, bar: false, baz: false }, { baz: true }]
+  </script>
+  <render>
+    <p class="foo" :class="classlist"></p>
+  </render>
+  <expect>
+    <p class="foo bar baz"></p>
+  </expect>
+</test>
+
+<test name="[:style] with string notation binds style attribute">
+  <script>
+    context.style = "color: red;"
+  </script>
+  <render>
+    <p :style="style"></p>
+  </render>
+  <expect>
+    <p style="color: red"></p>
+  </expect>
+</test>
+
+<test name="[:style] with string notation preserves original style attribute">
+  <script>
+    context.style = "color: red;"
+  </script>
+  <render>
+    <p style="display: block" :style="style"></p>
+  </render>
+  <expect>
+    <p style="display: block; color: red"></p>
+  </expect>
+</test>
+
+<test name="[:style] with string notation is reactive">
+  <script>
+    context.style = "color: red;"
+  </script>
+  <render>
+    <p style="display: block" :style="style"></p>
+  </render>
+  <expect>
+    <p style="display: block; color: red"></p>
+  </expect>
+  <script>
+    context.style = "color: blue;"
+  </script>
+  <render></render>
+  <expect>
+    <p style="display: block; color: blue"></p>
+  </expect>
+</test>
+
+<test name="[:style] with object notation binds style attribute">
+  <script>
+    context.style = { color: "red", background: "blue" }
+  </script>
+  <render>
+    <p :style="style"></p>
+  </render>
+  <expect>
+    <p style="color: red; background: blue"></p>
+  </expect>
+</test>
+
+<test name="[:style] with object notation ignores nullish objects">
+  <script>
+    context.style = null
+  </script>
+  <render>
+    <p :style="style"></p>
+  </render>
+  <expect>
+    <p></p>
+  </expect>
+</test>
+
+<test name="[:style] with object notation supports properties with important priority">
+  <script>
+    context.style = { color: "red !important", background: "blue" }
+  </script>
+  <render>
+    <p :style="style"></p>
+  </render>
+  <expect>
+    <p style="color: red !important; background: blue"></p>
+  </expect>
+</test>
+
+<test name="[:style] with object notation supports properties with hyphens">
+  <script>
+    context.style = { "--color": "red", "background-color": "blue" }
+  </script>
+  <render>
+    <p :style="style"></p>
+  </render>
+  <expect>
+    <p style="--color: red; background-color: blue"></p>
+  </expect>
+</test>
+
+<test name="[:style] with object notation transforms camel-cased properties">
+  <script>
+    context.style = { borderColor: "red", borderTopLeftRadius: "1px" }
+  </script>
+  <render>
+    <p :style="style"></p>
+  </render>
+  <expect>
+    <p style="border-color: red; border-top-left-radius: 1px"></p>
+  </expect>
+</test>
+
+<test name="[:style] with object notation transforms number values to pixel unit when applicable">
+  <script>
+    context.style = { top: -1, left: 1, bottom: -1.5, right: 1.5, color: 1 }
+  </script>
+  <render>
+    <p :style="style"></p>
+  </render>
+  <expect>
+    <p style="top: -1px; left: 1px; bottom: -1.5px; right: 1.5px"></p>
+  </expect>
+</test>
+
+<test name="[:style] with object notation preserves original style attribute">
+  <script>
+    context.style = { color: "red" }
+  </script>
+  <render>
+    <p style="display: block" :style="style"></p>
+  </render>
+  <expect>
+    <p style="display: block; color: red"></p>
+  </expect>
+</test>
+
+<test name="[:style] with object notation is reactive">
+  <script>
+    context.style = { color: "red", background: "blue" }
+  </script>
+  <render>
+    <p style="display: block" :style="style"></p>
+  </render>
+  <expect>
+    <p style="display: block; color: red; background: blue"></p>
+  </expect>
+  <script>
+    context.style = { background: "blue" }
+  </script>
+  <render></render>
+  <expect>
+    <p style="display: block; background: blue"></p>
+  </expect>
+</test>
+
+<test name="[:style] with mixed notation binds style attribute">
+  <script>
+    context.style = ["color: red;", { background: "blue" }, ["width: 1px;", { height: "1px" }, "", {}, []]]
+  </script>
+  <render>
+    <p style="display: block" :style="style"></p>
+  </render>
+  <expect>
+    <p style="display: block; color: red; background: blue; width: 1px; height: 1px"></p>
+  </expect>
+  <script>
+    context.style = null
+  </script>
+  <render></render>
+  <expect>
+    <p style="display: block"></p>
+  </expect>
+</test>
+
+<test name="[:style] with mixed notation merges styles gracefully">
+  <script>
+    context.style = ["display: inline-block; color: red;", { color: "blue", background: "blue" }, { background: "red" }]
+  </script>
+  <render>
+    <p style="display: block" :style="style"></p>
+  </render>
+  <expect>
+    <p style="display: inline-block; color: blue; background: red"></p>
+  </expect>
+</test>
+
+<test name="[:] with object notation binds attributes">
+  <script>
+    context.value = { "data-foo": "bar", class: "foo", style: "color: red;" }
+  </script>
+  <render>
+    <p :="value"></p>
+  </render>
+  <expect>
+    <p data-foo="bar" class="foo" style="color: red"></p>
+  </expect>
+</test>
+
+<test name="[:] (error) empty shorthand expects an object">
+  <render>
+    <p :="false"></p>
+  </render>
+  <expect>
+    <p *warn="[/^:(?!:)(?&lt;attribute&gt;)/] empty shorthand expects an object but got boolean, ignoring"></p>
+  </expect>
+</test>
