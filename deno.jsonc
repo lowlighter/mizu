@@ -101,8 +101,8 @@
     // "@mizu/set",
     // "@mizu/show",
     // "@mizu/skip",
-    "@mizu/test"
-    // "@mizu/text",
+    "@mizu/test",
+    "@mizu/text"
     // "@mizu/toc"
   ],
   "fmt": {
