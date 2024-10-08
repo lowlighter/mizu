@@ -59,8 +59,7 @@ All published versions are available in the [`/v/`](https://mizu.sh/v/) director
 ## 🫰 Contributing
 
 > [!WARNING]\
-> _mizu.js_ does not accept contributions at the moment.
-> We are still working on the project and will open it to the community very soon!
+> _mizu.js_ does not accept contributions at the moment. We are still working on the project and will open it to the community very soon!
 
 # 📜 License
 
@@ -69,9 +68,7 @@ AGPLv3 License
 Copyright (c) 2024-present Simon Lecoq (lowlighter)
 ```
 
-> You may use this project under the terms of the MIT License as long as you
-are sponsoring this project through [GitHub sponsors with a minimal monthly
-donation of $1 dollar or more](https://github.com/sponsors/lowlighter)
+> You may use this project under the terms of the MIT License as long as you are sponsoring this project through [GitHub sponsors with a minimal monthly donation of $1 dollar or more](https://github.com/sponsors/lowlighter)
 >
 > ```
 > MIT License
