@@ -1,0 +1,7 @@
+.npmrc
+.pages
+.vercel
+coverage
+node_modules
+package.json
+package-lock.json
