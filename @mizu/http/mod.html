@@ -1,0 +1,275 @@
+<mizu-directive id="http" directory="http">
+  <code #name><span class="hljs-keyword">%http</span><wbr /><span class="muted">="url"</span></code>
+  <p #description>
+    Perform a <a href="https://developer.mozilla.org/docs/Web/API/Fetch_API"><code>fetch()</code></a> call that can be handled by <a href="#response"><code class="hljs-keyword">%response</code></a> directives.
+  </p>
+  <code #example *skip>
+    <div %http="https://example.com">
+      <!--...-->
+    </div>
+  </code>
+  <mizu-note #note>
+    If the element has no <a href="#response"><code class="hljs-keyword">%response</code></a> directive attached, request is not automatically performed upon processing.
+  </mizu-note>
+  <mizu-note #note>
+    Valid <a href="https://developer.mozilla.org/docs/Web/API/URL/canParse_static">URLs</a> may be specified <q>as is</q>.
+  </mizu-note>
+  <mizu-variable #variable name="$event">
+    <span #type>Event | null</span>
+    <i class="muted">(in <code>url</code> expression only)</i> The dispatched <a href="https://developer.mozilla.org/docs/web/api/event"><code>Event</code></a> if triggered by a <a href="#http_event"><code class="hljs-keyword">%@event</code></a> directive, or <code>null</code>.
+  </mizu-variable>
+  <mizu-modifier #modifier name="follow">
+    Control whether <a href="https://developer.mozilla.org/docs/Web/API/Fetch_API"><code>fetch()</code></a> should <a href="https://developer.mozilla.org/docs/Web/API/RequestInit#redirect">follow redirections</a> or not.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="history">
+    Whether to <a href="https://developer.mozilla.org/docs/Web/API/History/pushState"><code>history.pushState()</code></a> target URL
+    <a href="https://developer.mozilla.org/docs/Web/API/History/pushState#url"><i>(must be the same origin)</i></a>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="method">
+    Set <a href="https://developer.mozilla.org/docs/Web/HTTP/Methods">HTTP method</a>
+    <i>(uppercased)</i>. This modifier should not be used multiple times.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="get">
+    Alias for <code>.method[get]</code>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="head">
+    Alias for <code>.method[head]</code>
+  </mizu-modifier>
+  <mizu-modifier #modifier name="post">
+    Alias for <code>.method[post]</code>
+  </mizu-modifier>
+  <mizu-modifier #modifier name="put">
+    Alias for <code>.method[put]</code>
+  </mizu-modifier>
+  <mizu-modifier #modifier name="patch">
+    Alias for <code>.method[patch]</code>
+  </mizu-modifier>
+  <mizu-modifier #modifier name="delete">
+    Alias for <code>.method[delete]</code>
+  </mizu-modifier>
+</mizu-directive>
+
+<mizu-directive id="header" directory="http">
+  <code #name><span class="hljs-keyword">%header</span><span class="muted">[</span><span class="hljs-meta underline-dotted">name</span><span class="muted">]<wbr />="value"</span></code>
+  <p #description>
+    Set <a href="https://developer.mozilla.org/docs/Glossary/Request_header">HTTP headers</a> for a <a href="#http"><code class="hljs-keyword">%http</code></a> directive.
+  </p>
+  <code #example *skip>
+    <div %header[x-foo]="'bar'">
+      <!--...-->
+    </div>
+  </code>
+  <mizu-note #note>
+    Headers with <code>undefined</code> or <code>null</code> values are <a href="https://developer.mozilla.org/docs/Web/API/Headers/delete">deleted</a>.
+  </mizu-note>
+  <mizu-note #note>
+    Headers with <code>Array</code> values are <a href="https://developer.mozilla.org/docs/Web/API/Headers/append">appended together</a>.
+  </mizu-note>
+  <mizu-modifier #modifier>
+    Header name.
+  </mizu-modifier>
+</mizu-directive>
+
+<mizu-directive id="body" directory="http">
+  <code #name><span class="hljs-keyword">%body</span><wbr /><span class="muted">="content"</span></code>
+  <p #description>
+    Set <a href="https://developer.mozilla.org/docs/Glossary/Payload_body">HTTP body</a> for a <a href="#http"><code class="hljs-keyword">%http</code></a> directive.
+  </p>
+  <code #example *skip>
+    <div %body.json="{foo:'bar'}">
+      <!--...-->
+    </div>
+  </code>
+  <mizu-variable #variable name="$headers">
+    <span #type>Headers</span>
+    A <a href="https://developer.mozilla.org/docs/Web/API/Headers"><code>Headers</code></a> object that contains all registered headers from <a href="#header"><code class="hljs-keyword">%header</code></a> directives attached to element.
+  </mizu-variable>
+  <mizu-modifier #modifier name="type">
+    Format body with specified type.
+    <ul>
+      <li>
+        <code>text</code>: format body with <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/toString"><code>toString()</code></a>.
+      </li>
+      <li>
+        <code>form</code>: format body with <a href="https://developer.mozilla.org/docs/Web/API/URLSearchParams"><code>URLSearchParams</code></a>.
+      </li>
+      <li>
+        <code>json</code>: format body with <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify"><code>JSON.stringify()</code></a>.
+      </li>
+      <li>
+        <code>xml</code>: format body with <a href="https://jsr.io/@libs/xml"><code>stringify()</code> from <i>@libs/xml</i></a>.
+        <mizu-import>
+          Using this value will dynamically import <a href="https://jsr.io/@libs/xml">jsr.io/@libs/xml</a>.
+        </mizu-import>
+      </li>
+    </ul>
+    This modifier should not be used multiple times.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="header">
+    Automatically set <a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Type">Content-Type header</a> when using a <code>.type</code> modifier.
+    <ul>
+      <li>
+        <code>text</code>: set <code>Content-Type: text/plain</code>.
+      </li>
+      <li>
+        <code>form</code>: set <code>Content-Type: application/json</code>.
+      </li>
+      <li>
+        <code>json</code>: set <code>Content-Type: application/x-www-form-urlencoded</code>.
+      </li>
+      <li>
+        <code>xml</code>: set <code>Content-Type: application/xml</code>.
+      </li>
+    </ul>
+    If the header was already set, it is overwritten.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="text">
+    Alias for <code>.type[text]</code>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="form">
+    Alias for <code>.type[form]</code>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="json">
+    Alias for <code>.type[json]</code>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="xml">
+    Alias for <code>.type[xml]</code>.
+  </mizu-modifier>
+</mizu-directive>
+
+<mizu-directive id="response" directory="http">
+  <code #name><span class="hljs-keyword">%response</span><wbr /><span class="muted">="expression"</span></code>
+  <p #description>
+    Reacts to a <a href="#http"><code class="hljs-keyword">%http</code></a> directive's <a href="https://developer.mozilla.org/docs/Web/API/Response"><code>Response</code></a>.
+  </p>
+  <code #example *skip>
+    <div %http="'https://example.com'" %response.html>
+      <!--...-->
+    </div>
+  </code>
+  <mizu-variable #variable name="$response">
+    <span #type>Response</span>
+    A <a href="https://developer.mozilla.org/docs/Web/API/Response"><code>Response</code></a> object that contains the fetched data.
+  </mizu-variable>
+  <mizu-variable #variable name="$content">
+    <span #type>unknown</span>
+    A variable that contains the <a href="https://developer.mozilla.org/docs/Web/API/Response/body"><code>response.body</code></a>
+    <i>(typing depends on which modifier is used)</i>.
+  </mizu-variable>
+  <mizu-modifier #modifier>
+    <span #type>string</span>
+    Specify which <a href="https://developer.mozilla.org/docs/Web/HTTP/Status">HTTP status code</a> trigger this directive.
+    <ul>
+      <li>
+        The syntax for status code constraints is defined as follows:
+        <ul>
+          <li>
+            A range can be defined using a <q>minus sign <code>-</code></q> between two numbers <i>(e.g. <code>%response[200-299]</code>)</i>.
+          </li>
+          <li>
+            Multiple ranges and status can be specified by separating them with a <q>comma <code>,</code></q>
+            <i>(e.g. <code>%response[200,201-204]</code>)</i>.
+          </li>
+        </ul>
+      </li>
+      <li>
+        The following aliases <i>(case-insensitive)</i> are supported:
+        <ul>
+          <li>
+            <code>2XX</code> for <code>200-299</code>.
+          </li>
+          <li>
+            <code>3XX</code> for <code>300-399</code>.
+          </li>
+          <li>
+            <code>4XX</code> for <code>400-499</code>.
+          </li>
+          <li>
+            <code>5XX</code> for <code>500-599</code>.
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </mizu-modifier>
+  <mizu-modifier #modifier name="consume">
+    Consume <a href="https://developer.mozilla.org/docs/Web/API/Response/body"><code>response.body</code></a>.
+    <ul>
+      <li>
+        <code>void</code>: discard body using <a href="https://developer.mozilla.org/docs/Web/API/Response/body"><code>response.body?.cancel()</code></a>.
+      </li>
+      <li>
+        <code>text</code>: consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/text"><code>response.text()</code></a> and set element's <var><a href="https://developer.mozilla.org/docs/Web/API/Node/textContent">textContent</a></var> if no expression is
+        provided.
+      </li>
+      <li>
+        <code>html</code>: consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/text"><code>response.text()</code></a> and set element's <var><a href="https://developer.mozilla.org/docs/Web/API/Element/innerHTML">innerHTML</a></var> if no expression is
+        provided.
+      </li>
+      <li>
+        <code>json</code>: consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/json"><code>response.json()</code></a>.
+      </li>
+      <li>
+        <code>xml</code>: consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/text"><code>response.text()</code></a> and parse it with <a href="https://jsr.io/@libs/xml"><code>parse</code> from <i>@libs/xml</i></a>.
+        <mizu-import>
+          Using this value will dynamically import <a href="https://jsr.io/@libs/xml">jsr.io/@libs/xml</a>.
+        </mizu-import>
+      </li>
+    </ul>
+    Multiple usage of this modifier can result in unexpected behavior.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="void">
+    Alias for <code>.consume[void]</code>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="text">
+    Alias for <code>.consume[text]</code>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="html">
+    Alias for <code>.consume[html]</code>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="json">
+    Alias for <code>.consume[json]</code>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="xml">
+    Alias for <code>.consume[xml]</code>.
+  </mizu-modifier>
+</mizu-directive>
+
+<mizu-directive id="http_event" directory="http">
+  <code #name><span class="hljs-keyword">%@</span><span class="hljs-meta underline-dotted">event</span><wbr /><span class="muted">="listener"</span></code>
+  <p #description>
+    Listen for a dispatched <code><a href="https://developer.mozilla.org/docs/web/api/event">Event</a></code>
+    and re-evaluates <a href="#http"><code class="hljs-keyword">%http</code></a> directive before reacting to its <a href="https://developer.mozilla.org/docs/Web/API/Response"><code>Response</code></a>.
+  </p>
+  <code #example *skip>
+    <button %http="https://example.com" %@click.html="">
+      <!--...-->
+    </button>
+  </code>
+  <mizu-restriction #note>
+    Must be defined on an element that also possess a <a href="#http"><code class="hljs-keyword">%http</code></a> directive.
+  </mizu-restriction>
+  <mizu-note #note>
+    This is essentially a combination of <a href="#response"><code class="hljs-keyword">%response</code></a> and <a href="#event"><code class="hljs-keyword">@event</code></a> directives.
+  </mizu-note>
+  <mizu-note #note>
+    Target URL is still set by <a href="#http"><code class="hljs-keyword">%http</code></a> directive. As it is re-evaluated, you can however use the <code>$event</code> value to dynamically compute the target URL <i>(e.g.<code>%http="$event ? '/foo' : '/bar'"</code>)</i>. All
+    modifiers from <a href="#http"><code class="hljs-keyword">%http</code></a> directive are inherited, along with the <a href="https://developer.mozilla.org/docs/Web/API/RequestInit"><code>RequestInit</code></a> prepared by <a href="#header"><code class="hljs-keyword"
+      >%header</code></a> and <a href="#body"><code class="hljs-keyword">%body</code></a> directives.
+  </mizu-note>
+  <mizu-variable #variable name="$event">
+    <span #type>Event</span>
+    <i class="muted">(in <code>listener</code> only)</i> The dispatched <a href="https://developer.mozilla.org/docs/web/api/event"><code>Event</code></a>.
+  </mizu-variable>
+  <mizu-variable #variable name="$response">
+    <span #type>Response</span>
+    A <a href="https://developer.mozilla.org/docs/Web/API/Response"><code>Response</code></a> object that contains the fetched data.
+  </mizu-variable>
+  <mizu-variable #variable name="$content">
+    <span #type>unknown</span>
+    A variable that contains the <a href="https://developer.mozilla.org/docs/Web/API/Response/body"><code>response.body</code></a>
+    <i>(typing depends on which modifier is used)</i>.
+  </mizu-variable>
+  <mizu-modifier #modifier name="..">
+    Inherited from <a href="#event"><code class="hljs-keyword">@event</code></a> and <a href="#response"><code class="hljs-keyword">%response</code></a> directives. See their respective documentation for more information.
+  </mizu-modifier>
+</mizu-directive>

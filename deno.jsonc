@@ -89,7 +89,7 @@
     // "@mizu/event",
     "@mizu/for",
     "@mizu/html",
-    // "@mizu/http",
+    "@mizu/http",
     "@mizu/if",
     "@mizu/is",
     "@mizu/markdown",
