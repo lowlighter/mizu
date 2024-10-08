@@ -1,0 +1,13 @@
+{
+  "name": "@mizu/mizu",
+  "version": "0.3.0",
+  "exports": {
+    ".": "./mod.ts",
+    "./core/engine": "./core/engine/mod.ts",
+    "./core/render/client": "./core/render/client/mod.ts",
+    "./core/render/server": "./core/render/server/mod.ts",
+    "./core/render/static": "./core/render/static/mod.ts",
+    "./core/testing": "./core/testing/mod.ts",
+    "./core/vdom": "./core/vdom/mod.ts"
+  }
+}

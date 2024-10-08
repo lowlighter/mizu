@@ -1,0 +1,45 @@
+<load directives="@mizu/mizu,@mizu/test"></load>
+
+<test name="[*mizu] is required when using explicit rendering">
+  <render explicit>
+    <div *mizu>
+      <div *mizu>
+        <p ~test.text="'foo'"></p>
+      </div>
+    </div>
+    <div>
+      <p ~test.text="'foo'"></p>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <div>
+        <p>foo</p>
+      </div>
+    </div>
+    <div>
+      <p></p>
+    </div>
+  </expect>
+</test>
+
+<test name="[*mizu] exposes `$root` variable">
+  <render>
+    <main *mizu>
+      <div>
+        <div *mizu ~test.text="$root.tagName"></div>
+        <div ~test.text="$root.tagName"></div>
+      </div>
+      <div ~test.text="$root.tagName"></div>
+    </main>
+  </render>
+  <expect>
+    <main>
+      <div>
+        <div>DIV</div>
+        <div>MAIN</div>
+      </div>
+      <div>MAIN</div>
+    </main>
+  </expect>
+</test>
