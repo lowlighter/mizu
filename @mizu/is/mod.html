@@ -1,0 +1,14 @@
+<mizu-directive id="is" directory="is">
+  <code #name><span class="hljs-keyword">*is</span><wbr /><span class="muted">="tagname"</span></code>
+  <p #description>
+    Set an <a href="https://developer.mozilla.org/docs/Web/API/Element/tagName">element tagname</a>.
+  </p>
+  <code #example *skip>
+    <div *is="'section'">
+      <!--...-->
+    </div>
+  </code>
+  <mizu-warn #note>
+    When tagname changes, references will also change. Any equality test with elements using this directive might not work as expected.
+  </mizu-warn>
+</mizu-directive>
