@@ -98,7 +98,7 @@
     "@mizu/once",
     "@mizu/ref",
     // "@mizu/refresh",
-    // "@mizu/set",
+    "@mizu/set",
     "@mizu/show",
     "@mizu/skip",
     "@mizu/test",
