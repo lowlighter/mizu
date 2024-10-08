@@ -1,0 +1,26 @@
+<load directives="@mizu/eval,@mizu/test"></load>
+
+<test name="[*eval] evaluates raw script">
+  <render>
+    <div *eval="this.textContent = 'bar'">foo</div>
+  </render>
+  <expect>
+    <div>bar</div>
+  </expect>
+</test>
+
+<test name="[*eval] can remove element itself">
+  <render>
+    <div *eval="this.remove()"></div>
+  </render>
+  <expect></expect>
+</test>
+
+<test name="[*eval] skips commented elements">
+  <render>
+    <p ~test.comment *eval="this.remove()"></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
