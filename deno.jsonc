@@ -97,7 +97,7 @@
     // "@mizu/model",
     "@mizu/once",
     "@mizu/ref",
-    // "@mizu/refresh",
+    "@mizu/refresh",
     "@mizu/set",
     "@mizu/show",
     "@mizu/skip",
