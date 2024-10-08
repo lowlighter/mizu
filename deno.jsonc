@@ -100,7 +100,7 @@
     // "@mizu/refresh",
     // "@mizu/set",
     "@mizu/show",
-    // "@mizu/skip",
+    "@mizu/skip",
     "@mizu/test",
     "@mizu/text"
     // "@mizu/toc"
