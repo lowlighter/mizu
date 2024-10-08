@@ -1,0 +1,101 @@
+<load directives="@mizu/set,@mizu/test"></load>
+
+<test name="[*set] sets context for element">
+  <script>
+    context.foo = "foo"
+  </script>
+  <render>
+    <p *set="{foo:'bar'}" ~test[content].text="foo"></p>
+    <p ~test[content].text="foo"></p>
+  </render>
+  <expect>
+    <p>bar</p>
+    <p>foo</p>
+  </expect>
+</test>
+
+<test name="[*set] sets context that is inherited by children">
+  <render>
+    <p *set="{foo:'foo'}">
+      <span *set="{bar:'bar'}" ~test[content].text="`${foo}${bar}`"></span>
+    </p>
+  </render>
+  <expect>
+    <p>
+      <span>foobar</span>
+    </p>
+  </expect>
+</test>
+
+<test name="[*set] sets context that is overrideable">
+  <render>
+    <p *set="{foo:'foo'}">
+      <span ~test[content].text="foo"></span>
+      <span *set="{foo:'bar'}" ~test[content].text="foo"></span>
+    </p>
+  </render>
+  <expect>
+    <p>
+      <span>foo</span>
+      <span>bar</span>
+    </p>
+  </expect>
+</test>
+
+<test name="[*set] supports context with callable members">
+  <render>
+    <p *set="{now(){return new Date(0).toISOString()}}" ~test[content].text="now()"></p>
+  </render>
+  <expect>
+    <p>1970-01-01T00:00:00.000Z</p>
+  </expect>
+</test>
+
+<test name="[*set] handles commented elements">
+  <script>
+    context.value = false
+  </script>
+  <render>
+    <p *set="{foo:value}" ~test[toggle].comment="!foo" ~test[content].text="foo"></p>
+  </render>
+  <expect>
+    <!--[~test[toggle].comment="!foo"] [~test[content].text="foo"]-->
+  </expect>
+  <script>
+    context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <p>true</p>
+  </expect>
+</test>
+
+<test name="[*set] keeps the same context across different rendering executions">
+  <render>
+    <p *set="{foo:'bar'}">
+      <span ~test.eval="foo = 'baz'" ~test[content].text="foo"></span>
+    </p>
+  </render>
+  <render></render>
+  <expect>
+    <p><span>baz</span></p>
+  </expect>
+</test>
+
+<test name="[*set] handles `null` contexts">
+  <render>
+    <p *set="null"></p>
+  </render>
+  <expect>
+    <p></p>
+  </expect>
+</test>
+
+<test name="[*set] (error) expects an object">
+  <render>
+    <p *set="'foo'"></p>
+  </render>
+  <expect>
+    <p *warn="[*set] expects an object but got string, ignoring"></p>
+  </expect>
+</test>
