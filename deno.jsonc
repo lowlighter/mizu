@@ -81,7 +81,7 @@
     "@npm/jsdom": "npm:jsdom@25"
   },
   "workspace": [
-    // "@mizu/bind",
+    "@mizu/bind",
     "@mizu/clean",
     // "@mizu/code",
     "@mizu/custom-element",
