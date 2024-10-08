@@ -1,0 +1,40 @@
+<load directives="@mizu/text,@mizu/test"></load>
+
+<test name="[*text] sets text content">
+  <render>
+    <p *text="'f'+'o'.repeat(2)"></p>
+  </render>
+  <expect>
+    <p>foo</p>
+  </expect>
+</test>
+
+<test name="[*text] escapes html content">
+  <script>
+    context.value = `<b>foo</b>`
+  </script>
+  <render>
+    <p *text="value"></p>
+  </render>
+  <expect>
+    <p>&lt;b&gt;foo&lt;/b&gt;</p>
+  </expect>
+</test>
+
+<test name="[*text] defaults to `innerHTML` and escapes it">
+  <render>
+    <div *text><p>foo</p></div>
+  </render>
+  <expect>
+    <div>&lt;p&gt;foo&lt;/p&gt;</div>
+  </expect>
+</test>
+
+<test name="[*text] skips commented elements">
+  <render>
+    <p ~test.comment *text="'foo'"></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
