@@ -1,0 +1,57 @@
+<p class="flash attention">
+  Playground is still being developed.
+</p>
+<script src="/highlight.js"></script>
+<div class="carbon-like">
+  <div class="title">
+    Code editor
+    <svg xmlns="http://www.w3.org/2000/svg" width="54" height="14" viewBox="0 0 54 14">
+      <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+        <circle cx="6" cy="6" r="6.5" fill="var(--danger)"></circle>
+        <circle cx="26" cy="6" r="6.5" fill="var(--attention)"></circle>
+        <circle cx="46" cy="6" r="6.5" fill="var(--success)"></circle>
+      </g>
+    </svg>
+  </div>
+  <div class="editor">
+    <textarea
+      rows="11"
+    >
+&lt;time muted" *refresh="1000" *text="new Date()"&gt;...&lt;/time&gt;
+&lt;form *set="{ food: '🍱🍜🍚🍣🍥🍡🍵🍙🥟', selected: '' }"&gt;
+  &lt;label&gt;
+    What's your favorite food? 😋
+    &lt;small *if="selected"&gt;So you like &lt;i *text="selected"&gt;&lt;/i&gt;?&lt;/small&gt;
+    &lt;small *else&gt;I want to know!&lt;/small&gt;
+    &lt;select ::="selected" required&gt;
+      &lt;option value="" disabled&gt;Select a food&lt;/option&gt;
+      &lt;option *for="[...food]" *id="$i" :value="$value" *text="$value" *once&gt;&lt;/option&gt;
+    &lt;/select&gt;
+  &lt;/label&gt;
+&lt;/form&gt;
+  </textarea
+    >
+    <div class="highlight"></div>
+  </div>
+</div>
+
+<div class="carbon-like">
+  <div class="title">
+    <div class="bar" id="render">
+      <svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm4.879-2.773 4.264 2.559a.25.25 0 0 1 0 .428l-4.264 2.559A.25.25 0 0 1 6 10.559V5.442a.25.25 0 0 1 .379-.215Z"></path>
+      </svg>
+      Render
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="54" height="14" viewBox="0 0 54 14">
+      <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+        <circle cx="6" cy="6" r="6.5" fill="var(--danger)"></circle>
+        <circle cx="26" cy="6" r="6.5" fill="var(--attention)"></circle>
+        <circle cx="46" cy="6" r="6.5" fill="var(--success)"></circle>
+      </g>
+    </svg>
+  </div>
+  <iframe height="300"></iframe>
+</div>
+
+<script type="module" src="/playground.js"></script>

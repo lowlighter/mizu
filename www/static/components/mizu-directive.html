@@ -1,0 +1,63 @@
+<article %http="`/about/directives/${$attrs.directory}?name=${$attrs.id}`" %header[accept]="'application/json'" %response.json="meta = $content">
+  <header *clean.directives>
+    <h3 :id="$attrs.id">
+      <a :href="`#${this.parentElement.id}`"><slot name="name"></slot></a>
+      <div class="pills">
+        <span *if="meta?.default" class="bd-muted bg-muted">
+          <span class="muted">Default</span><code *code[ts]="meta?.default"></code>
+        </span>
+        <span *if="meta?.multiple" class="bd-muted bg-muted muted">
+          Multiple
+        </span>
+        <span *if="!Number.isNaN(meta?.phase?.priority)" class="bd-accent bg-accent">
+          <span class="accent">Priority</span><code *text="`${meta.phase.priority} — ${meta.phase.name}`"></code>
+        </span>
+      </div>
+    </h3>
+  </header>
+  <section>
+    <slot name="description"></slot>
+    <pre><code *code[xml]="$slots.example.querySelector('code')?.innerHTML.replace(/&amp;lt;/g, '&lt;').replace(/&amp;gt;/g, '&gt;') ?? ''"></code></pre>
+  </section>
+  <footer *if="$slots.note || $slots.variable || $slots.modifier">
+    <details>
+      <summary>
+        <div class="pills">
+          <span *if="$slots.note?.querySelectorAll('mizu-warn').length" class="bd-severe bg-severe severe">
+            <span *text="$slots.note.querySelectorAll('mizu-warn').length"></span> Warning<span *if="$slots.note.querySelectorAll('mizu-warn').length !== 1">s</span>
+          </span>
+          <span *if="$slots.note?.querySelectorAll('mizu-restriction').length" class="bd-attention bg-attention attention">
+            <span *text="$slots.note.querySelectorAll('mizu-restriction').length"></span> Restriction<span *if="$slots.note.querySelectorAll('mizu-restriction').length !== 1">s</span>
+          </span>
+          <span *if="$slots.note?.querySelectorAll('mizu-import').length" class="bd-variant bg-variant variant">
+            <span *text="$slots.note.querySelectorAll('mizu-import').length"></span> Import<span *if="$slots.note.querySelectorAll('mizu-variant').length !== 1">s</span>
+          </span>
+          <span *if="$slots.note?.querySelectorAll('mizu-note').length" class="bd-muted bg-muted muted">
+            <span *text="$slots.note.querySelectorAll('mizu-note').length"></span> Note<span *if="$slots.note.querySelectorAll('mizu-note').length !== 1">s</span>
+          </span>
+          <span *for="Array.from($slots.variable?.children ?? [])" class="bd-accent bg-accent accent">
+            <code *text="$value.getAttribute('name')"></code>
+          </span>
+          <span *for="Array.from($slots.modifier?.children ?? [])" class="bd-active bg-active active">
+            <code *text="$value.hasAttribute('name') ? `.${$value.getAttribute('name')}` : '[tag]'"></code>
+          </span>
+        </div>
+      </summary>
+      <div *if="$slots.note">
+        <slot name="note"></slot>
+      </div>
+      <div *if="$slots.variable">
+        <h4 :id="`${$attrs.id}-variables`">
+          <a :href="`#${this.parentElement.id}`">Variables</a>
+        </h4>
+        <slot name="variable"></slot>
+      </div>
+      <div *if="$slots.modifier">
+        <h4 :id="`${$attrs.id}-modifiers`">
+          <a :href="`#${this.parentElement.id}`">Modifiers</a>
+        </h4>
+        <slot name="modifier"></slot>
+      </div>
+    </details>
+  </footer>
+</article>

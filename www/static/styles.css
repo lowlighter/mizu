@@ -1,0 +1,250 @@
+/* General. */
+body {
+  background-image: url("/waves.svg");
+  background-repeat: no-repeat;
+}
+
+body > header svg,
+body > footer svg {
+  fill: var(--ly-brand);
+  transition: fill var(--tr-duration);
+}
+
+body > header li:hover svg,
+body > footer li:hover svg {
+  fill: var(--accent);
+}
+
+body > header svg.sponsor,
+body > footer svg.sponsor {
+  fill: var(--variant);
+}
+
+body > header svg.light, body > header svg.dark {
+  display: none;
+}
+
+/* Additional classes. */
+.underline-dotted {
+  text-decoration: underline dotted;
+}
+
+/* Offset all headings by size of the header bar. */
+main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
+  content: "";
+  display: block;
+  height: calc(1rem + var(--ly-header-size));
+  margin-top: calc(-1 * (1rem + var(--ly-header-size)));
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/** Carbon like examples. */
+.carbon-like {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: var(--bd-radius);
+  box-shadow: 0 16px 68px rgba(0, 0, 0, 0.55);
+  margin-bottom: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .carbon-like {
+    background-color: black;
+  }
+}
+
+.carbon-like .title {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  font-family: var(--ft-mono);
+  text-decoration: underline;
+  text-decoration-color: var(--muted);
+}
+
+.carbon-like .title :is(h1, h2, h3, h4, h5, h6) {
+  margin: 0;
+}
+
+.carbon-like pre, .carbon-like .editor {
+  padding-top: 0;
+  background: none;
+}
+
+/* Table of content. */
+.toc > ul > li {
+  font-weight: bold;
+}
+
+.toc > ul > li > ul > li {
+  font-weight: normal;
+}
+
+.toc > ul > li > ul > li > ul > li {
+  font-size: 85%;
+}
+
+.toc > ul > li > ul > li > ul > li a {
+  color: var(--muted);
+}
+
+.toc-hidden {
+  display: none;
+}
+
+/* App. */
+.app {
+  margin: 4rem auto 4rem;
+}
+
+.app .logo {
+  width: 360px;
+}
+
+.app hgroup {
+  border: none;
+  text-align: center;
+}
+
+.app hgroup h1 {
+  font-size: 3rem;
+  border: none;
+}
+
+.app hgroup h1 a:hover::before {
+  content: "\1F30A";
+}
+
+.app ul.features {
+  padding: 0;
+  list-style: none;
+}
+
+.app .usage-snippet {
+  cursor: pointer;
+  user-select: all;
+  transition: background var(--tr-duration);
+}
+
+.app .usage-snippet:hover {
+  background: var(--bg-subtle);
+}
+
+/* Mizu directives. */
+article {
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0;
+  background-color: var(--bg-default);
+}
+
+article h3 {
+  font-size: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+article h3 a {
+  flex-shrink: 0;
+}
+
+article h4 {
+  font-size: 1rem;
+  margin: 0.5rem 0 !important;
+}
+
+article > header:first-child {
+  padding: 1rem;
+  margin: 0;
+  width: auto;
+}
+
+article section {
+  padding: 0 1rem;
+}
+
+article > footer:last-child {
+  padding: 0;
+  text-align: left;
+  margin: 0;
+}
+
+article > footer:last-child details {
+  margin: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+article > footer:last-child details summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+article > footer:last-child details summary .pills {
+  justify-content: flex-start;
+}
+
+article .pills {
+  display: inline-flex;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  font-weight: normal;
+  justify-content: flex-end;
+  font-size: 0.85rem;
+}
+
+article .pills > span {
+  margin-left: 0.25rem;
+  padding: 0 0.5rem;
+  border-radius: 1rem;
+}
+
+article .pills > span code {
+  font-size: inherit !important;
+  background: none;
+  padding: 0;
+}
+
+article .pills > span code:not(:first-child) {
+  margin-left: 0.25rem;
+}
+
+article .note svg {
+  fill: currentColor;
+  height: 1em;
+  flex-shrink: 0;
+  margin-top: 0.3rem;
+}
+
+article small ul {
+  margin-bottom: 0;
+}
+
+/** Syntax explanation. */
+.explain {
+  justify-content: center;
+  display: flex;
+  font-family: var(--ft-mono);
+}
+
+.explain div {
+  display: inline-flex;
+  border-bottom: 0.25rem solid currentColor;
+}
+
+.explain div.hljs-comment {
+  border-bottom-color: transparent;
+}
+
+/** Anchored definition terms. */
+dt :is(h1, h2, h3, h4, h5, h6) {
+  margin: 0;
+  border-bottom: none;
+  font-size: inherit;
+  line-height: inherit;
+}
