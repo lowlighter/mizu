@@ -1,0 +1,52 @@
+<load directives="@mizu/ref,@mizu/test"></load>
+
+<test name="[*ref] registers element references and exposes them through `$refs` variable">
+  <render>
+    <div *ref="foo" data-text="foo">
+      <div *ref="bar" data-text="bar">
+        <p ~test.text="`${$refs.foo.dataset.text}${$refs.bar.dataset.text}`"></p>
+        <div *ref="bar" data-text="baz">
+          <p ~test.text="`${$refs.foo.dataset.text}${$refs.bar.dataset.text}`"></p>
+        </div>
+      </div>
+    </div>
+  </render>
+  <expect>
+    <div data-text="foo">
+      <div data-text="bar">
+        <p>foobar</p>
+        <div data-text="baz">
+          <p>foobaz</p>
+        </div>
+      </div>
+    </div>
+  </expect>
+</test>
+
+<test name="[*ref] skips comment non-element nodes">
+  <render>
+    <div ~test.comment *ref="foo"></div>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
+
+<test name="[*ref] with `.raw` modifier changes whether value is evaluated or not">
+  <render>
+    <div *ref.raw[true]="foo" data-text="foo">
+      <p ~test.text="$refs.foo.dataset.text"></p>
+    </div>
+    <div *ref.raw[false]="'bar'" data-text="bar">
+      <p ~test.text="$refs.bar.dataset.text"></p>
+    </div>
+  </render>
+  <expect>
+    <div data-text="foo">
+      <p>foo</p>
+    </div>
+    <div data-text="bar">
+      <p>bar</p>
+    </div>
+  </expect>
+</test>

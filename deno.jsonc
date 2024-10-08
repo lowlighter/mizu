@@ -96,7 +96,7 @@
     "@mizu/mizu",
     // "@mizu/model",
     "@mizu/once",
-    // "@mizu/ref",
+    "@mizu/ref",
     // "@mizu/refresh",
     // "@mizu/set",
     "@mizu/show",
