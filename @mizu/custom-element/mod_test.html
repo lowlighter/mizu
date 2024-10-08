@@ -1,0 +1,185 @@
+<load directives="@mizu/custom-element,@mizu/test"></load>
+
+<test name="[*custom-element] registers custom elements">
+  <render>
+    <template *custom-element="x-custom" filter-remove>foo</template>
+    <x-custom></x-custom>
+  </render>
+  <expect>
+    <x-custom>foo</x-custom>
+  </expect>
+</test>
+
+<test name="[*custom-element] supports unnamed slots">
+  <render>
+    <template *custom-element="x-custom" filter-remove>
+      <a><slot></slot></a>
+    </template>
+    <x-custom>foo</x-custom>
+  </render>
+  <expect>
+    <x-custom>
+      <a>foo</a>
+    </x-custom>
+  </expect>
+</test>
+
+<test name="[*custom-element] supports named slots">
+  <render clean="^#">
+    <template *custom-element="x-custom" filter-remove>
+      <a><slot></slot></a>
+      <b><slot name="a"></slot></b>
+      <c><slot name="b"></slot></c>
+    </template>
+    <x-custom>
+      <span #>foo</span>
+      <span #a>bar</span>
+      <span #b>baz</span>
+    </x-custom>
+  </render>
+  <expect clean="^#">
+    <x-custom>
+      <a><span>foo</span></a>
+      <b><span>bar</span></b>
+      <c><span>baz</span></c>
+    </x-custom>
+  </expect>
+</test>
+
+<test name="[*custom-element] supports duplicate slots">
+  <render clean="^#">
+    <template *custom-element="x-custom" filter-remove>
+      <a><slot></slot></a>
+      <b><slot></slot></b>
+      <c><slot name="x"></slot></c>
+      <d><slot name="x"></slot></d>
+    </template>
+    <x-custom>
+      <span>foo</span>
+      <span #x>bar</span>
+    </x-custom>
+  </render>
+  <expect clean="^#">
+    <x-custom>
+      <a><span>foo</span></a>
+      <b><span>foo</span></b>
+      <c><span>bar</span></c>
+      <d><span>bar</span></d>
+    </x-custom>
+  </expect>
+</test>
+
+<test name="[*custom-element] supports slot placeholders">
+  <render>
+    <template *custom-element="x-custom" filter-remove>
+      <slot>foo</slot>
+    </template>
+    <x-custom></x-custom>
+  </render>
+  <expect>
+    <x-custom>foo</x-custom>
+  </expect>
+</test>
+
+<test name="[*custom-element] exposes `$slots` variable">
+  <render clean="^#">
+    <template *custom-element="x-custom" filter-remove>
+      <div ~test[content].text="$slots[''].textContent.trim()"></div>
+      <div ~test[content].text="$slots.foo.textContent.trim()"></div>
+    </template>
+    <x-custom>
+      foo
+      <span #foo>bar</span>
+    </x-custom>
+  </render>
+  <expect clean="^#">
+    <x-custom>
+      <div>foo</div>
+      <div>bar</div>
+    </x-custom>
+  </expect>
+</test>
+
+<test name="[*custom-element] exposes `$attrs` variable">
+  <render>
+    <template *custom-element="x-custom" filter-remove>
+      <div ~test[content].text="$attrs.foo"></div>
+    </template>
+    <x-custom foo="bar"></x-custom>
+  </render>
+  <expect>
+    <x-custom foo="bar">
+      <div>bar</div>
+    </x-custom>
+  </expect>
+</test>
+
+<test name="[*custom-element] with `.flat` modifier renders as their content">
+  <render>
+    <div>
+      <template *custom-element.flat[true]="x-flat" filter-remove>
+        <div>
+          <slot></slot>
+        </div>
+      </template>
+      <template *custom-element.flat[false]="x-not-flat" filter-remove>
+        <div>
+          <slot></slot>
+        </div>
+      </template>
+      <x-flat>foo</x-flat>
+      <x-not-flat>bar</x-not-flat>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <div>foo</div>
+      <x-not-flat>
+        <div>bar</div>
+      </x-not-flat>
+    </div>
+  </expect>
+</test>
+
+<test name="[*custom-element] skips commented elements">
+  <render>
+    <template ~test.comment *custom-element="x-custom"></template>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
+
+<test name="[*custom-element] (error) must be defined on &lt;template&gt; element">
+  <render>
+    <div *custom-element="x-custom"></div>
+  </render>
+  <expect>
+    <div *warn="A [*custom-element] directive must be defined on a &lt;template&gt; element, ignoring"></div>
+  </expect>
+</test>
+
+<test name="[*custom-element] (error) must have a valid custom element name">
+  <render>
+    <template *custom-element></template>
+  </render>
+  <expect>
+    <template *warn="A [*custom-element] directive must have a valid custom element name, ignoring"></template>
+  </expect>
+</test>
+
+<test name="[*custom-element] (error) is already registered as a custom element">
+  <render>
+    <template *custom-element="x-custom"></template>
+    <template *custom-element="x-custom"></template>
+  </render>
+  <expect>
+    <template></template>
+    <template *warn="&lt;x-custom&gt; is already registered as a custom element, ignoring"></template>
+  </expect>
+  <render></render>
+  <expect>
+    <template></template>
+    <template *warn="&lt;x-custom&gt; is already registered as a custom element, ignoring"></template>
+  </expect>
+</test>
