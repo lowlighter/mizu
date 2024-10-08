@@ -1,0 +1,48 @@
+<mizu-directive id="model-value" directory="model">
+  <code #name><span class="hljs-keyword">::</span><span class="hljs-meta underline-dotted">value</span><wbr /><span class="muted">="model"</span></code>
+  <p #description>
+    Bind an <a href="https://developer.mozilla.org/docs/Web/HTML/Element/input"><code>&lt;input&gt;</code></a>, <a href="https://developer.mozilla.org/docs/Web/HTML/Element/select"><code>&lt;select&gt;</code></a> or <a
+      href="https://developer.mozilla.org/docs/Web/HTML/Element/textarea"
+    ><code>&lt;textarea&gt;</code></a> element's <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes"><code>value</code> attribute</a> in a bi-directional manner.
+  </p>
+  <code #example *skip>
+    <select ::value="foo">
+      <!--<option>...</option>-->
+    </select>
+  </code>
+  <mizu-warn #note>
+    <a href="https://developer.mozilla.org/docs/Web/HTML/Element/input/checkbox"><code>&lt; input type="checkbox"&gt;</code></a> and
+    <a href="https://developer.mozilla.org/docs/Web/HTML/Element/select#multiple"><code>&lt;select multiple&gt;</code></a> elements will bind to an array of values.
+  </mizu-warn>
+  <mizu-restriction #note>
+    Must be defined on an element that has a <code>value</code> property, such as <a href="https://developer.mozilla.org/docs/Web/HTML/Element/input"><code>&lt;input&gt;</code></a>, <a href="https://developer.mozilla.org/docs/Web/HTML/Element/select"><code>&lt;select&gt;</code
+      ></a> or <a href="https://developer.mozilla.org/docs/Web/HTML/Element/textarea"><code>&lt;textarea&gt;</code></a>. For other elements, use <a href="#bind"><code class="hljs-keyword">:attribute</code></a> directive instead.
+  </mizu-restriction>
+  <mizu-note #note>
+    It is possible to use the shorthand syntax <code><span class="hljs-keyword">::</span>="model"</code> rather than <code><span class="hljs-keyword">::<span class="hljs-meta">value</span></span>="model"</code>.
+  </mizu-note>
+  <mizu-modifier #modifier name="event">
+    Change the <a href="https://developer.mozilla.org/docs/web/api/event"><code>Event</code></a> that triggers the model update. It is advised to use either <a href="https://developer.mozilla.org/docs/Web/API/Element/input_event"><code>"input"</code></a> or <a
+      href="https://developer.mozilla.org/docs/Web/API/HTMLElement/change_event"
+    ><code>"change"</code></a> events.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="name">
+    Automatically set the <a href="https://developer.mozilla.org/docs/Web/HTML/Element/input#name">input <code>name</code> attribute</a> based on the attribute's value <i>(e.g. <code>&lt;input ::.name="foo" &gt;</code> will result into <code>&lt;input name="foo" &gt;</code>)</i>.
+    The default is <code>true</code> for <a href="https://developer.mozilla.org/docs/Web/HTML/Element/input/radio"><code>&lt; input type="radio"&gt;</code></a> and <a href="https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/checkbox"><code>&lt; input
+        type="checkbox"&gt;</code></a> and <code>false</code> for all other elements.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="value">
+    Automatically initialize the model using the <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing">nullish coalescing operator</a> and the <a href="https://developer.mozilla.org/docs/Web/HTML/Element/input#value"
+    >input <code>value</code> attribute</a> if the latter is present <i>(e.g. <code>&lt;input ::.value="foo" value="bar" &gt;</code> will assign <code>foo</code> with the value <code>"bar"</code> if it was nullish)</i>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="throttle">
+    Prevent listener from being called more than once during the specified time frame.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="debounce">
+    Prevent listener from executing until the specified time frame has passed without any activity.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="keys">
+    Specify which keys must be pressed for the listener to trigger when receiving a <a href="https://developer.mozilla.org/docs/Web/API/KeyboardEvent"><code>KeyboardEvent</code></a>. See <a href="#event"><code><span class="hljs-keyword">@event</span>.keys</code> modifier</a> for
+    more information.
+  </mizu-modifier>
+</mizu-directive>

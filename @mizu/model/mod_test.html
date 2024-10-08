@@ -1,0 +1,351 @@
+<load directives="@mizu/model,@mizu/test"></load>
+
+<test name="[::value] supports generic inputs">
+  <script>
+    context.value = "foo"
+  </script>
+  <render>
+    <input ::="value" />
+  </render>
+  <script>
+    // Model to value (set)
+    input = document.querySelector("input")
+    expect(context.value).toBe("foo")
+    expect(input.value).toBe("foo")
+    // Value to model (set)
+    input.value = "bar"
+    input.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toBe("bar"))
+    // Value to model (reset)
+    input.value = null
+    input.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toBe(""))
+    // Model to value (reset)
+    context.value = null
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input").value).toBe("")
+  </script>
+</test>
+
+<test name="[::value] supports number inputs">
+  <script>
+    context.value = 1
+  </script>
+  <render>
+    <input type="number" ::="value" />
+  </render>
+  <script>
+    // Model to value (set)
+    input = document.querySelector("input")
+    expect(context.value).toBe(1)
+    expect(input.value).toBe("1")
+    // Value to model (set)
+    input.value = 2
+    input.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toBe(2))
+    // Value to model (reset)
+    input.value = null
+    input.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toBe(0))
+    // Model to value (reset)
+    context.value = null
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input").value).toBe("")
+  </script>
+</test>
+
+<test name="[::value] supports radio inputs">
+  <script>
+    context.value = "foo"
+  </script>
+  <render>
+    <input type="radio" ::="value" name="value" value="foo" />
+    <input type="radio" ::="value" name="value" value="bar" />
+    <input type="radio" ::="value" name="value" value="baz" />
+  </render>
+  <script>
+    // Model to value (set)
+    expect(context.value).toBe("foo")
+    expect(document.querySelector("input[value=foo]").checked).toBe(true)
+    expect(document.querySelector("input[value=bar]").checked).toBe(false)
+    expect(document.querySelector("input[value=baz]").checked).toBe(false)
+    // Value to model (set)
+    input = document.querySelector("input[value=bar]")
+    input.checked = true
+    input.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toBe("bar"))
+    expect(document.querySelector("input[value=foo]").checked).toBe(false)
+    expect(document.querySelector("input[value=bar]").checked).toBe(true)
+    expect(document.querySelector("input[value=baz]").checked).toBe(false)
+    // Value to model (unset)
+    input.checked = false
+    input.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toBeUndefined())
+    expect(document.querySelector("input[value=foo]").checked).toBe(false)
+    expect(document.querySelector("input[value=bar]").checked).toBe(false)
+    expect(document.querySelector("input[value=baz]").checked).toBe(false)
+    // Model to value (reset)
+    input.checked = true
+    context.value = null
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input[value=foo]").checked).toBe(false)
+    expect(document.querySelector("input[value=bar]").checked).toBe(false)
+    expect(document.querySelector("input[value=baz]").checked).toBe(false)
+  </script>
+</test>
+
+<test name="[::value] supports checkbox inputs">
+  <script>
+    context.value = ["foo"]
+  </script>
+  <render>
+    <input type="checkbox" ::="value" value="foo" />
+    <input type="checkbox" ::="value" value="bar" />
+    <input type="checkbox" ::="value" value="baz" />
+  </render>
+  <script>
+    // Model to value (set)
+    expect(context.value).toEqual(["foo"])
+    expect(document.querySelector("input[value=foo]").checked).toBe(true)
+    expect(document.querySelector("input[value=bar]").checked).toBe(false)
+    expect(document.querySelector("input[value=baz]").checked).toBe(false)
+    // Value to model (set)
+    input = document.querySelector("input[value=bar]")
+    input.checked = true
+    input.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["foo", "bar"]))
+    expect(document.querySelector("input[value=foo]").checked).toBe(true)
+    expect(document.querySelector("input[value=bar]").checked).toBe(true)
+    expect(document.querySelector("input[value=baz]").checked).toBe(false)
+    // Value to model (unset)
+    input.checked = false
+    input.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["foo"]))
+    expect(document.querySelector("input[value=foo]").checked).toBe(true)
+    expect(document.querySelector("input[value=bar]").checked).toBe(false)
+    expect(document.querySelector("input[value=baz]").checked).toBe(false)
+    // Value to model (unset multiple)
+    input = document.querySelector("input[value=foo]")
+    input.checked = false
+    input.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual([]))
+    expect(document.querySelector("input[value=foo]").checked).toBe(false)
+    expect(document.querySelector("input[value=bar]").checked).toBe(false)
+    expect(document.querySelector("input[value=baz]").checked).toBe(false)
+    // Model to value (reset)
+    input.checked = true
+    context.value = null
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input[value=foo]").checked).toBe(false)
+    expect(document.querySelector("input[value=bar]").checked).toBe(false)
+    expect(document.querySelector("input[value=baz]").checked).toBe(false)
+    // Value to model (fix invalid value)
+    input = document.querySelector("input[value=foo]")
+    input.checked = true
+    input.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["foo"]))
+    expect(document.querySelector("input[value=foo]").checked).toBe(true)
+    expect(document.querySelector("input[value=bar]").checked).toBe(false)
+    expect(document.querySelector("input[value=baz]").checked).toBe(false)
+    // Model to value (set multiple)
+    context.value = ["foo", "baz"]
+  </script>
+  <render></render>
+  <script>
+    expect(context.value).toEqual(["foo", "baz"])
+    expect(document.querySelector("input[value=foo]").checked).toBe(true)
+    expect(document.querySelector("input[value=bar]").checked).toBe(false)
+    expect(document.querySelector("input[value=baz]").checked).toBe(true)
+  </script>
+</test>
+
+<test name="[::value] supports textarea inputs">
+  <script>
+    context.value = "foo"
+  </script>
+  <render>
+    <textarea ::="value"></textarea>
+  </render>
+  <script>
+    // Model to value (set)
+    textarea = document.querySelector("textarea")
+    expect(textarea.value).toBe("foo")
+    // Value to model (set)
+    textarea.value = "bar"
+    textarea.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toBe("bar"))
+    // Value to model (unset)
+    textarea.value = ""
+    textarea.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toBe(""))
+    // Model to value (reset)
+    context.value = null
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("textarea").value).toBe("")
+  </script>
+</test>
+
+<test name="[::value] supports select inputs">
+  <script>
+    context.value = "bar"
+  </script>
+  <render>
+    <select ::="value">
+      <option value="foo"></option>
+      <option value="bar"></option>
+      <option value="baz"></option>
+    </select>
+  </render>
+  <script>
+    // Model to value (set)
+    select = document.querySelector("select")
+    expect(select.value).toBe("bar")
+    expect(document.querySelector("option[value=foo]").selected).toBe(false)
+    expect(document.querySelector("option[value=bar]").selected).toBe(true)
+    expect(document.querySelector("option[value=baz]").selected).toBe(false)
+    // Value to model (set)
+    select.value = "baz"
+    select.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toBe("baz"))
+    expect(document.querySelector("option[value=foo]").selected).toBe(false)
+    expect(document.querySelector("option[value=bar]").selected).toBe(false)
+    expect(document.querySelector("option[value=baz]").selected).toBe(true)
+    // Value to model (reset)
+    select.value = null
+    select.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toBeUndefined())
+    expect(document.querySelector("option[value=foo]").selected).toBe(false)
+    expect(document.querySelector("option[value=bar]").selected).toBe(false)
+    expect(document.querySelector("option[value=baz]").selected).toBe(false)
+    // Model to value (reset)
+    select.value = "foo"
+    context.value = null
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("select").value).toBe("")
+  </script>
+</test>
+
+<test name="[::value] supports multiple select inputs">
+  <script>
+    context.value = ["bar", "baz"]
+  </script>
+  <render>
+    <select ::="value" multiple>
+      <option value="foo"></option>
+      <option value="bar"></option>
+      <option value="baz"></option>
+    </select>
+  </render>
+  <script>
+    // Model to value (set)
+    select = document.querySelector("select")
+    expect(select.value).toBe("bar")
+    expect(document.querySelector("option[value=foo]").selected).toBe(false)
+    expect(document.querySelector("option[value=bar]").selected).toBe(true)
+    expect(document.querySelector("option[value=baz]").selected).toBe(true)
+    // Value to model (set)
+    select.value = "foo"
+    select.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["foo"]))
+    expect(document.querySelector("option[value=foo]").selected).toBe(true)
+    expect(document.querySelector("option[value=bar]").selected).toBe(false)
+    expect(document.querySelector("option[value=baz]").selected).toBe(false)
+    // Value to model (set multiple)
+    option = document.querySelector("option[value=bar]")
+    option.selected = true
+    select.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["foo", "bar"]))
+    expect(document.querySelector("option[value=foo]").selected).toBe(true)
+    expect(document.querySelector("option[value=bar]").selected).toBe(true)
+    expect(document.querySelector("option[value=baz]").selected).toBe(false)
+    // Value to model (reset)
+    select.value = null
+    select.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual([]))
+    expect(document.querySelector("option[value=foo]").selected).toBe(false)
+    expect(document.querySelector("option[value=bar]").selected).toBe(false)
+    expect(document.querySelector("option[value=baz]").selected).toBe(false)
+    // Model to value (reset)
+    select.value = "foo"
+    context.value = null
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("select").value).toBe("")
+  </script>
+</test>
+
+<test name="[::value] with `.event` modifier sets the event name to which model sync is attached">
+  <script>
+    context.value = "foo"
+  </script>
+  <render>
+    <input ::.event[change]="value" />
+  </render>
+  <script>
+    input = document.querySelector("input")
+    expect(input.value).toBe("foo")
+    input.value = "bar"
+    input.dispatchEvent(new Event("input"))
+    await expect(retry(() => expect(context.value).toBe("bar"))).rejects.toThrow()
+    input.dispatchEvent(new Event("change"))
+    await retry(() => expect(context.value).toBe("bar"))
+  </script>
+</test>
+
+<test name="[::value] with `.name` modifier sets `name` attribute if needed">
+  <script>
+    context.value = "foo"
+  </script>
+  <render>
+    <input ::.name[true]="value" />
+    <input ::.name[false]="value" />
+  </render>
+  <expect>
+    <input name="value" />
+    <input />
+  </expect>
+</test>
+
+<test name="[::value] with `.value` modifier initializes model with `value` attribute if needed">
+  <script>
+    context.foo = undefined
+    context.bar = undefined
+  </script>
+  <render>
+    <input ::.value[true]="foo" value="foo" />
+    <input ::.value[false]="bar" value="bar" />
+  </render>
+  <script>
+    expect(context.foo).toBe("foo")
+    expect(context.bar).toBeUndefined()
+  </script>
+  <expect>
+    <input value="foo" />
+    <input value="bar" />
+  </expect>
+</test>
+
+<test name="[::value] skips commented elements">
+  <script>
+    context.value = true
+  </script>
+  <render>
+    <input ~test.comment ::="value" />
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
