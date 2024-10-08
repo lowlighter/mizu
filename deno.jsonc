@@ -84,7 +84,7 @@
     // "@mizu/bind",
     // "@mizu/clean",
     // "@mizu/code",
-    // "@mizu/custom-element",
+    "@mizu/custom-element",
     // "@mizu/eval",
     // "@mizu/event",
     "@mizu/for",
