@@ -1,0 +1,67 @@
+<load directives="@mizu/test"></load>
+
+<test name="[~test] with `text` modifier evaluates and sets `Element.textContent`">
+  <render>
+    <p ~test.text="'f'+'o'.repeat(2)"></p>
+  </render>
+  <expect>
+    <p>foo</p>
+  </expect>
+</test>
+
+<test name="[~test] with `comment` modifier changes `HTMLElement` to `Comment`">
+  <render>
+    <p ~test.comment></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+  <render>
+    <p ~test.comment ~test.text="'bar'"></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""] [~test.text="'bar'"]-->
+  </expect>
+  <script>
+    context.value = true
+  </script>
+  <render>
+    <p ~test.comment="value"></p>
+  </render>
+  <expect>
+    <!--[~test.comment="value"]-->
+  </expect>
+  <script>
+    context.value = false
+  </script>
+  <render></render>
+  <expect>
+    <p></p>
+  </expect>
+  <render>
+    <p ~test.comment="false"></p>
+  </render>
+  <expect>
+    <p></p>
+  </expect>
+</test>
+
+<test name="[~test] with `eval` modifier evaluates expression">
+  <render>
+    <div>
+      <p ~test.eval="this.remove()"></p>
+    </div>
+  </render>
+  <expect>
+    <div></div>
+  </expect>
+</test>
+
+<test name="[~test] with `[tag]` executes directive as specified `Phase`">
+  <render>
+    <p ~test[postprocessing].text="'foo'" ~test[preprocessing].text="'bar'"></p>
+  </render>
+  <expect>
+    <p>foo</p>
+  </expect>
+</test>

@@ -93,7 +93,7 @@
     // "@mizu/if",
     // "@mizu/is",
     // "@mizu/markdown",
-    "@mizu/mizu"
+    "@mizu/mizu",
     // "@mizu/model",
     // "@mizu/once",
     // "@mizu/ref",
@@ -101,7 +101,7 @@
     // "@mizu/set",
     // "@mizu/show",
     // "@mizu/skip",
-    // "@mizu/test",
+    "@mizu/test"
     // "@mizu/text",
     // "@mizu/toc"
   ],
