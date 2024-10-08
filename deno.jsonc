@@ -1,0 +1,148 @@
+{
+  "description": "Lightweight HTML templating library for any-side rendering",
+  "keywords": ["html", "templating", "ssr", "csr", "ssg", "reactive"],
+  "license": "AGPLv3",
+  "author": "Simon Lecoq (@lowlighter)",
+  "funding": "https://github.com/sponsors/lowlighter",
+  "homepage": "https://github.com/lowlighter/mizu",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lowlighter/mizu.git"
+  },
+  "tasks": {
+    // Lint code, documentation and package
+    "lint": "cd $INIT_CWD && deno lint && deno doc --lint **/mod.ts && deno publish --quiet --dry-run --allow-dirty && deno fmt",
+    // Test code and print detailed coverage
+    "test": "cd $INIT_CWD && deno test --allow-read --allow-env --allow-net --parallel --doc --clean --coverage && deno coverage --detailed --include=$INIT_CWD",
+    // Test and lint code
+    "qa": "deno task test && deno task lint",
+    // Serve website
+    "serve": "deno serve --allow-read --allow-env --allow-net --allow-run --port=4649 --location=http://localhost:4649 www/serve.ts",
+    // Build website
+    "build": "deno run --allow-read --allow-env --allow-net --allow-run --allow-write=.pages --location=http://localhost:4649 www/build.ts",
+  },
+  "imports": {
+    // Mizu core
+    "@mizu/mizu": "./@mizu/mizu/mod.ts",
+    "@mizu/mizu/core/engine": "./@mizu/mizu/core/engine/mod.ts",
+    "@mizu/mizu/core/render/client": "./@mizu/mizu/core/render/client/mod.ts",
+    "@mizu/mizu/core/render/server": "./@mizu/mizu/core/render/server/mod.ts",
+    "@mizu/mizu/core/render/static": "./@mizu/mizu/core/render/static/mod.ts",
+    "@mizu/mizu/core/testing": "./@mizu/mizu/core/testing/mod.ts",
+    "@mizu/mizu/core/vdom": "./@mizu/mizu/core/vdom/mod.ts",
+    // Mizu directives
+    "@mizu/bind": "./@mizu/bind/mod.ts",
+    "@mizu/clean": "./@mizu/clean/mod.ts",
+    "@mizu/code": "./@mizu/code/mod.ts",
+    "@mizu/custom-element": "./@mizu/custom-element/mod.ts",
+    "@mizu/eval": "./@mizu/eval/mod.ts",
+    "@mizu/event": "./@mizu/event/mod.ts",
+    "@mizu/for": "./@mizu/for/mod.ts",
+    "@mizu/for/empty": "./@mizu/for/empty/mod.ts",
+    "@mizu/html": "./@mizu/html/mod.ts",
+    "@mizu/http": "./@mizu/http/mod.ts",
+    "@mizu/if": "./@mizu/if/mod.ts",
+    "@mizu/if/else": "./@mizu/if/else/mod.ts",
+    "@mizu/is": "./@mizu/is/mod.ts",
+    "@mizu/markdown": "./@mizu/markdown/mod.ts",
+    "@mizu/model": "./@mizu/model/mod.ts",
+    "@mizu/once": "./@mizu/once/mod.ts",
+    "@mizu/ref": "./@mizu/ref/mod.ts",
+    "@mizu/refresh": "./@mizu/refresh/mod.ts",
+    "@mizu/set": "./@mizu/set/mod.ts",
+    "@mizu/show": "./@mizu/show/mod.ts",
+    "@mizu/skip": "./@mizu/skip/mod.ts",
+    "@mizu/test": "./@mizu/test/mod.ts",
+    "@mizu/text": "./@mizu/text/mod.ts",
+    "@mizu/toc": "./@mizu/toc/mod.ts",
+    // Standard library dependencies
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/async": "jsr:@std/async@1",
+    "@std/collections": "jsr:@std/collections@1",
+    "@std/fmt/colors": "jsr:@std/fmt@1/colors",
+    "@std/fs": "jsr:@std/fs@1",
+    "@std/html": "jsr:@std/html@1/entities",
+    "@std/html/is-valid-custom-element-name": "jsr:@std/html@1/unstable-is-valid-custom-element-name",
+    "@std/http": "jsr:@std/http@1",
+    "@std/http/route": "jsr:@std/http@1/unstable-route",
+    "@std/io": "jsr:@std/io@^0.224",
+    "@std/jsonc": "jsr:@std/jsonc@1",
+    "@std/path": "jsr:@std/path@1",
+    "@std/regexp": "jsr:@std/regexp@1",
+    "@std/text": "jsr:@std/text@1",
+    // External dependencies
+    "@cross/fs": "jsr:@cross/fs@^0.1",
+    "@dprint/formatter": "jsr:@dprint/formatter@^0.4",
+    "@libs/bundle/ts": "jsr:@libs/bundle@12/ts",
+    "@libs/logger": "jsr:@libs/logger@3",
+    "@libs/reactive": "jsr:@libs/reactive@4",
+    "@libs/testing": "jsr:@libs/testing@3",
+    "@libs/typing": "jsr:@libs/typing@3.1",
+    "@npm/jsdom": "npm:jsdom@25"
+  },
+  "workspace": [
+    // "@mizu/bind",
+    // "@mizu/clean",
+    // "@mizu/code",
+    // "@mizu/custom-element",
+    // "@mizu/eval",
+    // "@mizu/event",
+    // "@mizu/for",
+    // "@mizu/html",
+    // "@mizu/http",
+    // "@mizu/if",
+    // "@mizu/is",
+    // "@mizu/markdown",
+    // "@mizu/mizu",
+    // "@mizu/model",
+    // "@mizu/once",
+    // "@mizu/ref",
+    // "@mizu/refresh",
+    // "@mizu/set",
+    // "@mizu/show",
+    // "@mizu/skip",
+    // "@mizu/test",
+    // "@mizu/text",
+    // "@mizu/toc"
+  ],
+  "fmt": {
+    "semiColons": false,
+    "lineWidth": 280,
+    "exclude": [
+      "**/node_modules",
+      "**/coverage",
+      "**/.pages"
+    ]
+  },
+  "lint": {
+    "rules": {
+      "include": [
+        "ban-untagged-todo",
+        "eqeqeq",
+        "no-console",
+        "no-eval",
+        "no-external-import",
+        "no-inferrable-types",
+        "no-sync-fn-in-async-fn",
+        "no-throw-literal",
+        "single-var-declarator",
+        "triple-slash-reference"
+      ],
+      "exclude": [
+        "no-window"
+      ]
+    },
+    "exclude": [
+      "**/node_modules",
+      "**/coverage",
+      "**/.pages"
+    ]
+  },
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "deno.ns"
+    ],
+    "useUnknownInCatchVariables": false
+  }
+}
