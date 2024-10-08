@@ -1,0 +1,42 @@
+<load directives="@mizu/once,@mizu/test"></load>
+
+<test name="[*once] applies all directives only once">
+  <script>
+    context.value = ["foo"]
+  </script>
+  <render>
+    <p *once ~test[content].text="value.pop()"></p>
+  </render>
+  <expect>
+    <p>foo</p>
+  </expect>
+  <script>
+    expect(context.value).toHaveLength(0)
+  </script>
+  <render></render>
+  <expect>
+    <p>foo</p>
+  </expect>
+  <script>
+    expect(context.value).toHaveLength(0)
+  </script>
+</test>
+
+<test name="[*once] handles commented elements">
+  <script>
+    context.value = false
+  </script>
+  <render>
+    <p *once ~test.comment="!value"></p>
+  </render>
+  <expect>
+    <!--[~test.comment="!value"]-->
+  </expect>
+  <script>
+    context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[~test.comment="!value"]-->
+  </expect>
+</test>
