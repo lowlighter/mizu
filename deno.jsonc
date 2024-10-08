@@ -87,7 +87,7 @@
     // "@mizu/custom-element",
     // "@mizu/eval",
     // "@mizu/event",
-    // "@mizu/for",
+    "@mizu/for",
     "@mizu/html",
     // "@mizu/http",
     "@mizu/if",
