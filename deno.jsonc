@@ -83,7 +83,7 @@
   "workspace": [
     "@mizu/bind",
     "@mizu/clean",
-    // "@mizu/code",
+    "@mizu/code",
     "@mizu/custom-element",
     "@mizu/eval",
     // "@mizu/event",

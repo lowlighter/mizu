@@ -1,0 +1,103 @@
+<load directives="@mizu/code,@mizu/test"></load>
+
+<test name="[*code] highlights content with specified language">
+  <render>
+    <pre>
+      <code *code[typescript]="`const foo = 'bar'`"></code>
+    </pre>
+  </render>
+  <expect>
+    <pre><code><span class="hljs-keyword">const</span> foo = <span class="hljs-string">'bar'</span></code></pre>
+  </expect>
+</test>
+
+<test name="[*code] highlights content with specified language alias">
+  <render>
+    <pre>
+      <code *code[ts]="`const foo = 'bar'`"></code>
+    </pre>
+  </render>
+  <expect>
+    <pre><code><span class="hljs-keyword">const</span> foo = <span class="hljs-string">'bar'</span></code></pre>
+  </expect>
+</test>
+
+<test name="[*code] highlighting fallbacks to plaintext when syntax is unknown">
+  <render>
+    <pre>
+      <code *code[(unknown)]="`const foo = 'bar'`"></code>
+    </pre>
+  </render>
+  <expect>
+    <pre><code>const foo = 'bar'</code></pre>
+  </expect>
+</test>
+
+<test name="[*code] with `.trim` modifier changes whitespaces handling">
+  <script>
+    context.value = [
+      "",
+      "        function foo() {",
+      "          return 'bar'",
+      "        }",
+      "      ",
+    ].join("\n")
+  </script>
+  <render>
+    <pre>
+      <code *code.trim="value"></code>
+    </pre>
+  </render>
+  <expect>
+    <pre>
+<code>function foo() {
+  return 'bar'
+}</code></pre>
+  </expect>
+  <render>
+    <pre>
+      <code *code.trim[false]="value"></code>
+    </pre>
+  </render>
+  <expect>
+    <pre>
+      <code>
+        function foo() {
+          return 'bar'
+        }
+      </code>
+    </pre>
+  </expect>
+  <render>
+    <pre>
+      <code *code.trim="''"></code>
+    </pre>
+  </render>
+  <expect>
+    <pre><code></code></pre>
+  </expect>
+</test>
+
+<test name="[*code] highlights innerText when empty">
+  <render>
+    <pre>
+      <code *code[ts]>const foo = 'bar'</code>
+    </pre>
+  </render>
+  <expect>
+    <pre><code><span class="hljs-keyword">const</span> foo = <span class="hljs-string">'bar'</span></code></pre>
+  </expect>
+  <render></render>
+  <expect>
+    <pre><code><span class="hljs-keyword">const</span> foo = <span class="hljs-string">'bar'</span></code></pre>
+  </expect>
+</test>
+
+<test name="[*code] skips commented elements">
+  <render>
+    <p ~test.comment *code></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>

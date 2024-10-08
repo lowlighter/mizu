@@ -1,0 +1,14 @@
+{
+  "name": "@mizu/code",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./mod.ts"
+  },
+  "tasks": {
+    // Build the list of mapped languages
+    "build": "deno run --allow-net=api.github.com --allow-write=mapping.json build.ts"
+  },
+  "imports": {
+    "@npm/highlight.js": "npm:highlight.js@11"
+  }
+}
