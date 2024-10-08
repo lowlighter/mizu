@@ -1,0 +1,18 @@
+<mizu-directive id="markdown" directory="markdown">
+  <code #name><span class="hljs-keyword">*markdown</span><wbr /><span class="muted">="content"</span></code>
+  <p #description>
+    Set element's content after performing <a href="https://github.github.com/gfm/">markdown</a> rendering.
+  </p>
+  <code #example *skip>
+    <div *markdown="'*...*'">
+      <!--<em>...</em>-->
+    </div>
+  </code>
+  <mizu-import #note>
+    Using this will dynamically import <a href="https://jsr.io/@libs/markdown"><i>@libs/markdown</i></a>.
+  </mizu-import>
+  <mizu-modifier #modifier>
+    Load additional comma-separated markdown plugins (e.g. <code>*markdown[emojis,highlighting,sanitize]</code>). Supported list of plugins is available at <a href="https://jsr.io/@libs/markdown/doc/plugins/~#Variables">@libs/markdown/plugins</a>
+    <i>(unsupported plugins will be silently ignored)</i>.
+  </mizu-modifier>
+</mizu-directive>

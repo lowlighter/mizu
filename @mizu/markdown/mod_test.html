@@ -1,0 +1,50 @@
+<load directives="@mizu/markdown,@mizu/test"></load>
+
+<test name="[*markdown] renders markdown and sets html content">
+  <script>
+    context.value = `**foo**`
+  </script>
+  <render>
+    <div *markdown="value"></div>
+  </render>
+  <expect>
+    <div>
+      <p>
+        <strong>foo</strong>
+      </p>
+    </div>
+  </expect>
+</test>
+
+<test name="[*markdown] with `[tag]` loads specified plugins">
+  <render>
+    <div *markdown[gfm]>:ocean:</div>
+    <div *markdown[gfm,emojis]>:ocean:</div>
+  </render>
+  <expect>
+    <div><p>:ocean:</p></div>
+    <div><p>🌊</p></div>
+  </expect>
+</test>
+
+<test name="[*markdown] renders innerText when empty">
+  <render>
+    <div *markdown>**foo**</div>
+  </render>
+  <expect>
+    <div>
+      <p>
+        <strong>foo</strong>
+      </p>
+    </div>
+  </expect>
+</test>
+
+<test name="[*markdown] skips commented elements">
+  <render>
+    <p ~test.comment *markdown="'**foo**'"></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>

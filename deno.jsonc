@@ -92,7 +92,7 @@
     // "@mizu/http",
     "@mizu/if",
     // "@mizu/is",
-    // "@mizu/markdown",
+    "@mizu/markdown",
     "@mizu/mizu",
     // "@mizu/model",
     "@mizu/once",
