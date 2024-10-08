@@ -1,0 +1,384 @@
+<load directives="@mizu/event,@mizu/test"></load>
+
+<test name="[@event] attaches listeners to specified event">
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @event="value++"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.value).toBe(1)
+  </script>
+</test>
+
+<test name="[@event] supports multiple listeners">
+  <script>
+    context.a = 0
+    context.b = 0
+  </script>
+  <render>
+    <p @a="a++" @b="b++"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("a"))
+    rendered.querySelector("p").dispatchEvent(new Event("b"))
+    expect(context.a).toBe(1)
+    expect(context.b).toBe(1)
+  </script>
+</test>
+
+<test name="[@event] supports multiple listeners with the same event but with different tags">
+  <script>
+    context.a = 0
+    context.b = 0
+  </script>
+  <render>
+    <p @event[1]="a++" @event[2]="b++"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.a).toBe(1)
+    expect(context.b).toBe(1)
+  </script>
+</test>
+
+<test name="[@event] does not recreate listeners for the same attribute">
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @event="value++"></p>
+  </render>
+  <render></render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.value).toBe(1)
+  </script>
+</test>
+
+<test name="[@event] cleans out removed listeners">
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @event="value++"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.value).toBe(1)
+    rendered.querySelector("p").removeAttribute("@event")
+  </script>
+  <render></render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.value).toBe(1)
+  </script>
+</test>
+
+<test name="[@event] cleans out removed listeners">
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @event="value++"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.value).toBe(1)
+    rendered.querySelector("p").removeAttribute("@event")
+  </script>
+  <render></render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.value).toBe(1)
+  </script>
+</test>
+
+<test name="[@event] is effectless when empty">
+  <render>
+    <p @event></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+  </script>
+</test>
+
+<test name="[@event] with `.attach` modifier only reacts when event originates from attached target">
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @event.attach[document]="value++"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.value).toBe(0)
+    document.dispatchEvent(new Event("event"))
+    expect(context.value).toBe(1)
+  </script>
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @event.attach[window]="value++"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.value).toBe(0)
+    window.dispatchEvent(new Event("event"))
+    expect(context.value).toBe(1)
+  </script>
+</test>
+
+<test name="[@event] with `.self` modifier only reacts when event orignates from element itself">
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @event.self="value++">
+      <i data></i>
+    </p>
+  </render>
+  <script>
+    rendered.querySelector("i").dispatchEvent(new Event("event", { bubbles: true }))
+    expect(context.value).toBe(0)
+    rendered.querySelector("p").dispatchEvent(new Event("event", { bubbles: true }))
+    expect(context.value).toBe(1)
+  </script>
+</test>
+
+<test name="[@event] with `.debounce` modifier executes only once after specified inactivity">
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @event.debounce[50]="value++"></p>
+  </render>
+  <script>
+    for (let i = 0; i < 15; i++) {
+      rendered.querySelector("p").dispatchEvent(new Event("event"))
+    }
+    await delay(50)
+    expect(context.value).toBe(1)
+  </script>
+</test>
+
+<test name="[@event] with `.throttle` modifier executes at most once within specified duration window">
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @event.throttle[50]="value++"></p>
+  </render>
+  <script>
+    for (let i = 0; i < 50; i++) {
+      rendered.querySelector("p").dispatchEvent(new Event("event"))
+      await delay(1)
+    }
+    await delay(50)
+    expect(context.value).toBeGreaterThan(0)
+    expect(context.value).toBeLessThan(25)
+  </script>
+</test>
+
+<test name="[@event] with `.prevent` modifier calls `event.preventDefault()`">
+  <render>
+    <p @event.prevent></p>
+  </render>
+  <script>
+    preventDefault = fn()
+    rendered.querySelector("p").dispatchEvent(Object.assign(new Event("event"), { preventDefault }))
+    expect(preventDefault).toBeCalled()
+  </script>
+</test>
+
+<test name="[@event] with `.stop` modifier calls `event.stopPropagation()`">
+  <render>
+    <p @event.stop></p>
+  </render>
+  <script>
+    stopPropagation = fn()
+    rendered.querySelector("p").dispatchEvent(Object.assign(new Event("event"), { stopPropagation }))
+    expect(stopPropagation).toBeCalled()
+  </script>
+</test>
+
+<test name="[@event] with `.keys` modifier executes only when specified keys combinations are satisfied">
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @keydown.keys[a]="value++"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new KeyboardEvent("keydown", { key: "x" }))
+    expect(context.value).toBe(0)
+    rendered.querySelector("p").dispatchEvent(new KeyboardEvent("keydown", { key: "a" }))
+    expect(context.value).toBe(1)
+  </script>
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @keydown.keys[alt+ctrl+shift+meta+key]="value++"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new KeyboardEvent("keydown", { key: "x" }))
+    expect(context.value).toBe(0)
+    rendered.querySelector("p").dispatchEvent(new KeyboardEvent("keydown", { key: "Alt", altKey: true, ctrlKey: true, shiftKey: true, metaKey: true }))
+    expect(context.value).toBe(0)
+    rendered.querySelector("p").dispatchEvent(new KeyboardEvent("keydown", { key: "x", altKey: true, ctrlKey: true, shiftKey: true, metaKey: true }))
+    expect(context.value).toBe(1)
+  </script>
+</test>
+
+<test name="[@event] with `.once` modifier executes only once">
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <p @event.once="value++"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.value).toBe(1)
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.value).toBe(1)
+  </script>
+</test>
+
+<test name="[@event] with `.capture` modifier captures the event">
+  <script>
+    context.phase = Event.NONE
+  </script>
+  <render>
+    <a @event.capture="phase = $event.eventPhase">
+      <b></b>
+    </a>
+  </render>
+  <script>
+    rendered.querySelector("b").dispatchEvent(new Event("event"))
+    expect(context.phase).toBe(Event.CAPTURING_PHASE)
+  </script>
+</test>
+
+<test name="[@event] with `.passive` modifier captures the event">
+  <render>
+    <p></p>
+  </render>
+  <script>
+    Object.assign(rendered.querySelector("p"), { addEventListener: fn() })
+    const attribute = Object.assign(document.createElement("div"), { innerHTML: "<div @event.passive></div>" }).firstChild.attributes[0].cloneNode()
+    rendered.querySelector("p").attributes.setNamedItem(attribute)
+  </script>
+  <render></render>
+  <script>
+    expect(rendered.querySelector("p").addEventListener).toBeCalledWith("event", expect.any(Function), { passive: true })
+  </script>
+</test>
+
+<test name="[@event] exposes `$event` variable">
+  <script>
+    context.event = null
+  </script>
+  <render>
+    <p @event="event = $event"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("event"))
+    expect(context.event).toBeInstanceOf(Event)
+  </script>
+</test>
+
+<test name="[@event] skips commented elements">
+  <render>
+    <p ~test.comment @event="null"></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
+
+<test name="[@] with object notation attaches listeners">
+  <script>
+    context.a = 0
+    context.b = 0
+  </script>
+  <render>
+    <p @="{a() { a++ }, b: () => b++}"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("a"))
+    expect(context.a).toBe(1)
+    expect(context.b).toBe(0)
+    rendered.querySelector("p").dispatchEvent(new Event("b"))
+    expect(context.a).toBe(1)
+    expect(context.b).toBe(1)
+  </script>
+</test>
+
+<test name="[@] with object notation applies modifiers to all specified listeners">
+  <render>
+    <p @.prevent="{a() {}, b: () => null}"></p>
+  </render>
+  <script>
+    A = fn()
+    rendered.querySelector("p").dispatchEvent(Object.assign(new Event("a"), { preventDefault: A }))
+    expect(A).toBeCalled()
+    B = fn()
+    rendered.querySelector("p").dispatchEvent(Object.assign(new Event("b"), { preventDefault: B }))
+    expect(B).toBeCalled()
+  </script>
+</test>
+
+<test name="[@] with object notation supports multiple declarations">
+  <script>
+    context.a = 0
+    context.b = 0
+  </script>
+  <render>
+    <p @[1].prevent="{a() { a++ }}" @[2]="{b: () => b++}"></p>
+  </render>
+  <script>
+    A = fn()
+    rendered.querySelector("p").dispatchEvent(Object.assign(new Event("a"), { preventDefault: A }))
+    expect(A).toBeCalled()
+    expect(context.a).toBe(1)
+    expect(context.b).toBe(0)
+    B = fn()
+    rendered.querySelector("p").dispatchEvent(Object.assign(new Event("b"), { preventDefault: B }))
+    expect(B).not.toBeCalled()
+    expect(context.a).toBe(1)
+    expect(context.b).toBe(1)
+  </script>
+</test>
+
+<test name="[@] with object notation supports case-sensitive events">
+  <script>
+    context.a = 0
+    context.A = 0
+  </script>
+  <render>
+    <p @="{a() { a++ }, A() { A++} }"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("a"))
+    expect(context.a).toBe(1)
+    expect(context.A).toBe(0)
+    rendered.querySelector("p").dispatchEvent(new Event("A"))
+    expect(context.a).toBe(1)
+    expect(context.A).toBe(1)
+  </script>
+</test>
+
+<test name="[@] (error) empty shorthand expects an object">
+  <render>
+    <p @="false"></p>
+  </render>
+  <expect>
+    <p *warn="[/^@(?&lt;event&gt;)/] empty shorthand expects an object but got boolean, ignoring"></p>
+  </expect>
+</test>

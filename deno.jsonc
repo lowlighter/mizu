@@ -81,29 +81,29 @@
     "@npm/jsdom": "npm:jsdom@25"
   },
   "workspace": [
-    // "@mizu/bind",
+    "@mizu/bind",
     "@mizu/clean",
-    // "@mizu/code",
+    "@mizu/code",
     "@mizu/custom-element",
     "@mizu/eval",
-    // "@mizu/event",
+    "@mizu/event",
     "@mizu/for",
     "@mizu/html",
     // "@mizu/http",
     "@mizu/if",
-    // "@mizu/is",
+    "@mizu/is",
     "@mizu/markdown",
     "@mizu/mizu",
     "@mizu/model",
     "@mizu/once",
     "@mizu/ref",
-    // "@mizu/refresh",
+    "@mizu/refresh",
     "@mizu/set",
     "@mizu/show",
     "@mizu/skip",
     "@mizu/test",
-    "@mizu/text"
-    // "@mizu/toc"
+    "@mizu/text",
+    "@mizu/toc"
   ],
   "fmt": {
     "semiColons": false,

@@ -1,0 +1,24 @@
+<mizu-directive id="code" directory="code">
+  <code #name><span class="hljs-keyword">*code</span><wbr /><span class="muted">="content"</span></code>
+  <p #description>
+    Set element's content after performing syntax highlighting.
+  </p>
+  <code #example *skip>
+    <code *code[ts]="'...'">
+      <!--<span class="hljs-*">...</span>-->
+    </code>
+  </code>
+  <mizu-import #note>
+    Using this will dynamically import <a href="https://highlightjs.org"><i>highlight.js</i></a>.
+  </mizu-import>
+  <mizu-note #note>
+    Unsupported languages defaults to <code>plaintext</code>
+  </mizu-note>
+  <mizu-modifier #modifier>
+    <span #type>string</span>
+    Any supported <a href="https://highlightjs.readthedocs.io/latest/supported-languages.html">language identifier or alias</a>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="trim">
+    Trim whitespaces and shared indentation.
+  </mizu-modifier>
+</mizu-directive>

@@ -1,0 +1,300 @@
+<load directives="@mizu/toc,@mizu/test"></load>
+
+<test name="[*toc] creates a table of content">
+  <render>
+    <nav *toc></nav>
+    <main ~test[postprocessing].eval="this.remove()">
+      <section>
+        <h1 id="foo"><a href="#foo">foo</a></h1>
+        <section>
+          <h2 id="bar"><a href="#bar">bar</a></h2>
+          <section>
+            <h3 id="qux"><a href="#qux">qux</a></h3>
+          </section>
+        </section>
+        <section>
+          <h2 id="baz"><a href="#baz">baz</a></h2>
+        </section>
+      </section>
+    </main>
+  </render>
+  <expect>
+    <nav>
+      <ul>
+        <li>
+          <a href="#foo">foo</a>
+          <ul>
+            <li>
+              <a href="#bar">bar</a>
+              <ul>
+                <li>
+                  <a href="#qux">qux</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="#baz">baz</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </expect>
+</test>
+
+<test name="[*toc] is able to find headings in &lt;hgroup&gt; elements">
+  <render>
+    <nav *toc></nav>
+    <main ~test[postprocessing].eval="this.remove()">
+      <section>
+        <hgroup>
+          <h1 id="foo"><a href="#foo">foo</a></h1>
+        </hgroup>
+        <section>
+          <hgroup>
+            <h2 id="bar"><a href="#bar">bar</a></h2>
+          </hgroup>
+        </section>
+      </section>
+    </main>
+  </render>
+  <expect>
+    <nav>
+      <ul>
+        <li>
+          <a href="#foo">foo</a>
+          <ul>
+            <li>
+              <a href="#bar">bar</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </expect>
+</test>
+
+<test name="[*toc] ignores element with `[ignore]` tags">
+  <render>
+    <nav *toc></nav>
+    <main ~test[postprocessing].eval="this.remove()">
+      <section>
+        <div *toc[ignore]>
+          <h1 id="foo"><a href="#foo">foo</a></h1>
+        </div>
+        <section>
+          <div *toc[ignore]>
+            <h2 id="bar"><a href="#bar">bar</a></h2>
+          </div>
+        </section>
+      </section>
+    </main>
+  </render>
+  <expect>
+    <nav>
+      <ul>
+        <li>
+          <a href="#foo">foo</a>
+          <ul>
+            <li>
+              <a href="#bar">bar</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </expect>
+</test>
+
+<test name="[*toc] with single value `[tag]` creates a table of content with specified level">
+  <render>
+    <nav *toc[h2]></nav>
+    <main ~test[postprocessing].eval="this.remove()">
+      <section>
+        <h1 id="foo"><a href="#foo">foo</a></h1>
+        <section>
+          <h2 id="bar"><a href="#bar">bar</a></h2>
+          <section>
+            <h3 id="qux"><a href="#qux">qux</a></h3>
+            <section>
+              <h4 id="quux"><a href="#quux">quux</a></h4>
+            </section>
+          </section>
+        </section>
+      </section>
+    </main>
+  </render>
+  <expect>
+    <nav>
+      <ul>
+        <li>
+          <a href="#bar">bar</a>
+        </li>
+      </ul>
+    </nav>
+  </expect>
+</test>
+
+<test name="[*toc] with single value and plus sign `[tag]` creates a table of content starting from specified level">
+  <render>
+    <nav *toc[h2+]></nav>
+    <main ~test[postprocessing].eval="this.remove()">
+      <section>
+        <h1 id="foo"><a href="#foo">foo</a></h1>
+        <section>
+          <h2 id="bar"><a href="#bar">bar</a></h2>
+          <section>
+            <h3 id="qux"><a href="#qux">qux</a></h3>
+            <section>
+              <h4 id="quux"><a href="#quux">quux</a></h4>
+            </section>
+          </section>
+        </section>
+      </section>
+    </main>
+  </render>
+  <expect>
+    <nav>
+      <ul>
+        <li>
+          <a href="#bar">bar</a>
+          <ul>
+            <li>
+              <a href="#qux">qux</a>
+              <ul>
+                <li>
+                  <a href="#quux">quux</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </expect>
+</test>
+
+<test name="[*toc] with range value `[tag]` creates a table of content with specified levels">
+  <render>
+    <nav *toc[h2-h3]></nav>
+    <main ~test[postprocessing].eval="this.remove()">
+      <section>
+        <h1 id="foo"><a href="#foo">foo</a></h1>
+        <section>
+          <h2 id="bar"><a href="#bar">bar</a></h2>
+          <section>
+            <h3 id="qux"><a href="#qux">qux</a></h3>
+            <section>
+              <h4 id="quux"><a href="#quux">quux</a></h4>
+            </section>
+          </section>
+        </section>
+      </section>
+    </main>
+  </render>
+  <expect>
+    <nav>
+      <ul>
+        <li>
+          <a href="#bar">bar</a>
+          <ul>
+            <li>
+              <a href="#qux">qux</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </expect>
+</test>
+
+<test name="[*toc] with invalid `[tag]` fallbacks as having no specified levels">
+  <render>
+    <nav *toc[hx-hy]></nav>
+    <main ~test[postprocessing].eval="this.remove()">
+      <section>
+        <h1 id="foo"><a href="#foo">foo</a></h1>
+        <section>
+          <h2 id="bar"><a href="#bar">bar</a></h2>
+          <section>
+            <h3 id="qux"><a href="#qux">qux</a></h3>
+            <section>
+              <h4 id="quux"><a href="#quux">quux</a></h4>
+            </section>
+          </section>
+        </section>
+      </section>
+    </main>
+  </render>
+  <expect>
+    <nav>
+      <ul>
+        <li>
+          <a href="#foo">foo</a>
+          <ul>
+            <li>
+              <a href="#bar">bar</a>
+              <ul>
+                <li>
+                  <a href="#qux">qux</a>
+                  <ul>
+                    <li>
+                      <a href="#quux">quux</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </expect>
+</test>
+
+<test name="[*toc] is effectless if selected target does not exist">
+  <render>
+    <nav *toc></nav>
+  </render>
+  <expect>
+    <nav></nav>
+  </expect>
+</test>
+
+<test name="[*toc] is effectless if selected target does not contain any heading elements">
+  <render>
+    <nav *toc></nav>
+    <main ~test[postprocessing].eval="this.remove()"></main>
+  </render>
+  <expect>
+    <nav></nav>
+  </expect>
+</test>
+
+<test name="[*toc] is effectless on headings that do not satisfy requirements">
+  <render>
+    <nav *toc></nav>
+    <main ~test[postprocessing].eval="this.remove()">
+      <h1><a href="#foo">missing id</a></h1>
+      <h1 id="bar">missing link</h1>
+      <h2>skipped level</h2>
+    </main>
+  </render>
+  <expect>
+    <nav></nav>
+  </expect>
+</test>
+
+<test name="[*toc] skips commented elements">
+  <render>
+    <nav ~test.comment *toc></nav>
+    <main ~test[postprocessing].eval="this.remove()">
+      <h1><a href="#foo">missing id</a></h1>
+      <h1 id="bar">missing link</h1>
+      <h2>skipped level</h2>
+    </main>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>

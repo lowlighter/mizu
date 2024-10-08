@@ -1,0 +1,101 @@
+<mizu-directive id="event" directory="event">
+  <code #name><span class="hljs-keyword">@</span><span class="hljs-meta underline-dotted">event</span><wbr /><span class="muted">="listener"</span></code>
+  <p #description>
+    Listen for a dispatched <code><a href="https://developer.mozilla.org/docs/web/api/event">Event</a></code>.
+  </p>
+  <code #example *skip>
+    <button @click="this.value = 'Clicked!'">
+      <!--Not clicked yet.-->
+    </button>
+  </code>
+  <mizu-note #note>
+    Multiple listeners can be attached in a single directive using the empty shorthand <code><span class="hljs-keyword">@</span><span class="muted">="object"</span></code>
+    <i>(e.g. <code>@="{ foo() {}, bar() {} }"</code>)</i>.
+    <ul>
+      <li>Modifiers are applied to all specified listeners in the directive <i>(e.g. <code>@.prevent="{}"</code>)</i>.</li>
+      <li>Tags may be specified to use this syntax multiple times which can be useful to attach listeners with different modifiers <i>(e.g. <code>@[1]="{}" @[2].prevent="{}"</code>)</i>.</li>
+      <li>As HTML attributes are case-insensitive, it is currently the only way to listen for events with uppercase letters or illegal attribute characters <i>(e.g. <code>@="{ FooBar() {}, Foobar() {} }"</code>)</i>.</li>
+    </ul>
+  </mizu-note>
+  <mizu-note #note>
+    To listen for events with dots <code>.</code> in their names, surround them by brackets <code>{</code>
+    <code>}</code>
+    <i>(e.g. <code>@{my.event}</code>)</i>.
+  </mizu-note>
+  <mizu-variable #variable name="$event">
+    <span #type>Event</span>
+    <i class="muted">(in <code>listener</code> only)</i> The dispatched <a href="https://developer.mozilla.org/docs/web/api/event"><code>Event</code></a>.
+  </mizu-variable>
+  <mizu-modifier #modifier>
+    Optional tag that can be used to attach multiple listeners to the same event <i>(e.g. <code>@click[1]</code>, <code>@click[2]</code>, etc.)</i>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="prevent">
+    Call <a href="https://developer.mozilla.org/docs/Web/API/Event/preventDefault"><code>event.preventDefault()</code></a> when triggered.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="stop">
+    Call <a href="https://developer.mozilla.org/docs/Web/API/Event/stopPropagation"><code>event.stopPropagation()</code></a> when triggered.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="once">
+    Register listener with <a href="https://developer.mozilla.org/docs/Web/API/EventTarget/addEventListener#once"><code>{ once: true }</code></a>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="passive">
+    Register listener with <a href="https://developer.mozilla.org/docs/Web/API/EventTarget/addEventListener#passive"><code>{ passive: true }</code></a>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="capture">
+    Register listener with <a href="https://developer.mozilla.org/docs/Web/API/EventTarget/addEventListener#capture"><code>{ capture: true }</code></a>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="self">
+    Listener is triggered only if <a href="https://developer.mozilla.org/docs/Web/API/Event/target"><code>event.target</code></a> is the element itself.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="attach">
+    Change where the listener is attached to (using <a href="https://developer.mozilla.org/docs/Web/API/Window"><code>window</code></a> or <a href="https://developer.mozilla.org/docs/Web/API/Document"><code>document</code></a> can be useful to create global listeners).
+  </mizu-modifier>
+  <mizu-modifier #modifier name="throttle">
+    Prevent listener from being called more than once during the specified time frame.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="debounce">
+    Prevent listener from executing until the specified time frame has passed without any activity.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="keys">
+    Specify which keys must be pressed for the listener to trigger when receiving a <a href="https://developer.mozilla.org/docs/Web/API/KeyboardEvent"><code>KeyboardEvent</code></a>.
+    <ul>
+      <li>
+        The syntax for keys constraints is defined as follows:
+        <ul>
+          <li>Expression is case-insensitive.</li>
+          <li>
+            A combination can be defined using a <q>plus sign <code>+</code></q> between each key <i>(e.g. <code>@keypress.keys[ctrl+space]</code>)</i>.
+          </li>
+          <li>
+            Multiple key combinations can be specified by separating them with a <q>comma <code>,</code></q>
+            <i>(e.g. <code>@keypress.keys[ctrl+space,shift+space]</code>)</i>.
+          </li>
+        </ul>
+      </li>
+      <li>
+        The following keys and aliases are supported:
+        <ul>
+          <li>
+            <code>alt</code> for <code>"Alt"</code>.
+          </li>
+          <li>
+            <code>ctrl</code> for <code>"Control"</code>.
+          </li>
+          <li>
+            <code>shift</code> for <code>"Shift"</code>.
+          </li>
+          <li>
+            <code>meta</code> for <code>"Meta"</code>.
+          </li>
+          <li>
+            <code>space</code> for <code>" "</code>.
+          </li>
+          <li>
+            <code>key</code> for any key except <code>"Alt"</code>, <code>"Control"</code>, <code>"Shift"</code> and <code>"Meta"</code>.
+          </li>
+          <li>Any value possibly returned by <a href="https://developer.mozilla.org/docs/Web/API/UI_Events/Keyboard_event_key_values"><code>event.key</code></a>.</li>
+        </ul>
+      </li>
+    </ul>
+  </mizu-modifier>
+</mizu-directive>
