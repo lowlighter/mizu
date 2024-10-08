@@ -1,0 +1,52 @@
+<mizu-directive id="toc" directory="toc">
+  <code #name><span class="hljs-keyword">*toc</span><wbr /><span class="muted">="selector"</span></code>
+  <p #description>
+    Create a table of contents from <a href="https://developer.mozilla.org/docs/Web/HTML/Element/Heading_Elements"><code>&lt;h1&gt;...&lt;h6&gt;</code></a> found in specified selector.
+  </p>
+  <code #example *skip>
+    <nav *toc="'main'">
+      <!--<ul>...</ul>-->
+    </nav>
+  </code>
+  <mizu-restriction #note>
+    Headings elements in selected target must satisfy the following conditions:
+    <ul>
+      <li>Have an <a href="https://developer.mozilla.org/docs/Web/HTML/Global_attributes/id"><code>id</code></a> attribute.</li>
+      <li>
+        Have an immediate <a href="https://developer.mozilla.org/docs/Web/HTML/Element/a"><code>&lt;a&gt;</code></a> child with an anchor link <i>(which should points towards its parent id)</i>.
+      </li>
+      <li>Must be in descending order level, and any level must not be skipped.</li>
+    </ul>
+  </mizu-restriction>
+  <mizu-note #note>
+    When a heading element is found, next level headings will be searched in <a href="https://developer.mozilla.org/docs/Web/API/Node/parentElement"><code>HTMLElement.parentElement</code></a>. If the parent element is a <a
+      href="https://developer.mozilla.org/docs/Web/HTML/Element/hgroup"
+    ><code>&lt;hgroup&gt;</code></a> or has a <code><span class="hljs-keyword">*toc</span><span class="hljs-meta">[ignore]</span></code>, the search will be performed in its grand-parent element instead.
+  </mizu-note>
+  <mizu-modifier #modifier>
+    <span #type>string</span>
+    Specify which heading levels should be processed by this directive.
+    <ul>
+      <li>
+        The syntax for heading levels constraints is defined as follows:
+        <ul>
+          <li>Expression is case-insensitive.</li>
+          <li>
+            A single heading level can be specified <i>(e.g. <code>*toc[h2]</code>)</i>.
+            <ul>
+              <li>
+                A <q>plus sign <code>+</code></q> may be added to also process heading elements with a higher value <i>(e.g. <code>*toc[h2+]</code>)</i>.
+              </li>
+            </ul>
+          </li>
+          <li>
+            A range can be defined using a <q>minus sign <code>-</code></q> between two headings levels <i>(e.g. <code>*toc[h2-h4]</code>)</i>.
+          </li>
+        </ul>
+      </li>
+      <li>
+        The special value <code>ignore</code> is used to exclude an element from the node traversal. When used, directive must not have any <a href="/#concept-directive-modifier"><code>.modifiers</code></a> or attribute value <i>(e.g. <code>*toc[ignore]</code>)</i>.
+      </li>
+    </ul>
+  </mizu-modifier>
+</mizu-directive>
