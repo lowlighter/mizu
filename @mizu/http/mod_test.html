@@ -1,0 +1,642 @@
+<load directives="@mizu/http,@mizu/test"></load>
+
+<test name="[%header] registers specified headers and exposes them through `$headers` variable">
+  <render>
+    <div %header[x-foo]="'foo'" %header[x-bar]="'bar'">
+      <a ~test.text="[...$headers.keys()].sort()"></a>
+      <b ~test.text="$headers.get('x-foo')"></b>
+      <c ~test.text="$headers.get('x-bar')"></c>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <a>x-bar,x-foo</a>
+      <b>foo</b>
+      <c>bar</c>
+    </div>
+  </expect>
+</test>
+
+<test name="[%header] supports multiple values headers">
+  <render>
+    <div %header[x-foo]="['foo', 'bar']">
+      <a ~test.text="[...$headers.keys()].sort()"></a>
+      <b ~test.text="$headers.get('x-foo')"></b>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <a>x-foo</a>
+      <b>foo, bar</b>
+    </div>
+  </expect>
+</test>
+
+<test name="[%header] deletes headers set to either `undefined` or `null`">
+  <render>
+    <div %header[x-foo].1="'foo'" %header[x-foo].2="null">
+      <a ~test.text="[...$headers.keys()].sort()"></a>
+      <b ~test.text="$headers.get('x-foo')"></b>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <a></a>
+      <b>null</b>
+    </div>
+  </expect>
+</test>
+
+<test name="[%header] skips commented elements">
+  <render>
+    <p ~test.comment %header[x-foo]="'bar'"></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
+
+<test name="[%body] sets body and exposes it through `$body` variable">
+  <render>
+    <div %body="'foo'">
+      <a ~test.text="$headers.get('content-type')"></a>
+      <b ~test.text="$body"></b>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <a>null</a>
+      <b>foo</b>
+    </div>
+  </expect>
+</test>
+
+<test name="[%body] with `.text` modifier format data to text">
+  <render>
+    <div %body.text="{foo:true, bar:false}">
+      <a ~test.text="$headers.get('content-type')"></a>
+      <b ~test.text="$body"></b>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <a>text/plain</a>
+      <b>[object Object]</b>
+    </div>
+  </expect>
+</test>
+
+<test name="[%body] with `.form` modifier format data to form">
+  <render>
+    <div %body.form="{foo:true, bar:false}">
+      <a ~test.text="$headers.get('content-type')"></a>
+      <b ~test.text="$body"></b>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <a>application/x-www-form-urlencoded</a>
+      <b>foo=true&bar=false</b>
+    </div>
+  </expect>
+</test>
+
+<test name="[%body] with `.json` modifier format data to json">
+  <render>
+    <div %body.json="{foo:true, bar:false}">
+      <a ~test.text="$headers.get('content-type')"></a>
+      <b ~test.text="$body"></b>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <a>application/json</a>
+      <b>{"foo":true,"bar":false}</b>
+    </div>
+  </expect>
+</test>
+
+<test name="[%body] with `.xml` modifier format data to xml">
+  <render>
+    <div %body.xml="{'@version':'1.0', '@encoding':'UTF-8', foo:{bar:false}}">
+      <a ~test.text="$headers.get('content-type')"></a>
+      <b ~test.text="$body"></b>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <a>application/xml</a>
+      <b>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;foo&gt;&lt;bar&gt;false&lt;/bar&gt;&lt;/foo&gt;</b>
+    </div>
+  </expect>
+</test>
+
+<test name="[%body] with `.type` modifier format data to specified type">
+  <render>
+    <div %body.type[json]="{foo:true, bar:false}">
+      <a ~test.text="$headers.get('content-type')"></a>
+      <b ~test.text="$body"></b>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <a>application/json</a>
+      <b>{"foo":true,"bar":false}</b>
+    </div>
+  </expect>
+</test>
+
+<test name="[%body] skips commented elements">
+  <render>
+    <p ~test.comment %body="'foo'"></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
+
+<test name="[%http] sends http requests to specified url">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <div %http="/foo" %response.void></div>
+  </render>
+  <script>
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.response).toBeInstanceOf(Response)
+  </script>
+</test>
+
+<test name="[%http] sends http requests with given headers and body to specified url">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <div %http.post="/foo" %header[x-foo]="'bar'" %body.text="'foobar'" %response.void></div>
+  </render>
+  <script>
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.request.received.headers.get("x-foo")).toBe("bar")
+    expect(http.request.received.body).toBe("foobar")
+  </script>
+</test>
+
+<test name="[%http] with `.follow` modifier control redirect policy">
+  <http-server>
+    <response path="/foo" status="OK">foobar</response>
+    <response path="/bar" redirect="/foo"></response>
+  </http-server>
+  <render>
+    <div %http.follow="/bar" %response.void></div>
+  </render>
+  <script>
+    expect(http.response).toBeInstanceOf(Response)
+    expect(http.response.status).toBe(Status.OK)
+    expect(http.response.headers.get("location")).toBeNull()
+  </script>
+  <render>
+    <div %http.follow[false]="/bar" %response.void></div>
+  </render>
+  <script>
+    expect(http.response).toBeInstanceOf(Response)
+    expect(http.response.status).toBe(Status.TemporaryRedirect)
+    expect(http.response.headers.get("location")).not.toBeNull()
+  </script>
+</test>
+
+<test name="[%http] with `.history` modifier push url into history">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <div></div>
+  </render>
+  <script>
+    storage.history = window.history.length
+  </script>
+  <render>
+    <div %http.history[false]="/bar" %response.void></div>
+  </render>
+  <script>
+    expect(window.history.length).toBe(storage.history)
+  </script>
+  <render>
+    <div %http.history[true]="/bar" %response.void></div>
+  </render>
+  <script>
+    expect(window.history.length).toBe(storage.history + 1)
+  </script>
+</test>
+
+<test name="[%http] with `.get` modifier changes http method">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <div %http.get="/foo" %response.void></div>
+  </render>
+  <script>
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.request.method).toBe("GET")
+  </script>
+</test>
+
+<test name="[%http] with `.head` modifier changes http method">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <div %http.head="/foo" %response.void></div>
+  </render>
+  <script>
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.request.method).toBe("HEAD")
+  </script>
+</test>
+
+<test name="[%http] with `.post` modifier changes http method">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <div %http.post="/foo" %response.void></div>
+  </render>
+  <script>
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.request.method).toBe("POST")
+  </script>
+</test>
+
+<test name="[%http] with `.put` modifier changes http method">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <div %http.put="/foo" %response.void></div>
+  </render>
+  <script>
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.request.method).toBe("PUT")
+  </script>
+</test>
+
+<test name="[%http] with `.patch` modifier changes http method">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <div %http.patch="/foo" %response.void></div>
+  </render>
+  <script>
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.request.method).toBe("PATCH")
+  </script>
+</test>
+
+<test name="[%http] with `.delete` modifier changes http method">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <div %http.delete="/foo" %response.void></div>
+  </render>
+  <script>
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.request.method).toBe("DELETE")
+  </script>
+</test>
+
+<test name="[%http] with `.method` modifier changes http method">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <div %http.method[foo]="/foo" %response.void></div>
+  </render>
+  <script>
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.request.method).toBe("FOO")
+  </script>
+</test>
+
+<test name="[%http] is effectless when no `%response` directive is attached">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <div %http="/foo"></div>
+  </render>
+  <script>
+    expect(http.request).not.toBeInstanceOf(Request)
+  </script>
+</test>
+
+<test name="[%http] skips commented elements">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <p ~test.comment %http="/foo"></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
+
+<test name="[%response] is called after sends http requests">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <script>
+    context.value = 0
+  </script>
+  <render>
+    <div %http="/foo" %response.void="value++"></div>
+  </render>
+  <script>
+    expect(context.value).toBe(1)
+  </script>
+</test>
+
+<test name="[%response] is effectless when `$response` is undefined">
+  <render>
+    <div %response></div>
+  </render>
+  <expect>
+    <div></div>
+  </expect>
+</test>
+
+<test name="[%response] with single status code `[tag]` filters out mismatching status">
+  <http-server>
+    <response path="/foo" status="200"></response>
+  </http-server>
+  <render>
+    <div %http="/foo" %response[200].text="this.textContent = 'ok'" %response[400].text="this.textContent = 'ko'"></div>
+  </render>
+  <expect>
+    <div>ok</div>
+  </expect>
+</test>
+
+<test name="[%response] with status code range `[tag]` filters out mismatching status">
+  <http-server>
+    <response path="/foo" status="201"></response>
+  </http-server>
+  <render>
+    <div %http="/foo" %response[200-299].text="this.textContent = 'ok'" %response[400-499].text="this.textContent = 'ko'"></div>
+  </render>
+  <expect>
+    <div>ok</div>
+  </expect>
+</test>
+
+<test name="[%response] with status code category `[tag]` filters out mismatching status">
+  <http-server>
+    <response path="/foo" status="201"></response>
+  </http-server>
+  <render>
+    <div %http="/foo" %response[2XX].text="this.textContent = 'ok'" %response[4XX].text="this.textContent = 'ko'"></div>
+  </render>
+  <expect>
+    <div>ok</div>
+  </expect>
+</test>
+
+<test name="[%response] with `.text` modifier set `textContent` when empty">
+  <http-server>
+    <response path="/foo" status="OK">foobar</response>
+  </http-server>
+  <render>
+    <div %http="/foo" %response.text></div>
+  </render>
+  <expect>
+    <div>foobar</div>
+  </expect>
+</test>
+
+<test name="[%response] with `.text` modifier set `textContent` and escapes html when empty">
+  <http-server>
+    <response path="/foo" status="OK"><foo>bar</foo></response>
+  </http-server>
+  <render>
+    <div %http="/foo" %response.text></div>
+  </render>
+  <expect>
+    <div>&lt;foo&gt;bar&lt;/foo&gt;</div>
+  </expect>
+</test>
+
+<test name="[%response] with `.text` modifier executes expression">
+  <http-server>
+    <response path="/foo" status="OK">foobar</response>
+  </http-server>
+  <script>
+    context.result = null
+  </script>
+  <render>
+    <div %http="/foo" %response.text="result = $content"></div>
+  </render>
+  <script>
+    expect(context.result).toBe("foobar")
+  </script>
+  <expect>
+    <div></div>
+  </expect>
+</test>
+
+<test name="[%response] with `.html` modifier set `innerHTML` when empty">
+  <http-server>
+    <response path="/foo" status="OK"><foo>bar</foo></response>
+  </http-server>
+  <render>
+    <div %http="/foo" %response.html></div>
+  </render>
+  <expect>
+    <div><foo>bar</foo></div>
+  </expect>
+</test>
+
+<test name="[%response] with `.html` modifier executes expression">
+  <http-server>
+    <response path="/foo" status="OK"><foo>bar</foo></response>
+  </http-server>
+  <script>
+    context.result = null
+  </script>
+  <render>
+    <div %http="/foo" %response.html="result = $content"></div>
+  </render>
+  <script>
+    expect(context.result).toBe("<foo>bar</foo>")
+  </script>
+  <expect>
+    <div></div>
+  </expect>
+</test>
+
+<test name="[%response] with `.json` modifier parses content as json">
+  <http-server>
+    <response path="/foo" status="OK">{"foo":{"bar":"baz"}}</response>
+  </http-server>
+  <script>
+    context.result = null
+  </script>
+  <render>
+    <div %http="/foo" %response.json="result = $content"></div>
+  </render>
+  <script>
+    expect(context.result).toEqual({ foo: { bar: "baz" } })
+  </script>
+  <expect>
+    <div></div>
+  </expect>
+</test>
+
+<test name="[%response] with `.xml` modifier parses content as xml">
+  <http-server>
+    <response path="/foo" status="OK" escaped>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;foo&gt;&lt;bar&gt;baz&lt;/bar&gt;&lt;/foo&gt;</response>
+  </http-server>
+  <script>
+    context.result = null
+  </script>
+  <render>
+    <div %http="/foo" %response.xml="result = $content"></div>
+  </render>
+  <script>
+    expect(context.result).toEqual({ "@version": "1.0", "@encoding": "UTF-8", foo: { bar: "baz" } })
+  </script>
+  <expect>
+    <div></div>
+  </expect>
+</test>
+
+<test name="[%response] with `.consume` modifier consumes body with specified type">
+  <http-server>
+    <response path="/foo" status="OK">{"foo":{"bar":"baz"}}</response>
+  </http-server>
+  <script>
+    context.result = null
+  </script>
+  <render>
+    <div %http="/foo" %response.consume[json]="result = $content"></div>
+  </render>
+  <script>
+    expect(context.result).toEqual({ foo: { bar: "baz" } })
+  </script>
+  <expect>
+    <div></div>
+  </expect>
+</test>
+
+<test name="[%response] skips commented elements">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <p ~test.comment %http="/foo" %response.void></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
+
+<test name="[%@event] reacts to events and performs http sequence">
+  <http-server>
+    <response path="/foo" status="OK">bar</response>
+  </http-server>
+  <script>
+    context.event = null
+    context.content = null
+  </script>
+  <render>
+    <div %http="/foo" %@event.text="event = $event, content = $content"></div>
+  </render>
+  <script>
+    rendered.querySelector("div").dispatchEvent(new Event("event"))
+    await delay(100)
+    expect(http.request).toBeInstanceOf(Request)
+    expect(context.event).toBeInstanceOf(Event)
+    expect(context.content).toBe("bar")
+  </script>
+</test>
+
+<test name="[%@event] inherits modifiers from `%http` directive">
+  <http-server>
+    <response path="/foo" status="OK">bar</response>
+  </http-server>
+  <script>
+    context.event = null
+    context.content = null
+  </script>
+  <render>
+    <div %http.method[foo]="/foo" %header[x-foo]="'bar'" %body.text="'foobar'" %@event.text="event = $event, content = $content"></div>
+  </render>
+  <script>
+    rendered.querySelector("div").dispatchEvent(new Event("event"))
+    await delay(100)
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.request.method).toBe("FOO")
+    expect(http.request.headers.get("x-foo")).toBe("bar")
+    expect(http.request.received.body).toBe("foobar")
+    expect(context.event).toBeInstanceOf(Event)
+    expect(context.content).toBe("bar")
+  </script>
+</test>
+
+<test name="[%@event] supports multiple listeners">
+  <http-server>
+    <response path="/foo" status="OK">bar</response>
+  </http-server>
+  <script>
+    context.a = 0
+    context.b = 0
+  </script>
+  <render>
+    <p %http.method[foo]="/foo" %@a.void="a++" %@b.void="b++"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("a"))
+    rendered.querySelector("p").dispatchEvent(new Event("b"))
+    await delay(100)
+    expect(context.a).toBe(1)
+    expect(context.b).toBe(1)
+  </script>
+</test>
+
+<test name="[%@event] with object notation attaches listeners">
+  <http-server>
+    <response path="/a" status="OK">foo</response>
+    <response path="/b" status="OK">bar</response>
+  </http-server>
+  <script>
+    context.a = null
+    context.b = null
+  </script>
+  <render>
+    <p %http="`/${$event?.type}`" %@.text="{a:() => a = $content, b:() => b = $content}"></p>
+  </render>
+  <script>
+    rendered.querySelector("p").dispatchEvent(new Event("a"))
+    await delay(100)
+    expect(context.a).toBe("foo")
+    expect(context.b).toBeNull()
+    rendered.querySelector("p").dispatchEvent(new Event("b"))
+    await delay(100)
+    expect(context.a).toBe("foo")
+    expect(context.b).toBe("bar")
+  </script>
+</test>
+
+<test name="[%@event] skips commented elements">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+  </http-server>
+  <render>
+    <p ~test.comment %http="/foo" %@event.void></p>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
