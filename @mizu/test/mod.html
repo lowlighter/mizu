@@ -1,0 +1,28 @@
+<mizu-directive id="test" directory="test">
+  <code #name><span class="hljs-keyword">~test</span><wbr /><span class="muted">="expression"</span></code>
+  <p #description>
+    Special directive for testing purposes.
+  </p>
+  <code #example *skip>
+    <samp ~test[TESTING].text="'...'">
+      <!--...-->
+    </samp>
+  </code>
+  <mizu-warn #note>
+    Intended for testing purposes only. This is provided for developers that want to test their custom directives in isolation, without having to rely on other directives.
+  </mizu-warn>
+  <mizu-modifier #modifier>
+    <span #type>string</span>
+    Any existing <a href="/#concept-phase">Phase</a> name (e.g. <code>~test[testing]</code>, defaults to <code *code[ts]>Phase.TESTING</code>). Directive will be executed during the specified phase before any other directive of said phase, which can be used to simulate specific
+    scenarios.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="text">
+    Set element's <var><a href="https://developer.mozilla.org/docs/Web/API/Node/textContent">textContent</a></var> with expression result.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="eval">
+    Evaluate a JavaScript expression in the context of the element.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="comment">
+    Change the element to a <var><a href="https://developer.mozilla.org/docs/Web/API/Comment">Comment</a></var> if expression is truthy (and revert it back otherwise).
+  </mizu-modifier>
+</mizu-directive>
