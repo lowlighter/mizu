@@ -1,0 +1,166 @@
+<load directives="@mizu/mizu"></load>
+
+<test name="`&lt;load&gt;` loads specified directives into `Renderer`">
+  <script>
+    expect(testing.directives).toContain("@mizu/mizu")
+  </script>
+  <render>
+    <p ~test.text="'foo'"></p>
+  </render>
+  <expect>
+    <p ~test.text="'foo'"></p>
+  </expect>
+  <load directives="@mizu/test"></load>
+  <render></render>
+  <expect>
+    <p>foo</p>
+  </expect>
+</test>
+
+<test name="`&lt;render&gt;` renders specified content">
+  <load directives="@mizu/test"></load>
+  <render>
+    <p ~test.text="'foo'"></p>
+  </render>
+  <expect>
+    <p>foo</p>
+  </expect>
+  <render></render>
+  <expect>
+    <p>foo</p>
+  </expect>
+</test>
+
+<test name="`&lt;script&gt;` evaluates specified script">
+  <script>
+    storage.foo = "bar"
+  </script>
+  <script>
+    expect(storage.foo).toBe("bar")
+  </script>
+  <script>
+    expect(HTMLElement).toBeDefined()
+  </script>
+</test>
+
+<test name="`&lt;expect&gt;` asserts rendered content matches expected content and honors `comments` option">
+  <render>
+    <p>
+      <!-- foobar -->
+    </p>
+  </render>
+  <expect comments="true">
+    <p>
+      <!-- foobar -->
+    </p>
+  </expect>
+  <expect comments="false">
+    <p></p>
+  </expect>
+</test>
+
+<test name="`&lt;expect&gt;` asserts rendered content matches expected content and honors `directives` option">
+  <load directives="@mizu/test"></load>
+  <render>
+    <p ~test.text="'foo'"></p>
+  </render>
+  <expect directives="">
+    <p>foo</p>
+  </expect>
+  <expect directives="*">
+    <p ~test.text="'foo'">foo</p>
+  </expect>
+</test>
+
+<test name="`&lt;expect&gt;` asserts rendered content matches expected content and honors `format` option">
+  <!-- deno-fmt-ignore -->
+  <render>
+  <p>
+      foo
+      </p>
+  </render>
+  <!-- deno-fmt-ignore -->
+  <expect format="false">
+  <p>
+      foo
+      </p>
+  </expect>
+  <expect format="true">
+    <p>
+      foo
+    </p>
+  </expect>
+</test>
+
+<test name="`&lt;expect&gt;` cleans out attributes from rendered content that match `clean` pattern">
+  <render>
+    <p test-foo data-bar></p>
+  </render>
+  <expect clean="^test-">
+    <p data-bar></p>
+  </expect>
+</test>
+
+<test name="`&lt;http-server&gt;` spawn a new http server">
+  <http-server>
+    <response status="Teapot"></response>
+  </http-server>
+  <script>
+    await expect(fetch("/")).resolves.toRespondWithStatus(Status.Teapot)
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.response).toBeInstanceOf(Response)
+  </script>
+</test>
+
+<test name="`&lt;http-server&gt;` overrides `fetch()` so absolute urls points toward spawned http server location">
+  <http-server>
+    <response path="/"></response>
+  </http-server>
+  <script>
+    await expect(fetch("/")).resolves.toRespondWithStatus("2XX")
+    await expect(testing.renderer.evaluate(null, `fetch("/")`, { context: testing.context })).resolves.toRespondWithStatus("2XX")
+  </script>
+</test>
+
+<test name="`&lt;http-server&gt;` returns `Status.NotFound` on non-existent routes">
+  <http-server></http-server>
+  <script>
+    await expect(fetch("/")).resolves.toRespondWithStatus(Status.NotFound)
+  </script>
+</test>
+
+<test name="`&lt;http-server&gt;` returns `Status.TemporaryRedirect` on redirect routes">
+  <http-server>
+    <response path="/redirected" status="OK"></response>
+    <response path="/redirect" redirect="/redirected"></response>
+  </http-server>
+  <script>
+    await expect(fetch("/redirect", { redirect: "follow" })).resolves.toRespondWithStatus(Status.OK)
+    await expect(fetch("/redirect", { redirect: "manual" })).resolves.toRespondWithStatus(Status.TemporaryRedirect)
+  </script>
+</test>
+
+<test name="`&lt;http-server&gt;` supports receiving `Request.body`">
+  <http-server>
+    <response path="/api"></response>
+  </http-server>
+  <script>
+    await expect(fetch("/api", { method: "POST", body: "foobar", headers: { "x-foo": "bar" } })).resolves.toRespondWithStatus("2XX")
+    expect(http.request.method).toBe("POST")
+    expect(http.request.received.body).toBe("foobar")
+    expect(http.request.received.headers.get("x-foo")).toBe("bar")
+  </script>
+</test>
+
+<test name="`&lt;http-server&gt;` supports sending `Response.body`">
+  <http-server>
+    <response path="/text">foo</response>
+    <response path="/escaped" escaped>&lt;foo&gt;</response>
+  </http-server>
+  <script>
+    response = await fetch("/text")
+    await expect(response.text()).resolves.toBe("foo")
+    response = await fetch("/escaped")
+    await expect(response.text()).resolves.toBe("<foo>")
+  </script>
+</test>
