@@ -44,4 +44,4 @@ jobs:
       - uses: denoland/setup-deno@v1
         with:
           deno-version: rc
-      - run: deno publish
+      - run: deno publish --dry-run
