@@ -10,16 +10,25 @@
     "url": "git+https://github.com/lowlighter/mizu.git"
   },
   "tasks": {
-    // Lint code, documentation and package
+    // Lint code, documentation, package and formatting
+    // - `--check`: skip actual formatting (check only)
     "lint": "cd $INIT_CWD && deno lint && deno doc --lint **/mod.ts && deno publish --quiet --dry-run --allow-dirty && deno fmt",
     // Test code and print detailed coverage
-    "test": "cd $INIT_CWD && deno test --allow-read --allow-env --allow-net --parallel --doc --clean --coverage && deno coverage --detailed --include=$INIT_CWD",
+    "test": "cd $INIT_CWD && deno task test:only --doc --clean --coverage && deno coverage --detailed --include=$INIT_CWD",
+    // Test code (without any options)
+    "test:only": "deno test --allow-read --allow-env --allow-net --parallel",
     // Test and lint code
     "qa": "deno task test && deno task lint",
-    // Serve website
+    // Serve website locally
     "serve": "deno serve --allow-read --allow-env --allow-net --allow-run --port=4649 --location=http://localhost:4649 www/serve.ts",
+    // Build project
+    "build": "deno task build:clean && deno task build:www && deno task build:coverage",
+    // Clean build artifacts
+    "build:clean": "rm -rf .pages && mkdir -p .pages",
     // Build website
-    "build": "deno run --allow-read --allow-env --allow-net --allow-run --allow-write=.pages --location=http://localhost:4649 www/build.ts"
+    "build:www": "deno run --allow-read --allow-env --allow-net --allow-run --allow-write=.pages --location=http://localhost:4649 www/build.ts",
+    // Build coverage report
+    "build:coverage": "deno task test:only --filter='/DENO/' --clean --coverage --fail-fast --reporter=dot && deno coverage --html && mv coverage/html .pages/coverage && deno run --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage"
   },
   "imports": {
     // Mizu core
