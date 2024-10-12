@@ -40,4 +40,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
-      - run: deno publish --dry-run
+      - run: deno publish
