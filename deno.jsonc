@@ -19,6 +19,8 @@
     "test:only": "deno test --allow-read --allow-env --allow-net --parallel",
     // Test and lint code
     "qa": "deno task test && deno task lint",
+    // Cache dependencies
+    "cache": "deno cache **/mod.ts www/*.ts && deno test --no-run",
     // Serve website locally
     "serve": "deno serve --allow-read --allow-env --allow-net --allow-run --port=4649 --location=http://localhost:4649 www/serve.ts",
     // Build project

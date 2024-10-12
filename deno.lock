@@ -2,14 +2,13 @@
   "version": "4",
   "specifiers": {
     "jsr:@dprint/formatter@0.4": "0.4.1",
-    "jsr:@libs/bundle@12": "12.2.0",
+    "jsr:@libs/bundle@12": "12.2.1",
     "jsr:@libs/logger@3": "3.1.0",
     "jsr:@libs/markdown@1": "1.2.3",
     "jsr:@libs/reactive@4": "4.0.0",
     "jsr:@libs/run@3": "3.0.0",
     "jsr:@libs/testing@3": "3.0.1",
     "jsr:@libs/typing@3": "3.1.0",
-    "jsr:@libs/typing@3.1": "3.1.0",
     "jsr:@libs/xml@6": "6.0.0",
     "jsr:@luca/esbuild-deno-loader@0.10.3": "0.10.3",
     "jsr:@std/assert@1": "1.0.6",
@@ -30,6 +29,8 @@
     "jsr:@std/http@1": "1.0.7",
     "jsr:@std/internal@^1.0.4": "1.0.4",
     "jsr:@std/io@0.224": "0.224.9",
+    "jsr:@std/json@1": "1.0.0",
+    "jsr:@std/json@~0.213.1": "0.213.1",
     "jsr:@std/jsonc@0.213": "0.213.1",
     "jsr:@std/jsonc@1": "1.0.1",
     "jsr:@std/media-types@^1.0.3": "1.0.3",
@@ -59,11 +60,12 @@
     "@dprint/formatter@0.4.1": {
       "integrity": "96449ab83aa9f72df98caa5030d3f4a921c5c29d9b0e0d0da83d79e2024a9637"
     },
-    "@libs/bundle@12.2.0": {
-      "integrity": "98ce5596a5c90650083cbeeff6d8a2ae0abc4343b2f9cb817360167eee421c79",
+    "@libs/bundle@12.2.1": {
+      "integrity": "a68eced26482bef58fd8f076a02dcb40692bb9b543396a954b5cfd485da33859",
       "dependencies": [
         "jsr:@libs/logger",
         "jsr:@libs/run",
+        "jsr:@libs/typing",
         "jsr:@luca/esbuild-deno-loader",
         "jsr:@std/assert@1",
         "jsr:@std/async",
@@ -95,7 +97,7 @@
     "@libs/reactive@4.0.0": {
       "integrity": "51cd2c5148866ec6b34843e9f31e9186e3c2fc515dd9d6a7c6d14fcfe07f1b7b",
       "dependencies": [
-        "jsr:@libs/typing@3",
+        "jsr:@libs/typing",
         "jsr:@std/collections"
       ]
     },
@@ -103,7 +105,7 @@
       "integrity": "cdb2252ef59668446c135de9cde55ae6264c11943626448d365766f0929d7132",
       "dependencies": [
         "jsr:@libs/logger",
-        "jsr:@libs/typing@3",
+        "jsr:@libs/typing",
         "jsr:@std/async",
         "jsr:@std/streams@1"
       ]
@@ -112,7 +114,7 @@
       "integrity": "97c7c5d8a8a8727c28fdbe29f7141a6ec9be787c016075b69967b56c57074e60",
       "dependencies": [
         "jsr:@libs/run",
-        "jsr:@libs/typing@3",
+        "jsr:@libs/typing",
         "jsr:@std/assert@1",
         "jsr:@std/expect",
         "jsr:@std/fmt@1",
@@ -127,7 +129,7 @@
     "@libs/xml@6.0.0": {
       "integrity": "d629f461bc10598de9ad55470f3b7c9bf1707cc2b90be9603a129259b8e5d0a5",
       "dependencies": [
-        "jsr:@libs/typing@3"
+        "jsr:@libs/typing"
       ]
     },
     "@luca/esbuild-deno-loader@0.10.3": {
@@ -205,14 +207,24 @@
         "jsr:@std/bytes"
       ]
     },
+    "@std/json@0.213.1": {
+      "integrity": "f572b1de605d07c4a5602445dac54bfc51b1fb87a3710a17aed2608bfca54e68"
+    },
+    "@std/json@1.0.0": {
+      "integrity": "985c1e544918d42e4e84072fc739ac4a19c3a5093292c99742ffcdd03fb6a268"
+    },
     "@std/jsonc@0.213.1": {
       "integrity": "5578f21aa583b7eb7317eed077ffcde47b294f1056bdbb9aacec407758637bfe",
       "dependencies": [
-        "jsr:@std/assert@~0.213.1"
+        "jsr:@std/assert@~0.213.1",
+        "jsr:@std/json@~0.213.1"
       ]
     },
     "@std/jsonc@1.0.1": {
-      "integrity": "6b36956e2a7cbb08ca5ad7fbec72e661e6217c202f348496ea88747636710dda"
+      "integrity": "6b36956e2a7cbb08ca5ad7fbec72e661e6217c202f348496ea88747636710dda",
+      "dependencies": [
+        "jsr:@std/json@1"
+      ]
     },
     "@std/media-types@1.0.3": {
       "integrity": "b12d30a7852f7578f4d210622df713bbfd1cbdd9b4ec2eaf5c1845ab70bab159"
