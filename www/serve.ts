@@ -78,6 +78,10 @@ export default {
       pattern: new URLPattern({ pathname: "/highlight.js" }),
       handler: () => fetch("https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"),
     },
+    {
+      pattern: new URLPattern({ pathname: "/coverage*" }),
+      handler: (request) => serveDir(request, { quiet: true, urlRoot: "coverage", fsRoot: fromFileUrl(import.meta.resolve("../.pages/coverage")) }),
+    },
     /*{
       pattern: new URLPattern({ pathname: "/mizu.js" }),
       handler: async () => new Response(await js("mod"), { headers: { "Content-Type": "application/javascript; charset=utf-8" } }),
