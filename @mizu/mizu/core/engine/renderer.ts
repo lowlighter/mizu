@@ -381,11 +381,11 @@ export class Renderer {
     if ((element.nodeType !== this.window.Node.ELEMENT_NODE) && (!this.cache("*").has(element))) {
       return
     }
-    // R1. Watch context
-    if (reactive) {
-      this.#watch(context, element)
-    }
     try {
+      // R1. Watch context
+      if (reactive) {
+        this.#watch(context, element)
+      }
       // 2. Setup directives
       state = { ...state }
       for (const directive of this.#directives) {
