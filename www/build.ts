@@ -1,5 +1,5 @@
 // Imports
-import Mizu from "@mizu/mizu/core/render/static"
+import Mizu from "@mizu/render/static"
 import { default as serve, html } from "./serve.ts"
 import { fromFileUrl, join } from "@std/path"
 
