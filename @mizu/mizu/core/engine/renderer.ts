@@ -6,6 +6,7 @@ import { AsyncFunction } from "@libs/typing/func"
 import { Context } from "@libs/reactive"
 import { Phase } from "./phase.ts"
 import _mizu from "@mizu/mizu"
+import { delay } from "@std/async"
 export { Context, Phase }
 export type { Arg, Arrayable, Cache, callback, Directive, NonVoid, Nullable, Optional }
 export type * from "./directive.ts"
@@ -285,7 +286,7 @@ export class Renderer {
    * console.assert(result.textContent === "bar")
    * ```
    */
-  async render<T extends Element>(element: T, options?: { context?: Context; state?: State; implicit?: boolean }): Promise<T>
+  async render<T extends Element>(element: T, options?: { context?: Context; state?: State; implicit?: boolean; reactive?: boolean }): Promise<T>
   /**
    * Render {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} and its subtree with specified {@linkcode Context} and {@linkcode State} against {@linkcode Renderer.directives} and {@link https://developer.mozilla.org/docs/Web/API/Document/querySelector | query select} the return using a {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors | CSS selector}.
    *
@@ -303,7 +304,7 @@ export class Renderer {
    * console.assert(result?.textContent === "bar")
    * ```
    */
-  async render<T extends Element>(element: HTMLElement, options?: { context?: Context; state?: State; implicit?: boolean; select: string }): Promise<Nullable<T>>
+  async render<T extends Element>(element: HTMLElement, options?: { context?: Context; state?: State; implicit?: boolean; reactive?: boolean; select: string }): Promise<Nullable<T>>
   /**
    * Render {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} and its subtree with specified {@linkcode Context} and {@linkcode State} against {@linkcode Renderer.directives} and returns it as an HTML string.
    *
@@ -323,11 +324,21 @@ export class Renderer {
    * ```
    */
   async render(element: HTMLElement, options?: { context?: Context; state?: State; implicit?: boolean; select?: string; stringify?: boolean }): Promise<string>
-  async render<T extends Element>(element = this.document.documentElement, { context = new Context(), state = {}, implicit = true, select = "", stringify = false } = {} as { context?: Context; state?: State; implicit?: boolean; select?: string; stringify?: boolean }) {
+  async render<T extends Element>(
+    element = this.document.documentElement,
+    { context = new Context(), state = {}, implicit = true, reactive = false, select = "", stringify = false } = {} as { context?: Context; state?: State; implicit?: boolean; reactive?: boolean; select?: string; stringify?: boolean },
+  ) {
     await this.ready
+    // Create a new sub-context when reactivity is enabled to avoid polluting the given root context
+    if (reactive) {
+      context = context.with({})
+    }
+    // Search for all elements with the mizu attribute, and filter out all elements that have an ancestor with the mizu attribute (since they will be rendered anyway)
     let subtrees = implicit || (element.hasAttribute(_mizu.name)) ? [element] : Array.from(element.querySelectorAll<HTMLElement>(`[${escape(_mizu.name)}]`))
-    subtrees = subtrees.filter((element) => subtrees.every((parent) => (parent === element) || (!parent.contains(element))))
-    await Promise.allSettled(subtrees.map((element) => this.#render(element, { context, state, root: { context, state } })))
+    subtrees = subtrees.filter((element) => subtrees.every((ancestor) => (ancestor === element) || (!ancestor.contains(element))))
+    // Render subtrees
+    await Promise.allSettled(subtrees.map((element) => this.#render(element, { context, state, reactive, root: { context, state } })))
+    // Process result
     const result = select ? element.querySelector<T>(select) : element
     if (stringify) {
       const html = result?.outerHTML ?? ""
@@ -342,6 +353,7 @@ export class Renderer {
    * Rendering process is defined as follows:
    * - 1. Ensure `element` is an {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} node (or a {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment} node created by {@linkcode Renderer.comment()}).
    *   - 1.1 If not, end the process.
+   * - R1. Start watching context if `reactive` is enabled.
    * - 2. For each {@linkcode Renderer.directives}:
    *   - 2.1 Call {@linkcode Directive.setup()}.
    *     - 2.1.1 If `false` is returned, end the process.
@@ -359,31 +371,37 @@ export class Renderer {
    *     - 4.3.2 If `final: true` is returned, end the process (it occurs after `element` update to ensure that {@linkcode Directive.cleanup()} is called with correct target).
    *     - 4.3.3 If `context` or `state` is returned, update accordingly.
    * - 5. Recurse on {@linkcode https://developer.mozilla.org/docs/Web/API/Node/childNodes | Element.childNodes}.
+   *   - R*. Disable reactivity during recursion if `reactive` is enabled so that watched contexts are created with correct elements.
    * - 6. For each {@linkcode Renderer.directives}:
    *   - 6.1 Call {@linkcode Directive.cleanup()}.
+   * - R2. Stop watching context if `reactive` is enabled, and enable reactivity.
    */
-  async #render(element: HTMLElement | Comment, { context, state, root }: { context: Context; state: State; root: InitialContextState }) {
+  async #render(element: HTMLElement | Comment, { context, state, reactive, root }: { context: Context; state: State; reactive: boolean; root: InitialContextState }) {
     // 1. Ignore non-element nodes unless they were processed before and put into cache
     if ((element.nodeType !== this.window.Node.ELEMENT_NODE) && (!this.cache("*").has(element))) {
       return
     }
-
-    // 2. Setup directives
-    for (const directive of this.#directives) {
-      const changes = await directive.setup?.(this, element, { cache: this.cache(directive.name), context, state, root })
-      if (changes === false) {
-        return
-      }
-      if (changes?.state) {
-        state = { ...state, ...changes.state }
-      }
-    }
-
-    // 3. Retrieve source element
-    const source = this.cache("*").get(element) ?? element
-
-    // 4. Execute directives
     try {
+      // R1. Watch context
+      if (reactive) {
+        this.#watch(context, element)
+      }
+      // 2. Setup directives
+      state = { ...state }
+      for (const directive of this.#directives) {
+        const changes = await directive.setup?.(this, element, { cache: this.cache(directive.name), context, state, root })
+        if (changes === false) {
+          return
+        }
+        if (changes?.state) {
+          Object.assign(state, changes.state)
+        }
+      }
+
+      // 3. Retrieve source element
+      const source = this.cache("*").get(element) ?? element
+
+      // 4. Execute directives
       const phases = new Map<Phase, Directive["name"]>()
       for (const directive of this.#directives) {
         // 4.1 Check eligibility
@@ -402,29 +420,136 @@ export class Renderer {
         phases.set(directive.phase, directive.name)
         const changes = await directive.execute?.(this, element, { cache: this.cache(directive.name), context, state, attributes, root })
         if (changes?.element) {
+          if (reactive && (this.#watched.get(context)?.has(element))) {
+            this.#watched.get(context)!.set(changes.element, this.#watched.get(context)!.get(element)!)
+            this.#watched.get(context)!.delete(element)
+          }
           element = changes.element
         }
         if (changes?.final) {
           return
         }
         if (changes?.context) {
+          if (reactive && (this.#watched.get(context)?.has(element))) {
+            this.#unwatch(context, element)
+            this.#watch(changes.context, element)
+            this.#watched.get(context)!.get(element)!.properties.forEach((property) => this.#watched.get(changes.context!)!.get(element)!.properties.add(property))
+          }
           context = changes.context
         }
         if (changes?.state) {
-          state = { ...state, ...changes.state }
+          Object.assign(state, changes.state)
         }
       }
       // 5. Recurse on child nodes
+      if (reactive) {
+        this.#unwatch(context, element)
+      }
       for (const child of Array.from(element.childNodes) as Array<HTMLElement | Comment>) {
-        await this.#render(child, { context, state, root })
+        await this.#render(child, { context, state, reactive, root })
+      }
+      if (reactive) {
+        this.#watch(context, element)
       }
     } finally {
       // 6. Cleanup directives
       for (const directive of this.#directives) {
         await directive.cleanup?.(this, element, { cache: this.cache(directive.name), context, state, root })
       }
+      // R2. Unwatch context and start reacting
+      if (reactive) {
+        this.#unwatch(context, element)
+        this.#react(element, { context, state, root })
+      }
     }
   }
+
+  /** Watched {@linkcode Context}s. */
+  readonly #watched = new WeakMap<Context, WeakMap<HTMLElement | Comment, { properties: Set<string>; _get: Nullable<callback>; _set: Nullable<callback> }>>()
+
+  /** Start watching a {@linkcode Context} for properties read operations. */
+  #watch(context: Context, element: HTMLElement | Comment) {
+    if (!this.#watched.has(context)) {
+      this.#watched.set(context, new WeakMap())
+    }
+    if (!this.#watched.get(context)!.has(element)) {
+      this.#watched.get(context)!.set(element, { properties: new Set(), _get: null, _set: null })
+    }
+    const watched = this.#watched.get(context)!.get(element)!
+    if (!watched._get) {
+      watched._get = ({ detail: { path, property } }: CustomEvent) => {
+        watched.properties.add([...path, property].join("."))
+      }
+    }
+    context.addEventListener("get", watched._get as EventListener)
+  }
+
+  /** Stop watching a {@linkcode Context} for properties read operations. */
+  #unwatch(context: Context, element: HTMLElement | Comment) {
+    if (this.#watched.get(context)?.has(element)) {
+      const watched = this.#watched.get(context)!.get(element)!
+      context.removeEventListener("get", watched._get as EventListener)
+    }
+  }
+
+  /** Start reacting to any {@linkcode Context} properties changes. */
+  #react(element: HTMLElement | Comment, { context, state, root }: { context: Context; state: State; root: InitialContextState }) {
+    if (!this.#watched.get(context)?.get(element)?.properties.size) {
+      return
+    }
+    this.#unwatch(context, element)
+    const watched = this.#watched.get(context)!.get(element)!
+    watched._get = null
+    if (!watched._set) {
+      watched._set = ({ detail: { path, property } }: CustomEvent) => {
+        const key = [...path, property].join(".")
+        if (watched.properties.has(key)) {
+          this.#queueReactiveRender(element, { context, state, root })
+        }
+      }
+    }
+    context.addEventListener("set", watched._set as EventListener)
+  }
+
+  /**
+   * Queue a {@linkcode Renderer.render()} request emitted by a reactive change.
+   *
+   * This method automatically discards render requests that would be already covered by a parent element,
+   * and removes any queued render request that could be covered by the current element.
+   *
+   * The actual rendering call is throttled to prevent over-rendering.
+   */
+  #queueReactiveRender(element: HTMLElement | Comment, options: { context: Context; state: State; root: InitialContextState }) {
+    if (this.#queued.some(([ancestor]) => (ancestor === element) || (ancestor.contains(element)))) {
+      return
+    }
+    this.#queued = this.#queued.filter(([ancestor]) => !element.contains(ancestor))
+    this.#queued.push([element, options])
+    this.#reactiveRender()
+  }
+
+  /** Throttled {@linkcode Renderer.render()} call. */
+  #reactiveRender = ((throttle = 50, grace = 25) => {
+    let t = NaN
+    let active = false
+    return async () => {
+      if (active || (!this.#queued.length) || (Date.now() - t <= throttle)) {
+        return
+      }
+      try {
+        active = true
+        await delay(grace)
+        await Promise.all(this.#queued.map(([element, options]) => this.#render(element, { reactive: false, ...options })))
+      } finally {
+        t = Date.now()
+        this.#queued = []
+        active = false
+      }
+    }
+  })()
+
+  /** Queued reactive render requests. */
+  #queued = [] as Array<[HTMLElement | Comment, { context: Context; state: State; root: InitialContextState }]>
 
   /**
    * Create a new {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} within {@linkcode Renderer.document}.

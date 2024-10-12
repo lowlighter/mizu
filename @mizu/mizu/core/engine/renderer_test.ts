@@ -1,7 +1,8 @@
 import type { testing } from "@libs/testing"
 import { expect, fn, test, TestingError } from "@libs/testing"
+import { retry } from "@std/async"
 import { Window } from "@mizu/mizu/core/vdom"
-import { Context, Phase, Renderer } from "./renderer.ts"
+import { Context, type Directive, Phase, Renderer } from "./renderer.ts"
 import _mizu from "@mizu/mizu"
 import _test from "@mizu/test"
 const options = { directives: [_mizu] }
@@ -312,6 +313,91 @@ test()("`Renderer.#render() // 6` calls `directive.cleanup()`", async () => {
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "" } }))).not.resolves.toThrow()
   expect(directives[0].cleanup).toBeCalled()
   expect(directives[1].cleanup).toBeCalled()
+})
+
+test()("`Renderer.render() // R` reacts to properties changes using the closest possible subtree and context", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar", fn: { a: fn(), b: fn(), c: fn() } })
+  const renderer = new Renderer(window, { directives: [_test] })
+  const a = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.a()" } })
+  const b = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.b()", "~test.text": "foo" } })
+  const c = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.c()", "~test.text": "1 + 1" } })
+  a.appendChild(b)
+  a.appendChild(c)
+  await renderer.render(a, { context, reactive: true })
+  expect(b.textContent).toBe("bar")
+  expect(c.textContent).toBe("2")
+  expect(context.target.fn.a).toBeCalledTimes(1)
+  expect(context.target.fn.b).toBeCalledTimes(1)
+  expect(context.target.fn.c).toBeCalledTimes(1)
+  context.target.foo = "baz"
+  await retry(() => {
+    expect(b.textContent).toBe("baz")
+    expect(c.textContent).toBe("2")
+  })
+  expect(context.target.fn.a).toBeCalledTimes(1)
+  expect(context.target.fn.b).toBeCalledTimes(2)
+  expect(context.target.fn.c).toBeCalledTimes(1)
+})
+
+test()("`Renderer.render() // R` reacts to properties changes and avoid queuing multiple renderings of the same subtrees", async () => {
+  await using window = new Window()
+  const context = new Context({ a: false, b: false, c: false, fn: { a: fn(), b: fn(), c: fn() } })
+  const renderer = new Renderer(window, { directives: [_test] })
+  const a = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.a()", "~test[content].eval": "a" } })
+  const b = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.b()", "~test[content].eval": "b" } })
+  const c = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.c()", "~test[content].eval": "c" } })
+  a.appendChild(b)
+  b.appendChild(c)
+  await renderer.render(a, { context, reactive: true })
+  expect(context.target.fn.a).toBeCalledTimes(1)
+  expect(context.target.fn.b).toBeCalledTimes(1)
+  expect(context.target.fn.c).toBeCalledTimes(1)
+  context.target.b = true
+  context.target.c = true
+  context.target.a = true
+  await retry(() => {
+    expect(context.target.fn.a).toBeCalledTimes(2)
+    expect(context.target.fn.b).toBeCalledTimes(2)
+    expect(context.target.fn.c).toBeCalledTimes(2)
+  })
+})
+
+test()("`Renderer.render() // R` reacts to properties changes and continue to track changes after elements morphing", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar", comment: true })
+  const renderer = new Renderer(window, { directives: [_test] })
+  const element = renderer.createElement("div", { innerHTML: `<div ~test[postprocessing].comment="comment" ~test[preprocessing]="foo"></div>` })
+  await renderer.render(element, { context, reactive: true })
+  expect(element.childNodes[0].nodeType).toBe(renderer.window.Node.COMMENT_NODE)
+  context.target.comment = false
+  await retry(() => {
+    expect(element.childNodes[0].nodeType).not.toBe(renderer.window.Node.COMMENT_NODE)
+  })
+})
+
+test()("`Renderer.render() // R` reacts to properties changes and continue to track changes after context changes", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar", comment: true })
+  let override = null as testing
+  const directive = {
+    name: "*foo",
+    phase: Phase.TESTING,
+    execute: (_, __, { context }) => {
+      if (!override) {
+        override = context.with({ bar: "baz" })
+        return { context: override }
+      }
+    },
+  } as Directive
+  const renderer = new Renderer(window, { directives: [_test, directive] })
+  const element = renderer.createElement("div", { attributes: { "*foo": "", "~test[preprocessing].eval": "foo", "~test[content].text": "foo + bar" } })
+  await renderer.render(element, { context, reactive: true })
+  expect(element.textContent).toBe("barbaz")
+  override.target.bar = "qux"
+  await retry(() => {
+    expect(element.textContent).toBe("barqux")
+  })
 })
 
 test()("`Renderer.createElement()` creates a `new HTMLElement()`", async () => {
