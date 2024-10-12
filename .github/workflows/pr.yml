@@ -1,0 +1,15 @@
+name: Pull
+on:
+  pull_request_target:
+
+jobs:
+  labeler:
+    name: Labeler
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          sync-labels: true

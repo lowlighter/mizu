@@ -1,0 +1,98 @@
+# Meta files
+meta:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .devcontainer/**
+          - .github/**
+          - .gitattributes
+          - .gitignore
+          - LICENSE
+          - "*.md"
+          - vercel.json
+
+# Mizu core engine and end-user API
+core:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/mizu/core/**"
+api:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/render/**"
+
+# Mizu website
+www:
+  - changed-files:
+      - any-glob-to-any-file: "www/**"
+
+# Mizu directives
+directive-bind:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/bind/**"
+directive-clean:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/clean/**"
+directive-code:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/code/**"
+directive-custom-element:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/custom-element/**"
+directive-eval:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/eval/**"
+directive-event:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/event/**"
+directive-for:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/for/**"
+directive-html:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/html/**"
+directive-http:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/http/**"
+directive-if:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/if/**"
+directive-is:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/is/**"
+directive-markdown:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/markdown/**"
+directive-mizu:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/mizu/**"
+directive-model:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/model/**"
+directive-mustache:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/mustache/**"
+directive-once:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/once/**"
+directive-ref:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/ref/**"
+directive-refresh:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/refresh/**"
+directive-set:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/set/**"
+directive-show:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/show/**"
+directive-skip:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/skip/**"
+directive-test:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/test/**"
+directive-text:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/text/**"
+directive-toc:
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/toc/**"
