@@ -217,7 +217,7 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
     renderer: Renderer,
     element: HTMLElement | Comment,
     _: { cache: Cache; context: Context; state: DeepReadonly<State>; attributes: Readonly<Attr[]>; root: InitialContextState },
-  ) => Promisable<void | Partial<{ element: HTMLElement | Comment; context: Context; state: State; final: boolean }>>
+  ) => Promisable<void | Partial<{ element: HTMLElement | Comment; context: Record<PropertyKey, unknown>; state: State; final: boolean }>>
   /**
    * Directive cleanup callback.
    *
