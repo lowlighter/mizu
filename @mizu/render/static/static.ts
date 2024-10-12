@@ -4,7 +4,7 @@ import { Logger } from "@libs/logger"
 import { expandGlob } from "@std/fs"
 import { common, dirname, join, resolve } from "@std/path"
 import { readAll, readerFromStreamReader } from "@std/io"
-import { Mizu as Server } from "@mizu/mizu/core/render/server"
+import { Mizu as Server } from "../server/mod.ts"
 export { Logger }
 export type * from "@mizu/mizu/core/engine"
 
