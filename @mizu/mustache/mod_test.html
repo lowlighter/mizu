@@ -1,0 +1,48 @@
+<load directives="@mizu/mustache,@mizu/test"></load>
+
+<test name="[*mustache] templates `{{ }}` delimiters">
+  <script>
+    context.foo = "bar"
+  </script>
+  <render>
+    <p *mustache>
+      foo {{ foo }} foo
+    </p>
+  </render>
+  <expect>
+    <p>
+      foo bar foo
+    </p>
+  </expect>
+  <script>
+    context.foo = "baz"
+  </script>
+  <render></render>
+  <expect>
+    <p>
+      foo baz foo
+    </p>
+  </expect>
+</test>
+
+<test name="[*mustache] handles unclosed delimiters">
+  <render>
+    <p *mustache>
+      foo {{ foo foo
+    </p>
+  </render>
+  <expect>
+    <p *warn="SyntaxError: Unclosed expression, unterminated expression at: 11">
+      foo {{ foo foo
+    </p>
+  </expect>
+</test>
+
+<test name="[*mustache] skips commented elements">
+  <render>
+    <span ~test.comment *mustache>{{ foo }}</span>
+  </render>
+  <expect>
+    <!--[~test.comment=""]-->
+  </expect>
+</test>
