@@ -15,6 +15,7 @@ import _if from "@mizu/if/else"
 import _is from "@mizu/is"
 import _markdown from "@mizu/markdown"
 import _model from "@mizu/model"
+import _mustache from "@mizu/mustache"
 import _once from "@mizu/once"
 import _ref from "@mizu/ref"
 import _refresh from "@mizu/refresh"
@@ -49,6 +50,7 @@ export class Client {
       _is,
       _markdown,
       _model,
+      _mustache,
       _once,
       _ref,
       _refresh,

@@ -25,11 +25,11 @@
     // Mizu core
     "@mizu/mizu": "./@mizu/mizu/mod.ts",
     "@mizu/mizu/core/engine": "./@mizu/mizu/core/engine/mod.ts",
-    "@mizu/mizu/core/render/client": "./@mizu/mizu/core/render/client/mod.ts",
-    "@mizu/mizu/core/render/server": "./@mizu/mizu/core/render/server/mod.ts",
-    "@mizu/mizu/core/render/static": "./@mizu/mizu/core/render/static/mod.ts",
     "@mizu/mizu/core/testing": "./@mizu/mizu/core/testing/mod.ts",
     "@mizu/mizu/core/vdom": "./@mizu/mizu/core/vdom/mod.ts",
+    "@mizu/render/client": "./@mizu/render/client/mod.ts",
+    "@mizu/render/server": "./@mizu/render/server/mod.ts",
+    "@mizu/render/static": "./@mizu/render/static/mod.ts",
     // Mizu directives
     "@mizu/bind": "./@mizu/bind/mod.ts",
     "@mizu/clean": "./@mizu/clean/mod.ts",
@@ -99,6 +99,7 @@
     "@mizu/once",
     "@mizu/ref",
     "@mizu/refresh",
+    "@mizu/render",
     "@mizu/set",
     "@mizu/show",
     "@mizu/skip",

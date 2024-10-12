@@ -9,7 +9,7 @@ import * as JSONC from "@std/jsonc"
 import { Logger } from "@libs/logger"
 import { bundle } from "@libs/bundle/ts"
 import { Phase } from "@mizu/mizu/core/engine"
-import Mizu from "@mizu/mizu/core/render/server"
+import Mizu from "@mizu/render/server"
 const log = new Logger()
 
 /** Base project url. */

@@ -2,7 +2,7 @@
 import type { Arg, Directive } from "@mizu/mizu/core/engine"
 import { Context, Renderer } from "@mizu/mizu/core/engine"
 import { Window } from "@mizu/mizu/core/vdom"
-import { Mizu as Client } from "@mizu/mizu/core/render/client"
+import { Mizu as Client } from "../client/mod.ts"
 export type * from "@mizu/mizu/core/engine"
 
 /**
