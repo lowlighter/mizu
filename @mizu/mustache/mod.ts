@@ -27,14 +27,13 @@ export const _mustache = {
         let offset = 0
         let captured = null as ReturnType<typeof capture>
         // deno-lint-ignore no-cond-assign
-        while (captured = capture(template, { offset })) {
+        while (captured = capture(template, offset)) {
           const { b, match, captured: expression } = captured
           templated = templated.replace(match, `${await renderer.evaluate(element, expression, options)}`)
           offset = b
         }
         node.textContent = templated
-      }
-      catch (error) {
+      } catch (error) {
         renderer.warn(`${error}`.split("\n")[0], element)
       }
     }
@@ -43,4 +42,3 @@ export const _mustache = {
 
 /** Default exports. */
 export default _mustache
-

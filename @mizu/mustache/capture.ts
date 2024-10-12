@@ -1,11 +1,19 @@
+/** Tokens. */
+const tokens = {
+  "(": ")",
+  "[": "]",
+  "{": "}",
+  '"': '"',
+  "'": "'",
+  "`": "`",
+} as Record<PropertyKey, string>
+
 /**
  * Capture content between delimiters.
  *
  * @example
  * ```ts
- * import { capture } from "./capture.ts"
- *
- * const { captured, match } = capture("foo {{ bar }} baz", { start: "{{", end: "}}" })!
+ * const { captured, match } = capture("foo {{ bar }} baz")!
  * console.assert(captured === "bar")
  * console.assert(match === "{{ bar }}")
  * ```
@@ -13,34 +21,48 @@
  * @author Simon Lecoq (lowlighter)
  * @license MIT
  */
-export function capture(string: string, { offset = 0, start: _start = "{{", end: _end = "}}" } = {}) {
-  const start = [..._start]
-  const end = [..._end]
-  let depth = 0
-  let i = NaN
-  for (let j = offset; j < string.length; j++) {
-    if (start.every((character, index) => string[j + index] === character)) {
-      depth++
-      if (Number.isNaN(i)) {
-        i = j
-      }
-      j += start.length
-    }
-    if (depth && end.every((character, index) => string[j + index] === character)) {
-      depth--
-      if (depth === 0) {
-        return {
-          a: i + start.length,
-          b: j + end.length,
-          match: string.slice(i, j + end.length),
-          captured: string.slice(i + start.length, j).trim(),
+export function capture(string: string, offset = 0) {
+  const stack = []
+  let a = NaN
+  let d = 2
+  let quoted = false
+  for (let i = offset; i < string.length; i++) {
+    // Start capturing upon meeting mustache opening
+    if (Number.isNaN(a)) {
+      if ((string[i] === "{") && (string[i + 1] === "{")) {
+        if (string[i + 2] === "{") {
+          d = 3
         }
+        a = i
+        i += d - 1
       }
-      j += end.length
+      continue
+    }
+    // Close capturing on mustache closing (stack must be empty)
+    if ((!stack.length) && (string[i] === "}") && (string[i + 1] === "}") && ((d === 2) || (string[i + 2] === "}"))) {
+      return {
+        a,
+        b: i + d,
+        match: string.slice(a, i + d),
+        captured: string.slice(a + d, i).trim(),
+        triple: d === 3,
+      }
+    }
+    // Close group on closing token
+    if (string[i] === tokens[stack.at(-1)!]) {
+      stack.pop()
+      continue
+    }
+    // Open group on opening token
+    if ((!quoted) && (string[i] in tokens)) {
+      stack.push(string[i])
+      quoted = ["'", '"', "`"].includes(string[i])
+      continue
     }
   }
-  if (depth) {
-    throw new SyntaxError(`Unclosed expression, unterminated expression at: ${i}\n${string.slice(i)}`)
+  // Throw on mustache unclosed
+  if (!Number.isNaN(a)) {
+    throw new SyntaxError(`Unclosed expression, unterminated expression at: ${a}\n${string.slice(a)}`)
   }
   return null
 }
