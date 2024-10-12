@@ -25,6 +25,77 @@
   </expect>
 </test>
 
+<test name="[*mustache] templates `{{{ }}}` delimiters">
+  <script>
+    context.foo = "bar"
+  </script>
+  <render>
+    <p *mustache>
+      foo {{{ foo }}} foo
+    </p>
+  </render>
+  <expect>
+    <p>
+      foo bar foo
+    </p>
+  </expect>
+  <script>
+    context.foo = "baz"
+  </script>
+  <render></render>
+  <expect>
+    <p>
+      foo baz foo
+    </p>
+  </expect>
+</test>
+
+<test name="[*mustache] defaults to empty string on nullish values">
+  <render>
+    <p *mustache>
+      foo {{ null }} foo
+    </p>
+  </render>
+  <expect>
+    <p>
+      foo foo
+    </p>
+  </expect>
+  <render>
+    <p *mustache>
+      foo {{ undefined }} foo
+    </p>
+  </render>
+  <expect>
+    <p>
+      foo foo
+    </p>
+  </expect>
+  <render>
+    <p *mustache>
+      foo {{ false }} foo
+    </p>
+  </render>
+  <expect>
+    <p>
+      foo false foo
+    </p>
+  </expect>
+</test>
+
+<test name="[*mustache] defaults to empty string on evaluation errors">
+  <render>
+    <p *mustache>
+      foo {{ _reference_error_ }} foo
+    </p>
+  </render>
+  <expect>
+    <p *warn="ReferenceError: _reference_error_ is not defined">
+      foo foo
+    </p>
+  </expect>
+</test>
+
 <test name="[*mustache] handles unclosed delimiters">
   <render>
     <p *mustache>

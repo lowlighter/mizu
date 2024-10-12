@@ -29,7 +29,7 @@ export const _mustache = {
         // deno-lint-ignore no-cond-assign
         while (captured = capture(template, offset)) {
           const { b, match, captured: expression } = captured
-          templated = templated.replace(match, `${await renderer.evaluate(element, expression, options)}`)
+          templated = templated.replace(match, `${await renderer.evaluate(element, expression, options).catch((error) => (renderer.warn(error, element), null)) ?? ""}`)
           offset = b
         }
         node.textContent = templated
