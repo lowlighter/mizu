@@ -430,7 +430,12 @@ export class Renderer {
           return
         }
         if (changes?.context) {
-          Object.assign(context.target, changes.context)
+          if (reactive && (this.#watched.get(context)?.has(element))) {
+            this.#unwatch(context, element)
+            this.#watch(changes.context, element)
+            this.#watched.get(context)!.get(element)!.properties.forEach((property) => this.#watched.get(changes.context!)!.get(element)!.properties.add(property))
+          }
+          context = changes.context
         }
         if (changes?.state) {
           Object.assign(state, changes.state)
@@ -472,7 +477,9 @@ export class Renderer {
     }
     const watched = this.#watched.get(context)!.get(element)!
     if (!watched._get) {
-      watched._get = ({ detail: { path, property } }: CustomEvent) => watched.properties.add([...path, property].join("."))
+      watched._get = ({ detail: { path, property } }: CustomEvent) => {
+        watched.properties.add([...path, property].join("."))
+      }
     }
     context.addEventListener("get", watched._get as EventListener)
   }

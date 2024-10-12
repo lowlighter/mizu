@@ -2,7 +2,7 @@ import type { testing } from "@libs/testing"
 import { expect, fn, test, TestingError } from "@libs/testing"
 import { retry } from "@std/async"
 import { Window } from "@mizu/mizu/core/vdom"
-import { Context, Phase, Renderer } from "./renderer.ts"
+import { Context, type Directive, Phase, Renderer } from "./renderer.ts"
 import _mizu from "@mizu/mizu"
 import _test from "@mizu/test"
 const options = { directives: [_mizu] }
@@ -373,6 +373,30 @@ test()("`Renderer.render() // R` reacts to properties changes and continue to tr
   context.target.comment = false
   await retry(() => {
     expect(element.childNodes[0].nodeType).not.toBe(renderer.window.Node.COMMENT_NODE)
+  })
+})
+
+test()("`Renderer.render() // R` reacts to properties changes and continue to track changes after context changes", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar", comment: true })
+  let override = null as testing
+  const directive = {
+    name: "*foo",
+    phase: Phase.TESTING,
+    execute: (_, __, { context }) => {
+      if (!override) {
+        override = context.with({ bar: "baz" })
+        return { context: override }
+      }
+    },
+  } as Directive
+  const renderer = new Renderer(window, { directives: [_test, directive] })
+  const element = renderer.createElement("div", { attributes: { "*foo": "", "~test[preprocessing].eval": "foo", "~test[content].text": "foo + bar" } })
+  await renderer.render(element, { context, reactive: true })
+  expect(element.textContent).toBe("barbaz")
+  override.target.bar = "qux"
+  await retry(() => {
+    expect(element.textContent).toBe("barqux")
   })
 })
 
