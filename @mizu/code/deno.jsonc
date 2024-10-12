@@ -10,5 +10,10 @@
   },
   "imports": {
     "@npm/highlight.js": "npm:highlight.js@11"
+  },
+  "fmt": {
+    "exclude": [
+      "mapping.json"
+    ]
   }
 }
