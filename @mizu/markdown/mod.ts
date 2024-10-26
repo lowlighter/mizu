@@ -1,5 +1,5 @@
 // Imports
-import { type Directive, Phase, resolve } from "@mizu/mizu/core/engine"
+import { type Directive, Phase } from "@mizu/mizu/core/engine"
 export type * from "@mizu/mizu/core/engine"
 
 /** Typings. */
@@ -15,18 +15,16 @@ export const _markdown = {
   phase: Phase.CONTENT,
   default: "this.textContent",
   typings,
-  import: {
-    markdown: resolve("@libs/markdown", import.meta),
-  },
   async execute(renderer, element, { attributes: [attribute], ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
     const parsed = renderer.parseAttribute(attribute, typings, { modifiers: true })
-    const { Renderer } = await import(`${this.import.markdown}/renderer`)
+    const { Renderer } = await import("./import/markdown/renderer.ts")
     let markdown = Renderer
     if (parsed.tag) {
-      markdown = await Renderer.with({ plugins: parsed.tag.split(",").map((name) => `${this.import.markdown}/plugins/${name}`) })
+      const plugins = await Promise.all(parsed.tag.split(",").map(async (name) => (await import(`./import/markdown/plugins/${name}.ts`)).default))
+      markdown = await Renderer.with({ plugins }) as unknown as typeof markdown
     }
     let content = `${await renderer.evaluate(element, attribute.value || this.default, options)}`
     if (parsed.modifiers.trim) {
@@ -35,7 +33,7 @@ export const _markdown = {
     }
     element.innerHTML = await markdown.render(content)
   },
-} as Directive<null, typeof typings> & { default: NonNullable<Directive["default"]>; import: NonNullable<Directive["import"]> }
+} as Directive<null, typeof typings> & { default: NonNullable<Directive["default"]> }
 
 /** Default exports. */
 export default _markdown
