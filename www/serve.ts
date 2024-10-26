@@ -45,15 +45,18 @@ function config(name: string, { parse = true } = {} as { parse?: boolean }) {
 }
 
 /** Generate JS. */
-export function js(exported: string, options?: Pick<NonNullable<Arg<typeof bundle, 1>>, "format"> & { server?: boolean }) {
+export function js(exported: string, options?: Pick<NonNullable<Arg<typeof bundle, 1>>, "format"> & { server?: boolean; raw?: Record<PropertyKey, unknown> }) {
   const name = exported.match(/^(?<name>@[a-z0-9][-a-z0-9]*[a-z0-9]\/[a-z0-9][-a-z0-9]*[a-z0-9]).*$/)?.groups?.name ?? exported
   const url = import.meta.resolve(exported)
   log.with({ name, url }).debug("bundling javascript")
   if (options?.server) {
-    Object.assign(options, { external: ["node:canvas"] })
+    options.raw ??= {}
+    options.raw.external = ["canvas", "node:canvas", "node:url", "utf-8-validate", "bufferutil", "supports-color"]
+    options.raw.platform = "node"
   }
   if (options?.format === "iife") {
-    Object.assign(options, { raw: { define: { "import.meta.main": "true" } } })
+    options.raw ??= {}
+    options.raw.define = { "import.meta.main": "true" }
   }
   return bundle(new URL(url), { ...options, banner })
 }
@@ -97,8 +100,12 @@ export default {
       handler: async () => new Response(await js("@mizu/render/client", { format: "esm" }), { headers: { "Content-Type": "application/javascript; charset=utf-8", "Access-Control-Allow-Origin": "*" } }),
     },
     {
-      pattern: new URLPattern({ pathname: "/server.js" }),
+      pattern: new URLPattern({ pathname: "/server.mjs" }),
       handler: async () => new Response(await js("@mizu/render/server", { server: true }), { headers: { "Content-Type": "application/javascript; charset=utf-8" } }),
+    },
+    {
+      pattern: new URLPattern({ pathname: "/static.mjs" }),
+      handler: async () => new Response(await js("@mizu/render/static", { server: true }), { headers: { "Content-Type": "application/javascript; charset=utf-8" } }),
     },
     {
       pattern: new URLPattern({ pathname: "/about/phases" }),

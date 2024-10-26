@@ -24,13 +24,13 @@
     // Cache dependencies
     "cache": "deno cache **/mod.ts www/*.ts && deno test --no-run",
     // Serve website locally
-    "serve": "deno serve --allow-read --allow-env --allow-net --allow-run --port=4649 --location=http://localhost:4649 --watch www/serve.ts",
+    "serve": "deno serve --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp --port=4649 --location=http://localhost:4649 --watch www/serve.ts",
     // Build project
     "build": "deno task build:clean && deno task build:www && deno task build:coverage",
     // Clean build artifacts
     "build:clean": "rm -rf .pages && mkdir -p .pages",
     // Build website
-    "build:www": "deno run --allow-read --allow-env --allow-net --allow-run --allow-write=.pages --location=http://localhost:4649 www/build.ts",
+    "build:www": "deno run --allow-read --allow-env --allow-net --allow-run --allow-write=.pages,/tmp --location=http://localhost:4649 www/build.ts",
     // Build coverage report
     "build:coverage": "deno task test:only --filter='/DENO/' --clean --coverage --fail-fast --reporter=dot && deno coverage --html && mv coverage/html .pages/coverage && deno run --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage"
   },
@@ -60,8 +60,7 @@
     "@libs/run": "jsr:@libs/run@3",
     "@libs/testing": "jsr:@libs/testing@3",
     "@libs/typing": "jsr:@libs/typing@3",
-    "@npm/jsdom": "npm:jsdom@25",
-    "canvas": "node:canvas"
+    "@npm/jsdom": "npm:jsdom@25"
   },
   "workspace": [
     "@mizu/bind",
