@@ -1,5 +1,5 @@
 // Imports
-import { type Cache, type callback, type Directive, type Nullable, type Optional, Phase } from "@mizu/mizu/core/engine"
+import { type Cache, type callback, type Directive, type Nullable, type Optional, resolve, Phase } from "@mizu/mizu/core/engine"
 import { _event } from "@mizu/event"
 export type * from "@mizu/mizu/core/engine"
 export type { _event, typings as _event_typings } from "@mizu/event"
@@ -59,7 +59,7 @@ export const _body = {
   phase: Phase.HTTP_BODY,
   typings: _body_typings,
   import: {
-    xml: import.meta.resolve("@libs/xml/stringify"),
+    xml: resolve("@libs/xml/stringify", import.meta),
   },
   init(renderer) {
     renderer.cache<Cache<typeof _body>>(this.name, new WeakMap())
@@ -199,7 +199,7 @@ export const _response = {
   phase: Phase.HTTP_CONTENT,
   typings: _response_typings,
   import: {
-    xml: import.meta.resolve("@libs/xml/parse"),
+    xml: resolve("@libs/xml/parse", import.meta),
   },
   multiple: true,
   default: "null",

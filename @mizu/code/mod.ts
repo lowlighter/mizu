@@ -1,5 +1,5 @@
 // Imports
-import { type Directive, Phase } from "@mizu/mizu/core/engine"
+import { type Directive, Phase, resolve } from "@mizu/mizu/core/engine"
 import mapping from "./mapping.json" with { type: "json" }
 export type * from "@mizu/mizu/core/engine"
 
@@ -16,7 +16,7 @@ export const _code = {
   phase: Phase.CONTENT,
   typings,
   import: {
-    highlightjs: import.meta.resolve("@npm/highlight.js"),
+    highlightjs: resolve("@npm/highlight.js", import.meta),
   },
   default: "this.textContent",
   async execute(renderer, element, { attributes: [attribute], ...options }) {
