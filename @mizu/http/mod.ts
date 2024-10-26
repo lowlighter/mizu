@@ -1,5 +1,5 @@
 // Imports
-import { type Cache, type callback, type Directive, type Nullable, type Optional, Phase, resolve } from "@mizu/mizu/core/engine"
+import { type Arg, type Cache, type callback, type Directive, type Nullable, type Optional, Phase } from "@mizu/mizu/core/engine"
 import { _event } from "@mizu/event"
 export type * from "@mizu/mizu/core/engine"
 export type { _event, typings as _event_typings } from "@mizu/event"
@@ -58,9 +58,6 @@ export const _body = {
   prefix: "%",
   phase: Phase.HTTP_BODY,
   typings: _body_typings,
-  import: {
-    xml: resolve("@libs/xml/stringify", import.meta),
-  },
   init(renderer) {
     renderer.cache<Cache<typeof _body>>(this.name, new WeakMap())
   },
@@ -103,14 +100,14 @@ export const _body = {
         if (parsed.modifiers.header) {
           headers.set("Content-Type", "application/xml")
         }
-        const { stringify } = await import(this.import.xml)
-        body = stringify(body, { format: { indent: "", breakline: Infinity } })
+        const { stringify } = await import("./import/xml/stringify.ts")
+        body = stringify(body as Arg<typeof stringify>, { format: { indent: "", breakline: Infinity } })
         break
       }
     }
     return { state: { $headers: headers, $body: body } }
   },
-} as Directive<WeakMap<HTMLElement, BodyInit>, typeof _body_typings> & { import: NonNullable<Directive["import"]> }
+} as Directive<WeakMap<HTMLElement, BodyInit>, typeof _body_typings>
 
 /** `%http` typings. */
 export const _http_typings = {
@@ -198,9 +195,6 @@ export const _response = {
   prefix: "%",
   phase: Phase.HTTP_CONTENT,
   typings: _response_typings,
-  import: {
-    xml: resolve("@libs/xml/parse", import.meta),
-  },
   multiple: true,
   default: "null",
   async execute(renderer, element, { attributes, state, ...options }) {
@@ -264,7 +258,7 @@ export const _response = {
         }
         // XML response
         case (parsed.modifiers.consume === "xml") || (parsed.modifiers.xml): {
-          const { parse } = await import(this.import.xml)
+          const { parse } = await import("./import/xml/parse.ts")
           $content = parse(await $response.text())
           break
         }
@@ -272,7 +266,7 @@ export const _response = {
       await renderer.evaluate(element, arguments[2]._expression?.value ?? (expression || this.default), { state: { ...state, $response, $content }, ...options, args: arguments[2]._expression?.args })
     }
   },
-} as Directive<null, typeof _response_typings> & { import: NonNullable<Directive["import"]>; execute: NonNullable<Directive["execute"]> }
+} as Directive<null, typeof _response_typings> & { execute: NonNullable<Directive["execute"]> }
 
 /** `%@event` directive. */
 export const _http_event = {
