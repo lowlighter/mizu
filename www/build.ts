@@ -11,8 +11,6 @@ await Mizu.generate([
   { source: () => html("playground"), destination: "playground.html", render: {} },
   { source: () => js("@mizu/render/client", { format: "iife" }), destination: "client.js" },
   { source: () => js("@mizu/render/client", { format: "esm" }), destination: "client.mjs" },
-  // { source: () => js("@mizu/render/server", { server: true }), destination: "server.mjs" },
-  // { source: () => js("@mizu/render/static", { server: true }), destination: "static.mjs" },
   { source: new URL("/matcha.css", globalThis.location.href), destination: "matcha.css" },
   { source: new URL("/highlight.js", globalThis.location.href), destination: "highlight.js" },
   { source: "*.{svg,css,png,js}", directory: fromFileUrl(import.meta.resolve("./static")), destination: "." },

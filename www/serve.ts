@@ -1,6 +1,7 @@
 // Imports
 import type { Arg, callback } from "@libs/typing"
 import { dirname, fromFileUrl, join } from "@std/path"
+import { expandGlob } from "@std/fs"
 import { pick } from "@std/collections"
 import { route } from "@std/http/route"
 import { accepts, serveDir } from "@std/http"
@@ -9,6 +10,9 @@ import * as JSONC from "@std/jsonc"
 import { Logger } from "@libs/logger"
 import { bundle } from "@libs/bundle/ts"
 import { Phase } from "@mizu/mizu/core/engine"
+import { Window } from "@mizu/mizu/core/vdom"
+import { Mizu as RenderClient} from "@mizu/render/client"
+import { Mizu as RenderServer } from "@mizu/render/server"
 import Mizu from "@mizu/render/server"
 const log = new Logger()
 
@@ -45,17 +49,13 @@ function config(name: string, { parse = true } = {} as { parse?: boolean }) {
 }
 
 /** Generate JS. */
-export function js(exported: string, options?: Pick<NonNullable<Arg<typeof bundle, 1>>, "format"> & { server?: boolean; raw?: Record<PropertyKey, unknown> }) {
+export function js(exported: string, options = {} as Pick<NonNullable<Arg<typeof bundle, 1>>, "format"> & { raw?: Record<PropertyKey, unknown> }) {
   const name = exported.match(/^(?<name>@[a-z0-9][-a-z0-9]*[a-z0-9]\/[a-z0-9][-a-z0-9]*[a-z0-9]).*$/)?.groups?.name ?? exported
   const url = import.meta.resolve(exported)
   log.with({ name, url }).debug("bundling javascript")
-  if (options?.server) {
-    options.raw ??= {}
-    options.raw.external = ["canvas", "node:canvas", "node:url", "utf-8-validate", "bufferutil", "supports-color"]
-    options.raw.platform = "node"
-  }
   if (options?.format === "iife") {
     options.raw ??= {}
+    options.raw.target = "es2020"
     options.raw.define = { "import.meta.main": "true" }
   }
   return bundle(new URL(url), { ...options, banner })
@@ -100,14 +100,6 @@ export default {
       handler: async () => new Response(await js("@mizu/render/client", { format: "esm" }), { headers: { "Content-Type": "application/javascript; charset=utf-8", "Access-Control-Allow-Origin": "*" } }),
     },
     {
-      pattern: new URLPattern({ pathname: "/server.mjs" }),
-      handler: async () => new Response(await js("@mizu/render/server", { server: true }), { headers: { "Content-Type": "application/javascript; charset=utf-8" } }),
-    },
-    {
-      pattern: new URLPattern({ pathname: "/static.mjs" }),
-      handler: async () => new Response(await js("@mizu/render/static", { server: true }), { headers: { "Content-Type": "application/javascript; charset=utf-8" } }),
-    },
-    {
       pattern: new URLPattern({ pathname: "/about/phases" }),
       handler: () => new Response(JSON.stringify(Object.fromEntries(Object.entries(Phase).filter(([_, value]) => Number.isFinite(value)))), { headers: { "content-type": "application/json; charset=utf-8" } }),
     },
@@ -136,6 +128,13 @@ export default {
               }
             }
             json.phase = { name: Phase[directive.phase], value: directive.phase }
+            json.preset = []
+            if (RenderClient.defaults.directives.includes(directive)) {
+              json.preset.push("client")
+            }
+            if (RenderServer.defaults.directives.includes(directive)) {
+              json.preset.push("server")
+            }
             return new Response(JSON.stringify(json), { headers })
           } catch (error) {
             return new Response(JSON.stringify({ error: `${error}` }), { headers })

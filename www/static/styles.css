@@ -229,12 +229,15 @@ article small ul {
 .explain {
   justify-content: center;
   display: flex;
+  flex-wrap: wrap;
   font-family: var(--ft-mono);
+  margin-bottom: 1rem;
 }
 
 .explain div {
   display: inline-flex;
   border-bottom: 0.25rem solid currentColor;
+  white-space: nowrap;
 }
 
 .explain div.hljs-comment {
@@ -247,4 +250,110 @@ dt :is(h1, h2, h3, h4, h5, h6) {
   border-bottom: none;
   font-size: inherit;
   line-height: inherit;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.features h2 {
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  border: none;
+  font-size: 1.25rem;
+}
+
+.features h2 svg {
+  fill: currentColor;
+  margin-right: 0.75rem;
+  height: 1.25rem;
+}
+
+.mockup-desktop {
+  height: 500px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.mockup-desktop .background {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.mockup-desktop .background svg {
+  transform: scale(2);
+}
+
+.mockup-desktop .windows {
+  flex-grow: 1;
+  z-index: 2;
+}
+
+.mockup-desktop .windows .vscode {
+  display: flex;
+  flex-direction: column;
+  background: #202327;
+  border-radius: var(--bd-radius);
+}
+
+.mockup-desktop .windows .vscode .titlebar {
+  padding-left: 0.5rem;
+}
+
+.mockup-desktop .windows .vscode .tabs {
+  display: flex;
+  color: var(--muted);
+}
+
+.mockup-desktop .windows .vscode .tabs .tab {
+  background: #26292e;
+  padding: 0.5rem;
+}
+
+.mockup-desktop .windows .vscode .tabs .tab.active {
+  background: var(--bg-muted);
+  color: var(--default);
+}
+
+.mockup-desktop .dock {
+  display: inline-flex;
+  border-radius: var(--bd-radius);
+  background-color: hsla(240, 24%, 100%, 0.4);
+  box-shadow: inset 0 0 0 0.2px hsla(0, 0%, 96%, 0.7), 0 0 0 0.2px hsla(0, 0%, 13%, 0.7), #0000004d 2px 5px 19px 7px;
+  z-index: 2;
+}
+
+.mockup-desktop .dock img {
+  max-height: 3rem;
+  margin: 0.5rem;
+}
+
+.feature h2 {
+  margin-top: 0;
+  background: -webkit-linear-gradient(#eee, #333);
+  background-clip: text;
+  border: none;
+}
+
+
+.catchphrase {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(67,67,147,1) 0%, rgba(0,212,255,1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }

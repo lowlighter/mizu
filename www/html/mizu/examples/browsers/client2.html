@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <main *mizu>
+      <div *text="foo"></div>
+    </main>
+    <!-- Use the ESM version to manually control mizu -->
+    <script type="module">
+      import Mizu from "https://mizu.sh/client.mjs"
+      await Mizu.render(document.body, { context: { foo: "🌊 Yaa, mizu!" } })
+    </script>
+  </body>
+</html>
