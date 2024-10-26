@@ -1,70 +1,23 @@
 // Imports
-import type { Arg, Directive } from "@mizu/mizu/core/engine"
+import type { Arg, Directive, RendererOptions, RendererRenderOptions } from "@mizu/mizu/core/engine"
 import { Context, Renderer } from "@mizu/mizu/core/engine"
-import _mizu from "@mizu/mizu"
-import _bind from "@mizu/bind"
-import _clean from "@mizu/clean"
-import _code from "@mizu/code"
-import _custom_element from "@mizu/custom-element"
-import _eval from "@mizu/eval"
-import _event from "@mizu/event"
-import _for from "@mizu/for/empty"
-import _html from "@mizu/html"
-import _http from "@mizu/http"
-import _if from "@mizu/if/else"
-import _is from "@mizu/is"
-import _markdown from "@mizu/markdown"
-import _model from "@mizu/model"
-import _mustache from "@mizu/mustache"
-import _once from "@mizu/once"
-import _ref from "@mizu/ref"
-import _refresh from "@mizu/refresh"
-import _set from "@mizu/set"
-import _show from "@mizu/show"
-import _skip from "@mizu/skip"
-import _text from "@mizu/text"
-import _toc from "@mizu/toc"
+import defaults from "./defaults.ts"
 export type * from "@mizu/mizu/core/engine"
 
 /**
  * Client side renderer.
- *
- * See {@link https://mizu.sh | mizu.sh documentation} for more details.
  * @module
  */
 export class Client {
   /** Default directives. */
   static defaults = {
-    directives: [
-      _mizu,
-      _bind,
-      _clean,
-      _code,
-      _custom_element,
-      _eval,
-      _event,
-      _for,
-      _html,
-      _http,
-      _if,
-      _is,
-      _markdown,
-      _model,
-      _mustache,
-      _once,
-      _ref,
-      _refresh,
-      _set,
-      _show,
-      _skip,
-      _text,
-      _toc,
-    ] as Array<Partial<Directive> | string>,
+    directives: defaults as Array<Partial<Directive> | string>,
   }
 
   /** {@linkcode Client} constructor. */
-  constructor({ directives = Client.defaults.directives, context = {}, window = globalThis.window } = {} as { directives?: Arg<Renderer["load"]>; context?: ConstructorParameters<typeof Context>[0]; window?: Renderer["window"] }) {
-    this.#renderer = new Renderer(window, { directives })
+  // deno-lint-ignore no-console
+  constructor({ directives = Client.defaults.directives, context = {}, window = globalThis.window, warn = console.warn } = {} as ClientOptions) {
+    this.#renderer = new Renderer(window, { directives, warn })
     // deno-lint-ignore no-explicit-any
     this.#context = new Context<any>(context)
   }
@@ -95,20 +48,52 @@ export class Client {
   /**
    * Start rendering all subtrees marked with a {@link _mizu | `*mizu` attribute}.
    *
-   * @example
    * ```ts ignore
    * const mizu = new Client({ context: { foo: "bar" } })
    * await mizu.render()
    * ```
    */
-  render<T extends Arg<Renderer["render"]>>(element = this.#renderer.document.documentElement as T, options?: Partial<Pick<Arg<Renderer["render"], 1, true>, "state"> & { context: Arg<Context["with"]> }>): Promise<T> {
+  render<T extends Arg<Renderer["render"]>>(element = this.#renderer.document.documentElement as T, options?: ClientRenderOptions): Promise<T> {
     let context = this.#context
     if (options?.context) {
       context = context.with(options.context)
     }
-    return this.#renderer.render(element, { ...options, context, state: { $renderer: "client", ...options?.state }, implicit: false })
+    return this.#renderer.render(element, { implicit: false, reactive: true, ...options, context, state: { $renderer: "client", ...options?.state } })
+  }
+
+  /** Flush the reactive render queue of {@linkcode Renderer}.  */
+  flush(): Promise<void> {
+    return this.#renderer.flushReactiveRenderQueue()
   }
 
   /** Default {@linkcode Client} instance. */
   static readonly default = new Client() as Client
+}
+
+/** {@linkcode Client} options. */
+export type ClientOptions = Pick<RendererOptions, "directives" | "warn"> & {
+  /**
+   * Initial rendering {@linkcode Context}.
+   *
+   * It can be modified later using the {@linkcode Client.context} property.
+   */
+  context?: ConstructorParameters<typeof Context>[0]
+  /** Window object. */
+  window?: Renderer["window"]
+}
+
+/** {@linkcode Client.render} options. */
+export type ClientRenderOptions = Pick<RendererRenderOptions, "implicit" | "reactive" | "throw"> & {
+  /**
+   * Rendering context.
+   *
+   * Values from {@linkcode Client.context} are inherited.
+   */
+  context?: Arg<Context["with"]>
+  /**
+   * Initial state.
+   *
+   * It is populated with `$renderer: "client"` by default.
+   */
+  state?: Arg<Renderer["render"], 1, true>["state"]
 }

@@ -1,8 +1,8 @@
 // Imports
-import type { Arg, Directive } from "@mizu/mizu/core/engine"
+import type { Arg, Directive, RendererOptions, RendererRenderOptions } from "@mizu/mizu/core/engine"
 import { Context, Renderer } from "@mizu/mizu/core/engine"
 import { Window } from "@mizu/mizu/core/vdom"
-import { Mizu as Client } from "../client/mod.ts"
+import defaults from "./defaults.ts"
 export type * from "@mizu/mizu/core/engine"
 
 /**
@@ -14,14 +14,12 @@ export type * from "@mizu/mizu/core/engine"
 export class Server {
   /** Default directives. */
   static defaults = {
-    directives: [
-      ...Client.defaults.directives,
-    ] as Array<Partial<Directive> | string>,
+    directives: defaults as Array<Partial<Directive> | string>,
   }
 
   /** {@linkcode Server} constructor. */
-  constructor({ directives = Server.defaults.directives, context = {} } = {} as { directives?: Arg<Renderer["load"]>; context?: ConstructorParameters<typeof Context>[0] }) {
-    this.#options = { directives }
+  constructor({ directives = Server.defaults.directives, context = {}, ...options } = {} as ServerOptions) {
+    this.#options = { directives, ...options }
     // deno-lint-ignore no-explicit-any
     this.#context = new Context<any>(context)
   }
@@ -48,13 +46,12 @@ export class Server {
   /**
    * Parse a HTML string and render all subtrees marked with a `*mizu` attribute.
    *
-   * @example
    * ```ts
    * const mizu = new Server({ context: { foo: "bar" } })
    * await mizu.render(`<html><body><a ~test.text="foo"></a></body></html>`)
    * ```
    */
-  async render(content: string | Arg<Renderer["render"]>, options?: Partial<Pick<Arg<Renderer["render"], 1, true>, "state" | "implicit" | "select"> & { context: Arg<Context["with"]> }>): Promise<string> {
+  async render(content: string | Arg<Renderer["render"]>, options?: ServerRenderOptions): Promise<string> {
     await using window = new Window(typeof content === "string" ? content : `<body>${content.outerHTML}</body>`)
     const renderer = await new Renderer(window, this.#options).ready
     let context = this.#context
@@ -66,4 +63,30 @@ export class Server {
 
   /** Default {@linkcode Server} instance. */
   static readonly default = new Server() as Server
+}
+
+/** {@linkcode Server} options. */
+export type ServerOptions = Pick<RendererOptions, "directives" | "warn"> & {
+  /**
+   * Initial rendering {@linkcode Context}.
+   *
+   * It can be modified later using the {@linkcode Client.context} property.
+   */
+  context?: ConstructorParameters<typeof Context>[0]
+}
+
+/** {@linkcode Server.render} options. */
+export type ServerRenderOptions = Pick<RendererRenderOptions, "implicit" | "select" | "throw"> & {
+  /**
+   * Rendering context.
+   *
+   * Values from {@linkcode Client.context} are inherited.
+   */
+  context?: Arg<Context["with"]>
+  /**
+   * Initial state.
+   *
+   * It is populated with `$renderer: "server"` by default.
+   */
+  state?: Arg<Renderer["render"], 1, true>["state"]
 }

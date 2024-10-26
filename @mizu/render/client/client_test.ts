@@ -21,4 +21,6 @@ test()("`Client.render()` renders dom content", async () => {
   expect(window.document.querySelector("a")?.textContent).toBe("baz")
   expect(window.document.querySelector("b")?.textContent).toBe("")
   expect(window.document.querySelector("c")?.textContent).toBe("client")
+
+  await mizu.flush()
 })

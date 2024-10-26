@@ -1,5 +1,5 @@
 // Imports
-import type { Arg, Arrayable, Context, Directive, Promisable, Renderer } from "@mizu/mizu/core/engine"
+import type { Arg, Arrayable, Context, Promisable, Renderer } from "@mizu/mizu/core/engine"
 import { Logger } from "@libs/logger"
 import { expandGlob } from "@std/fs"
 import { common, dirname, join, resolve } from "@std/path"
@@ -23,10 +23,8 @@ const decoder = new TextDecoder()
 export class Static extends Server {
   /** Default directives. */
   static override defaults = {
-    directives: [
-      ...Server.defaults.directives,
-    ] as Array<Partial<Directive> | string>,
-  }
+    directives: Server.defaults.directives.slice(),
+  } as typeof Server.defaults
 
   /** {@linkcode Static} constructor. */
   constructor({ directives = Static.defaults.directives, context = {}, ...options } = {} as { directives?: Arg<Renderer["load"]>; context?: ConstructorParameters<typeof Context>[0] } & GenerateOptions) {
@@ -55,16 +53,17 @@ export class Static extends Server {
    * Rendering using {@linkcode Static.render()} can be enabled by setting the `render` option.
    *
    * ```ts
-   * const mizu = new Static({ logger: new Logger({ level: "disabled" }), directives: ["@mizu/test"], output: "/fake/path" })
+   * const mizu = new Static({ logger: new Logger({ level: "disabled" }), directives: ["@mizu/test"], output: "/fake/output" })
    * await mizu.generate(
    *   [
    *     // Copy content from local files
-   *     { source: "**\/*", directory: "/fake/static", destination: "static" },
+   *     { source: "**\/*", directory: "/fake/static", destination: "public" },
+   *     { source: "*.html", directory: "/fake/partials", destination: "public", render: { context: { foo: "bar "} } },
    *     // Copy content from callback return
-   *     { source: () => "foobar", destination: "foo.html" },
+   *     { source: () => `<p ~test.text="'foo'"></p>`, destination: "foo.html", render: { context: { foo: "bar" } } },
+   *     { source: () => JSON.stringify({ foo: "bar" }), destination: "foo.json" },
    *     // Copy content from URL
    *     { source: new URL(`data:text/html,<p>foobar</p>`), destination: "bar.html" },
-   *     // You can also render content
    *     { source: new URL(`data:text/html,<p ~test.text="foo"></p>`), destination: "baz.html", render: { context: { foo: "bar" } } },
    *   ],
    *   // No-op: do not actually write files and directories
@@ -158,32 +157,32 @@ export type GenerateOptions = {
 
 /** Glob source. */
 export type GlobSource = {
-  /** Destination path (excluding filename). */
-  destination: string
-  /** Source directory. */
-  directory: string
   /** A list of file globs. */
   source: Arrayable<string>
+  /** Source directory. */
+  directory: string
+  /** Destination path (excluding filename). */
+  destination: string
   /** Whether to render content with {@linkcode Static.render()}. */
   render?: Arg<Static["render"], 1>
 }
 
 /** Callback source. */
 export type CallbackSource = {
-  /** Destination path (including filename). */
-  destination: string
   /** A callback that returns file content. */
   source: () => Promisable<Arg<NonNullable<GenerateOptions["write"]>, 1> | string>
+  /** Destination path (including filename). */
+  destination: string
   /** Whether to render content with {@linkcode Static.render()}. */
   render?: Arg<Static["render"], 1>
 }
 
 /** URL source. */
 export type URLSource = {
-  /**  Destination path (including filename). */
-  destination: string
   /** Source URL. */
   source: URL
+  /**  Destination path (including filename). */
+  destination: string
   /** Whether to render content with {@linkcode Static.render()}. */
   render?: Arg<Static["render"], 1>
 }
