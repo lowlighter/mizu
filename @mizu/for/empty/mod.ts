@@ -28,12 +28,12 @@ export const _empty = {
       }
 
       // Break on element node that was not created by a for directive or without an empty directive
-      if ((previous.nodeType === renderer.window.Node.ELEMENT_NODE) && (!renderer.getAttributes(previous, [_empty.name, _id.name], { first: true }))) {
+      if ((renderer.isHtmlElement(previous)) && (!renderer.getAttributes(previous, [_empty.name, _id.name], { first: true }))) {
         seen.push(previous)
       }
 
       // Execute directive on first for loop found
-      if ((previous.nodeType === renderer.window.Node.COMMENT_NODE) && (cache?.has(previous))) {
+      if ((renderer.isComment(previous)) && (cache?.has(previous))) {
         const items = [...cache.get(previous)!.items.values()]
         const $generated = items.length
         if (seen.some((item) => !items.includes(item))) {
@@ -44,7 +44,7 @@ export const _empty = {
           state: { $generated },
         }
       }
-      previous = previous.previousSibling as HTMLElement
+      previous = (previous as HTMLElement).previousSibling as HTMLElement
     }
     renderer.warn(`[${this.name}] must be immediately preceded by a [${_for.name}] or [${_empty.name}] directive, ignoring`, element)
     return { state: { $generated: NaN } }

@@ -1,5 +1,5 @@
 // Imports
-import { type Cache, type callback, type Directive, type Nullable, type Optional, resolve, Phase } from "@mizu/mizu/core/engine"
+import { type Cache, type callback, type Directive, type Nullable, type Optional, Phase, resolve } from "@mizu/mizu/core/engine"
 import { _event } from "@mizu/event"
 export type * from "@mizu/mizu/core/engine"
 export type { _event, typings as _event_typings } from "@mizu/event"
@@ -13,7 +13,7 @@ export const _header = {
     renderer.cache<Cache<typeof _header>>(this.name, new WeakMap())
   },
   async execute(renderer, element, { attributes, cache, ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     const headers = cache.get(element) ?? cache.set(element, new Headers()).get(element)!
@@ -65,7 +65,7 @@ export const _body = {
     renderer.cache<Cache<typeof _body>>(this.name, new WeakMap())
   },
   async execute(renderer, element, { attributes: [attribute], ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     const headers = renderer.cache<Cache<typeof _header>>(_header.name)!.get(element) ?? renderer.cache<Cache<typeof _header>>(_header.name)!.set(element, new Headers()).get(element)!
@@ -138,7 +138,7 @@ export const _http = {
   phase: Phase.HTTP_REQUEST,
   typings: _http_typings,
   execute(renderer, element, { attributes: [attribute], state, ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     const parsed = renderer.parseAttribute(attribute, _http_typings, { prefix: this.prefix, modifiers: true })
@@ -204,7 +204,7 @@ export const _response = {
   multiple: true,
   default: "null",
   async execute(renderer, element, { attributes, state, ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     const $response = state.$response as Optional<Response>

@@ -16,6 +16,35 @@
   </expect>
 </test>
 
+<test name="[*markdown] with `.trim` modifier changes whitespaces handling">
+  <script>
+    context.value = [
+      "",
+      "        foo",
+      "",
+    ].join("\n")
+  </script>
+  <render>
+    <pre><span *markdown.trim="value"></span></pre>
+  </render>
+  <expect>
+    <pre><span><p>foo</p></span></pre>
+  </expect>
+  <render>
+    <pre><span *markdown.trim[false]="value"></span></pre>
+  </render>
+  <expect>
+    <pre><span><pre><code>    foo
+</code></pre></span></pre>
+  </expect>
+  <render>
+    <pre><span *markdown.trim="''"></span></pre>
+  </render>
+  <expect>
+    <pre><span></span></pre>
+  </expect>
+</test>
+
 <test name="[*markdown] with `[tag]` loads specified plugins">
   <render>
     <div *markdown[gfm]>:ocean:</div>
@@ -27,7 +56,7 @@
   </expect>
 </test>
 
-<test name="[*markdown] renders innerText when empty">
+<test name="[*markdown] renders `innerText` when empty">
   <render>
     <div *markdown>**foo**</div>
   </render>

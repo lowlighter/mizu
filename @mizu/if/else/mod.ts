@@ -17,7 +17,7 @@ export const _else = {
       }
 
       // Force directive to `false` when a previous operand is truthy
-      if (previous.nodeType === renderer.window.Node.ELEMENT_NODE) {
+      if ((renderer.isHtmlElement(previous))) {
         if (renderer.getAttributes(previous, [_if.name, _else.name] as string[], { first: true })) {
           return _if.execute(renderer, element, { ...arguments[2], _directive: { directive: this.name, expression: attribute.value, value: "false" } })
         }
@@ -25,10 +25,10 @@ export const _else = {
       }
 
       // Execute directive with given expression when first operand is found and is falsy (meaning all previous operand were falsy too)
-      if ((previous.nodeType === renderer.window.Node.COMMENT_NODE) && (renderer.getAttributes(renderer.cache("*").get(previous), _if.name, { first: true }))) {
+      if ((renderer.isComment(previous)) && (renderer.getAttributes(renderer.cache("*").get(previous), _if.name, { first: true }))) {
         return _if.execute(renderer, element, { ...arguments[2], _directive: { directive: this.name, expression: attribute.value, value: attribute.value || this.default } })
       }
-      previous = previous.previousSibling as HTMLElement
+      previous = (previous as HTMLElement).previousSibling as HTMLElement
     }
     renderer.warn(`[${this.name}] must be immediately preceded by another [${_if.name}] or [${_else.name}], ignoring`, element)
   },

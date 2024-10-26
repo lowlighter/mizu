@@ -38,7 +38,7 @@ export const _event = {
     }
   },
   async execute(renderer, element, { cache, attributes, context, state }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     const parsed = attributes.map((attribute) => renderer.parseAttribute(attribute, this.typings, { prefix: this.prefix, modifiers: true }))

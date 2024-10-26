@@ -7,7 +7,7 @@ export const _is = {
   name: "*is",
   phase: Phase.MORPHING,
   async execute(renderer, element, { attributes: [attribute], ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
 

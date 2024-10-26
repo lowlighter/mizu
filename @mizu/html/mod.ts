@@ -7,7 +7,7 @@ export const _html = {
   name: "*html",
   phase: Phase.CONTENT,
   async execute(renderer, element, { attributes: [attribute], ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     element.innerHTML = `${await renderer.evaluate(element, attribute.value, options)}`

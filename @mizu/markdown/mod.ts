@@ -19,7 +19,7 @@ export const _markdown = {
     markdown: resolve("@libs/markdown", import.meta),
   },
   async execute(renderer, element, { attributes: [attribute], ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     const parsed = renderer.parseAttribute(attribute, typings, { modifiers: true })
