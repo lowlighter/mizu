@@ -28,7 +28,7 @@ export const _model_value = {
     }
   },
   async execute(renderer, element, { attributes: [attribute], cache, ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     const parsed = renderer.parseAttribute(attribute, this.typings, { prefix: this.prefix, modifiers: true })
