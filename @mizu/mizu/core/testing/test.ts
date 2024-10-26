@@ -16,7 +16,6 @@ import { filter } from "./filter.ts"
  *
  * This runner is intended to test directives in a more convenient way.
  *
- * @example
  * ```ts ignore
  * await test(import.meta.resolve("./operations_test.html"))
  * ```

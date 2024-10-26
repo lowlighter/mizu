@@ -11,7 +11,6 @@ import type { Optional } from "@libs/typing"
  *
  * {@link https://tc39.es/ecma262/#sec-for-statement | Reference}
  *
- * @example
  * ```ts
  * import { Expression } from "./parse.ts"
  *

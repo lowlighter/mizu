@@ -54,7 +54,6 @@ export class Static extends Server {
    * Content can be retrieved from local files, callback return or URLs.
    * Rendering using {@linkcode Static.render()} can be enabled by setting the `render` option.
    *
-   * @example
    * ```ts
    * const mizu = new Static({ logger: new Logger({ level: "disabled" }), directives: ["@mizu/test"], output: "/fake/path" })
    * await mizu.generate(

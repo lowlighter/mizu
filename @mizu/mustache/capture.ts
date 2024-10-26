@@ -11,7 +11,6 @@ const tokens = {
 /**
  * Capture content between delimiters.
  *
- * @example
  * ```ts
  * const { captured, match } = capture("foo {{ bar }} baz")!
  * console.assert(captured === "bar")

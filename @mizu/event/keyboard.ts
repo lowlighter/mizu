@@ -17,7 +17,6 @@
  *
  * {@link https://developer.mozilla.org/docs/Web/API/UI_Events/Keyboard_event_key_values | Reference}
  *
- * @example
  * ```ts
  * import { Window } from "@mizu/mizu/core/vdom"
  * const { KeyboardEvent } = new Window()

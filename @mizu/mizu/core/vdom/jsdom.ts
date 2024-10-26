@@ -6,7 +6,6 @@ export type { VirtualWindow }
 /**
  * Virtual {@linkcode https://developer.mozilla.org/docs/Web/API/Window | Window} implementation based on {@link https://github.com/jsdom/jsdom | JSDOM}.
  *
- * @example
  * ```ts
  * await using window = new Window("<html></html>")
  * console.assert(window.document.documentElement.tagName === "HTML")
