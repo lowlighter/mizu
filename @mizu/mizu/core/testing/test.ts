@@ -33,6 +33,7 @@ export async function test(path: string | ImportMeta, runner = _test) {
         renderer: await new Renderer(new Window(), { directives: [] }).ready,
         rendered: null,
         renderable: "",
+        error: null,
         directives: [],
         context: new Context({
           fetch() {
@@ -104,6 +105,7 @@ async function load(operation: HTMLElement, testing: Testing) {
  *
  * Options:
  *   - `explicit?: boolean = false`: Whether {@linkcode Renderer.render()} should be called with the `implicit: false`.
+ *   - `throw?: boolean = false`: Whether {@linkcode Renderer.render()} should be called with the `throw: true`.
  *
  * ```xml
  * <render>
@@ -120,7 +122,12 @@ async function render(operation: HTMLElement, testing: Testing) {
     testing.renderable = operation.innerHTML
     testing.renderer = await new Renderer(new Window(`<body>${testing.renderable}</body>`), { directives: testing.directives }).ready
   }
-  testing.rendered = await testing.renderer.render(testing.renderer.document.documentElement, { context: testing.context, select: "body", implicit: !operation.hasAttribute("explicit") }) as HTMLElement
+  try {
+    testing.error = null
+    testing.rendered = await testing.renderer.render(testing.renderer.document.documentElement, { context: testing.context, select: "body", implicit: !operation.hasAttribute("explicit"), throw: operation.hasAttribute("throw") }) as HTMLElement
+  } catch (error) {
+    testing.error = error
+  }
 }
 
 /**
@@ -275,6 +282,8 @@ export type Testing = {
   rendered: Nullable<HTMLElement>
   /** Renderable {@linkcode https://developer.mozilla.org/docs/Web/API/Element/innerHTML | Element.innerHTML}, set to the last value of {@linkcode render()}. */
   renderable: string
+  /** `Error` thrown by the last execution of {@linkcode render()}. */
+  error: Nullable<Error>
   /** List of loaded directives. */
   directives: Arg<Renderer["load"]>
   /** Current {@linkcode Context}. */

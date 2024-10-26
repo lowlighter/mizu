@@ -31,6 +31,22 @@
   </expect>
 </test>
 
+<test name="`&lt;render throw&gt;/` renders specified content with `throw: true`">
+  <load directives="@mizu/test"></load>
+  <render throw>
+    <p ~test.throw></p>
+  </render>
+  <script>
+    expect(testing.error).toBeInstanceOf(Error)
+  </script>
+  <render>
+    <p ~test.throw></p>
+  </render>
+  <script>
+    expect(testing.error).toBe(null)
+  </script>
+</test>
+
 <test name="`&lt;script/&gt;` evaluates specified script">
   <script>
     storage.foo = "bar"

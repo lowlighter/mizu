@@ -11,6 +11,7 @@ export const typings = {
     text: { type: Boolean },
     comment: { type: Boolean },
     eval: { type: Boolean },
+    throw: { type: Boolean },
   },
 } as const
 
@@ -56,6 +57,10 @@ export const _test = {
         if (parsed.modifiers.eval) {
           await renderer.evaluate(element, attribute.value, options)
           continue
+        }
+        // Throw error on truthy `throw` modifier value
+        if ((parsed.modifiers.throw) && (await renderer.evaluate(element, attribute.value || "'true'", options))) {
+          throw new EvalError(`Expected error from: ${element.outerHTML.replace(element.innerHTML, "")}`)
         }
       }
     }

@@ -9,7 +9,7 @@
   </expect>
 </test>
 
-<test name="[~test] with `comment` modifier changes `HTMLElement` to `Comment`">
+<test name="[~test] with `comment` modifier toggles `HTMLElement` to `Comment`">
   <render>
     <p ~test.comment></p>
   </render>
@@ -55,6 +55,29 @@
   <expect>
     <div></div>
   </expect>
+</test>
+
+<test name="[~test] with `throw` modifier throws `EvalError`">
+  <render throw>
+    <p ~test.throw></p>
+  </render>
+  <script>
+    expect(testing.error).toBeInstanceOf(Error)
+  </script>
+  <script>
+    context.value = false
+  </script>
+  <render throw>
+    <p ~test.throw="value"></p>
+  </render>
+  <script>
+    expect(testing.error).toBe(null)
+    context.value = true
+  </script>
+  <render throw></render>
+  <script>
+    expect(testing.error).toBeInstanceOf(Error)
+  </script>
 </test>
 
 <test name="[~test] with `[tag]` executes directive as specified `Phase`">
