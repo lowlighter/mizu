@@ -14,15 +14,17 @@
     // - `--check`: skip actual formatting (check only)
     "lint": "cd $INIT_CWD && deno lint && deno doc --lint **/mod.ts && deno publish --quiet --dry-run --allow-dirty && deno fmt",
     // Test code and print detailed coverage
-    "test": "cd $INIT_CWD && deno task test:only --doc --clean --coverage && deno coverage --detailed --include=$INIT_CWD",
+    "test": "cd $INIT_CWD && deno task --cwd=$INIT_CWD test:only --doc --clean --coverage && deno coverage --detailed --include=$INIT_CWD",
     // Test code (without any options)
     "test:only": "deno test --allow-read --allow-env --allow-net --parallel",
+    // Generate local `README.md` from `mod.html`
+    "doc:html-to-md": "deno run --allow-read --allow-env --allow-write=./@mizu --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD",
     // Test and lint code
-    "qa": "deno task test && deno task lint",
+    "qa": "deno task test && deno task lint && deno task doc:html-to-md",
     // Cache dependencies
     "cache": "deno cache **/mod.ts www/*.ts && deno test --no-run",
     // Serve website locally
-    "serve": "deno serve --allow-read --allow-env --allow-net --allow-run --port=4649 --location=http://localhost:4649 www/serve.ts",
+    "serve": "deno serve --allow-read --allow-env --allow-net --allow-run --port=4649 --location=http://localhost:4649 --watch www/serve.ts",
     // Build project
     "build": "deno task build:clean && deno task build:www && deno task build:coverage",
     // Clean build artifacts
@@ -33,6 +35,8 @@
     "build:coverage": "deno task test:only --filter='/DENO/' --clean --coverage --fail-fast --reporter=dot && deno coverage --html && mv coverage/html .pages/coverage && deno run --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage"
   },
   "imports": {
+    // Aliases
+    "@www/": "./www/",
     // Standard library dependencies
     "@std/assert": "jsr:@std/assert@1",
     "@std/async": "jsr:@std/async@1",
@@ -50,12 +54,14 @@
     "@std/text": "jsr:@std/text@1",
     // External dependencies
     "@dprint/formatter": "jsr:@dprint/formatter@^0.4",
-    "@libs/bundle/ts": "jsr:@libs/bundle@12/ts",
+    "@libs/bundle/ts": "jsr:@libs/bundle@12.4.1/ts",
     "@libs/logger": "jsr:@libs/logger@3",
     "@libs/reactive": "jsr:@libs/reactive@4",
+    "@libs/run": "jsr:@libs/run@3",
     "@libs/testing": "jsr:@libs/testing@3",
     "@libs/typing": "jsr:@libs/typing@3",
-    "@npm/jsdom": "npm:jsdom@25"
+    "@npm/jsdom": "npm:jsdom@25",
+    "canvas": "node:canvas"
   },
   "workspace": [
     "@mizu/bind",
