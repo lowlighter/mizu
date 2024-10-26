@@ -1,9 +1,8 @@
 // Imports
 import type { DeepReadonly, Promisable } from "@libs/typing/types"
 import type { AttrTypings, Context, InferAttrTypings, InitialContextState, Renderer, State } from "./renderer.ts"
-import { resolve } from "./resolve.ts"
 import { Phase } from "./phase.ts"
-export { Phase, resolve }
+export { Phase }
 export type { DeepReadonly, Promisable }
 
 /**
@@ -48,24 +47,6 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * ```
    */
   readonly prefix?: string
-  /**
-   * Directive import list.
-   *
-   * This list contains a record of all libraries that the directive may dynamically {@linkcode https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/import | import()}.
-   *
-   * The {@linkcode resolve()} function should be used to guarantee that the import will be resolved correctly based on the environment.
-   *
-   * ```ts
-   * const foo = {
-   *   name: "*foo",
-   *   phase: Phase.UNKNOWN,
-   *   import: {
-   *     testing: resolve("@libs/testing")
-   *   }
-   * } as Directive & { name: string, import: Record<PropertyKey, string> }
-   * ```
-   */
-  readonly import?: Record<PropertyKey, string>
   /**
    * Directive phase.
    *
