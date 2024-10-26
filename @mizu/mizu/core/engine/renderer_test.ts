@@ -409,6 +409,21 @@ test()("`Renderer.render() // R` reacts to properties changes and continue to tr
   })
 })
 
+test()("`Renderer.flushReactiveRenderQueue()` flushes queued reactive render requests", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar" })
+  const renderer = new Renderer(window, { ...options, directives: [_test] })
+  const element = renderer.createElement("div", { attributes: { "~test.text": "foo" } })
+  await renderer.render(element, { context, reactive: true })
+  expect(element.textContent).toBe("bar")
+  for (let i = 0; i < 10; i++) {
+    context.target.foo = `${i}`
+  }
+  context.target.foo = "baz"
+  await renderer.flushReactiveRenderQueue()
+  expect(element.textContent).toBe("baz")
+})
+
 test()("`Renderer.createElement()` creates a `new HTMLElement()`", async () => {
   await using window = new Window()
   const renderer = await new Renderer(window, options).ready

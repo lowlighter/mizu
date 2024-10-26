@@ -21,6 +21,7 @@ export class Renderer {
     this.cache("*", new WeakMap())
     this.#warn = warn
     this.#directives = [] as Directive[]
+    this.#flush = { request: Promise.withResolvers<true>(), response: Promise.withResolvers<void>() }
     this.ready = this.load(directives)
   }
 
@@ -515,23 +516,42 @@ export class Renderer {
 
   /** Throttled {@linkcode Renderer.render()} call. */
   #reactiveRender = ((throttle = 50, grace = 25) => {
+    const controller = new AbortController()
     let t = NaN
     let active = false
+    let flushed = false
     return async () => {
       if (active || (!this.#queued.length) || (Date.now() - t <= throttle)) {
         return
       }
       try {
         active = true
-        await delay(grace)
+        flushed = await Promise.race([delay(grace, { signal: controller.signal }), this.#flush.request.promise]) as boolean
+        if (flushed) {
+          controller.abort()
+        }
         await Promise.all(this.#queued.map(([element, options]) => this.#render(element, { reactive: false, ...options })))
       } finally {
         t = Date.now()
         this.#queued = []
         active = false
+        if (flushed) {
+          flushed = false
+          this.#flush.response.resolve()
+        }
       }
     }
   })()
+
+  /** Track reactive render queue flush requests and responses. */
+  #flush
+
+  /** Flush the reactive render queue. */
+  async flushReactiveRenderQueue(): Promise<void> {
+    this.#flush.request.resolve(true)
+    await this.#flush.response.promise
+    this.#flush = { request: Promise.withResolvers<true>(), response: Promise.withResolvers<void>() }
+  }
 
   /** Queued reactive render requests. */
   #queued = [] as Array<[HTMLElement | Comment, { context: Context; state: State; root: InitialContextState }]>
