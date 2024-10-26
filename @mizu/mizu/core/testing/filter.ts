@@ -1,5 +1,5 @@
 // Imports
-import type { Arg, Directive, Nullable, Renderer } from "@mizu/mizu/core/engine"
+import type { Arg, Directive, Nullable, Renderer } from "../engine/mod.ts"
 import { format } from "./format.ts"
 
 /**
