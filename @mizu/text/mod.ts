@@ -8,14 +8,10 @@ export const _text = {
   phase: Phase.CONTENT,
   default: "this.innerHTML",
   async execute(renderer, element, { attributes: [attribute], ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
-    element.textContent = `${await renderer.evaluate(
-      element,
-      attribute.value || this.default,
-      options,
-    )}`
+    element.textContent = `${await renderer.evaluate(element, attribute.value || this.default, options)}`
   },
 } as Directive & { default: NonNullable<Directive["default"]> }
 
