@@ -1,7 +1,7 @@
 <mizu-directive id="set" directory="set">
   <code #name><span class="hljs-keyword">*set</span><wbr /><span class="muted">="context"</span></code>
   <p #description>
-    Set a context for an element and its children.
+    Set context values for an element and its children.
   </p>
   <code #example *skip>
     <div *set="{ foo: 'bar' }">
@@ -12,6 +12,6 @@
     Context must resolve to a <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript <code>Object</code></a>.
   </mizu-restriction>
   <mizu-note #note>
-    Context is only initialized once and is not reset upon subsequent renderings, and can be updated by other directives.
+    Context is only initialized once and is not reset upon subsequent renderings, but it can be updated by other directives.
   </mizu-note>
 </mizu-directive>

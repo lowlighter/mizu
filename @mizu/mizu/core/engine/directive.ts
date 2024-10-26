@@ -69,7 +69,7 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
   /**
    * Directive phase.
    *
-   * Directives are executed in ascending order based on their {@linkcode Phase}, which serves as a priority level.
+   * Directives are executed in ascending order based on their {@linkcode Phase}.
    *
    * > [!IMPORTANT]
    * > Directives with {@linkcode Phase.UNKNOWN} and {@linkcode Phase.META} are ignored by {@linkcode Renderer.load()}.

@@ -27,7 +27,7 @@
   </mizu-modifier>
   <mizu-modifier #modifier name="method">
     Set <a href="https://developer.mozilla.org/docs/Web/HTTP/Methods">HTTP method</a>
-    <i>(uppercased)</i>. This modifier should not be used multiple times.
+    <i>(uppercased)</i>. This modifier should not be used with one of its aliases.
   </mizu-modifier>
   <mizu-modifier #modifier name="get">
     Alias for <code>.method[get]</code>.
@@ -97,13 +97,13 @@
         <code>json</code>: format body with <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify"><code>JSON.stringify()</code></a>.
       </li>
       <li>
-        <code>xml</code>: format body with <a href="https://jsr.io/@libs/xml"><code>stringify()</code> from <i>@libs/xml</i></a>.
+        <code>xml</code>: format body with <a href="https://jsr.io/@libs/xml"><code>stringify()</code> from <var>@libs/xml</var></a>.
         <mizu-import>
-          Using this value will dynamically import <a href="https://jsr.io/@libs/xml">jsr.io/@libs/xml</a>.
+          Using this value will dynamically import <a href="https://jsr.io/@libs/xml"><var>@libs/xml</var></a>.
         </mizu-import>
       </li>
     </ul>
-    This modifier should not be used multiple times.
+    This modifier should not be used with one of its aliases.
   </mizu-modifier>
   <mizu-modifier #modifier name="header">
     Automatically set <a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Type">Content-Type header</a> when using a <code>.type</code> modifier.
@@ -215,7 +215,7 @@
         </mizu-import>
       </li>
     </ul>
-    Multiple usage of this modifier can result in unexpected behavior.
+    This modifier should not be used with one of its aliases.
   </mizu-modifier>
   <mizu-modifier #modifier name="void">
     Alias for <code>.consume[void]</code>.

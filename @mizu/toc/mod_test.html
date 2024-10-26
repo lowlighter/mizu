@@ -42,7 +42,7 @@
   </expect>
 </test>
 
-<test name="[*toc] is able to find headings in &lt;hgroup&gt; elements">
+<test name="[*toc] finds headings in `&lt;hgroup&gt;` elements">
   <render>
     <nav *toc></nav>
     <main ~test[postprocessing].eval="this.remove()">
@@ -74,7 +74,7 @@
   </expect>
 </test>
 
-<test name="[*toc] ignores element with `[ignore]` tags">
+<test name="[*toc] ignores `toc[ignore]` elements">
   <render>
     <nav *toc></nav>
     <main ~test[postprocessing].eval="this.remove()">
@@ -106,7 +106,7 @@
   </expect>
 </test>
 
-<test name="[*toc] with single value `[tag]` creates a table of content with specified level">
+<test name="[*toc] with `toc[hx]` creates a table of content of specified level">
   <render>
     <nav *toc[h2]></nav>
     <main ~test[postprocessing].eval="this.remove()">
@@ -135,7 +135,7 @@
   </expect>
 </test>
 
-<test name="[*toc] with single value and plus sign `[tag]` creates a table of content starting from specified level">
+<test name="[*toc] with `toc[hx+]` creates a table of content starting from specified level">
   <render>
     <nav *toc[h2+]></nav>
     <main ~test[postprocessing].eval="this.remove()">
@@ -174,7 +174,7 @@
   </expect>
 </test>
 
-<test name="[*toc] with range value `[tag]` creates a table of content with specified levels">
+<test name="[*toc] with `toc[hx-hy]` creates a table of content between specified levels">
   <render>
     <nav *toc[h2-h3]></nav>
     <main ~test[postprocessing].eval="this.remove()">
@@ -208,9 +208,9 @@
   </expect>
 </test>
 
-<test name="[*toc] with invalid `[tag]` fallbacks as having no specified levels">
+<test name="[*toc] with `toc[&lt;invalid&gt;]` falls back as having no specified levels">
   <render>
-    <nav *toc[hx-hy]></nav>
+    <nav *toc[invalid]></nav>
     <main ~test[postprocessing].eval="this.remove()">
       <section>
         <h1 id="foo"><a href="#foo">foo</a></h1>
@@ -252,7 +252,7 @@
   </expect>
 </test>
 
-<test name="[*toc] is effectless if selected target does not exist">
+<test name="[*toc] skips if target does not exist">
   <render>
     <nav *toc></nav>
   </render>
@@ -261,7 +261,7 @@
   </expect>
 </test>
 
-<test name="[*toc] is effectless if selected target does not contain any heading elements">
+<test name="[*toc] skips if target does not contain any heading elements">
   <render>
     <nav *toc></nav>
     <main ~test[postprocessing].eval="this.remove()"></main>
@@ -271,7 +271,7 @@
   </expect>
 </test>
 
-<test name="[*toc] is effectless on headings that do not satisfy requirements">
+<test name="[*toc] skips headings that do not satisfy requirements">
   <render>
     <nav *toc></nav>
     <main ~test[postprocessing].eval="this.remove()">

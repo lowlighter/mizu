@@ -9,8 +9,8 @@
         <span *if="meta?.multiple" class="bd-muted bg-muted muted">
           Multiple
         </span>
-        <span *if="!Number.isNaN(meta?.phase?.priority)" class="bd-accent bg-accent">
-          <span class="accent">Priority</span><code *text="`${meta.phase.priority} — ${meta.phase.name}`"></code>
+        <span *if="!Number.isNaN(meta?.phase?.value)" class="bd-accent bg-accent">
+          <span class="accent">Phase</span><code *text="`${meta.phase.value} — ${meta.phase.name}`"></code>
         </span>
       </div>
     </h3>
