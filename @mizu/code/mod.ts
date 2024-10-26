@@ -1,5 +1,5 @@
 // Imports
-import { type Directive, Phase, resolve } from "@mizu/mizu/core/engine"
+import { type Directive, Phase } from "@mizu/mizu/core/engine"
 import mapping from "./mapping.json" with { type: "json" }
 export type * from "@mizu/mizu/core/engine"
 
@@ -15,9 +15,6 @@ export const _code = {
   name: "*code",
   phase: Phase.CONTENT,
   typings,
-  import: {
-    highlightjs: resolve("@npm/highlight.js", import.meta),
-  },
   default: "this.textContent",
   async execute(renderer, element, { attributes: [attribute], ...options }) {
     if (!renderer.isHtmlElement(element)) {
@@ -27,9 +24,9 @@ export const _code = {
     // Load language syntax
     const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
     const language = (mapping as Record<PropertyKey, string>)[parsed.tag] ?? "plaintext"
-    const { default: hljs } = await import(`${this.import.highlightjs}/lib/core`)
+    const { hljs } = await import("./import/highlight.js/core.ts")
     if (!hljs.getLanguage(language)) {
-      const { default: syntax } = await import(`${this.import.highlightjs}/lib/languages/${language}`)
+      const { syntax } = await import(`./import/highlight.js/languages/${language}.ts`)
       hljs.registerLanguage(language, syntax)
     }
 
@@ -54,7 +51,7 @@ export const _code = {
       element.parentElement.innerHTML = element.parentElement.innerHTML.trim()
     }
   },
-} as Directive<null, typeof typings> & { default: NonNullable<Directive["default"]>; import: NonNullable<Directive["import"]> }
+} as Directive<null, typeof typings> & { default: NonNullable<Directive["default"]> }
 
 /** Default exports. */
 export default _code

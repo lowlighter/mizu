@@ -1,5 +1,6 @@
 // Imports
-import { fromFileUrl, parse } from "@std/path"
+import { fromFileUrl, join, parse } from "@std/path"
+import { emptyDir, exists } from "@std/fs"
 import { Logger } from "@libs/logger"
 import { _code } from "./mod.ts"
 const logger = new Logger().with({ directive: _code.name })
@@ -17,21 +18,35 @@ async function tree(repository: string, { branch, path }: { branch: string; path
   return subtree.tree.filter(({ type }: { type: string }) => type === "blob").map(({ path }: { path: string }) => path)
 }
 
+// Clean imports
+const imports = join(fromFileUrl(import.meta.resolve("./import/highlight.js")))
+await emptyDir(join(imports, "languages"))
+logger.with({ path: join(imports, "languages") }).ok("cleaned")
+
 // Extract supported languages
 const mapping = {} as Record<PropertyKey, string>
 const files = await tree("highlightjs/highlight.js", { branch: "main", path: "src/languages" })
-const { default: hljs } = await import(`${_code.import.highlightjs}/lib/core`)
+const { hljs } = await import("./import/highlight.js/core.ts")
 logger.info(`found ${files.length} languages`)
 for (const filename of files) {
   const language = parse(filename).name
   const log = logger.with({ language }).debug("processing")
-  const { default: syntax } = await import(`${_code.import.highlightjs}/lib/languages/${language}`)
+  // Create language exports
+  const exports = join(imports, "languages", `${language}.ts`)
+  if (!await exists(exports)) {
+    await Deno.writeTextFile(exports, `export { default as syntax } from "highlight.js/lib/languages/${language}"\n`)
+    log.with({ path: exports }).ok()
+  }
+  // Register language in mapping
+  const { syntax } = await import(`./import/highlight.js/languages/${language}.ts`)
   hljs.registerLanguage(language, syntax)
   mapping[language] = language
-  for (const alias of (hljs.getLanguage(language).aliases ?? [])) {
+  for (const alias of (hljs.getLanguage(language)?.aliases ?? [])) {
     mapping[alias] = language
     log.trace("registered alias", alias)
   }
 }
+
+// Save mapping
 await Deno.writeTextFile(fromFileUrl(import.meta.resolve("./mapping.json")), JSON.stringify(mapping))
 logger.ok("mapping.json generated")
