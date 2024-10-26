@@ -45,10 +45,16 @@ function config(name: string, { parse = true } = {} as { parse?: boolean }) {
 }
 
 /** Generate JS. */
-export function js(exported: string, options?: Pick<NonNullable<Arg<typeof bundle, 1>>, "format">) {
+export function js(exported: string, options?: Pick<NonNullable<Arg<typeof bundle, 1>>, "format"> & { server?: boolean }) {
   const name = exported.match(/^(?<name>@[a-z0-9][-a-z0-9]*[a-z0-9]\/[a-z0-9][-a-z0-9]*[a-z0-9]).*$/)?.groups?.name ?? exported
   const url = import.meta.resolve(exported)
   log.with({ name, url }).debug("bundling javascript")
+  if (options?.server) {
+    Object.assign(options, { external: ["node:canvas"] })
+  }
+  if (options?.format === "iife") {
+    Object.assign(options, { raw: { define: { "import.meta.main": "true" } } })
+  }
   return bundle(new URL(url), { ...options, banner })
 }
 
@@ -82,10 +88,18 @@ export default {
       pattern: new URLPattern({ pathname: "/coverage*" }),
       handler: (request) => serveDir(request, { quiet: true, urlRoot: "coverage", fsRoot: fromFileUrl(import.meta.resolve("../.pages/coverage")) }),
     },
-    /*{
-      pattern: new URLPattern({ pathname: "/mizu.js" }),
-      handler: async () => new Response(await js("mod"), { headers: { "Content-Type": "application/javascript; charset=utf-8" } }),
-    },*/
+    {
+      pattern: new URLPattern({ pathname: "/client.js" }),
+      handler: async () => new Response(await js("@mizu/render/client", { format: "iife" }), { headers: { "Content-Type": "application/javascript; charset=utf-8", "Access-Control-Allow-Origin": "*" } }),
+    },
+    {
+      pattern: new URLPattern({ pathname: "/client.mjs" }),
+      handler: async () => new Response(await js("@mizu/render/client", { format: "esm" }), { headers: { "Content-Type": "application/javascript; charset=utf-8", "Access-Control-Allow-Origin": "*" } }),
+    },
+    {
+      pattern: new URLPattern({ pathname: "/server.js" }),
+      handler: async () => new Response(await js("@mizu/render/server", { server: true }), { headers: { "Content-Type": "application/javascript; charset=utf-8" } }),
+    },
     {
       pattern: new URLPattern({ pathname: "/about/phases" }),
       handler: () => new Response(JSON.stringify(Object.fromEntries(Object.entries(Phase).filter(([_, value]) => Number.isFinite(value)))), { headers: { "content-type": "application/json; charset=utf-8" } }),
@@ -114,7 +128,7 @@ export default {
                 }
               }
             }
-            json.phase = { name: Phase[directive.phase], priority: directive.phase }
+            json.phase = { name: Phase[directive.phase], value: directive.phase }
             return new Response(JSON.stringify(json), { headers })
           } catch (error) {
             return new Response(JSON.stringify({ error: `${error}` }), { headers })
