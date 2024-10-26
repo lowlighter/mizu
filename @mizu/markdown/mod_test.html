@@ -25,23 +25,24 @@
     ].join("\n")
   </script>
   <render>
-    <pre><span *markdown.trim="value"></span></pre>
+    <span *markdown.trim="value"></span>
   </render>
   <expect>
-    <pre><span><p>foo</p></span></pre>
+    <span><p>foo</p></span>
   </expect>
   <render>
-    <pre><span *markdown.trim[false]="value"></span></pre>
+    <span *markdown.trim[false]="value"></span>
   </render>
   <expect>
-    <pre><span><pre><code>    foo
-</code></pre></span></pre>
+    <span><pre>
+<code>    foo
+</code></pre></span>
   </expect>
   <render>
-    <pre><span *markdown.trim="''"></span></pre>
+    <span *markdown.trim="''"></span>
   </render>
   <expect>
-    <pre><span></span></pre>
+    <span></span>
   </expect>
 </test>
 

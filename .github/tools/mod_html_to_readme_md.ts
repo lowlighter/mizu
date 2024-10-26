@@ -72,7 +72,7 @@ export async function htmlToMd(html: string) {
               modifier.removeChild(type)
               modifier.innerHTML = `${modifier.innerHTML}`
             }
-            if (name == "..") {
+            if (name === "..") {
               name = "..."
             } else if (name) {
               const typings = metadata.typings.modifiers[name] ?? {}
@@ -135,6 +135,7 @@ function toMarkdown(elements: Array<Node> | Node | null, markdown = "") {
           markdown += `*${toMarkdown(Array.from(node.childNodes))}*`
           break
         // Bold
+        case "STRONG":
         case "B":
           markdown += `**${toMarkdown(Array.from(node.childNodes))}**`
           break
@@ -173,7 +174,7 @@ function toMarkdown(elements: Array<Node> | Node | null, markdown = "") {
           break
         }
         default:
-          console.log(node.tagName)
+          log.with({ tag: node.tagName }).error("Unknown tag")
           markdown += toMarkdown(Array.from(node.childNodes))
       }
     }
