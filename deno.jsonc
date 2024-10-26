@@ -88,7 +88,8 @@
     "@mizu/skip",
     "@mizu/test",
     "@mizu/text",
-    "@mizu/toc"
+    "@mizu/toc",
+    "@mizu/unstable"
   ],
   "fmt": {
     "semiColons": false,

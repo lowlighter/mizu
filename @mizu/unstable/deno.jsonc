@@ -1,0 +1,7 @@
+{
+  "name": "@mizu/unstable",
+  "version": "0.1.0",
+  "exports": {
+    "./noop": "./noop/mod.ts"
+  }
+}

@@ -1,0 +1,10 @@
+<load directives="@mizu/unstable/noop"></load>
+
+<test name="[*noop] does nothing">
+  <render>
+    <p *noop>foo</p>
+  </render>
+  <expect>
+    <p>foo</p>
+  </expect>
+</test>
