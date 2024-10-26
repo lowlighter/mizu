@@ -7,7 +7,7 @@ export const _show = {
   name: "*show",
   phase: Phase.DISPLAY,
   async execute(renderer, element, { attributes: [attribute], ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     const result = Boolean(await renderer.evaluate(element, attribute.value, options))
