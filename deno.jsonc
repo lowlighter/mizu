@@ -124,6 +124,17 @@
       "**/.pages"
     ]
   },
+  "publish": {
+    "exclude": [
+      ".devcontainer/**",
+      ".github/**",
+      "@mizu/**/*.html",
+      "@mizu/**/*_test.ts",
+      "www/**",
+      "CONTRIBUTING.md",
+      "vercel.json"
+    ]
+  },
   "compilerOptions": {
     "lib": [
       "dom",
