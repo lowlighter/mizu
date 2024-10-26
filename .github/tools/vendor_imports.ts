@@ -1,13 +1,13 @@
 // Imports
 import type { Promisable } from "@libs/typing"
-import { fromFileUrl, join, parse, globToRegExp } from "@std/path"
+import { fromFileUrl, globToRegExp, join, parse } from "@std/path"
 import { emptyDir, exists } from "@std/fs"
 import { Logger } from "@libs/logger"
 
 /** Vendor imports. */
 export class Vendor {
   /** Constructor. */
-  constructor({directive, meta, name}:{directive: string|RegExp, meta:ImportMeta, name:string}) {
+  constructor({ directive, meta, name }: { directive: string | RegExp; meta: ImportMeta; name: string }) {
     this.#directory = join(fromFileUrl(meta.resolve(`./import/${name}`)))
     this.log = new Logger().with({ directive })
   }
@@ -32,15 +32,18 @@ export class Vendor {
   }
 
   /** Vendor files from github repository. */
-  async github({ repository, branch, path, globs, destination, export:exporter, callback }: { repository: string; branch: string; path: string; globs?: string[], destination:string, export?:(name:string) => string, callback?: (name:string, _:{ log: Logger}) => Promisable<void> }) {
+  async github(
+    { repository, branch, path, globs, destination, export: exporter, callback }: { repository: string; branch: string; path: string; globs?: string[]; destination: string; export?: (name: string) => string; callback?: (name: string, _: { log: Logger }) => Promisable<void> },
+  ) {
     destination = join(this.#directory, destination)
     // Clean directory
     await emptyDir(destination)
     this.log.with({ destination }).ok("cleaned")
     // Search files from repository
     let files = await this.#tree(repository, { branch, path })
-    if (globs)
-      files = files.filter((file) => globs.every(glob => globToRegExp(glob, {extended:true}).test(file)))
+    if (globs) {
+      files = files.filter((file) => globs.every((glob) => globToRegExp(glob, { extended: true }).test(file)))
+    }
     this.log.with({ repository, branch, path }).info(`found ${files.length} matching files`)
     // Process files
     for (const filename of files) {
@@ -59,5 +62,4 @@ export class Vendor {
     }
     return this
   }
-
 }
