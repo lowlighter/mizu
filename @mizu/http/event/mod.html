@@ -1,0 +1,39 @@
+<mizu-directive id="http_event" directory="http/event">
+  <code #name><span class="hljs-keyword">%@</span><span class="hljs-meta underline-dotted">event</span><wbr /><span class="muted">="listener"</span></code>
+  <p #description>
+    Listen for a dispatched <code><a href="https://developer.mozilla.org/docs/web/api/event">Event</a></code>
+    and re-evaluates <a href="#http"><code class="hljs-keyword">%http</code></a> directive before reacting to its <a href="https://developer.mozilla.org/docs/Web/API/Response"><code>Response</code></a>.
+  </p>
+  <code #example *skip>
+    <button %http="https://example.com" %@click.html="">
+      <!--...-->
+    </button>
+  </code>
+  <mizu-restriction #note>
+    Must be defined on an element that also possess a <a href="#http"><code class="hljs-keyword">%http</code></a> directive.
+  </mizu-restriction>
+  <mizu-note #note>
+    This is essentially a combination of <a href="#response"><code class="hljs-keyword">%response</code></a> and <a href="#event"><code class="hljs-keyword">@event</code></a> directives.
+  </mizu-note>
+  <mizu-note #note>
+    Target URL is still set by <a href="#http"><code class="hljs-keyword">%http</code></a> directive. As it is re-evaluated, you can however use the <code>$event</code> value to dynamically compute the target URL <i>(e.g.<code>%http="$event ? '/foo' : '/bar'"</code>)</i>. All
+    modifiers from <a href="#http"><code class="hljs-keyword">%http</code></a> directive are inherited, along with the <a href="https://developer.mozilla.org/docs/Web/API/RequestInit"><code>RequestInit</code></a> prepared by <a href="#header"><code class="hljs-keyword"
+      >%header</code></a> and <a href="#body"><code class="hljs-keyword">%body</code></a> directives.
+  </mizu-note>
+  <mizu-variable #variable name="$event">
+    <span #type>Event</span>
+    <i class="muted">(in <code>listener</code> only)</i> The dispatched <a href="https://developer.mozilla.org/docs/web/api/event"><code>Event</code></a>.
+  </mizu-variable>
+  <mizu-variable #variable name="$response">
+    <span #type>Response</span>
+    A <a href="https://developer.mozilla.org/docs/Web/API/Response"><code>Response</code></a> object that contains the fetched data.
+  </mizu-variable>
+  <mizu-variable #variable name="$content">
+    <span #type>unknown</span>
+    A variable that contains the <a href="https://developer.mozilla.org/docs/Web/API/Response/body"><code>response.body</code></a>
+    <i>(typing depends on which modifier is used)</i>.
+  </mizu-variable>
+  <mizu-modifier #modifier name="..">
+    Inherited from <a href="#event"><code class="hljs-keyword">@event</code></a> and <a href="#response"><code class="hljs-keyword">%response</code></a> directives. See their respective documentation for more information.
+  </mizu-modifier>
+</mizu-directive>
