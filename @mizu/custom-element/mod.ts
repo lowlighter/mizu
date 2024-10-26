@@ -30,7 +30,7 @@ export const _custom_element = {
   },
   async execute(renderer, element, { cache, attributes: [attribute], ...options }) {
     // Validate element and custom element name
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     if ((element.tagName !== "TEMPLATE")) {

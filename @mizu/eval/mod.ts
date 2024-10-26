@@ -10,13 +10,13 @@ export const _eval = {
     renderer.cache<Cache<typeof _eval>>(this.name, new WeakMap())
   },
   execute(renderer, element, { attributes: [attribute], cache }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     cache.set(element, attribute)
   },
   async cleanup(renderer, element, { cache, ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     if (cache.has(element)) {

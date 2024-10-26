@@ -20,7 +20,7 @@ export const _code = {
   },
   default: "this.textContent",
   async execute(renderer, element, { attributes: [attribute], ...options }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
 

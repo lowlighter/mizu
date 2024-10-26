@@ -34,7 +34,7 @@ export const _clean = {
     renderer.cache<Cache<typeof _clean>>(this.name, { directives: new WeakSet(), templates: new WeakSet(), comments: new WeakSet() })
   },
   execute(renderer, element, { attributes: [attribute], cache }) {
-    if (renderer.isComment(element)) {
+    if (!renderer.isHtmlElement(element)) {
       return
     }
     const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
