@@ -7,7 +7,7 @@ import _mizu from "@mizu/mizu"
 import _test from "@mizu/test"
 const options = { directives: [_mizu] }
 
-test()("`Renderer.constructor()` returns a new instance", async () => {
+test()("`Renderer.constructor()` instantiates a new `Renderer`", async () => {
   await using window = new Window()
   const renderer = new Renderer(window, options)
   expect(renderer.ready).toBeInstanceOf(Promise)
@@ -16,10 +16,10 @@ test()("`Renderer.constructor()` returns a new instance", async () => {
   await expect(renderer.ready).resolves.toBeInstanceOf(Renderer)
 })
 
-test()("`Renderer.ready` resolves once it is ready", async () => {
+test()("`Renderer.ready` resolves once instance is ready", async () => {
   await using window = new Window()
   const directive = { name: "*foo", init: fn(), phase: Phase.TESTING }
-  const renderer = new Renderer(window, { directives: [directive, { name: "*bar", phase: Phase.TESTING }] as testing })
+  const renderer = new Renderer(window, { ...options, directives: [directive, { name: "*bar", phase: Phase.TESTING }] as testing })
   expect(renderer.ready).toBeInstanceOf(Promise)
   await expect(renderer.ready).resolves.toBeInstanceOf(Renderer)
   expect(directive.init).toBeCalledWith(renderer)
@@ -49,7 +49,7 @@ test()("`Renderer.load()` loads, initializes and sorts directives", async () => 
     name: "*foo",
     phase: 1,
   }]
-  const renderer = await new Renderer(window).ready
+  const renderer = await new Renderer(window, { ...options, directives: [] }).ready
   await expect(renderer.load(directives)).resolves.toBe(renderer)
   expect(renderer.directives).toHaveLength(directives.length)
   expect(renderer.directives).toMatchObject(directives.reverse())
@@ -58,7 +58,7 @@ test()("`Renderer.load()` loads, initializes and sorts directives", async () => 
 
 test()("`Renderer.load()` resolves and loads dynamically directives with `import()`", async () => {
   await using window = new Window()
-  const renderer = await new Renderer(window).ready
+  const renderer = await new Renderer(window, { ...options, directives: [] }).ready
   await expect(renderer.load("@mizu/test")).resolves.toBe(renderer)
   expect(renderer.directives).toHaveLength(_test.length)
   expect(renderer.directives).toMatchObject(_test as testing)
@@ -66,7 +66,7 @@ test()("`Renderer.load()` resolves and loads dynamically directives with `import
 
 test()("`Renderer.load()` ignores directives with `Phase.META`", async () => {
   await using window = new Window()
-  const renderer = await new Renderer(window).ready
+  const renderer = await new Renderer(window, { ...options, directives: [] }).ready
   await expect(renderer.load({ name: "*foo", phase: Phase.META })).resolves.not._toThrow()
   expect(renderer.directives).toHaveLength(0)
 })
@@ -80,7 +80,7 @@ test()("`Renderer.load()` ignores invalid directives", async () => {
       throw new TestingError("Expected error")
     }) as testing,
   }
-  const renderer = await new Renderer(window).ready
+  const renderer = await new Renderer(window, { ...options, directives: [] }).ready
   await expect(renderer.load(directive)).rejects._toThrow(TestingError, "Expected error")
   expect(directive.init).toBeCalledWith(renderer)
   expect(renderer.directives).toHaveLength(0)
@@ -92,16 +92,18 @@ test()("`Renderer.load()` ignores invalid directives", async () => {
 
 test()("`Renderer.load()` ignores duplicates or already loaded directives", async () => {
   await using window = new Window()
+  const warn = fn() as testing
   const directive = {
     name: "*foo",
     phase: Phase.TESTING,
   }
-  const renderer = await new Renderer(window).ready
+  const renderer = await new Renderer(window, { ...options, warn, directives: [] }).ready
   await renderer.load([directive, directive])
   await renderer.load([directive])
   await renderer.load(directive)
   expect(renderer.directives).toHaveLength(1)
   expect(renderer.directives).toMatchObject([directive])
+  expect(warn).toBeCalledWith("Directive [*foo] is already loaded, skipping")
 })
 
 test()("`Renderer.internal()` returns internal identifiers", async () => {
@@ -140,7 +142,7 @@ test()("`Renderer.evaluate()` evaluates expressions with callables", async () =>
   expect(foo).toBeCalledWith(true)
 })
 
-test()("`Renderer.evaluate()` rejects if the internal identifier is used", async () => {
+test()("`Renderer.evaluate()` rejects if the `Renderer.internal` identifier is used", async () => {
   await using window = new Window()
   const renderer = await new Renderer(window, options).ready
   await expect(renderer.evaluate(null, "null", { context: new Context({ [renderer.internal()]: true }) })).rejects.toThrow(TypeError)
@@ -149,7 +151,7 @@ test()("`Renderer.evaluate()` rejects if the internal identifier is used", async
 test()("`Renderer.render()` requires `*mizu` attribute when `implicit: false`", async () => {
   await using window = new Window()
   const directive = { name: "*foo", execute: fn(), phase: Phase.TESTING }
-  const renderer = await new Renderer(window, { directives: [directive] as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: [directive] as testing }).ready
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "" } }), { implicit: false })).not.resolves.toThrow()
   expect(directive.execute).not.toBeCalled()
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "", [_mizu.name]: "" } }), { implicit: false })).not.resolves.toThrow()
@@ -158,7 +160,7 @@ test()("`Renderer.render()` requires `*mizu` attribute when `implicit: false`", 
 
 test()("`Renderer.render()` returns selected element with `select` option", async () => {
   await using window = new Window()
-  const renderer = await new Renderer(window).ready
+  const renderer = await new Renderer(window, options).ready
   const element = renderer.createElement("div", { innerHTML: "<span>foo</span>" })
   await expect(renderer.render(element, { select: "span" })).resolves.toHaveProperty("tagName", "SPAN")
   await expect(renderer.render(element, { select: "unknown" })).resolves.toBeNull()
@@ -166,17 +168,24 @@ test()("`Renderer.render()` returns selected element with `select` option", asyn
 
 test()("`Renderer.render()` returns stringified result when `stringify: true`", async () => {
   await using window = new Window()
-  const renderer = await new Renderer(window).ready
+  const renderer = await new Renderer(window, options).ready
   const element = renderer.createElement("div", { innerHTML: "<span>foo</span>" })
   await expect(renderer.render(element, { select: "unknown", stringify: true })).resolves.toBe("")
   await expect(renderer.render(element, { select: "span", stringify: true })).resolves.toBe("<span>foo</span>")
   await expect(renderer.render(element, { stringify: true })).resolves.toBe("<!DOCTYPE html><div><span>foo</span></div>")
 })
 
+test()("`Renderer.render()` throws on `Error` when `throw: true`", async () => {
+  await using window = new Window()
+  const renderer = await new Renderer(window, { ...options, directives: [_test] }).ready
+  const element = renderer.createElement("div", { innerHTML: "<span ~test.throw>foo</span>" })
+  await expect(renderer.render(element, { throw: true })).rejects._toThrow(AggregateError)
+})
+
 test()("`Renderer.#render() // 1` ignores non-element nodes unless they were processed before and put into cache", async () => {
   await using window = new Window()
   const directive = { name: "*foo", setup: fn(), phase: Phase.TESTING }
-  const renderer = await new Renderer(window, { directives: [directive] as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: [directive] as testing }).ready
   await expect(renderer.render(renderer.document.createComment("comment") as testing)).not.resolves.toThrow()
   expect(directive.setup).not.toBeCalled()
   await expect(renderer.render(renderer.comment(renderer.createElement("div"), { directive: "", expression: "" }) as testing)).not.resolves.toThrow()
@@ -186,7 +195,7 @@ test()("`Renderer.#render() // 1` ignores non-element nodes unless they were pro
 test()("`Renderer.#render() // 2` calls `directive.setup()`", async () => {
   await using window = new Window()
   const directives = [{ name: "*foo", setup: fn(), phase: Phase.TESTING }, { name: "*bar", setup: fn(), phase: Phase.TESTING }]
-  const renderer = await new Renderer(window, { directives: directives as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: directives as testing }).ready
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "" } }))).not.resolves.toThrow()
   expect(directives[0].setup).toBeCalled()
   expect(directives[1].setup).toBeCalled()
@@ -195,7 +204,7 @@ test()("`Renderer.#render() // 2` calls `directive.setup()`", async () => {
 test()("`Renderer.#render() // 2.1` ends the process if `false` is returned", async () => {
   await using window = new Window()
   const directives = [{ name: "*foo", setup: fn(() => false), execute: fn(), phase: Phase.TESTING }, { name: "*bar", execute: fn(), phase: Phase.TESTING }]
-  const renderer = await new Renderer(window, { directives: directives as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: directives as testing }).ready
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "", "*bar": "" } }))).not.resolves.toThrow()
   expect(directives[0].setup).toBeCalled()
   expect(directives[0].setup).toReturnWith(false)
@@ -206,7 +215,7 @@ test()("`Renderer.#render() // 2.1` ends the process if `false` is returned", as
 test()("`Renderer.#render() // 2.1` updates `state` if it is returned", async () => {
   await using window = new Window()
   const directives = [{ name: "*foo", setup: fn(() => ({ state: { $bar: true } })), execute: fn((_: unknown, __: unknown, { state }: testing) => state), phase: Phase.TESTING }]
-  const renderer = await new Renderer(window, { directives: directives as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: directives as testing }).ready
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "", "*bar": "" } }), { state: { $foo: true } })).not.resolves.toThrow()
   expect(directives[0].setup).toBeCalled()
   expect(directives[0].execute).toBeCalled()
@@ -216,7 +225,7 @@ test()("`Renderer.#render() // 2.1` updates `state` if it is returned", async ()
 test()("`Renderer.#render() // 3` retrieves `HTMLElement` from `Comment` if applicable", async () => {
   await using window = new Window()
   const directives = [{ name: "*foo", execute: fn((_: unknown, element: unknown) => element), phase: Phase.TESTING }]
-  const renderer = await new Renderer(window, { directives: directives as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: directives as testing }).ready
   const element = renderer.createElement("div", { attributes: { "*foo": "" } })
   await expect(renderer.render(element)).not.resolves.toThrow()
   expect(directives[0].execute).toBeCalled()
@@ -230,7 +239,7 @@ test()("`Renderer.#render() // 3` retrieves `HTMLElement` from `Comment` if appl
 test()("`Renderer.#render() // 4.1` calls `directive.execute()` if node is elligible", async () => {
   await using window = new Window()
   const directives = [{ name: "*foo", execute: fn(), phase: Phase.TESTING }, { name: "*bar", execute: fn(), phase: Phase.TESTING }]
-  const renderer = await new Renderer(window, { directives: directives as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: directives as testing }).ready
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*bar": "" } }))).not.resolves.toThrow()
   expect(directives[0].execute).not.toBeCalled()
   expect(directives[1].execute).toBeCalledTimes(1)
@@ -243,7 +252,7 @@ test()("`Renderer.#render() // 4.2` warns on conflicting directives", async () =
   await using window = new Window()
   const warn = fn() as testing
   const directives = [{ name: "*foo", phase: Phase.CONTENT }, { name: "*bar", phase: Phase.CONTENT }]
-  const renderer = await new Renderer(window, { directives: directives as testing }).ready
+  const renderer = await new Renderer(window, { ...options, warn, directives: directives as testing }).ready
   Object.assign(renderer, { warn })
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "", "*bar": "" } }))).not.resolves.toThrow()
   expect(warn).toBeCalledWith("Using [*bar] and [*foo] directives together might result in unexpected behaviour", expect.anything())
@@ -252,7 +261,7 @@ test()("`Renderer.#render() // 4.2` warns on conflicting directives", async () =
 test()("`Renderer.#render() // 4.2` warns on duplicates directives", async () => {
   await using window = new Window()
   const warn = fn() as testing
-  const renderer = await new Renderer(window, { directives: [{ name: "*foo", phase: Phase.TESTING }] as testing }).ready
+  const renderer = await new Renderer(window, { ...options, warn, directives: [{ name: "*foo", phase: Phase.TESTING }] as testing }).ready
   Object.assign(renderer, { warn })
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo[1]": "", "*foo[2]": "" } }))).not.resolves.toThrow()
   expect(warn).toBeCalledWith("Using multiple [*foo] directives might result in unexpected behaviour", expect.anything())
@@ -261,7 +270,7 @@ test()("`Renderer.#render() // 4.2` warns on duplicates directives", async () =>
 test()("`Renderer.#render() // 4.3` updates node when a new `element` is returned", async () => {
   await using window = new Window()
   const directives = [{ name: "*foo", execute: fn((renderer: Renderer, element: HTMLElement) => ({ element: renderer.comment(element, { directive: "", expression: "" }) })), phase: Phase.TESTING }, { name: "*bar", execute: fn(), phase: Phase.TESTING }]
-  const renderer = await new Renderer(window, { directives: directives as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: directives as testing }).ready
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "", "*bar": "" } }))).not.resolves.toThrow()
   expect(directives[0].execute).toBeCalledTimes(1)
   expect((directives[0].execute as testing)[Symbol.for("@MOCK")].calls[0].args[1].nodeType).toBe(renderer.window.Node.ELEMENT_NODE)
@@ -272,7 +281,7 @@ test()("`Renderer.#render() // 4.3` updates node when a new `element` is returne
 test()("`Renderer.#render() // 4.3` ends the process if `final: true` is returned", async () => {
   await using window = new Window()
   const directives = [{ name: "*foo", execute: fn(() => ({ final: true })), phase: Phase.TESTING }, { name: "*bar", execute: fn(), phase: Phase.TESTING }]
-  const renderer = await new Renderer(window, { directives: directives as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: directives as testing }).ready
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "", "*bar": "" } }))).not.resolves.toThrow()
   expect(directives[0].execute).toBeCalled()
   expect(directives[0].execute).toHaveReturnedWith({ final: true })
@@ -285,7 +294,7 @@ test()("`Renderer.#render() // 4.3` updates `state` or `context` if one of them 
     { name: "*foo", execute: fn((_: unknown, __: unknown) => ({ state: { $bar: true } })), phase: Phase.TESTING },
     { name: "*bar", execute: fn((_: unknown, __: unknown) => ({ context: { $bar: true } })), phase: Phase.TESTING },
   ]
-  const renderer = await new Renderer(window, { directives: directives as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: directives as testing }).ready
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "", "*bar": "" } }), { state: { $foo: true } })).not.resolves.toThrow()
   expect(directives[0].execute).toBeCalled()
   expect(directives[1].execute).toBeCalled()
@@ -295,7 +304,7 @@ test()("`Renderer.#render() // 4.3` updates `state` or `context` if one of them 
 test()("`Renderer.render() // 5` recurses on child nodes", async () => {
   await using window = new Window()
   const directives = [{ name: "*foo", execute: fn(), phase: Phase.TESTING }, { name: "*bar", execute: fn(), phase: Phase.TESTING }]
-  const renderer = await new Renderer(window, { directives: directives as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: directives as testing }).ready
   const a = renderer.createElement("div", { attributes: { "*foo": "" } })
   const b = renderer.createElement("div", { attributes: { "*bar": "" } })
   a.appendChild(b)
@@ -309,7 +318,7 @@ test()("`Renderer.render() // 5` recurses on child nodes", async () => {
 test()("`Renderer.#render() // 6` calls `directive.cleanup()`", async () => {
   await using window = new Window()
   const directives = [{ name: "*foo", cleanup: fn(), phase: Phase.TESTING }, { name: "*bar", cleanup: fn(), phase: Phase.TESTING }]
-  const renderer = await new Renderer(window, { directives: directives as testing }).ready
+  const renderer = await new Renderer(window, { ...options, directives: directives as testing }).ready
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "" } }))).not.resolves.toThrow()
   expect(directives[0].cleanup).toBeCalled()
   expect(directives[1].cleanup).toBeCalled()
@@ -318,7 +327,7 @@ test()("`Renderer.#render() // 6` calls `directive.cleanup()`", async () => {
 test()("`Renderer.render() // R` reacts to properties changes using the closest possible subtree and context", async () => {
   await using window = new Window()
   const context = new Context({ foo: "bar", fn: { a: fn(), b: fn(), c: fn() } })
-  const renderer = new Renderer(window, { directives: [_test] })
+  const renderer = new Renderer(window, { ...options, directives: [_test] })
   const a = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.a()" } })
   const b = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.b()", "~test.text": "foo" } })
   const c = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.c()", "~test.text": "1 + 1" } })
@@ -343,7 +352,7 @@ test()("`Renderer.render() // R` reacts to properties changes using the closest 
 test()("`Renderer.render() // R` reacts to properties changes and avoid queuing multiple renderings of the same subtrees", async () => {
   await using window = new Window()
   const context = new Context({ a: false, b: false, c: false, fn: { a: fn(), b: fn(), c: fn() } })
-  const renderer = new Renderer(window, { directives: [_test] })
+  const renderer = new Renderer(window, { ...options, directives: [_test] })
   const a = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.a()", "~test[content].eval": "a" } })
   const b = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.b()", "~test[content].eval": "b" } })
   const c = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.c()", "~test[content].eval": "c" } })
@@ -366,7 +375,7 @@ test()("`Renderer.render() // R` reacts to properties changes and avoid queuing 
 test()("`Renderer.render() // R` reacts to properties changes and continue to track changes after elements morphing", async () => {
   await using window = new Window()
   const context = new Context({ foo: "bar", comment: true })
-  const renderer = new Renderer(window, { directives: [_test] })
+  const renderer = new Renderer(window, { ...options, directives: [_test] })
   const element = renderer.createElement("div", { innerHTML: `<div ~test[postprocessing].comment="comment" ~test[preprocessing]="foo"></div>` })
   await renderer.render(element, { context, reactive: true })
   expect(element.childNodes[0].nodeType).toBe(renderer.window.Node.COMMENT_NODE)
@@ -390,7 +399,7 @@ test()("`Renderer.render() // R` reacts to properties changes and continue to tr
       }
     },
   } as Directive
-  const renderer = new Renderer(window, { directives: [_test, directive] })
+  const renderer = new Renderer(window, { ...options, directives: [_test, directive] })
   const element = renderer.createElement("div", { attributes: { "*foo": "", "~test[preprocessing].eval": "foo", "~test[content].text": "foo + bar" } })
   await renderer.render(element, { context, reactive: true })
   expect(element.textContent).toBe("barbaz")
@@ -408,7 +417,7 @@ test()("`Renderer.createElement()` creates a `new HTMLElement()`", async () => {
   expect(renderer.createElement("input", { attributes: { foo: "bar" } }).getAttribute("foo")).toBe("bar")
 })
 
-test()("`Renderer.replaceElementWithChildNodes()` replaces `HTMLElement` with another `HTMLElement.childNodes`", async () => {
+test()("`Renderer.replaceElementWithChildNodes()` replaces an `HTMLElement` with another `HTMLElement.childNodes`", async () => {
   await using window = new Window()
   const renderer = await new Renderer(window, options).ready
   renderer.document.body.innerHTML = "<span><slot></slot></span>"
@@ -419,7 +428,7 @@ test()("`Renderer.replaceElementWithChildNodes()` replaces `HTMLElement` with an
   expect(span.innerHTML).toBe(div.innerHTML)
 })
 
-test()("`Renderer.comment()` replaces `HTMLElement` by a `new Comment()`", async () => {
+test()("`Renderer.comment()` replaces an `HTMLElement` by a `new Comment()`", async () => {
   await using window = new Window()
   const renderer = await new Renderer(window, options).ready
   const div = renderer.createElement("div")
@@ -431,7 +440,7 @@ test()("`Renderer.comment()` replaces `HTMLElement` by a `new Comment()`", async
   expect(renderer.document.body.innerHTML).toBe(`<!--[*foo="bar"]-->`)
 })
 
-test()("`Renderer.uncomment()` restores a `HTMLElement` that was replaced by a `Comment`", async () => {
+test()("`Renderer.uncomment()` restores an `HTMLElement` that was replaced by a `Comment`", async () => {
   await using window = new Window()
   const renderer = await new Renderer(window, options).ready
   const div = renderer.createElement("div")
@@ -503,7 +512,7 @@ test()("`Renderer.setAttribute()` updates `Comment.nodeValue`", async () => {
   expect(comment.nodeValue).toBe(`[*foo="bar"] [baz="qux"]`)
 })
 
-test()("`Renderer.getAttributes()` returns matching `HTMLElement.attributes` with supported syntax", async () => {
+test()("`Renderer.getAttributes()` returns matching `HTMLElement.attributes` after directive syntax parsing", async () => {
   await using window = new Window()
   const renderer = await new Renderer(window, options).ready
   const div = renderer.createElement("div", { attributes: { "*foo.bar": "true", "*foo.baz": "false" } })
@@ -683,27 +692,4 @@ test()("`Renderer.isComment()` checks if the given node is a `Comment`", async (
   const comment = renderer.document.createComment("")
   expect(renderer.isComment(element)).toBe(false)
   expect(renderer.isComment(comment)).toBe(true)
-})
-
-test()("`Renderer.warn()` is a no-op when `target` is nullish", async () => {
-  await using window = new Window()
-  const renderer = await new Renderer(window, options).ready
-  expect(() => renderer.warn("foo")).not.toThrow()
-  expect(() => renderer.warn("foo", null)).not.toThrow()
-})
-
-test()("`Renderer.warn()` sets `*warn` attribute when `target` is a node", async () => {
-  await using window = new Window()
-  const renderer = await new Renderer(window, options).ready
-  const div = renderer.createElement("div")
-  renderer.warn("foo", div)
-  expect(div.getAttribute("*warn")).toBe("foo")
-})
-
-test()("`Renderer.warn()` calls `target.warn()` if it exists", async () => {
-  await using window = new Window()
-  const renderer = await new Renderer(window, options).ready
-  const warn = fn() as testing
-  renderer.warn("foo", { warn })
-  expect(warn).toBeCalledWith("foo")
 })

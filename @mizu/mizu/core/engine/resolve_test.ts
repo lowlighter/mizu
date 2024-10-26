@@ -1,5 +1,5 @@
 import type { testing } from "@libs/testing"
-import { expect, test} from "@libs/testing"
+import { expect, test } from "@libs/testing"
 import { resolve } from "./resolve.ts"
 
 test()("`resolve()` resolves imports in deno", () => {
@@ -14,8 +14,7 @@ test()("`resolve()` resolves imports in browsers", () => {
       expect(resolve("@libs/testing", meta)).toBe("https://esm.sh/jsr/@libs/testing")
       expect(resolve("@npm/jsdom", meta)).toBe("https://esm.sh/jsdom")
     }
-  }
-  finally {
+  } finally {
     delete (globalThis as testing).window
   }
 })

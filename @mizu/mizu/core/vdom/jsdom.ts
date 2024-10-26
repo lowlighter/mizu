@@ -18,5 +18,5 @@ const Window = (function (content: string) {
     await window.close()
   }
   return window
-}) as unknown as (new (content?: string) => Window & VirtualWindow & { [Symbol.asyncDispose]: () => Promise<void> })
+}) as unknown as (new (content?: string) => VirtualWindow)
 export { Window }

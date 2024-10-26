@@ -6,8 +6,9 @@
  *
  * On browsers, imports are resolved to {@linkcode https://esm.sh | esm.sh}.
  */
-export function resolve(imported: string, meta?: ImportMeta) {
-  if (globalThis.window)
+export function resolve(imported: string, meta?: ImportMeta): string {
+  if (globalThis.window) {
     meta = undefined
+  }
   return meta?.resolve?.(imported) ?? `https://esm.sh/${imported.replace("@npm/", "")}`.replace("esm.sh/@", "esm.sh/jsr/@")
 }

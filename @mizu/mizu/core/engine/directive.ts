@@ -1,8 +1,9 @@
 // Imports
 import type { DeepReadonly, Promisable } from "@libs/typing/types"
 import type { AttrTypings, Context, InferAttrTypings, InitialContextState, Renderer, State } from "./renderer.ts"
+import { resolve } from "./resolve.ts"
 import { Phase } from "./phase.ts"
-export { Phase }
+export { Phase, resolve }
 export type { DeepReadonly, Promisable }
 
 /**
@@ -23,7 +24,6 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * If the directive name is dynamic, a `RegExp` may be used instead of a `string`.
    * In this case, {@linkcode Directive.prefix} should be specified.
    *
-   * @example
    * ```ts
    * const foo = {
    *   name: "*foo",
@@ -35,11 +35,10 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
   /**
    * Directive prefix.
    *
-   * It is used as a hint for {@linkcode Renderer.parseAttribute()} to strip prefix from {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr/name | Attr.name} when parsing the directive.
+   * It is used as a hint for {@linkcode Renderer.parseAttribute()} to strip prefix from {@linkcode https://developer.mozilla.org/docs/Web/API/Attr/name | Attr.name} when parsing the directive.
    *
    * If {@linkcode Directive.name} is a `RegExp`, this property shoud be specified.
    *
-   * @example
    * ```ts
    * const foo = {
    *   name: /^~(?<bar>)/,
@@ -52,15 +51,16 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
   /**
    * Directive import list.
    *
-   * This list contains a record of all libraries that the directive may dynamically {@linkcode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import | import()}.
+   * This list contains a record of all libraries that the directive may dynamically {@linkcode https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/import | import()}.
    *
-   * @example
+   * The {@linkcode resolve()} function should be used to guarantee that the import will be resolved correctly based on the environment.
+   *
    * ```ts
    * const foo = {
    *   name: "*foo",
    *   phase: Phase.UNKNOWN,
    *   import: {
-   *     testing: import.meta.resolve("@libs/testing")
+   *     testing: resolve("@libs/testing")
    *   }
    * } as Directive & { name: string, import: Record<PropertyKey, string> }
    * ```
@@ -78,7 +78,6 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    *
    * For more information, see the {@link https://mizu.sh/#concept-phase | mizu.sh documentation}.
    *
-   * @example
    * ```ts
    * const foo = {
    *   name: "*foo",
@@ -92,7 +91,6 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    *
    * If set to `false`, a warning will be issued to users attempting to apply it more than once.
    *
-   * @example
    * ```ts
    * const foo = {
    *   name: /^\/(?<value>)/,
@@ -108,7 +106,6 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    *
    * For more information, see {@linkcode Renderer.parseAttribute()}.
    *
-   * @example
    * ```ts
    * const typings = {
    *   type: Boolean,
@@ -133,7 +130,6 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    *
    * This value should be used by directive callbacks when the {@linkcode https://developer.mozilla.org/docs/Web/API/Attr/value | Attr.value} is empty.
    *
-   * @example
    * ```ts
    * const foo = {
    *   name: "*foo",
@@ -154,7 +150,6 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    *
    * If a cache is instantiated, it is recommended to use the `Directive<Cache>` generic type to ensure type safety when accessing it in {@linkcode Directive.setup()}, {@linkcode Directive.execute()}, and {@linkcode Directive.cleanup()}.
    *
-   * @example
    * ```ts
    * const foo = {
    *   name: "*foo",
@@ -171,14 +166,13 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    *
    * This callback is executed during {@linkcode Renderer.render()} before any {@linkcode Directive.execute()} calls.
    *
-   * If `false` is returned, the entire rendering process for this node is halted.
-   *
    * A partial object can be returned to update the rendering {@linkcode State}.
+   *
+   * If `false` is returned, the entire rendering process for this node is halted.
    *
    * > [!IMPORTANT]
    * > This method is executed regardless of the directive's presence on the node.
    *
-   * @example
    * ```ts
    * const foo = {
    *   name: "*foo",
@@ -191,17 +185,16 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * } as Directive & { name: string }
    * ```
    */
-  readonly setup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Cache; context: Context; state: DeepReadonly<State>; root: InitialContextState }) => Promisable<void | false | Partial<{ state: State }>>
+  readonly setup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Cache; context: Context; state: DeepReadonly<State>; root: InitialContextState }) => Promisable<void | Partial<{ state: State } | false>>
   /**
    * Directive execution callback.
    *
    * This callback is executed during {@linkcode Renderer.render()} if the rendered node has been marked as eligible.
    *
-   * If `final: true` is returned, the rendering process for this node is stopped (all {@linkcode Directive.cleanup()} will still be called).
-   *
    * A partial object can be returned to update the rendering {@linkcode Context}, {@linkcode State}, and the rendered {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} (or {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment}).
    *
-   * @example
+   * If `final: true` is returned, the rendering process for this node is stopped (all {@linkcode Directive.cleanup()} will still be called).
+   *
    * ```ts
    * const foo = {
    *   name: "*foo",
@@ -226,7 +219,6 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * > [!IMPORTANT]
    * > This method is executed regardless of the directive's presence on the node, and regardless of whether a {@linkcode Directive.execute()} returned with `final: true`.
    *
-   * @example
    * ```ts
    * const foo = {
    *   name: "*foo",

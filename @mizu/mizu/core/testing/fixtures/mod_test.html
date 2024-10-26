@@ -1,6 +1,6 @@
 <load directives="@mizu/mizu"></load>
 
-<test name="`&lt;load&gt;` loads specified directives into `Renderer`">
+<test name="`&lt;load/&gt;` loads specified directives into `Renderer`">
   <script>
     expect(testing.directives).toContain("@mizu/mizu")
   </script>
@@ -17,7 +17,7 @@
   </expect>
 </test>
 
-<test name="`&lt;render&gt;` renders specified content">
+<test name="`&lt;render&gt;/` renders specified content">
   <load directives="@mizu/test"></load>
   <render>
     <p ~test.text="'foo'"></p>
@@ -31,7 +31,7 @@
   </expect>
 </test>
 
-<test name="`&lt;script&gt;` evaluates specified script">
+<test name="`&lt;script/&gt;` evaluates specified script">
   <script>
     storage.foo = "bar"
   </script>
@@ -43,7 +43,7 @@
   </script>
 </test>
 
-<test name="`&lt;expect&gt;` asserts rendered content matches expected content and honors `comments` option">
+<test name="`&lt;expect/&gt;` asserts rendered content matches expected content and honors `comments` option">
   <render>
     <p>
       <!-- foobar -->
@@ -59,7 +59,7 @@
   </expect>
 </test>
 
-<test name="`&lt;expect&gt;` asserts rendered content matches expected content and honors `directives` option">
+<test name="`&lt;expect/&gt;` asserts rendered content matches expected content and honors `directives` option">
   <load directives="@mizu/test"></load>
   <render>
     <p ~test.text="'foo'"></p>
@@ -72,7 +72,7 @@
   </expect>
 </test>
 
-<test name="`&lt;expect&gt;` asserts rendered content matches expected content and honors `format` option">
+<test name="`&lt;expect/&gt;` asserts rendered content matches expected content and honors `format` option">
   <!-- deno-fmt-ignore -->
   <render>
   <p>
@@ -92,7 +92,7 @@
   </expect>
 </test>
 
-<test name="`&lt;expect&gt;` cleans out attributes from rendered content that match `clean` pattern">
+<test name="`&lt;expect/&gt;` cleans out attributes from rendered content that match `clean` pattern">
   <render>
     <p test-foo data-bar></p>
   </render>
@@ -101,7 +101,7 @@
   </expect>
 </test>
 
-<test name="`&lt;http-server&gt;` spawn a new http server">
+<test name="`&lt;http-server/&gt;` spawns a new http server">
   <http-server>
     <response status="Teapot"></response>
   </http-server>
@@ -112,7 +112,7 @@
   </script>
 </test>
 
-<test name="`&lt;http-server&gt;` overrides `fetch()` so absolute urls points toward spawned http server location">
+<test name="`&lt;http-server/&gt;` overrides `fetch()` so absolute urls points toward spawned http server `Location`">
   <http-server>
     <response path="/"></response>
   </http-server>
@@ -122,14 +122,14 @@
   </script>
 </test>
 
-<test name="`&lt;http-server&gt;` returns `Status.NotFound` on non-existent routes">
+<test name="`&lt;http-server/&gt;` returns `Status.NotFound` on non-existent routes">
   <http-server></http-server>
   <script>
     await expect(fetch("/")).resolves.toRespondWithStatus(Status.NotFound)
   </script>
 </test>
 
-<test name="`&lt;http-server&gt;` returns `Status.TemporaryRedirect` on redirect routes">
+<test name="`&lt;http-server/&gt;` returns `Status.TemporaryRedirect` on redirect routes">
   <http-server>
     <response path="/redirected" status="OK"></response>
     <response path="/redirect" redirect="/redirected"></response>
@@ -140,7 +140,7 @@
   </script>
 </test>
 
-<test name="`&lt;http-server&gt;` supports receiving `Request.body`">
+<test name="`&lt;http-server/&gt;` supports receiving `Request.body`">
   <http-server>
     <response path="/api"></response>
   </http-server>
@@ -152,7 +152,7 @@
   </script>
 </test>
 
-<test name="`&lt;http-server&gt;` supports sending `Response.body`">
+<test name="`&lt;http-server/&gt;` supports sending `Response.body`">
   <http-server>
     <response path="/text">foo</response>
     <response path="/escaped" escaped>&lt;foo&gt;</response>

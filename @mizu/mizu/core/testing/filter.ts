@@ -7,6 +7,8 @@ import { format } from "./format.ts"
  *
  * This function can be used to compare two HTML documents.
  *
+ * Elements with a `filter-remove` attribute are filtered out.
+ *
  * ```ts
  * import { expect } from "@libs/testing"
  * import { Window } from "@mizu/mizu/core/vdom"
@@ -18,7 +20,7 @@ import { format } from "./format.ts"
  * expect(filter(renderer, a.document.documentElement)).toBe(filter(renderer, b.document.documentElement))
  * ```
  */
-export function filter(renderer: Renderer, node: Nullable<Element>, { format: _format = true, comments = true, directives = ["*warn", "*id"] as Array<Directive["name"]>, clean = "" } = {}): string {
+export function filter(renderer: Renderer, node: Nullable<Element>, { format: _format = true, comments = true, directives = ["*warn", "*id"], clean = "" } = {} as FilterOptions): string {
   if (!node) {
     return ""
   }
@@ -27,6 +29,18 @@ export function filter(renderer: Renderer, node: Nullable<Element>, { format: _f
     html = format(html)
   }
   return html.trim()
+}
+
+/** {@linkcode filter()} options. */
+export type FilterOptions = {
+  /** Whether to format the output. */
+  format?: boolean
+  /** Whether to include comments. */
+  comments?: boolean
+  /** Directives to keep. */
+  directives?: Array<Directive["name"]>
+  /** Pattern used to clean attributes. */
+  clean?: string
 }
 
 /** Called by {@linkcode filter()}. */

@@ -7,7 +7,7 @@ import type { Directive as _Directive } from "./directive.ts"
  * For more information, see the {@link https://mizu.sh/#concept-phase | mizu.sh documentation}.
  */
 export enum Phase {
-  /** Placeholder value (intended for internal use only). @internal */
+  /** Placeholder value (intended for internal use only). */
   UNKNOWN = NaN,
 
   // 0X - Preprocessing ————————————————————————————————————————————————————————————————————————————————
@@ -23,7 +23,7 @@ export enum Phase {
 
   // 10 - Testing ——————————————————————————————————————————————————————————————————————————————————————
 
-  /** Placeholder value (intended for testing use only). @internal */
+  /** Directives that are intended for testing purposes only. */
   TESTING = 10,
 
   // 1X - Context ——————————————————————————————————————————————————————————————————————————————————————

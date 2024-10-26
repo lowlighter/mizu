@@ -16,9 +16,10 @@ export type * from "./directive.ts"
  */
 export class Renderer {
   /** {@linkcode Renderer} constructor. */
-  constructor(window: Window, { directives = [] } = {} as { directives?: Arg<Renderer["load"]> }) {
+  constructor(window: Window, { warn, directives = [] } = {} as RendererOptions) {
     this.window = window as Renderer["window"]
     this.cache("*", new WeakMap())
+    this.#warn = warn
     this.#directives = [] as Directive[]
     this.ready = this.load(directives)
   }
@@ -26,12 +27,12 @@ export class Renderer {
   /**
    * Whether the {@linkcode Renderer} is ready to be used.
    *
-   * This promise resolves once all {@linkcode Directive.init()} methods have been executed for the first time.
+   * This promise resolves once the initial {@linkcode Renderer.load()} call is completed.
    */
   readonly ready: Promise<this>
 
   /** Linked {@linkcode https://developer.mozilla.org/docs/Web/API/Window | Window}. */
-  readonly window: Window & VirtualWindow
+  readonly window: VirtualWindow
 
   /** Linked {@linkcode https://developer.mozilla.org/docs/Web/API/Document | Document}. */
   get document(): Document {
@@ -47,7 +48,6 @@ export class Renderer {
    * Directive-specific caches can be used to store related data.
    * These are automatically exposed by {@linkcode Renderer.render()} during {@linkcode Directive.setup()}, {@linkcode Directive.execute()} and {@linkcode Directive.cleanup()} executions.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    *
@@ -78,7 +78,6 @@ export class Renderer {
    *
    * These are expected to be initialized by {@linkcode Renderer.load()} during {@linkcode Directive.init()} execution if a cache is needed.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    *
@@ -104,7 +103,6 @@ export class Renderer {
    *
    * This cache should not be used to store {@linkcode Directive}-specific data.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -141,7 +139,6 @@ export class Renderer {
    * It is possible to dynamically {@linkcode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import | import()} a `Directive` by passing a `string` instead.
    * Note that in this case the resolved module must have an {@linkcode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#using_the_default_export | export default} statement.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -168,7 +165,7 @@ export class Renderer {
         continue
       }
       if (this.#directives.some((existing) => `${existing.name}` === `${directive.name}`)) {
-        this.warn(`Directive "${directive.name}" is already loaded, skipping`)
+        this.warn(`Directive [${directive.name}] is already loaded, skipping`)
         continue
       }
       await directive.init?.(this)
@@ -196,7 +193,6 @@ export class Renderer {
    * When creating internal variables or functions in expressions, this method should always be used to name them.
    * It ensures that they won't collide with end-user-defined variables or functions.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -208,7 +204,6 @@ export class Renderer {
   /**
    * Retrieve {@linkcode Renderer.internal} prefix.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -237,13 +232,9 @@ export class Renderer {
    * meaning that their properties can be accessed directly in the expression without prefixing them.
    * The difference between both is that the latter is not reactive and is intended to be used for specific stateful data added by a {@linkcode Directive}.
    *
-   * If `args` is provided and the evaluated expression is {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Function/call | callable},
-   * it will be called with them and its result is returned instead.
-   *
    * > [!NOTE]
    * > The root {@linkcode Renderer.internal} prefix is used internally to manage evaluation state, and thus cannot be used as a variable name.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -253,7 +244,7 @@ export class Renderer {
    * console.assert(await renderer.evaluate(null, "$foo", { state: { $foo: "bar" } }) === "bar")
    * ```
    */
-  async evaluate(that: Nullable<HTMLElement | Comment>, expression: string, { context = new Context(), state = {}, args } = {} as { context?: Context; state?: State; args?: unknown[] }): Promise<unknown> {
+  async evaluate(that: Nullable<HTMLElement | Comment>, expression: string, { context = new Context(), state = {}, args } = {} as RendererEvaluateOptions): Promise<unknown> {
     if (this.#internal in context.target) {
       throw new TypeError(`"${this.#internal}" is a reserved variable name`)
     }
@@ -273,9 +264,6 @@ export class Renderer {
   /**
    * Render {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} and its subtree with specified {@linkcode Context} and {@linkcode State} against {@linkcode Renderer.directives}.
    *
-   * Set `implicit: false` to to filter out subtrees that do not possess the explicit rendering attribute {@linkcode _mizu.name}.
-   *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * import _test from "@mizu/test"
@@ -286,13 +274,10 @@ export class Renderer {
    * console.assert(result.textContent === "bar")
    * ```
    */
-  async render<T extends Element>(element: T, options?: { context?: Context; state?: State; implicit?: boolean; reactive?: boolean }): Promise<T>
+  async render<T extends Element>(element: T, options?: Omit<RendererRenderOptions, "select" | "stringify"> & { stringify?: false }): Promise<T>
   /**
    * Render {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} and its subtree with specified {@linkcode Context} and {@linkcode State} against {@linkcode Renderer.directives} and {@link https://developer.mozilla.org/docs/Web/API/Document/querySelector | query select} the return using a {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors | CSS selector}.
    *
-   * Set `implicit: false` to to filter out subtrees that do not possess the explicit rendering attribute {@linkcode _mizu.name}.
-   *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * import _test from "@mizu/test"
@@ -304,15 +289,10 @@ export class Renderer {
    * console.assert(result?.textContent === "bar")
    * ```
    */
-  async render<T extends Element>(element: HTMLElement, options?: { context?: Context; state?: State; implicit?: boolean; reactive?: boolean; select: string }): Promise<Nullable<T>>
+  async render<T extends Element>(element: HTMLElement, options?: Omit<RendererRenderOptions, "select" | "stringify"> & Required<Pick<RendererRenderOptions, "select">> & { stringify?: false }): Promise<Nullable<T>>
   /**
    * Render {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} and its subtree with specified {@linkcode Context} and {@linkcode State} against {@linkcode Renderer.directives} and returns it as an HTML string.
    *
-   * Set `implicit: false` to to filter out subtrees that do not possess the explicit rendering attribute {@linkcode _mizu.name}.
-   *
-   * Set `select` to {@link https://developer.mozilla.org/docs/Web/API/Document/querySelector | query select} the return using a {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors | CSS selector}
-   *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * import _test from "@mizu/test"
@@ -323,11 +303,8 @@ export class Renderer {
    * console.assert(result.startsWith("<!DOCTYPE html>"))
    * ```
    */
-  async render(element: HTMLElement, options?: { context?: Context; state?: State; implicit?: boolean; select?: string; stringify?: boolean }): Promise<string>
-  async render<T extends Element>(
-    element = this.document.documentElement,
-    { context = new Context(), state = {}, implicit = true, reactive = false, select = "", stringify = false } = {} as { context?: Context; state?: State; implicit?: boolean; reactive?: boolean; select?: string; stringify?: boolean },
-  ) {
+  async render(element: HTMLElement, options?: Omit<RendererRenderOptions, "reactive" | "stringify"> & { stringify: true }): Promise<string>
+  async render<T extends Element>(element = this.document.documentElement, { context = new Context(), state = {}, implicit = true, reactive = false, select = "", stringify = false, throw: _throw = false } = {} as RendererRenderOptions) {
     await this.ready
     // Create a new sub-context when reactivity is enabled to avoid polluting the given root context
     if (reactive) {
@@ -337,7 +314,15 @@ export class Renderer {
     let subtrees = implicit || (element.hasAttribute(_mizu.name)) ? [element] : Array.from(element.querySelectorAll<HTMLElement>(`[${escape(_mizu.name)}]`))
     subtrees = subtrees.filter((element) => subtrees.every((ancestor) => (ancestor === element) || (!ancestor.contains(element))))
     // Render subtrees
-    await Promise.allSettled(subtrees.map((element) => this.#render(element, { context, state, reactive, root: { context, state } })))
+    const rendered = await Promise.allSettled(subtrees.map((element) => this.#render(element, { context, state, reactive, root: { context, state } })))
+    const rejected = rendered.filter((render) => render.status === "rejected")
+    if (rejected.length) {
+      const error = new AggregateError(rejected.map((render) => render.reason))
+      this.warn(error.message)
+      if (_throw) {
+        throw error
+      }
+    }
     // Process result
     const result = select ? element.querySelector<T>(select) : element
     if (stringify) {
@@ -557,7 +542,6 @@ export class Renderer {
    * It is possible to specify additional properties that will be assigned to the element.
    * The `attributes` property is handled by {@linkcode Renderer.setAttribute()} which allows to set attributes with non-standard characters.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -580,7 +564,6 @@ export class Renderer {
    *
    * Note that the `HTMLElement` is entirely replaced, meaning that is is actually removed from the DOM.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -617,7 +600,6 @@ export class Renderer {
    * Original `HTMLElement` can be retrieved through the generic {@linkcode Renderer.cache()}.
    * If you hold a reference to a replaced `HTMLElement`, use {@linkcode Renderer.getComment()} to retrieve the replacement `Comment`.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -645,7 +627,6 @@ export class Renderer {
    *
    * Calling this method on a `Comment`that was not created by {@linkcode Renderer.comment()} will throw a {@linkcode https://developer.mozilla.org/docs/Web/API/ReferenceError | ReferenceError}.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -673,7 +654,6 @@ export class Renderer {
   /**
    * Retrieve the {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment} associated with an {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} replaced by {@linkcode Renderer.comment()}.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -692,7 +672,6 @@ export class Renderer {
    *
    * This bypasses the illegal constructor check.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -718,7 +697,6 @@ export class Renderer {
    *
    * This bypasses the attribute name validation check.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -744,7 +722,6 @@ export class Renderer {
    * Set an {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} on a {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement}
    * or updates a {@linkcode https://developer.mozilla.org/docs/Web/API/Node/nodeValue | Comment.nodeValue}.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -794,7 +771,6 @@ export class Renderer {
    *
    * It is designed to handle attributes that follows the syntax described in {@linkcode Renderer.parseAttribute()}.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -810,7 +786,6 @@ export class Renderer {
    * It is designed to handle attributes that follows the syntax described in {@linkcode Renderer.parseAttribute()}.
    * If no matching `Attr` is found, `null` is returned.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -949,7 +924,6 @@ export class Renderer {
    * >   └─[      ANY]── [*]
    * > ```
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -970,7 +944,6 @@ export class Renderer {
    * console.assert(!("modifiers" in parsed))
    * ```
    *
-   * @example
    * ```ts
    * const typedef = {
    *   // "yes", "on", "true", "no", "off", "false"
@@ -986,12 +959,12 @@ export class Renderer {
    * }
    * ```
    */
-  parseAttribute<T extends AttrTypings>(attribute: Attr, typings?: Nullable<T>, options?: { modifiers: true; prefix?: string }): InferAttrTypings<T>
+  parseAttribute<T extends AttrTypings>(attribute: Attr, typings?: Nullable<T>, options?: Omit<RendererParseAttributeOptions, "modifiers"> & { modifiers: true }): InferAttrTypings<T>
   /**
    * Same as {@linkcode Renderer.parseAttribute()} but without modifiers.
    */
-  parseAttribute<T extends AttrTypings>(attribute: Attr, typings?: Nullable<T>, options?: { modifiers?: false; prefix?: string }): Omit<InferAttrTypings<T>, "modifiers">
-  parseAttribute<T extends AttrTypings>(attribute: Attr, typings?: Nullable<T>, { modifiers = false, prefix = "" } = {}) {
+  parseAttribute<T extends AttrTypings>(attribute: Attr, typings?: Nullable<T>, options?: Omit<RendererParseAttributeOptions, "modifiers"> & { modifiers?: false }): Omit<InferAttrTypings<T>, "modifiers">
+  parseAttribute<T extends AttrTypings>(attribute: Attr, typings?: Nullable<T>, { modifiers = false, prefix = "" } = {} as RendererParseAttributeOptions) {
     // Parse attribute name
     if (!this.#parsed.has(attribute)) {
       const { a: _a, b: _b, name = `${_a}${_b}`, tag = "", modifiers: _modifiers = "" } = attribute.name.match(this.#extractor.attribute)!.groups!
@@ -1030,7 +1003,7 @@ export class Renderer {
   readonly #parsed = new WeakMap<Attr, Pick<InferAttrTypings<{}>, "name" | "tag" | "modifiers">>()
 
   /** Used by {@linkcode Renderer.parseAttribute()} to parse a single {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr/value | Attr.value} according to specified {@linkcode AttrAny} typing. */
-  #parseAttributeValue<T extends AttrAny>(element: Nullable<HTMLElement>, name: string, key: string, value: Optional<string>, typings?: T): Optional<boolean | number | string> {
+  #parseAttributeValue<T extends AttrAny>(element: Nullable<HTMLElement>, name: string, key: string, value: Optional<string>, typings: T): Optional<boolean | number | string> {
     if ((value === undefined) && (!typings?.enforce)) {
       return undefined
     }
@@ -1091,7 +1064,6 @@ export class Renderer {
   /**
    * Type guard for {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement}.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -1109,7 +1081,6 @@ export class Renderer {
   /**
    * Type guard for {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment}.
    *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -1124,15 +1095,15 @@ export class Renderer {
     return element.nodeType === this.window.Node.COMMENT_NODE
   }
 
+  /** Warnings callback. */
+  readonly #warn
+
   /**
    * Generate a warning message.
    *
-   * If `target.warn` is {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Function/call | callable} (e.g. a {@linkcode https://developer.mozilla.org/docs/Web/API/Console | Console} instance), it is called with the message.
+   * If no warnings callback was provided, the warning message is applied with {@linkcode Renderer.setAttribute()} with the name `*warn`
+   * to the `target` {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} or {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment} if there is one.
    *
-   * If instead `target` an {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} or a {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment},
-   * the warning message is applied with {@linkcode Renderer.setAttribute()} with the name `*warn`.
-   *
-   * @example
    * ```ts
    * import { Window } from "@mizu/mizu/core/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -1146,39 +1117,128 @@ export class Renderer {
    * console.assert(comment.nodeValue?.includes(`[*warn="foo"]`))
    * ```
    */
-  warn(message: string, target?: Nullable<HTMLElement | Comment | { warn: (..._: unknown[]) => void }>): void {
-    if (!target) {
-      return
+  warn(message: string, target?: Nullable<HTMLElement | Comment>): void {
+    if (this.#warn) {
+      return this.#warn(message, target)
     }
-    if ("warn" in target) {
-      return target.warn(message)
-    }
-    if ((this.isHtmlElement(target)) || (this.isComment(target))) {
-      this.setAttribute(target, "*warn", message)
+    if (target && ((this.isHtmlElement(target)) || (this.isComment(target)))) {
+      return this.setAttribute(target, "*warn", message)
     }
   }
 }
 
+/** {@linkcode Renderer} options. */
+export type RendererOptions = {
+  /** Initial {@linkcode Directive}s. */
+  directives?: Arg<Renderer["load"]>
+  /** Warnings callback. */
+  warn?: (message: string, target?: Nullable<HTMLElement | Comment>) => void
+}
+
+/** {@linkcode Renderer.evaluate()} options. */
+export type RendererEvaluateOptions = {
+  /** {@linkcode Context} to use. */
+  context?: Context
+  /** {@linkcode State} to use. */
+  state?: State
+  /** It the evaluated expression is {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Function/call | callable}, it will be called with these arguments and its result is returned instead. */
+  args?: unknown[]
+}
+
+/** {@linkcode Renderer.render()} options. */
+export type RendererRenderOptions = {
+  /** {@linkcode Context} to use. */
+  context?: Context
+  /** {@linkcode State} to use. */
+  state?: State
+  /** Whether to render subtrees that do not possess the explicit rendering attribute {@linkcode _mizu.name}. */
+  implicit?: boolean
+  /** Whether to enable reactivity. */
+  reactive?: boolean
+  /** {@link https://developer.mozilla.org/docs/Web/API/Document/querySelector | CSS selector} to query select the return. */
+  select?: string
+  /** Whether to return the result as an HTML string. */
+  stringify?: boolean
+  /** Whether to throw on errors. */
+  throw?: boolean
+}
+
+/** {@linkcode Renderer.parseAttribute()} options. */
+export type RendererParseAttributeOptions = {
+  /** Whether to parse modifiers. */
+  modifiers?: boolean
+  /** Attribute name prefix to strip. */
+  prefix?: string
+}
+
 /** {@linkcode Renderer.render()} initial {@linkcode Context} and {@linkcode State}. */
-export type InitialContextState = Readonly<{ context: Context; state: DeepReadonly<State> }>
+export type InitialContextState = Readonly<{
+  /** Initial {@linkcode Context}. */
+  context: Context
+  /** Initial {@linkcode State}. */
+  state: DeepReadonly<State>
+}>
 
 /** Current {@linkcode Renderer.render()} state. */
 export type State = Record<`$${string}` | `${typeof Renderer.internal}_${string}`, unknown>
 
 /** Boolean type definition. */
-export type AttrBoolean = { type: typeof Boolean; default?: boolean; enforce?: true }
+export type AttrBoolean = {
+  /** Type. */
+  type: typeof Boolean
+  /** Default value. */
+  default?: boolean
+  /** Enforce value. */
+  enforce?: true
+}
 
 /** Duration type definition. */
-export type AttrDuration = { type: typeof Date; default?: number | string; enforce?: true }
+export type AttrDuration = {
+  /** Type. */
+  type: typeof Date
+  /** Default value. */
+  default?: number | string
+  /** Enforce value. */
+  enforce?: true
+}
 
 /** Number type definition. */
-export type AttrNumber = { type: typeof Number; default?: number; integer?: boolean; min?: number; max?: number; enforce?: true }
+export type AttrNumber = {
+  /** Type. */
+  type: typeof Number
+  /** Default value. */
+  default?: number
+  /** Round to nearest integer. */
+  integer?: boolean
+  /** Minimum value. */
+  min?: number
+  /** Maximum value. */
+  max?: number
+  /** Enforce value. */
+  enforce?: true
+}
 
 /** String type definition. */
-export type AttrString = { type?: typeof String; default?: string; allowed?: string[]; enforce?: true }
+export type AttrString = {
+  /** Type. */
+  type?: typeof String
+  /** Default value. */
+  default?: string
+  /** Allowed values. */
+  allowed?: string[]
+  /** Enforce value. */
+  enforce?: true
+}
 
 /** Generic type definition. */
-export type AttrAny = { type?: typeof Boolean | typeof Number | typeof Date | typeof String; default?: unknown; enforce?: true }
+export type AttrAny = {
+  /** Type. */
+  type?: typeof Boolean | typeof Number | typeof Date | typeof String
+  /** Default value. */
+  default?: unknown
+  /** Enforce value. */
+  enforce?: true
+}
 
 /** Infer value from {@linkcode AttrAny} type definition. */
 export type InferAttrAny<T> = T extends AttrBoolean ? boolean : T extends (AttrDuration | AttrNumber) ? number : string
@@ -1201,11 +1261,12 @@ export type InferAttrTypings<T extends AttrTypings> = {
 }
 
 /** Additional typings for {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Window | Window} when using a {@link https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model | virtual DOM implementation}. */
-export type VirtualWindow = {
+export type VirtualWindow = Window & {
   Node: typeof Node
   HTMLElement: typeof HTMLElement
   Event: typeof Event
   NodeFilter: typeof NodeFilter
   KeyboardEvent: typeof KeyboardEvent
   MouseEvent: typeof MouseEvent
+  [Symbol.asyncDispose]: () => Promise<void>
 }

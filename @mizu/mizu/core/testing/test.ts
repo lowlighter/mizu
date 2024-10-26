@@ -82,7 +82,6 @@ export async function test(path: string | ImportMeta, runner = _test) {
  *
  * Multiple directives can be specified by separating them with a comma.
  *
- * @example
  * ```xml
  * <load directives="@mizu/test"></load>
  * <render>
@@ -106,13 +105,12 @@ async function load(operation: HTMLElement, testing: Testing) {
  * Options:
  *   - `explicit?: boolean = false`: Whether {@linkcode Renderer.render()} should be called with the `implicit: false`.
  *
- * @example
  * ```xml
  * <render>
  *  <div>...</div>
  * </render>
  * ```
- * @example
+ *
  * ```xml
  * <render></render>
  * ```
@@ -130,7 +128,6 @@ async function render(operation: HTMLElement, testing: Testing) {
  *
  * See actual source code for a list of globally available variables.
  *
- * @example
  * ```xml
  * <script>
  *   expect(document.querySelector("input").value).toBe("foo")
@@ -165,7 +162,7 @@ async function script(operation: HTMLElement, testing: Testing) {
     retry,
     fetch: testing.context.target.fetch,
     Status,
-  } as VirtualWindow
+  } as unknown as VirtualWindow
   const script = new AsyncFunction(...Object.keys(args), operation.innerHTML)
   await _expect(script(...Object.values(args))).resolves.not.toThrow()
 }
@@ -181,7 +178,6 @@ async function script(operation: HTMLElement, testing: Testing) {
  *
  * See {@linkcode filter()} for more details about options.
  *
- * @example
  * ```xml
  * <render>
  *  <!-- ... -->
@@ -225,7 +221,6 @@ async function expect(operation: HTMLElement, testing: Testing) {
  *   - {@linkcode Testing.http.request}
  *   - {@linkcode Testing.http.response}
  *
- * @example
  * ```xml
  * <http-server>
  *   <response path="/foo" status="200"></response>
