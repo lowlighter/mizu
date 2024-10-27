@@ -530,6 +530,38 @@
   </expect>
 </test>
 
+<test name="[%response] with `.swap` modifier set `outerHTML`">
+  <http-server>
+    <response path="/foo" status="OK"><foo>bar</foo></response>
+  </http-server>
+  <render>
+    <section>
+      <div %http="/foo" %response.swap></div>
+    </section>
+  </render>
+  <expect>
+    <section>
+      <foo>bar</foo>
+    </section>
+  </expect>
+</test>
+
+<test name="[%response] with `.swap.text` modifiers set `outerHTML` and escapes html">
+  <http-server>
+    <response path="/foo" status="OK"><foo>bar</foo></response>
+  </http-server>
+  <render>
+    <section>
+      <div %http="/foo" %response.swap.text></div>
+    </section>
+  </render>
+  <expect>
+    <section>
+      &lt;foo&gt;bar&lt;/foo&gt;
+    </section>
+  </expect>
+</test>
+
 <test name="[%response] skips commented elements">
   <http-server>
     <response path="/foo" status="OK"></response>
