@@ -65,38 +65,38 @@ export const _body = {
       return
     }
     const headers = renderer.cache<Cache<typeof _header>>(_header.name)!.get(element) ?? renderer.cache<Cache<typeof _header>>(_header.name)!.set(element, new Headers()).get(element)!
-    const parsed = renderer.parseAttribute(attribute, this.typings, { prefix: this.prefix, modifiers: true })
+    const { modifiers, value: expression } = renderer.parseAttribute(attribute, this.typings, { prefix: this.prefix, modifiers: true })
 
     // Set body
-    let body = await renderer.evaluate(element, parsed.value, options)
+    let body = await renderer.evaluate(element, expression, options)
     switch (true) {
       // Text body
-      case (parsed.modifiers.type === "text") || (parsed.modifiers.text): {
-        if (parsed.modifiers.header) {
+      case (modifiers.type === "text") || (modifiers.text): {
+        if (modifiers.header) {
           headers.set("Content-Type", "text/plain")
         }
         body = `${body}`
         break
       }
       // Form body
-      case (parsed.modifiers.type === "form") || (parsed.modifiers.form): {
-        if (parsed.modifiers.header) {
+      case (modifiers.type === "form") || (modifiers.form): {
+        if (modifiers.header) {
           headers.set("Content-Type", "application/x-www-form-urlencoded")
         }
         body = new URLSearchParams(body as Record<PropertyKey, string>)
         break
       }
       // JSON body
-      case (parsed.modifiers.type === "json") || (parsed.modifiers.json): {
-        if (parsed.modifiers.header) {
+      case (modifiers.type === "json") || (modifiers.json): {
+        if (modifiers.header) {
           headers.set("Content-Type", "application/json")
         }
         body = JSON.stringify(body)
         break
       }
       // XML body
-      case (parsed.modifiers.type === "xml") || (parsed.modifiers.xml): {
-        if (parsed.modifiers.header) {
+      case (modifiers.type === "xml") || (modifiers.xml): {
+        if (modifiers.header) {
           headers.set("Content-Type", "application/xml")
         }
         const { stringify } = await import("./import/xml/stringify.ts")
@@ -137,13 +137,13 @@ export const _http = {
     if (!renderer.isHtmlElement(element)) {
       return
     }
-    const parsed = renderer.parseAttribute(attribute, _http_typings, { prefix: this.prefix, modifiers: true })
+    const { modifiers } = renderer.parseAttribute(attribute, _http_typings, { prefix: this.prefix, modifiers: true })
 
     // Configure request
-    const redirect = parsed.modifiers.follow ? "follow" : "manual"
-    let method = parsed.modifiers.method?.toLocaleUpperCase()
+    const redirect = modifiers.follow ? "follow" : "manual"
+    let method = modifiers.method?.toLocaleUpperCase()
     for (const key of ["get", "head", "post", "put", "patch", "delete"] as const) {
-      if (parsed.modifiers[key]) {
+      if (modifiers[key]) {
         method = key.toUpperCase()
       }
     }
@@ -151,8 +151,8 @@ export const _http = {
     // Create request callback
     const callback = async function ($event: Nullable<Event>) {
       const value = attribute.value
-      const url = new URL(/^\.?\//.test(value) ? value : `${await renderer.evaluate(element, value, { state: { ...state, $event }, ...options })}`, globalThis.location?.href)
-      if (parsed.modifiers.history) {
+      const url = new URL(URL.canParse(value) || /^\.?\//.test(value) ? value : `${await renderer.evaluate(element, value, { state: { ...state, $event }, ...options })}`, globalThis.location?.href)
+      if (modifiers.history) {
         renderer.window.history.pushState(null, "", url.href)
       }
       const $response = fetch(url, { redirect, method, headers: state.$headers as Headers, body: state.$body as BodyInit })

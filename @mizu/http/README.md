@@ -223,5 +223,5 @@ Alias for `.consume[xml]`.
 
 ### `.swap[boolean]`
 
-Consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and set target's [`outerHTML`](https://developer.mozilla.org/docs/Web/API/Element/outerHTML). This modifier takes precedence over [`.consume`](#consume) modifier and makes it
-effectless, although if `.consume[text]` is set then swapped content will be escaped.
+Consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and set target's [`outerHTML`](https://developer.mozilla.org/docs/Web/API/Element/outerHTML). This modifier takes precedence over the [`.consume`](#consume) modifier and makes it
+effectless, although if `.consume[text]` is set swapped content will be escaped.
