@@ -1,5 +1,6 @@
 // Imports
 import { type Arg, type Cache, type Directive, type Nullable, type Optional, Phase } from "@mizu/mizu/core/engine"
+import { escape } from "@std/html"
 export type * from "@mizu/mizu/core/engine"
 
 /** `%header` directive. */
@@ -179,6 +180,7 @@ export const _response_typings = {
     html: { type: Boolean },
     json: { type: Boolean },
     xml: { type: Boolean },
+    swap: { type: Boolean },
   },
 } as const
 
@@ -206,11 +208,11 @@ export const _response = {
 
     // Process response callbacks
     for (const attribute of attributes) {
-      const parsed = renderer.parseAttribute(attribute, this.typings, { prefix: this.prefix, modifiers: true })
+      const { tag, modifiers, value: expression } = renderer.parseAttribute(attribute, this.typings, { prefix: this.prefix, modifiers: true })
 
       // Verify status code if applicable
-      if (parsed.tag) {
-        const match = parsed.tag.replace(/\s/g, "").split(",").map((code) => {
+      if (tag) {
+        const match = tag.replace(/\s/g, "").split(",").map((code) => {
           if (/^[2-5]xx$/i.test(code)) {
             return [Number(code.at(0)) * 100, Number(code.at(0)) * 100 + 99]
           }
@@ -224,43 +226,53 @@ export const _response = {
         }
       }
 
-      // Parse response
-      let expression = parsed.value
       let $content = null
-      switch (true) {
+      let consume = true as Nullable<boolean>
+      // Apply swap modifier
+      if (modifiers.swap) {
+        $content = await $response.text()
+        if ((modifiers.consume === "text") || (modifiers.text)) {
+          $content = escape($content)
+        }
+        element.outerHTML = $content
+        consume = null
+      }
+      // Parse response
+      switch (consume) {
         // Void response
-        case (parsed.modifiers.consume === "void") || (parsed.modifiers.void): {
+        case (modifiers.consume === "void") || (modifiers.void): {
           await $response.body?.cancel()
           break
         }
         // Text response
-        case (parsed.modifiers.consume === "text") || (parsed.modifiers.text): {
+        case (modifiers.consume === "text") || (modifiers.text): {
           $content = await $response.text()
           if (!expression) {
-            expression = "this.textContent = $content"
+            element.textContent = $content
           }
           break
         }
         // HTML response
-        case (parsed.modifiers.consume === "html") || (parsed.modifiers.html): {
+        case (modifiers.consume === "html") || (modifiers.html): {
           $content = await $response.text()
           if (!expression) {
-            expression = "this.innerHTML = $content"
+            element.innerHTML = $content
           }
           break
         }
         // JSON response
-        case (parsed.modifiers.consume === "json") || (parsed.modifiers.json): {
+        case (modifiers.consume === "json") || (modifiers.json): {
           $content = await $response.json()
           break
         }
         // XML response
-        case (parsed.modifiers.consume === "xml") || (parsed.modifiers.xml): {
+        case (modifiers.consume === "xml") || (modifiers.xml): {
           const { parse } = await import("./import/xml/parse.ts")
           $content = parse(await $response.text())
           break
         }
       }
+
       await renderer.evaluate(element, arguments[2]._expression?.value ?? (expression || this.default), { state: { ...state, $response, $content }, ...options, args: arguments[2]._expression?.args })
     }
   },

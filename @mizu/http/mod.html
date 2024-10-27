@@ -232,4 +232,9 @@
   <mizu-modifier #modifier name="xml">
     Alias for <code>.consume[xml]</code>.
   </mizu-modifier>
+  <mizu-variable #modifier name="swap">
+    Consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/text"><code>response.text()</code></a> and set target's <a href="https://developer.mozilla.org/docs/Web/API/Element/outerHTML"><var>outerHTML</var></a>. This modifier takes precedence over the <a
+      href="#consume"
+    ><code>.consume</code></a> modifier and makes it effectless, although if <code>.consume[text]</code> is set swapped content will be escaped.
+  </mizu-variable>
 </mizu-directive>
