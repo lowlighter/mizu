@@ -345,12 +345,11 @@ dt :is(h1, h2, h3, h4, h5, h6) {
   border: none;
 }
 
-
 .catchphrase {
   text-align: center;
   font-size: 3rem;
   font-weight: bold;
-  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(67,67,147,1) 0%, rgba(0,212,255,1) 100%);
+  background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(67, 67, 147, 1) 0%, rgba(0, 212, 255, 1) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
