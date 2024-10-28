@@ -14,7 +14,7 @@ export const _refresh = {
 
     // Clear interval if value is null
     if (value === null) {
-      clearInterval(cache.get(element)?.id)
+      clearTimeout(cache.get(element)?.id)
       return
     }
 
@@ -27,14 +27,14 @@ export const _refresh = {
     if (cache.get(element)?.interval === interval) {
       return
     }
-    clearInterval(cache.get(element)?.id)
+    clearTimeout(cache.get(element)?.id)
     cache.set(element, { interval, id: NaN })
   },
   cleanup(renderer, element, { cache, root }) {
     // Cleanup interval from commented out elements
     if ((renderer.isComment(element)) && (cache.has(renderer.cache("*").get(element)!))) {
       element = renderer.cache("*").get(element)!
-      clearInterval(cache.get(element)?.id)
+      clearTimeout(cache.get(element)?.id)
       cache.delete(element)
       return
     }
@@ -43,7 +43,7 @@ export const _refresh = {
     if (!Number.isNaN(cache.get(element)?.id)) {
       return
     }
-    cache.get(element)!.id = setInterval(() => renderer.render(element as HTMLElement, { ...root }), cache.get(element)!.interval)
+    cache.get(element)!.id = setTimeout(() => renderer.render(element as HTMLElement, { ...root }), cache.get(element)!.interval)
   },
 } as Directive<WeakMap<HTMLElement | Comment, { id: number; interval: number }>>
 

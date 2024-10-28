@@ -15,7 +15,7 @@ Reprocess an element at a specified interval _(in seconds)_.
 ## Notes
 
 > [!WARNING]
-> Context is recreated from the initial root context and the element itself, meaning intermediate computations are not retained. Use this only on elements that can be rendered independently to avoid unexpected behavior.
+> Context is recreated from the initial root context and the element itself, meaning intermediate computations are not retained. Use this only on elements that can be rendered independently to avoid unexpected errors.
 
 > [!WARNING]
 > Avoid using with iterative directives like [`*for`](#for) as [`*refresh`](#refresh) will be duplicated for each generated element.
@@ -28,3 +28,6 @@ Reprocess an element at a specified interval _(in seconds)_.
 
 > [!NOTE]
 > If the element is commented out by a directive, the refresh is automatically cleared.
+
+> [!NOTE]
+> Refresh operations are performed using [`setTimeout`](https://developer.mozilla.org/docs/Web/API/Window/setTimeout). New calls are scheduled when the directive is processed again, ensuring a consistent interval.

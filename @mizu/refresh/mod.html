@@ -9,7 +9,7 @@
     </div>
   </code>
   <mizu-warn #note>
-    Context is recreated from the initial root context and the element itself, meaning intermediate computations are not retained. Use this only on elements that can be rendered independently to avoid unexpected behavior.
+    Context is recreated from the initial root context and the element itself, meaning intermediate computations are not retained. Use this only on elements that can be rendered independently to avoid unexpected errors.
   </mizu-warn>
   <mizu-warn #note>
     Avoid using with iterative directives like <a href="#for"><code class="hljs-keyword">*for</code></a> as <a href="#refresh"><code class="hljs-keyword">*refresh</code></a> will be duplicated for each generated element.
@@ -22,5 +22,8 @@
   </mizu-note>
   <mizu-note #note>
     If the element is commented out by a directive, the refresh is automatically cleared.
+  </mizu-note>
+  <mizu-note #note>
+    Refresh operations are performed using <a href="https://developer.mozilla.org/docs/Web/API/Window/setTimeout"><code>setTimeout</code></a>. New calls are scheduled when the directive is processed again, ensuring a consistent interval.
   </mizu-note>
 </mizu-directive>
