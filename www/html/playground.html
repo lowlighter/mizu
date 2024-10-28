@@ -1,57 +1,131 @@
-<p class="flash attention">
-  Playground is still being developed.
-</p>
-<script src="/highlight.js"></script>
-<div class="carbon-like">
-  <div class="title">
-    Code editor
-    <svg xmlns="http://www.w3.org/2000/svg" width="54" height="14" viewBox="0 0 54 14">
-      <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
-        <circle cx="6" cy="6" r="6.5" fill="var(--danger)"></circle>
-        <circle cx="26" cy="6" r="6.5" fill="var(--attention)"></circle>
-        <circle cx="46" cy="6" r="6.5" fill="var(--success)"></circle>
-      </g>
-    </svg>
-  </div>
-  <div class="editor">
-    <textarea
-      rows="11"
-    >
-&lt;time muted" *refresh="1000" *text="new Date()"&gt;...&lt;/time&gt;
-&lt;form *set="{ food: '🍱🍜🍚🍣🍥🍡🍵🍙🥟', selected: '' }"&gt;
-  &lt;label&gt;
-    What's your favorite food? 😋
-    &lt;small *if="selected"&gt;So you like &lt;i *text="selected"&gt;&lt;/i&gt;?&lt;/small&gt;
-    &lt;small *else&gt;I want to know!&lt;/small&gt;
-    &lt;select ::="selected" required&gt;
-      &lt;option value="" disabled&gt;Select a food&lt;/option&gt;
-      &lt;option *for="[...food]" *id="$i" :value="$value" *text="$value" *once&gt;&lt;/option&gt;
-    &lt;/select&gt;
-  &lt;/label&gt;
-&lt;/form&gt;
-  </textarea
-    >
-    <div class="highlight"></div>
-  </div>
-</div>
-
-<div class="carbon-like">
-  <div class="title">
-    <div class="bar" id="render">
-      <svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
-        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm4.879-2.773 4.264 2.559a.25.25 0 0 1 0 .428l-4.264 2.559A.25.25 0 0 1 6 10.559V5.442a.25.25 0 0 1 .379-.215Z"></path>
-      </svg>
-      Render
+<section>
+  <p class="flash attention">
+    Playground is still being developed.
+  </p>
+</section>
+<div class="playground demo" data-color-scheme="dark">
+  <div class="mockups">
+    <div class="mockup browser">
+      <div class="tabs">
+        <img class="app-icon" src="https://lecoq.io/cdn/logos/browsers.svg" />
+        <div class="tab active">
+          Playground
+          <div class="before"></div>
+          <div class="after"></div>
+        </div>
+        <div class="grow"></div>
+        <svg class="mr-1" xmlns="http://www.w3.org/2000/svg" width="54" height="14" viewBox="0 0 54 14">
+          <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+            <circle cx="6" cy="6" r="6.5" fill="var(--danger)"></circle>
+            <circle cx="26" cy="6" r="6.5" fill="var(--attention)"></circle>
+            <circle cx="46" cy="6" r="6.5" fill="var(--success)"></circle>
+          </g>
+        </svg>
+      </div>
+      <div class="urlbar">
+        <i class="fake" %http="https://lecoq.io/cdn/octicons/arrow-left-24.svg" %response.swap></i>
+        <i id="render" %http="https://lecoq.io/cdn/octicons/sync-24.svg" %response.swap></i>
+        <input class="fake" type="text" value="https://mizu.test/playground" />
+        <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/star-24.svg" %response.swap></i>
+        <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/three-bars-24.svg" %response.swap></i>
+      </div>
+      <div class="app-view">
+        <div class="browser-view">
+          <iframe></iframe>
+        </div>
+        <div class="browser-inspector">
+          <div class="browser-inspector-bar">
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/link-external-16.svg" %response.swap></i>
+            <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/device-mobile-16.svg" %response.swap></i>
+            <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/sidebar-collapse-16.svg" %response.swap></i>
+            <div class="active">
+              <i %http="https://lecoq.io/cdn/octicons/code-16.svg" %response.swap></i>
+              <small>Elements</small>
+            </div>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/terminal-16.svg" %response.swap></i>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/bug-16.svg" %response.swap></i>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/broadcast-16.svg" %response.swap></i>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/meter-16.svg" %response.swap></i>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/cpu-16.svg" %response.swap></i>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/browser-16.svg" %response.swap></i>
+          </div>
+          <div class="browser-inspector-content">
+            <div class="wrapper">
+              <div class="editor">
+                <textarea %http="/html/mizu/examples/playground/example.html" %response.text></textarea>
+                <div class="highlight"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg" width="54" height="14" viewBox="0 0 54 14">
-      <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
-        <circle cx="6" cy="6" r="6.5" fill="var(--danger)"></circle>
-        <circle cx="26" cy="6" r="6.5" fill="var(--attention)"></circle>
-        <circle cx="46" cy="6" r="6.5" fill="var(--success)"></circle>
-      </g>
-    </svg>
   </div>
-  <iframe height="300"></iframe>
 </div>
+<script src="/highlight.js"></script>
+<script>
+  window.addEventListener("load", function () {
+    // Setup elements
+    const playground = document.querySelector(".playground")
+    const editor = document.querySelector(".editor")
+    const textarea = editor.querySelector("textarea")
+    const highlight = editor.querySelector(".highlight")
+    const button = document.querySelector("#render")
+    const iframe = document.querySelector("iframe")
 
-<script type="module" src="/playground.js"></script>
+    // Setup code editor
+    function coloration(value) {
+      highlight.innerHTML = hljs.highlight(value, { language: "xml" }).value
+    }
+    textarea.addEventListener("input", () => coloration(textarea.value))
+    textarea.addEventListener("input", () => render())
+    textarea.addEventListener("scroll", function () {
+      highlight.scrollTop = this.scrollTop
+      highlight.scrollLeft = this.scrollLeft
+    })
+    coloration(textarea.value)
+
+    // Setup renderer
+    let timeout = NaN
+    function render() {
+      clearTimeout(timeout)
+      timeout = setTimeout(() => button.dispatchEvent(new MouseEvent("click")), 2000)
+    }
+    button.addEventListener("click", async function () {
+      if (playground.classList.contains("pending")) {
+        return
+      }
+      let resolve = null, reject = null
+      const promise = new Promise((ok, ko) => {
+        resolve = ok
+        reject = ko
+      })
+      try {
+        playground.classList.add("pending")
+        const frame = iframe.contentDocument
+        iframe.onload = resolve
+        iframe.onerror = reject
+        frame.open()
+        frame.write(`
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="stylesheet" href="/matcha.css">
+    </head>
+    <body *mizu class="pt-1">
+      ${textarea.value}
+      <script src="/client.js" defer><\/script>
+    </body>
+  </html>`.trim())
+        frame.close()
+
+        await promise
+      } finally {
+        playground.classList.remove("pending")
+      }
+    })
+    render()
+  })
+</script>

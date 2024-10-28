@@ -495,6 +495,10 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   border-right: 2px solid var(--light-muted);
 }
 
+.mockup.browser .browser-view:has(iframe) {
+  padding: 0;
+}
+
 .mockup.browser .browser-inspector {
   display: flex;
   flex-direction: column;
@@ -533,6 +537,23 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   border-radius: 0;
 }
 
+.mockup.browser .browser-inspector-content .wrapper {
+  margin: 1rem 1rem 0;
+  height: calc(100% - 1rem);
+}
+
+.mockup.browser .browser-inspector-content .editor,
+.mockup.browser .browser-inspector-content .editor textarea,
+.mockup.browser .browser-inspector-content .editor .highlight {
+  padding: 0;
+  height: 100%;
+  border-radius: 0;
+}
+.mockup.browser .browser-inspector-content .editor textarea:hover,
+.mockup.browser .browser-inspector-content .editor textarea:focus {
+  border-color: transparent !important;
+}
+
 @media (min-width: 768px) {
   .mockup.browser .tabs .tab {
     min-width: 10rem;
@@ -542,6 +563,46 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
     grid-template-columns: 0.3fr 0.7fr;
     flex-grow: 1;
   }
+}
+
+/** Playground. */
+.playground.demo .mockups {
+  height: 700px;
+}
+
+.playground #render {
+  cursor: pointer;
+  transition: color var(--tr-duration);
+}
+
+.playground #render:hover {
+  color: var(--accent);
+}
+
+.playground.pending #render {
+  color: var(--muted);
+  animation: spin 1s linear infinite;
+  cursor: wait;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.playground iframe {
+  border-radius: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.playground.pending iframe {
+  opacity: 0.25;
+  cursor: wait;
 }
 
 /** Carbon like examples. */
