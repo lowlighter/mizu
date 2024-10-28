@@ -50,6 +50,31 @@
   </expect>
 </test>
 
+<test name="[*mustache] templates children delimiters">
+  <script>
+    context.foo = "bar"
+  </script>
+  <render>
+    <p *mustache>
+      <span>foo {{ foo }} foo</span>
+    </p>
+  </render>
+  <expect>
+    <p>
+      <span>foo bar foo</span>
+    </p>
+  </expect>
+  <script>
+    context.foo = "baz"
+  </script>
+  <render></render>
+  <expect>
+    <p>
+      <span>foo baz foo</span>
+    </p>
+  </expect>
+</test>
+
 <test name="[*mustache] defaults to empty string on nullish values">
   <render>
     <p *mustache>

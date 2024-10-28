@@ -20,5 +20,5 @@ Enable content interpolation within « mustaches » ( `{{` and `}}`) from [`Text
 > [!NOTE]
 > HTML content is automatically escaped.
 
-> [!WARNING]
+> [!NOTE]
 > There is currently no distinction between double mustaches ( `{{` and `}}`) and triple mustaches ( `{{{` and `}}}`), but future versions may introduce specific behavior for these.
