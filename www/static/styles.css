@@ -27,6 +27,10 @@ body > footer svg.sponsor {
   fill: var(--variant);
 }
 
+main {
+  min-height: calc(100vh - 2 * var(--ly-header-size) - 1rem);
+}
+
 /* Additional classes. */
 .underline-dotted {
   text-decoration: underline dotted;
@@ -143,6 +147,14 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 
 .syntax-explain div.hljs-comment {
   border-bottom-color: transparent;
+}
+
+/* Notes. */
+.note svg {
+  fill: currentColor;
+  height: 1em;
+  flex-shrink: 0;
+  margin-top: 0.3rem;
 }
 
 /* Mizu directives. */
@@ -268,13 +280,6 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 
 .directive .pills > span code:not(:first-child) {
   margin-left: 0.25rem;
-}
-
-.directive .note svg {
-  fill: currentColor;
-  height: 1em;
-  flex-shrink: 0;
-  margin-top: 0.3rem;
 }
 
 .directive .note ul {
@@ -509,19 +514,38 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   display: flex;
 }
 
-.mockup.browser .browser-inspector-bar .active {
+.mockup.browser .browser-inspector-bar div {
   display: flex;
   align-items: center;
-  color: var(--accent);
-  border-bottom: 2px solid var(--accent);
-  background-color: var(--bg-muted);
+  border-bottom: 2px solid transparent;
   padding-right: 0.5rem;
+  cursor: pointer;
+  transition: color var(--tr-duration), border-bottom-color var(--tr-duration);
+}
+
+.mockup.browser .browser-inspector-bar div:hover {
+  color: var(--accent);
+}
+
+.mockup.browser .browser-inspector-bar div.active {
+  color: var(--accent);
+  border-bottom-color: currentColor;
+  background-color: var(--bg-muted);
 }
 
 .mockup.browser .browser-inspector-bar svg {
   fill: currentColor;
   height: 1rem;
   margin: 0.5rem;
+}
+
+.mockup.browser .browser-inspector-bar .errors-count:has(b:not(:empty)) {
+  color: var(--danger);
+  background-color: var(--bg-danger);
+}
+
+.mockup.browser .browser-inspector-bar .errors-count b:not(:empty) {
+  margin-right: 0.5rem;
 }
 
 .mockup.browser .browser-inspector-content {
@@ -552,6 +576,41 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 .mockup.browser .browser-inspector-content .editor textarea:hover,
 .mockup.browser .browser-inspector-content .editor textarea:focus {
   border-color: transparent !important;
+}
+
+.mockup.browser .browser-inspector-content .message {
+  padding: 0.5rem 1rem;
+  padding-left: 2rem;
+  font-family: var(--ft-mono);
+  border-bottom: 1px solid currentColor;
+  font-size: 0.85rem;
+  position: relative;
+}
+
+.mockup.browser .browser-inspector-content .message.warn {
+  color: var(--attention);
+  background-color: var(--bg-attention);
+}
+
+.mockup.browser .browser-inspector-content .message.warn::before {
+  content: "⚠️";
+  position: absolute;
+  left: 0.5rem;
+}
+
+.mockup.browser .browser-inspector-content .message.info {
+  color: var(--accent);
+  background-color: var(--bg-infoaccent);
+}
+
+.mockup.browser .browser-inspector-content .message.info::before {
+  content: "ℹ️";
+  position: absolute;
+  left: 0.5rem;
+}
+
+.mockup.browser .browser-inspector-content .message.template {
+  display: none !important;
 }
 
 @media (min-width: 768px) {
@@ -587,10 +646,10 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 
 @keyframes spin {
   0% {
-    transform: rotate(0deg);
+    transform: scaleX(-1) rotate(0deg);
   }
   100% {
-    transform: rotate(360deg);
+    transform: scaleX(-1) rotate(-360deg);
   }
 }
 

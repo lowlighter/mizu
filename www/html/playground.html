@@ -1,8 +1,3 @@
-<section>
-  <p class="flash attention">
-    Playground is still being developed.
-  </p>
-</section>
 <div class="playground demo" data-color-scheme="dark">
   <div class="mockups">
     <div class="mockup browser">
@@ -24,7 +19,7 @@
       </div>
       <div class="urlbar">
         <i class="fake" %http="https://lecoq.io/cdn/octicons/arrow-left-24.svg" %response.swap></i>
-        <i id="render" %http="https://lecoq.io/cdn/octicons/sync-24.svg" %response.swap></i>
+        <i id="render" style="transform: scaleX(-1)" %http="https://lecoq.io/cdn/octicons/sync-24.svg" %response.swap></i>
         <input class="fake" type="text" value="https://mizu.test/playground" />
         <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/star-24.svg" %response.swap></i>
         <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/three-bars-24.svg" %response.swap></i>
@@ -38,22 +33,37 @@
             <i class="fake" %http="https://lecoq.io/cdn/octicons/link-external-16.svg" %response.swap></i>
             <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/device-mobile-16.svg" %response.swap></i>
             <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/sidebar-collapse-16.svg" %response.swap></i>
-            <div class="active">
+            <div data-tab="elements">
               <i %http="https://lecoq.io/cdn/octicons/code-16.svg" %response.swap></i>
               <small>Elements</small>
             </div>
+            <div class="errors-count" data-tab="errors">
+              <i %http="https://lecoq.io/cdn/octicons/bug-16.svg" %response.swap></i>
+              <small><b></b>Errors</small>
+            </div>
             <i class="fake" %http="https://lecoq.io/cdn/octicons/terminal-16.svg" %response.swap></i>
-            <i class="fake" %http="https://lecoq.io/cdn/octicons/bug-16.svg" %response.swap></i>
             <i class="fake" %http="https://lecoq.io/cdn/octicons/broadcast-16.svg" %response.swap></i>
             <i class="fake" %http="https://lecoq.io/cdn/octicons/meter-16.svg" %response.swap></i>
             <i class="fake" %http="https://lecoq.io/cdn/octicons/cpu-16.svg" %response.swap></i>
             <i class="fake" %http="https://lecoq.io/cdn/octicons/browser-16.svg" %response.swap></i>
           </div>
           <div class="browser-inspector-content">
-            <div class="wrapper">
+            <div class="wrapper" data-for-tab="elements">
               <div class="editor">
-                <textarea %http="/html/mizu/examples/playground/example.html" %response.text></textarea>
+                <textarea %http="/html/mizu/examples/playground/example.html" %response.text spellcheck="false"></textarea>
                 <div class="highlight"></div>
+              </div>
+            </div>
+            <div class="messages" data-for-tab="errors">
+              <div class="message template">
+                <div class="content"></div>
+                <div class="target"></div>
+              </div>
+              <div class="message info">
+                <div class="content">
+                  Rendering errors originating from <em>mizu.js</em> will be displayed here.<br />
+                  HTML parsing errors or runtime exceptions are not captured.
+                </div>
               </div>
             </div>
           </div>
@@ -62,6 +72,47 @@
     </div>
   </div>
 </div>
+<section>
+  <h1 id="instructions"><a href="#instructions">Instructions</a></h1>
+  <div class="features">
+    <div>
+      <h2>
+        <i %http="https://lecoq.io/cdn/octicons/code-16.svg" %response.swap></i>
+        Elements editor
+      </h2>
+      <p>
+        Edit the content and experiment with <em>mizu.js</em>!
+      </p>
+      <small class="muted">
+        Your content is automatically embedded in a <code>&lt;body *mizu&gt;</code> tag, and <em>mizu.js</em> is loaded for you.
+      </small>
+    </div>
+    <div>
+      <h2>
+        <i %http="https://lecoq.io/cdn/octicons/sync-16.svg" %response.swap></i>
+        Reload the view
+      </h2>
+      <p>
+        Click this button to manually reset and reload the view.
+      </p>
+      <small class="muted">
+        A refresh is automatically triggered after a short delay when you stop typing in the editor.
+      </small>
+    </div>
+    <div>
+      <h2>
+        <i %http="https://lecoq.io/cdn/octicons/bug-16.svg" %response.swap></i>
+        Rendering errors
+      </h2>
+      <p>
+        Any rendering errors from <em>mizu.js</em> will be displayed here.
+      </p>
+      <small class="muted">
+        HTML parsing errors or runtime exceptions are not captured.
+      </small>
+    </div>
+  </div>
+</section>
 <script src="/highlight.js"></script>
 <script>
   window.addEventListener("load", function () {
@@ -70,12 +121,13 @@
     const editor = document.querySelector(".editor")
     const textarea = editor.querySelector("textarea")
     const highlight = editor.querySelector(".highlight")
+    const messages = document.querySelector(".messages")
     const button = document.querySelector("#render")
     const iframe = document.querySelector("iframe")
 
     // Setup code editor
-    function coloration(value) {
-      highlight.innerHTML = hljs.highlight(value, { language: "xml" }).value
+    function coloration(value, target = highlight) {
+      target.innerHTML = hljs.highlight(value, { language: "xml" }).value
     }
     textarea.addEventListener("input", () => coloration(textarea.value))
     textarea.addEventListener("input", () => render())
@@ -85,16 +137,58 @@
     })
     coloration(textarea.value)
 
+    // Setup tabs
+    const data = { tab: "" }
+    for (const key of Object.keys(data)) {
+      document.querySelectorAll(`[data-${key}]`).forEach((element) => {
+        element.addEventListener("click", () => {
+          data[key] = element.getAttribute(`data-${key}`)
+          document.querySelectorAll(`[data-for-${key}]`).forEach((element) => {
+            if (element.getAttribute(`data-for-${key}`) === data[key]) {
+              element.style.removeProperty("display")
+            } else {
+              element.style.setProperty("display", "none", "important")
+            }
+          })
+          document.querySelectorAll(`[data-${key}]`).forEach((element) => element.classList.toggle("active", element.getAttribute(`data-${key}`) === data[key]))
+        })
+      })
+    }
+    document.querySelector(`[data-tab]`).click()
+
+    // Setup messages
+    function cleanMessages() {
+      document.querySelectorAll(".message.warn").forEach((element) => element.remove())
+      document.querySelector(".errors-count small b").textContent = ""
+    }
+    globalThis.addEventListener("message", (event) => {
+      const { data: { message, target } } = event
+      const element = document.querySelector(".message.template").cloneNode(true)
+      element.querySelector(".content").textContent = message
+      if (target) {
+        coloration(target, element.querySelector(".target"))
+      }
+      element.classList.remove("template")
+      element.classList.add("warn")
+      document.querySelector(".errors-count small b").textContent++
+      messages.appendChild(element)
+    })
+
     // Setup renderer
     let timeout = NaN
-    function render() {
+    function render(delay = 2000) {
       clearTimeout(timeout)
-      timeout = setTimeout(() => button.dispatchEvent(new MouseEvent("click")), 2000)
+      button.classList.add("attention")
+      timeout = setTimeout(() => {
+        button.classList.remove("attention")
+        button.dispatchEvent(new MouseEvent("click"))
+      }, delay)
     }
     button.addEventListener("click", async function () {
       if (playground.classList.contains("pending")) {
         return
       }
+      cleanMessages()
       let resolve = null, reject = null
       const promise = new Promise((ok, ko) => {
         resolve = ok
@@ -116,16 +210,25 @@
     </head>
     <body *mizu class="pt-1">
       ${textarea.value}
-      <script src="/client.js" defer><\/script>
+      <script type="module">
+        import { Mizu } from "/client.mjs"
+        await new Mizu({
+          warn(message, target) {
+            globalThis.parent.postMessage({
+              message,
+              target: target?.outerHTML?.replace(target.innerHTML, "") ?? null
+            }, "*")
+          }
+        }).render()
+      <\/script>
     </body>
   </html>`.trim())
         frame.close()
-
         await promise
       } finally {
         playground.classList.remove("pending")
       }
     })
-    render()
+    render(0)
   })
 </script>

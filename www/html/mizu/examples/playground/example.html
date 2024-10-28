@@ -1,12 +1,12 @@
 <form *set="{ food: '🍱🍜🍚🍣🍥🍡🍵🍙🥟', selected: '' }">
-  <label>
+  <label *mustache>
     What's your favorite food? 😋
-    <small *if="selected">So you like <i *text="selected"></i>?</small>
+    <small *if="selected">So you like {{ selected }}?</small>
     <small *else>I want to know!</small>
     <select ::="selected" required>
       <option value="" disabled>Select a food</option>
-      <option *for="[...food]" *id="$i" :value="$value" *text="$value" *once></option>
+      <option *for="[...food]" *id="$i" :value="$value" *once>{{ $value }}</option>
     </select>
   </label>
 </form>
-<time class="muted" *refresh="1000" *text="new Date().toISOString().slice(11, 19)"></time>
+<time class="muted" *refresh="1" *text="new Date().toISOString()"></time>
