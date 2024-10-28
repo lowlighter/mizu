@@ -168,8 +168,9 @@ function toMarkdown(elements: Array<Node> | Node | null, markdown = "") {
         case "MIZU-NOTE":
         case "MIZU-WARN":
         case "MIZU-RESTRICTION":
+        case "MIZU-TBD":
         case "MIZU-IMPORT": {
-          const type = { "MIZU-NOTE": "NOTE", "MIZU-WARN": "WARNING", "MIZU-RESTRICTION": "CAUTION", "MIZU-IMPORT": "IMPORTANT" }[node.tagName]
+          const type = { "MIZU-NOTE": "NOTE", "MIZU-TBD": "NOTE", "MIZU-WARN": "WARNING", "MIZU-RESTRICTION": "CAUTION", "MIZU-IMPORT": "IMPORTANT" }[node.tagName]
           markdown += prefix(`[!${type}]\n${toMarkdown(Array.from(node.childNodes))}`, "> ")
           break
         }

@@ -35,6 +35,9 @@
           <span *if="$slots.note?.querySelectorAll('mizu-note').length" class="bd-muted bg-muted muted">
             {{ $slots.note.querySelectorAll('mizu-note').length }} Note{{ $slots.note.querySelectorAll('mizu-note').length !== 1 ? 's' : '' }}
           </span>
+          <span *if="$slots.note?.querySelectorAll('mizu-tbd').length" class="bd-default bg-default default">
+            {{ $slots.note.querySelectorAll('mizu-tbd').length }} TBD{{ $slots.note.querySelectorAll('mizu-tbd').length !== 1 ? 's' : '' }}
+          </span>
           <span *for="Array.from($slots.variable?.children ?? [])" class="bd-accent bg-accent accent">
             <code *text="$value.getAttribute('name')"></code>
           </span>

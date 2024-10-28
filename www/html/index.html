@@ -16,7 +16,7 @@
   </head>
   <body class="layout-simple" *clean.directives.comments.templates>
     <header %http="/html/_/header.html" %response.html></header>
-    <template *for="['directive', 'example', 'import', 'modifier', 'note', 'restriction', 'variable', 'warn']" *custom-element="`mizu-${$value}`" %http="`/components/mizu-${$value}.html`" %response.html></template>
+    <template *for="['directive', 'example', 'import', 'modifier', 'note', 'restriction', 'tbd', 'variable', 'warn']" *custom-element="`mizu-${$value}`" %http="`/components/mizu-${$value}.html`" %response.html></template>
     <main>
       <section class="centered">
         <img *if="page === 'index'" class="logo" src="/logo.png" alt="" />
