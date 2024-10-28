@@ -147,7 +147,7 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    *
    * This callback is executed during {@linkcode Renderer.render()} before any {@linkcode Directive.execute()} calls.
    *
-   * A partial object can be returned to update the rendering {@linkcode State}.
+   * A partial object can be returned to update the rendering {@linkcode State}, and the eligibility.
    *
    * If `false` is returned, the entire rendering process for this node is halted.
    *
@@ -166,11 +166,15 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * } as Directive & { name: string }
    * ```
    */
-  readonly setup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Cache; context: Context; state: DeepReadonly<State>; root: InitialContextState }) => Promisable<void | Partial<{ state: State } | false>>
+  readonly setup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Cache; context: Context; state: DeepReadonly<State>; root: InitialContextState }) => Promisable<void | Partial<{ state: State; execute: boolean } | false>>
   /**
    * Directive execution callback.
    *
    * This callback is executed during {@linkcode Renderer.render()} if the rendered node has been marked as eligible.
+   *
+   * A node is considered eligible if at least one of the following conditions is met:
+   * - {@linkcode Directive.setup()} returned `{ execute: true }`.
+   * - {@linkcode Directive.setup()} did not return an `execute` value and the element has at least one attribute matching the directive name.
    *
    * A partial object can be returned to update the rendering {@linkcode Context}, {@linkcode State}, and the rendered {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} (or {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment}).
    *

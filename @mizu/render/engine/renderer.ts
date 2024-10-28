@@ -346,6 +346,7 @@ export class Renderer {
    *   - 2.1 Call {@linkcode Directive.setup()}.
    *     - 2.1.1 If `false` is returned, end the process.
    *     - 2.1.2 If `state` is returned, update accordingly.
+   *     - 2.1.3 If `execute` is returned, store directive eligibility.
    * - 3. Retrieve source {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} node from {@linkcode Renderer.cache()} (if applicable).
    *   - 3.1 This occurs when `element` is a {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment} node.
    * - 4. For each {@linkcode Renderer.directives}:
@@ -375,6 +376,7 @@ export class Renderer {
         this.#watch(context, element)
       }
       // 2. Setup directives
+      const forced = new WeakMap<Directive, boolean>()
       state = { ...state }
       for (const directive of this.#directives) {
         const changes = await directive.setup?.(this, element, { cache: this.cache(directive.name), context, state, root })
@@ -383,6 +385,9 @@ export class Renderer {
         }
         if (changes?.state) {
           Object.assign(state, changes.state)
+        }
+        if ((changes?.execute === false) || (changes?.execute === true)) {
+          forced.set(directive, changes.execute)
         }
       }
 
@@ -394,7 +399,7 @@ export class Renderer {
       for (const directive of this.#directives) {
         // 4.1 Check eligibility
         const attributes = this.getAttributes(source, directive.name)
-        if (!attributes.length) {
+        if ((forced.get(directive) === false) || ((!forced.has(directive)) && (!attributes.length))) {
           continue
         }
         // 4.2 Notify misuses
@@ -439,6 +444,9 @@ export class Renderer {
       if (reactive) {
         this.#watch(context, element)
       }
+    } catch (error) {
+      this.warn(error.message, element)
+      throw error
     } finally {
       // 6. Cleanup directives
       for (const directive of this.#directives) {
@@ -532,7 +540,9 @@ export class Renderer {
         if (flushed) {
           controller.abort()
         }
-        await Promise.all(this.#queued.map(([element, options]) => this.#render(element, { reactive: false, ...options })))
+        await Promise.all(this.#queued.map(([element, options]) => {
+          return this.#render(element, { reactive: true, ...options })
+        }))
       } finally {
         t = Date.now()
         this.#queued = []

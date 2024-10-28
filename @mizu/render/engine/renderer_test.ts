@@ -222,6 +222,26 @@ test()("`Renderer.#render() // 2.1` updates `state` if it is returned", async ()
   expect((directives[0].execute as testing)[Symbol.for("@MOCK")].calls[0].args[2].state).toMatchObject({ $foo: true, $bar: true })
 })
 
+test()("`Renderer.#render() // 2.1` ", async () => {
+  await using window = new Window()
+  const directives = [
+    { name: "*execute:none+present", setup: fn(() => ({})), execute: fn(), phase: Phase.TESTING },
+    { name: "*execute:none+absent", setup: fn(() => ({})), execute: fn(), phase: Phase.TESTING },
+    { name: "*execute:false", setup: fn(() => ({ execute: false })), execute: fn(), phase: Phase.TESTING },
+    { name: "*execute:true", setup: fn(() => ({ execute: true })), execute: fn(), phase: Phase.TESTING },
+  ]
+  const renderer = await new Renderer(window, { ...options, directives: directives as testing }).ready
+  await expect(renderer.render(renderer.createElement("div", { attributes: { "*execute:none+present": "", "*execute:false": "" } }))).not.resolves.toThrow()
+  expect(directives[0].setup).toBeCalled()
+  expect(directives[0].execute).toBeCalled()
+  expect(directives[1].setup).toBeCalled()
+  expect(directives[1].execute).not.toBeCalled()
+  expect(directives[2].setup).toBeCalled()
+  expect(directives[2].execute).not.toBeCalled()
+  expect(directives[3].setup).toBeCalled()
+  expect(directives[3].execute).toBeCalled()
+})
+
 test()("`Renderer.#render() // 3` retrieves `HTMLElement` from `Comment` if applicable", async () => {
   await using window = new Window()
   const directives = [{ name: "*foo", execute: fn((_: unknown, element: unknown) => element), phase: Phase.TESTING }]
