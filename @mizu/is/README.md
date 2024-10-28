@@ -15,4 +15,4 @@ Set an [element tagname](https://developer.mozilla.org/docs/Web/API/Element/tagN
 ## Notes
 
 > [!WARNING]
-> When tagname changes, reference will also change. Any equality test with elements using this directive might not work as expected. Some directives may not be compatible with this directive.
+> If the tagname changes, the reference will also change. Equality checks with elements using this directive may not work as expected. Some directives may be incompatible with this directive.

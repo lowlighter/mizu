@@ -7,7 +7,7 @@
 Prevent an element from being processed.
 
 ```html
-<div *skip="">
+<div *skip>
   <!--<p *text="foo"></p>-->
 </div>
 ```

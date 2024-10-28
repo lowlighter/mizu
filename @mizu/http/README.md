@@ -15,7 +15,7 @@ Perform a [`fetch()`](https://developer.mozilla.org/docs/Web/API/Fetch_API) call
 ## Notes
 
 > [!NOTE]
-> If the element has no [`%response`](#response) directive attached, request is not automatically performed upon processing.
+> If the element lacks a [`%response`](#response) directive, the request is not automatically performed.
 
 > [!NOTE]
 > Valid [URLs](https://developer.mozilla.org/docs/Web/API/URL/canParse_static) may be specified « as is ».
@@ -30,15 +30,15 @@ _(in `url` expression only)_ The dispatched [`Event`](https://developer.mozilla.
 
 ### `.follow[boolean=true]`
 
-Control whether [`fetch()`](https://developer.mozilla.org/docs/Web/API/Fetch_API) should [follow redirections](https://developer.mozilla.org/docs/Web/API/RequestInit#redirect) or not.
+Control whether [`fetch()`](https://developer.mozilla.org/docs/Web/API/Fetch_API) should [follow redirections](https://developer.mozilla.org/docs/Web/API/RequestInit#redirect).
 
 ### `.history[boolean]`
 
-Whether to [`history.pushState()`](https://developer.mozilla.org/docs/Web/API/History/pushState) target URL [_(must be the same origin)_](https://developer.mozilla.org/docs/Web/API/History/pushState#url).
+Whether to update the browser history with [`history.pushState()`](https://developer.mozilla.org/docs/Web/API/History/pushState) for the target URL (must be the same origin).
 
 ### `.method[string]`
 
-Set [HTTP method](https://developer.mozilla.org/docs/Web/HTTP/Methods) _(uppercased)_. This modifier should not be used with one of its aliases.
+Set the [HTTP method](https://developer.mozilla.org/docs/Web/HTTP/Methods) (the value is uppercased). This modifier should not be used with its aliases.
 
 ### `.get[boolean]`
 
@@ -110,13 +110,13 @@ Set [HTTP body](https://developer.mozilla.org/docs/Glossary/Payload_body) for a 
 
 ### `$headers: Headers`
 
-A [`Headers`](https://developer.mozilla.org/docs/Web/API/Headers) object that contains all registered headers from [`%header`](#header) directives attached to element.
+A [`Headers`](https://developer.mozilla.org/docs/Web/API/Headers) object containing all registered headers from [`%header`](#header) directives attached to the element.
 
 ## Modifiers
 
 ### `.type["text" | "form" | "json" | "xml"]`
 
-Format body with specified type.
+Format the body with the specified type:
 
 - `text`: format body with [`toString()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/toString).
 - `form`: format body with [`URLSearchParams`](https://developer.mozilla.org/docs/Web/API/URLSearchParams).
@@ -127,7 +127,7 @@ Format body with specified type.
 
 ### `.header[boolean=true]`
 
-Automatically set [Content-Type header](https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Type) when using a `.type` modifier.
+Automatically set the [Content-Type header](https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Type) when using a `.type` modifier:
 
 - `text`: set `Content-Type: text/plain`.
 - `form`: set `Content-Type: application/json`.
@@ -159,7 +159,7 @@ Alias for `.type[xml]`.
 Reacts to a [`%http`](#http) directive's [`Response`](https://developer.mozilla.org/docs/Web/API/Response).
 
 ```html
-<div %http="'https://example.com'" %response.html="">
+<div %http="'https://example.com'" %response.html>
   <!--...-->
 </div>
 ```
@@ -168,22 +168,22 @@ Reacts to a [`%http`](#http) directive's [`Response`](https://developer.mozilla.
 
 ### `$response: Response`
 
-A [`Response`](https://developer.mozilla.org/docs/Web/API/Response) object that contains the fetched data.
+A [`Response`](https://developer.mozilla.org/docs/Web/API/Response) object containing the fetched data.
 
 ### `$content: unknown`
 
-A variable that contains the [`response.body`](https://developer.mozilla.org/docs/Web/API/Response/body) _(typing depends on which modifier is used)_.
+Contains the [`response.body`](https://developer.mozilla.org/docs/Web/API/Response/body) (type depends on the modifier used).
 
 ## Modifiers
 
 ### `[string]`
 
-Specify which [HTTP status code](https://developer.mozilla.org/docs/Web/HTTP/Status) trigger this directive.
+Specify which [HTTP status codes](https://developer.mozilla.org/docs/Web/HTTP/Status) trigger this directive:
 
 - The syntax for status code constraints is defined as follows:
-  - A range can be defined using a « minus sign `-` » between two numbers _(e.g. `%response[200-299]`)_.
-  - Multiple ranges and status can be specified by separating them with a « comma `,` »_(e.g. `%response[200,201-204]`)_.
-- The following aliases _(case-insensitive)_ are supported:
+  - Define a range using a « minus sign `-` » between two numbers _(e.g., `%response [200-299]`)_.
+  - Specify multiple ranges and statuses by separating them with a « comma `,` »_(e.g., `%response [200,201-204]`)_.
+- Supported aliases:
   - `2XX` for `200-299`.
   - `3XX` for `300-399`.
   - `4XX` for `400-499`.
@@ -191,11 +191,11 @@ Specify which [HTTP status code](https://developer.mozilla.org/docs/Web/HTTP/Sta
 
 ### `.consume["void" | "text" | "html" | "json" | "xml"]`
 
-Consume [`response.body`](https://developer.mozilla.org/docs/Web/API/Response/body).
+Consume the [`response.body`](https://developer.mozilla.org/docs/Web/API/Response/body):
 
 - `void`: discard body using [`response.body?.cancel()`](https://developer.mozilla.org/docs/Web/API/Response/body).
-- `text`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and set element's `[textContent](https://developer.mozilla.org/docs/Web/API/Node/textContent)` if no expression is provided.
-- `html`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and set element's `[innerHTML](https://developer.mozilla.org/docs/Web/API/Element/innerHTML)` if no expression is provided.
+- `text`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and set element's [`textContent`](https://developer.mozilla.org/docs/Web/API/Node/textContent) if no expression is provided.
+- `html`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and set element's [`innerHTML`](https://developer.mozilla.org/docs/Web/API/Element/innerHTML) if no expression is provided.
 - `json`: consume body using [`response.json()`](https://developer.mozilla.org/docs/Web/API/Response/json).
 - `xml`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and parse it with [`parse` from _@libs/xml_](https://jsr.io/@libs/xml). > [!IMPORTANT]
 
@@ -223,5 +223,5 @@ Alias for `.consume[xml]`.
 
 ### `.swap[boolean]`
 
-Consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and set target's [`outerHTML`](https://developer.mozilla.org/docs/Web/API/Element/outerHTML). This modifier takes precedence over the [`.consume`](#consume) modifier and makes it
-effectless, although if `.consume[text]` is set swapped content will be escaped.
+Consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and set target's [`outerHTML`](https://developer.mozilla.org/docs/Web/API/Element/outerHTML). This modifier takes precedence over the `.consume` modifier and makes it effectless,
+although if `.consume[text]` is set, swapped content will be escaped.Any non-directive HTML attributes on the target will be applied to the swapped content elements.

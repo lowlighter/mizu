@@ -5,7 +5,6 @@ import { escape } from "@std/regexp"
 import { AsyncFunction } from "@libs/typing/func"
 import { Context } from "@libs/reactive"
 import { Phase } from "./phase.ts"
-import _mizu from "@mizu/mizu"
 import { delay } from "@std/async"
 export { Context, Phase }
 export type { Arg, Arrayable, Cache, callback, Directive, NonVoid, Nullable, Optional }
@@ -50,7 +49,7 @@ export class Renderer {
    * These are automatically exposed by {@linkcode Renderer.render()} during {@linkcode Directive.setup()}, {@linkcode Directive.execute()} and {@linkcode Directive.cleanup()} executions.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    *
    * const directive = {
    *   name: "*foo",
@@ -80,7 +79,7 @@ export class Renderer {
    * These are expected to be initialized by {@linkcode Renderer.load()} during {@linkcode Directive.init()} execution if a cache is needed.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    *
    * const directive = {
    *   name: "*foo",
@@ -105,7 +104,7 @@ export class Renderer {
    * This cache should not be used to store {@linkcode Directive}-specific data.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * console.assert(renderer.cache("*") instanceof WeakMap)
@@ -141,7 +140,7 @@ export class Renderer {
    * Note that in this case the resolved module must have an {@linkcode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#using_the_default_export | export default} statement.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * const directive = {
@@ -195,7 +194,7 @@ export class Renderer {
    * It ensures that they won't collide with end-user-defined variables or functions.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * console.assert(renderer.internal("foo").startsWith(`${Renderer.internal}_`))
@@ -206,7 +205,7 @@ export class Renderer {
    * Retrieve {@linkcode Renderer.internal} prefix.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * console.assert(renderer.internal() === Renderer.internal)
@@ -237,7 +236,7 @@ export class Renderer {
    * > The root {@linkcode Renderer.internal} prefix is used internally to manage evaluation state, and thus cannot be used as a variable name.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * console.assert(await renderer.evaluate(null, "1 + 1") === 2)
@@ -262,11 +261,14 @@ export class Renderer {
     return await compiled.call(that, internal)
   }
 
+  /** Explicit rendering attribute name. */
+  static readonly #explicit = "*mizu"
+
   /**
    * Render {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} and its subtree with specified {@linkcode Context} and {@linkcode State} against {@linkcode Renderer.directives}.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * import _test from "@mizu/test"
    * const renderer = await new Renderer(new Window(), { directives: [ _test ] }).ready
    * const element = renderer.createElement("div", { attributes: { "~test.text": "foo" } })
@@ -280,7 +282,7 @@ export class Renderer {
    * Render {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} and its subtree with specified {@linkcode Context} and {@linkcode State} against {@linkcode Renderer.directives} and {@link https://developer.mozilla.org/docs/Web/API/Document/querySelector | query select} the return using a {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors | CSS selector}.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * import _test from "@mizu/test"
    * const renderer = await new Renderer(new Window(), { directives: [ _test ] }).ready
    * const element = renderer.createElement("div", { innerHTML: renderer.createElement("span", { attributes: { "~test.text": "foo" } }).outerHTML })
@@ -295,7 +297,7 @@ export class Renderer {
    * Render {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} and its subtree with specified {@linkcode Context} and {@linkcode State} against {@linkcode Renderer.directives} and returns it as an HTML string.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * import _test from "@mizu/test"
    * const renderer = await new Renderer(new Window(), { directives: [ _test ] }).ready
    * const element = renderer.createElement("div", { attributes: { "~test.text": "foo" } })
@@ -312,7 +314,7 @@ export class Renderer {
       context = context.with({})
     }
     // Search for all elements with the mizu attribute, and filter out all elements that have an ancestor with the mizu attribute (since they will be rendered anyway)
-    let subtrees = implicit || (element.hasAttribute(_mizu.name)) ? [element] : Array.from(element.querySelectorAll<HTMLElement>(`[${escape(_mizu.name)}]`))
+    let subtrees = implicit || (element.hasAttribute(Renderer.#explicit)) ? [element] : Array.from(element.querySelectorAll<HTMLElement>(`[${escape(Renderer.#explicit)}]`))
     subtrees = subtrees.filter((element) => subtrees.every((ancestor) => (ancestor === element) || (!ancestor.contains(element))))
     // Render subtrees
     const rendered = await Promise.allSettled(subtrees.map((element) => this.#render(element, { context, state, reactive, root: { context, state } })))
@@ -563,7 +565,7 @@ export class Renderer {
    * The `attributes` property is handled by {@linkcode Renderer.setAttribute()} which allows to set attributes with non-standard characters.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * const element = renderer.createElement("div", { innerHTML: "foo", attributes: { "*foo": "bar" } })
@@ -585,7 +587,7 @@ export class Renderer {
    * Note that the `HTMLElement` is entirely replaced, meaning that is is actually removed from the DOM.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    * const parent = renderer.createElement("div")
    * const slot = parent.appendChild(renderer.createElement("slot")) as HTMLSlotElement
@@ -621,7 +623,7 @@ export class Renderer {
    * If you hold a reference to a replaced `HTMLElement`, use {@linkcode Renderer.getComment()} to retrieve the replacement `Comment`.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    * const parent = renderer.createElement("div")
    * const element = parent.appendChild(renderer.createElement("div"))
@@ -648,7 +650,7 @@ export class Renderer {
    * Calling this method on a `Comment`that was not created by {@linkcode Renderer.comment()} will throw a {@linkcode https://developer.mozilla.org/docs/Web/API/ReferenceError | ReferenceError}.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    * const parent = renderer.createElement("div")
    * const element = parent.appendChild(renderer.createElement("div"))
@@ -675,7 +677,7 @@ export class Renderer {
    * Retrieve the {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment} associated with an {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} replaced by {@linkcode Renderer.comment()}.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * const element = renderer.document.documentElement.appendChild(renderer.createElement("div"))
@@ -693,7 +695,7 @@ export class Renderer {
    * This bypasses the illegal constructor check.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * const nodemap = renderer.createNamedNodeMap()
@@ -718,7 +720,7 @@ export class Renderer {
    * This bypasses the attribute name validation check.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * const attribute = renderer.createAttribute("*foo", "bar")
@@ -743,7 +745,7 @@ export class Renderer {
    * or updates a {@linkcode https://developer.mozilla.org/docs/Web/API/Node/nodeValue | Comment.nodeValue}.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * const element = renderer.createElement("div")
@@ -792,7 +794,7 @@ export class Renderer {
    * It is designed to handle attributes that follows the syntax described in {@linkcode Renderer.parseAttribute()}.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * const element = renderer.createElement("div", { attributes: { "*foo.modifier[value]": "bar" } })
@@ -807,7 +809,7 @@ export class Renderer {
    * If no matching `Attr` is found, `null` is returned.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * const element = renderer.createElement("div", { attributes: { "*foo.modifier[value]": "bar" } })
@@ -863,7 +865,7 @@ export class Renderer {
    * > Use {@linkcode AttrAny.enforce} to force the default value to be applied event if the key was not defined.
    * >
    * > ```ts ignore
-   * > import { Window } from "@mizu/mizu/core/vdom"
+   * > import { Window } from "@mizu/render/engine/vdom"
    * > const renderer = await new Renderer(new Window()).ready
    * > const modifier = (attribute: Attr, typing: AttrBoolean) => renderer.parseAttribute(attribute, { modifiers: { value: typing } }, { modifiers: true }).modifiers
    * > const [a, b] = Array.from(renderer.createElement("div", { attributes: { "*a.value": "", "*b": "" } }).attributes)
@@ -945,7 +947,7 @@ export class Renderer {
    * > ```
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    * const element = renderer.createElement("div", { attributes: { "*foo.bar[baz]": "true" } })
    * const [attribute] = Array.from(element.attributes)
@@ -1085,7 +1087,7 @@ export class Renderer {
    * Type guard for {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement}.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    * const element = renderer.createElement("div")
    * const comment = renderer.comment(element, { directive: "foo", expression: "bar" })
@@ -1102,7 +1104,7 @@ export class Renderer {
    * Type guard for {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment}.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    * const element = renderer.createElement("div")
    * const comment = renderer.comment(element, { directive: "foo", expression: "bar" })
@@ -1125,7 +1127,7 @@ export class Renderer {
    * to the `target` {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} or {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment} if there is one.
    *
    * ```ts
-   * import { Window } from "@mizu/mizu/core/vdom"
+   * import { Window } from "@mizu/render/engine/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
    * const element = renderer.createElement("div")
@@ -1171,7 +1173,7 @@ export type RendererRenderOptions = {
   context?: Context
   /** {@linkcode State} to use. */
   state?: State
-  /** Whether to render subtrees that do not possess the explicit rendering attribute {@linkcode _mizu.name}. */
+  /** Whether to render subtrees that do not possess the explicit rendering attribute. */
   implicit?: boolean
   /** Whether to enable reactivity. */
   reactive?: boolean

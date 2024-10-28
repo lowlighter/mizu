@@ -1,7 +1,7 @@
 <mizu-directive id="code" directory="code">
   <code #name><span class="hljs-keyword">*code</span><wbr /><span class="muted">="content"</span></code>
   <p #description>
-    Set element's content after performing syntax highlighting.
+    Set element's <a href="https://developer.mozilla.org/docs/Web/API/Element/innerHTML"><code>innerHTML</code></a> after performing syntax highlighting.
   </p>
   <code #example *skip>
     <code *code[ts]="'...'">
@@ -9,16 +9,16 @@
     </code>
   </code>
   <mizu-import #note>
-    Using this will dynamically import <a href="https://highlightjs.org"><var>highlight.js</var></a>.
+    This directive dynamically imports <a href="https://highlightjs.org"><var>highlight.js</var></a>.
   </mizu-import>
   <mizu-note #note>
-    Unsupported languages defaults to <code>plaintext</code>
+    Unsupported languages default to <code>plaintext</code>.
   </mizu-note>
   <mizu-modifier #modifier>
     <span #type>string</span>
     Any supported <a href="https://highlightjs.readthedocs.io/latest/supported-languages.html">language identifier or alias</a>.
   </mizu-modifier>
   <mizu-modifier #modifier name="trim">
-    Trim whitespaces and shared indentation.
+    Remove leading/trailing whitespaces and shared indentation.
   </mizu-modifier>
 </mizu-directive>

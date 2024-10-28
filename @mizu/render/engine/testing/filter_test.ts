@@ -1,8 +1,8 @@
 import { expect, test } from "@libs/testing"
-import { Window } from "@mizu/mizu/core/vdom"
-import { Phase, Renderer } from "@mizu/mizu/core/engine"
 import { filter } from "./filter.ts"
 import { format } from "./format.ts"
+import { Window } from "../vdom/mod.ts"
+import { Phase, Renderer } from "../mod.ts"
 const renderer = await new Renderer(new Window()).ready
 
 test()("`filter()` returns `Element.innerHTML` after filtering it", async () => {

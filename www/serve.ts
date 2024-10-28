@@ -8,7 +8,7 @@ import { toSnakeCase } from "@std/text"
 import * as JSONC from "@std/jsonc"
 import { Logger } from "@libs/logger"
 import { bundle } from "@libs/bundle/ts"
-import { Phase } from "@mizu/mizu/core/engine"
+import { Phase } from "@mizu/render/engine"
 import { Mizu as RenderClient } from "@mizu/render/client"
 import { Mizu as RenderServer } from "@mizu/render/server"
 import Mizu from "@mizu/render/server"
@@ -74,7 +74,7 @@ export default {
       handler: async () => new Response(await html("index"), { headers: { "Content-Type": "text/html" } }),
     },
     {
-      pattern: new URLPattern({ pathname: "/:page(index|build|playground)" }),
+      pattern: new URLPattern({ pathname: "/:page(index|build|playground|community)" }),
       handler: async (_, __, params) => new Response(await html(params?.pathname.groups.page!), { headers: { "Content-Type": "text/html" } }),
     },
     {

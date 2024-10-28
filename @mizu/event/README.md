@@ -4,7 +4,7 @@
 | -------------------------------------- | -------------------- | ------- | -------- |
 | ![](https://jsr.io/badges/@mizu/event) | 61 — `INTERACTIVITY` | `null`  | Yes      |
 
-Listen for a dispatched `[Event](https://developer.mozilla.org/docs/web/api/event)`.
+Listen for a dispatched [`Event`](https://developer.mozilla.org/docs/web/api/event).
 
 ```html
 <button @click="this.value = 'Clicked!'">
@@ -15,14 +15,14 @@ Listen for a dispatched `[Event](https://developer.mozilla.org/docs/web/api/even
 ## Notes
 
 > [!NOTE]
-> Multiple listeners can be attached in a single directive using the empty shorthand `@="object"` _(e.g. `@="{ foo() {}, bar() {} }"`)_.
+> Attach multiple listeners in a single directive using the shorthand `@ ="object"` _(e.g., `@ ="{ foo() {}, bar() {} }"`)_.
 >
-> - Modifiers are applied to all specified listeners in the directive _(e.g. `@.prevent="{}"`)_.
-> - Tags may be specified to use this syntax multiple times which can be useful to attach listeners with different modifiers _(e.g. `@[1]="{}" @[2].prevent="{}"`)_.
-> - As HTML attributes are case-insensitive, it is currently the only way to listen for events with uppercase letters or illegal attribute characters _(e.g. `@="{ FooBar() {}, Foobar() {} }"`)_.
+> - Modifiers apply to all listeners in the directive _(e.g., `@.prevent="{}"`)_.
+> - Use tags to attach listeners with different modifiers _(e.g., `@[1]="{}" @[1].prevent="{}"`)_.
+> - HTML attributes are case-insensitive, so this is the only way to listen for events with uppercase letters or illegal attribute characters _(e.g., `@="{ FooBar() {}, Foobar() {} }"`)_.
 
 > [!NOTE]
-> To listen for events with dots `.` in their names, surround them by brackets `{`}`` _(e.g. `@{my.event}`)_.
+> To listen for events with dots `.` in their names, use brackets `{`}`` _(e.g. `@ {my.event}`)_.
 
 ## Variables
 
@@ -34,7 +34,7 @@ _(in `listener` only)_ The dispatched [`Event`](https://developer.mozilla.org/do
 
 ### `[string]`
 
-Optional tag that can be used to attach multiple listeners to the same event _(e.g. `@click[1]`, `@click[2]`, etc.)_.
+Optional tag to attach multiple listeners to the same event _(e.g., `@click [1]`, `@click [2]`, etc.)_.
 
 ### `.prevent[boolean]`
 
@@ -58,11 +58,11 @@ Register listener with [`{ capture: true }`](https://developer.mozilla.org/docs/
 
 ### `.self[boolean]`
 
-Listener is triggered only if [`event.target`](https://developer.mozilla.org/docs/Web/API/Event/target) is the element itself.
+Trigger listener only if [`event.target`](https://developer.mozilla.org/docs/Web/API/Event/target) is the element itself.
 
 ### `.attach["element" | "window" | "document"]`
 
-Change where the listener is attached to (using [`window`](https://developer.mozilla.org/docs/Web/API/Window) or [`document`](https://developer.mozilla.org/docs/Web/API/Document) can be useful to create global listeners).
+Attach listener to a different target (e.g., [`window`](https://developer.mozilla.org/docs/Web/API/Window) or [`document`](https://developer.mozilla.org/docs/Web/API/Document)).
 
 ### `.throttle[duration≈250ms]`
 
@@ -70,21 +70,20 @@ Prevent listener from being called more than once during the specified time fram
 
 ### `.debounce[duration≈250ms]`
 
-Prevent listener from executing until the specified time frame has passed without any activity.
+Delay listener execution until the specified time frame has passed without any activity.
 
 ### `.keys[string]`
 
-Specify which keys must be pressed for the listener to trigger when receiving a [`KeyboardEvent`](https://developer.mozilla.org/docs/Web/API/KeyboardEvent).
+Specify which keys must be pressed for the listener to trigger on a [`KeyboardEvent`](https://developer.mozilla.org/docs/Web/API/KeyboardEvent).
 
 - The syntax for keys constraints is defined as follows:
-  - Expression is case-insensitive.
-  - A combination can be defined using a « plus sign `+` » between each key _(e.g. `@keypress.keys[ctrl+space]`)_.
-  - Multiple key combinations can be specified by separating them with a « comma `,` »_(e.g. `@keypress.keys[ctrl+space,shift+space]`)_.
-- The following keys and aliases are supported:
+  - Combine keys with a « plus sign `+` »_(e.g., `@keypress .keys[ctrl+space]`)_.
+  - Separate multiple combinations with a « comma `,` »_(e.g., `@keypress .keys[ctrl+space,shift+space]`)_.
+- Supported keys and aliases:
   - `alt` for `"Alt"`.
   - `ctrl` for `"Control"`.
   - `shift` for `"Shift"`.
   - `meta` for `"Meta"`.
   - `space` for `" "`.
-  - `key` for any key except `"Alt"`, `"Control"`, `"Shift"` and `"Meta"`.
-  - Any value possibly returned by [`event.key`](https://developer.mozilla.org/docs/Web/API/UI_Events/Keyboard_event_key_values).
+  - `key` for any key except `"Alt"`, `"Control"`, `"Shift"`, and `"Meta"`.
+  - Any value returned by [`event.key`](https://developer.mozilla.org/docs/Web/API/UI_Events/Keyboard_event_key_values).

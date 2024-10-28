@@ -9,9 +9,15 @@
     </div>
   </code>
   <mizu-note #note>
-    The <a href="https://developer.mozilla.org/docs/Web/CSS/display">CSS <code>display</code> property</a> is set to <code>none !important</code> when hidden.
+    When hidden, the element's <a href="https://developer.mozilla.org/docs/Web/CSS/display">CSS <code>display</code> property</a> is set to <code>none !important</code>.
   </mizu-note>
   <mizu-note #note>
-    Unlike <a href="#if"><code class="hljs-keyword">*if</code></a> and <a href="#else"><code class="hljs-keyword">*else</code></a> directives, element is not removed from the DOM when hidden.
+    When shown and if initially hidden by a CSS stylesheet (<code>display: none</code>), the element's display property is reset to <code>initial !important</code>.
+  </mizu-note>
+  <mizu-note #note>
+    Unlike <a href="#if"><code class="hljs-keyword">*if</code></a> and <a href="#else"><code class="hljs-keyword">*else</code></a> directives, the element remains in the DOM when hidden.
+  </mizu-note>
+  <mizu-note #note>
+    You can take advantage of the default value being <code>true</code> to hide elements before <em>mizu.js</em> loads (e.g. <code>&lt;style&gt;[\*show]{display:none}&lt;/style&gt;</code>).
   </mizu-note>
 </mizu-directive>

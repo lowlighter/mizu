@@ -4,7 +4,7 @@
 | ------------------------------------- | -------------- |
 | ![](https://jsr.io/badges/@mizu/html) | 41 — `CONTENT` |
 
-Set element's `[innerHTML](https://developer.mozilla.org/docs/Web/API/Element/innerHTML)`.
+Set element's [`innerHTML`](https://developer.mozilla.org/docs/Web/API/Element/innerHTML).
 
 ```html
 <template *html="'<p>...</p>'">
@@ -15,4 +15,4 @@ Set element's `[innerHTML](https://developer.mozilla.org/docs/Web/API/Element/in
 ## Notes
 
 > [!WARNING]
-> Raw HTML may lead to [XSS vulnerabilities](https://developer.mozilla.org/docs/Glossary/Cross-site_scripting).
+> Raw HTML can introduce [XSS vulnerabilities](https://developer.mozilla.org/docs/Glossary/Cross-site_scripting). Exercise caution when using expressions from untrusted sources.

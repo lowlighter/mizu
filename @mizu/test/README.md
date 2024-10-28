@@ -15,26 +15,26 @@ Special directive for testing purposes.
 ## Notes
 
 > [!WARNING]
-> Intended for testing purposes only. This is provided for developers that want to test their custom directives in isolation, without having to rely on other directives.
+> For testing only. Use this directive to isolate and test custom directives without relying on others.
 
 ## Modifiers
 
 ### `[string]`
 
-Any existing [Phase](/#concept-phase) name (e.g. `~test[testing]`, defaults to `Phase.TESTING`). Directive will be executed during the specified phase before any other directive of said phase, which can be used to simulate specific scenarios.
+Specify any existing [Phase](#concept-phase) name (e.g., `~test [testing]`, defaults to `Phase.TESTING`). The directive will execute during the specified phase before any other directive in that phase, allowing you to simulate specific scenarios.
 
 ### `.text[boolean]`
 
-Set element's `[textContent](https://developer.mozilla.org/docs/Web/API/Node/textContent)` with expression result.
+Set the element's [`textContent`](https://developer.mozilla.org/docs/Web/API/Node/textContent) with the expression result.
 
 ### `.eval[boolean]`
 
-Evaluate a JavaScript expression in the context of the element.
+Evaluate a JavaScript expression within the element's context.
 
 ### `.comment[boolean]`
 
-Change the element to a `[Comment](https://developer.mozilla.org/docs/Web/API/Comment)` if expression is truthy (and revert it back otherwise).
+Convert the element to a [`Comment`](https://developer.mozilla.org/docs/Web/API/Comment) if the expression is truthy, and revert it otherwise.
 
 ### `.throw[boolean]`
 
-Throw an `[EvalError](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/EvalError)` if expression is truthy.
+Throw an [`EvalError`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/EvalError) if the expression is truthy.

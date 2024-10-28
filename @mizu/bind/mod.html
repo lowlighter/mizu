@@ -1,7 +1,7 @@
 <mizu-directive id="bind" directory="bind">
   <code #name><span class="hljs-keyword">:</span><span class="hljs-meta underline-dotted">attribute</span><wbr /><span class="muted">="value"</span></code>
   <p #description>
-    Bind an element's <code><a href="https://developer.mozilla.org/docs/Web/HTML/Attributes">attribute</a></code> value.
+    Bind an element's <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes"><code>attribute</code></a> value.
   </p>
   <code #example *skip>
     <a :href="url">
@@ -15,21 +15,21 @@
     <a href="#bind-class"><code class="hljs-keyword">:class</code></a> and <a href="#bind-style"><code class="hljs-keyword">:style</code></a> have specific handling described below.
   </mizu-warn>
   <mizu-note #note>
-    Multiple attributes can be bound in a single directive using the empty shorthand <code><span class="hljs-keyword">:</span><span class="muted">="object"</span></code>
-    <i>(e.g. <code>:="{ foo: 'bar', bar: true }"</code>)</i>.
+    Bind multiple attributes in a single directive using the shorthand <code><span class="hljs-keyword">:</span><span class="muted">="object"</span></code>
+    <i>(e.g. <code><span class="hljs-keyword">:</span>="{ foo: 'bar', bar: true }"</code>)</i>.
   </mizu-note>
   <mizu-note #note>
-    Any <a href="https://html.spec.whatwg.org/#attributes-3">boolean attribute defined by the HTML spec</a> is handled accordingly (removed from the element when falsy).
+    Boolean attributes defined by the <a href="https://html.spec.whatwg.org/#attributes-3">HTML spec</a> are handled accordingly (removed when falsy).
   </mizu-note>
   <mizu-note #note>
-    Bound attributes with <code>null</code> or <code>undefined</code> values are removed from the element.
+    Attributes with <code>null</code> or <code>undefined</code> values are removed.
   </mizu-note>
 </mizu-directive>
 
 <mizu-directive id="bind-class" directory="bind">
   <code #name><span class="hljs-keyword">:class</span><wbr /><span class="muted">="value"</span></code>
   <p #description>
-    Bind an element's <code><a href="https://developer.mozilla.org/docs/Web/HTML/Global_attributes/class">class</a></code> attribute.
+    Bind an element's <a href="https://developer.mozilla.org/docs/Web/HTML/Global_attributes/class"><code>class</code></a> attribute.
   </p>
   <code #example *skip>
     <p :class="{ foo: true, bar: false }">
@@ -37,21 +37,21 @@
     </p>
   </code>
   <mizu-note #note>
-    Evaluated expression can be either be:
+    The expression can be:
     <ul>
       <li>
-        A <code>string</code> of space-separated class names <i>(e.g. <code>"foo bar"</code>)</i>.
+        A <code>string</code> of space-separated class names <i>(e.g., <code>"foo bar"</code>)</i>.
       </li>
       <li>
-        A <code>Record&lt;PropertyKey, boolean&gt;</code> of class names mapped to their current state <i>(e.g. <code>{ foo: true, bar: false }</code>)</i>.
+        A <code>Record&lt;PropertyKey, boolean&gt;</code> mapping class names to their state <i>(e.g., <code>{ foo: true, bar: false }</code>)</i>.
       </li>
       <li>
-        An <code>Array</code> of any of the listed supported types <i>(e.g. <code>[ "foo", { bar: false }, [] ]</code>)</i>.
+        An <code>Array</code> of the supported types <i>(e.g., <code>[ "foo", { bar: false }, [] ]</code>)</i>.
       </li>
     </ul>
   </mizu-note>
   <mizu-note #note>
-    Initial <code>class</code> attribute value is preserved.
+    The initial <code>class</code> attribute value is preserved.
   </mizu-note>
   <mizu-note #note>
     Class names with at least one <a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy">truthy value</a> are treated as active.
@@ -61,7 +61,7 @@
 <mizu-directive id="bind-style" directory="bind">
   <code #name><span class="hljs-keyword">:style</span><wbr /><span class="muted">="value"</span></code>
   <p #description>
-    Bind an element's <code><a href="https://developer.mozilla.org/docs/Web/HTML/Global_attributes/style">style</a></code> attribute.
+    Bind an element's <a href="https://developer.mozilla.org/docs/Web/HTML/Global_attributes/style"><code>style</code></a> attribute.
   </p>
   <code #example *skip>
     <p :style="{ color: 'salmon' }">
@@ -69,33 +69,33 @@
     </p>
   </code>
   <mizu-note #note>
-    Evaluated expression can be either be:
+    The expression can be:
     <ul>
       <li>
         A <code>string</code> supported by <a href="https://developer.mozilla.org/docs/Web/API/CSSStyleDeclaration/cssText"><code>HTMLElement.style.cssText</code></a>
-        <i>(e.g. <code>"color: blue;"</code>)</i>.
+        <i>(e.g., <code>"color: blue;"</code>)</i>.
       </li>
       <li>
-        A <code>Record&lt;PropertyKey, unknown&gt;</code> of CSS properties mapped to their current value <i>(e.g. <code>{ backgroundColor: "red", "border-color": "green", width: 1 }</code>)</i>.
+        A <code>Record&lt;PropertyKey, unknown&gt;</code> mapping CSS properties to their values <i>(e.g., <code>{ backgroundColor: "red", "border-color": "green", width: 1 }</code>)</i>.
         <ul>
           <li>
-            <a href="https://developer.mozilla.org/docs/Glossary/Camel_case"><q>camelCase</q></a> may be used inplace of <a href="https://developer.mozilla.org/docs/Glossary/Kebab_case"><q>kebab-case</q></a> to avoid escaping CSS properties names.
+            Use <a href="https://developer.mozilla.org/docs/Glossary/Camel_case"><q>camelCase</q></a> instead of <a href="https://developer.mozilla.org/docs/Glossary/Kebab_case"><q>kebab-case</q></a> to avoid escaping CSS property names.
           </li>
           <li>
-            Values of type <code>number</code> are implicitely converted to <code>px</code> unit whenever applicable <i>(<a href="https://developer.mozilla.org/docs/Web/API/CSSStyleDeclaration/setProperty"><code>HTMLElement.style.setProperty()</code></a> will be called again with
-              <code>"px"</code> appended)</i>.
+            Values of type <code>number</code> are implicitly converted to <code>px</code> units when applicable <i>(<a href="https://developer.mozilla.org/docs/Web/API/CSSStyleDeclaration/setProperty"><code>HTMLElement.style.setProperty()</code></a> will be called with <code
+              >"px"</code> appended)</i>.
           </li>
         </ul>
       </li>
       <li>
-        An <code>Array</code> of any of the listed supported types <i>(e.g. <code>[ "color: blue", { backgroundColor: "red" }, [] ]</code>)</i>.
+        An <code>Array</code> of the supported types <i>(e.g., <code>[ "color: blue", { backgroundColor: "red" }, [] ]</code>)</i>.
       </li>
     </ul>
   </mizu-note>
   <mizu-note #note>
-    Initial <code>style</code> attribute value is preserved.
+    The initial <code>style</code> attribute value is preserved.
   </mizu-note>
   <mizu-note #note>
-    Specified CSS properties values are processed in the order they are defined, regardless of whether they were marked as <a href="https://developer.mozilla.org/docs/Web/CSS/important"><code>!important</code></a>.
+    CSS properties are processed in the order they are defined, regardless of <a href="https://developer.mozilla.org/docs/Web/CSS/important"><code>!important</code></a>.
   </mizu-note>
 </mizu-directive>

@@ -1,7 +1,7 @@
 // Imports
-import { type Cache, type Directive, type Nullable, Phase } from "@mizu/mizu/core/engine"
+import { type Cache, type Directive, type Nullable, Phase } from "@mizu/render/engine"
 import { isValidCustomElementName } from "@std/html/is-valid-custom-element-name"
-export type * from "@mizu/mizu/core/engine"
+export type * from "@mizu/render/engine"
 
 /** `*custom-element` typings. */
 export const typings = {

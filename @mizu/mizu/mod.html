@@ -1,7 +1,7 @@
 <mizu-directive id="mizu" directory="mizu">
   <code #name><span class="hljs-keyword">*mizu</span></code>
   <p #description>
-    Enable <em>mizu</em> rendering for the element and its children.
+    Enable <em>mizu.js</em> rendering for the element and its children.
   </p>
   <code #example *skip>
     <main *mizu>
@@ -9,10 +9,11 @@
     </main>
   </code>
   <mizu-restriction #note>
-    For performance reasons, it is not possible to specify any attribute <a href="/#concept-directive-tag"><code>[tag]</code></a> or <a href="/#concept-directive-modifier"><code>.modifiers</code></a> with this directive.
+    For performance reasons, this directive must not have any <a href="/#concept-directive-tag"><code class="hljs-meta">[tag]</code></a> or <a href="/#concept-directive-modifier"><code class="hljs-meta">.modifiers</code></a>. If it does, the directive will be ignored.
   </mizu-restriction>
   <mizu-note #note>
-    If you are using the <a href="/#api-user">user API</a>, you can chose whether to require this directive or not to enable <em>mizu</em> rendering using the <code>implicit</code> option. By default, rendering is explicit in Client-Side APIs and implicit in Server-Side APIs.
+    You can choose whether to require this directive for <em>mizu.js</em> rendering with the <a href="https://jsr.io/@mizu/render@0.5.0/doc/engine/~/RendererRenderOptions.implicit"><code>implicit</code></a> option when using the <a href="/#api-user">user API</a>. By default,
+    rendering is explicit in Client-Side APIs and implicit in Server-Side APIs.
   </mizu-note>
   <mizu-variable #variable name="$root">
     <span #type>HTMLElement</span>

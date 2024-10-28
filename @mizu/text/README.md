@@ -4,7 +4,7 @@
 | ------------------------------------- | -------------- | ---------------- |
 | ![](https://jsr.io/badges/@mizu/text) | 41 — `CONTENT` | `this.innerHTML` |
 
-Set element's `[textContent](https://developer.mozilla.org/docs/Web/API/Node/textContent)`.
+Set element's [`textContent`](https://developer.mozilla.org/docs/Web/API/Node/textContent).
 
 ```html
 <p *text="'...'">
@@ -15,7 +15,7 @@ Set element's `[textContent](https://developer.mozilla.org/docs/Web/API/Node/tex
 ## Notes
 
 > [!NOTE]
-> HTML content is escaped.
+> HTML content is automatically escaped.
 
 > [!NOTE]
-> Using this directive without any attribute value escapes the element's `[innerHTML](https://developer.mozilla.org/docs/Web/API/Element/innerHTML)` _(e.g. `<a *text><b></b></a>` will result into `<a *text>&lt;b&gt;&lt;/b&gt;</a>`)_.
+> Without an attribute value, this directive escapes the element's [`innerHTML`](https://developer.mozilla.org/docs/Web/API/Element/innerHTML) _(e.g., `<a *text><b></b></a>` becomes `<a *text>&lt;b&gt;&lt;/b&gt;</a>`)_.

@@ -1,4 +1,4 @@
-<article %http="`/about/directives/${$attrs.directory}?name=${$attrs.id}`" %header[accept]="'application/json'" %response.json="meta = $content">
+<article %http="`/about/directives/${$attrs.directory}?name=${$attrs.id}`" %header[accept]="'application/json'" %response.json="meta = $content" class="directive">
   <header *clean.directives>
     <h3 :id="$attrs.id">
       <a :href="`#${this.parentElement.id}`"><slot name="name"></slot></a>
@@ -17,23 +17,23 @@
   </header>
   <section>
     <slot name="description"></slot>
-    <pre><code *code[xml]="$slots.example.querySelector('code')?.innerHTML.replace(/&amp;lt;/g, '&lt;').replace(/&amp;gt;/g, '&gt;') ?? ''"></code></pre>
+    <pre><code *code[xml]="$slots.example.querySelector('code')?.innerHTML.replace(/=&quot;&quot;/g, '').replace(/&amp;lt;/g, '&lt;').replace(/&amp;gt;/g, '&gt;') ?? ''"></code></pre>
   </section>
   <footer *if="$slots.note || $slots.variable || $slots.modifier">
     <details>
       <summary>
-        <div class="pills">
+        <div class="pills" *mustache>
           <span *if="$slots.note?.querySelectorAll('mizu-warn').length" class="bd-severe bg-severe severe">
-            <span *text="$slots.note.querySelectorAll('mizu-warn').length"></span> Warning<span *if="$slots.note.querySelectorAll('mizu-warn').length !== 1">s</span>
+            {{ $slots.note.querySelectorAll('mizu-warn').length }} Warning{{ $slots.note.querySelectorAll('mizu-warn').length !== 1 ? 's' : '' }}
           </span>
           <span *if="$slots.note?.querySelectorAll('mizu-restriction').length" class="bd-attention bg-attention attention">
-            <span *text="$slots.note.querySelectorAll('mizu-restriction').length"></span> Restriction<span *if="$slots.note.querySelectorAll('mizu-restriction').length !== 1">s</span>
+            {{ $slots.note.querySelectorAll('mizu-restriction').length }} Restriction{{ $slots.note.querySelectorAll('mizu-restriction').length !== 1 ? 's' : '' }}
           </span>
           <span *if="$slots.note?.querySelectorAll('mizu-import').length" class="bd-variant bg-variant variant">
-            <span *text="$slots.note.querySelectorAll('mizu-import').length"></span> Import<span *if="$slots.note.querySelectorAll('mizu-variant').length !== 1">s</span>
+            {{ $slots.note.querySelectorAll('mizu-import').length }} Import{{ $slots.note.querySelectorAll('mizu-import').length !== 1 ? 's' : '' }}
           </span>
           <span *if="$slots.note?.querySelectorAll('mizu-note').length" class="bd-muted bg-muted muted">
-            <span *text="$slots.note.querySelectorAll('mizu-note').length"></span> Note<span *if="$slots.note.querySelectorAll('mizu-note').length !== 1">s</span>
+            {{ $slots.note.querySelectorAll('mizu-note').length }} Note{{ $slots.note.querySelectorAll('mizu-note').length !== 1 ? 's' : '' }}
           </span>
           <span *for="Array.from($slots.variable?.children ?? [])" class="bd-accent bg-accent accent">
             <code *text="$value.getAttribute('name')"></code>
@@ -43,16 +43,16 @@
           </span>
         </div>
       </summary>
-      <div *if="$slots.note">
+      <div *if="$slots.note" class="notes">
         <slot name="note"></slot>
       </div>
-      <div *if="$slots.variable">
+      <div *if="$slots.variable" class="variables">
         <h4 :id="`${$attrs.id}-variables`">
           <a :href="`#${this.parentElement.id}`">Variables</a>
         </h4>
         <slot name="variable"></slot>
       </div>
-      <div *if="$slots.modifier">
+      <div *if="$slots.modifier" class="modifiers">
         <h4 :id="`${$attrs.id}-modifiers`">
           <a :href="`#${this.parentElement.id}`">Modifiers</a>
         </h4>

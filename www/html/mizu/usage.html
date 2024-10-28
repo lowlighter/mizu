@@ -1,0 +1,105 @@
+<h1 id="usage"><a href="#usage">Usage</a></h1>
+<section>
+  <h2 id="usage-client"><a href="#usage-client">Client-side</a></h2>
+  <p>
+    Set up <em>mizu.js</em> in your browser environment using one of two methods:
+    <ul>
+      <li><a href="https://developer.mozilla.org/docs/Glossary/IIFE">Immediately Invoked Function Expression (IIFE)</a></li>
+      <li><a href="https://developer.mozilla.org/docs/Web/JavaScript/Guide/Modules">EcmaScript Module (ESM)</a></li>
+    </ul>
+  </p>
+  <div class="flash muted">
+    <p class="mb-0">On the client-side...</p>
+    <ul class="mb-0">
+      <li>
+        <b>Rendering is explicit</b>, requiring the <a href="#mizu"><code class="hljs-keyword">*mizu</code></a> attribute to enable <em>mizu.js</em> on a subtree.
+      </li>
+      <li>
+        <b>Reactivity is enabled</b>, so changes to <a href="#concept-context">contexts</a> will trigger a re-render.
+      </li>
+    </ul>
+  </div>
+  <section>
+    <h3 id="usage-client-iife"><a href="#usage-client-iife">IIFE <i>(<code>.js</code>)</i></a></h3>
+    <p>
+      This setup automatically starts rendering the page once the script is loaded. It's the simplest way to get started but limited to the default configuration.
+    </p>
+    <pre class="usage-snippet"><code *code[html]>&lt;script src="https://mizu.sh/client.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+  <section>
+    <h3 id="usage-client-esm"><a href="#usage-client-esm">ESM <i>(<code>.mjs</code>)</i></a></h3>
+    <p>
+      This setup requires you to import and start <em>mizu.js</em> manually, allowing customization of the rendering process, such as setting the initial context and loading additional directives.
+    </p>
+    <pre
+      class="usage-snippet"
+    >
+<code *clean.spaces>
+      <span *code[html]>&lt;script type="module"&gt;</span><br>
+      &nbsp;&nbsp;<span *code[ts]>import Mizu from "https://mizu.sh/client.mjs"</span><br>
+      &nbsp;&nbsp;<span *code[ts]>await Mizu.render(document.body, { context: { foo: "🌊 Yaa, mizu!" } })</span><br>
+      <span *code[html]>&lt;/script&gt;</span>
+    </code></pre
+    >
+  </section>
+</section>
+<section>
+  <h2 id="usage-server"><a href="#usage-server">Server-side</a></h2>
+  <p>
+    To set up <em>mizu.js</em> in a server environment, install it locally. <em>mizu.js</em> packages are hosted on <a href="https://jsr.io/@mizu"><img src="https://jsr.io/badges/@mizu" /></a>.
+  </p>
+  <div class="flash muted">
+    <p class="mb-0">On the server side...</p>
+    <ul class="mb-0">
+      <li>
+        <b>Rendering is implicit</b>, so the <a href="#mizu"><code class="hljs-keyword">*mizu</code></a> attribute is not required.
+      </li>
+      <li>
+        <b>Reactivity is disabled</b>, meaning changes to <a href="#concept-context">contexts</a> are not tracked and will not trigger a re-render.
+      </li>
+    </ul>
+  </div>
+  <section>
+    <h3 id="usage-server-deno"><a href="#usage-server-deno">Deno</a></h3>
+    <p>
+      Deno supports the <code>jsr:</code> specifier natively, allowing you to import <em>mizu.js</em> directly.
+    </p>
+    <pre class="usage-snippet">
+<code *code[ts]>
+        import Mizu from "jsr:@mizu/render/server"
+        await Mizu.render(`&lt;div *text="foo"&gt;&lt;/div&gt;`, { context: { foo: "🌊 Yaa, mizu!" } })
+      </code></pre>
+    <p>
+      Alternatively, add it to your project using the Deno CLI.
+    </p>
+    <pre class="usage-snippet">
+<code *code[bash]>
+        deno add jsr:@mizu/render
+      </code></pre>
+  </section>
+  <section>
+    <h3 id="usage-server-others-runtimes"><a href="#usage-server-others-runtimes">Other runtimes (NodeJS, Bun, etc.)</a></h3>
+    <p>
+      Add <em>mizu.js</em> to your project using the <a href="https://jsr.io/docs/npm-compatibility">JSR npm compatibility layer</a>.
+    </p>
+    <pre class="usage-snippet">
+<code *code[bash]>
+        # NodeJS
+        npx jsr add @mizu/render
+      </code></pre>
+    <pre class="usage-snippet">
+<code *code[bash]>
+        # Bun
+        bunx jsr add @mizu/render
+      </code></pre>
+    <p>
+      Once installed, use it in your project.
+    </p>
+    <pre class="usage-snippet">
+<code *code[ts]>
+        import Mizu from "@mizu/render/server"
+        await Mizu.render(`&lt;div *text="foo"&gt;&lt;/div&gt;`, { context: { foo: "🌊 Yaa, mizu!" } })
+      </code></pre>
+  </section>
+</section>
+</section>

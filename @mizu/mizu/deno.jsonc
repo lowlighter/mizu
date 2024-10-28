@@ -2,9 +2,6 @@
   "name": "@mizu/mizu",
   "version": "0.5.2",
   "exports": {
-    ".": "./mod.ts",
-    "./core/engine": "./core/engine/mod.ts",
-    "./core/testing": "./core/testing/mod.ts",
-    "./core/vdom": "./core/vdom/mod.ts"
+    ".": "./mod.ts"
   }
 }

@@ -10,135 +10,23 @@
   <section>
     <h3 id="api-client"><a href="#api-client">Client-side API</a></h3>
     <p>
-      There are two ways to setup <em>mizu.js</em> in a browser environment:
-      <ul>
-        <li><a href="https://developer.mozilla.org/docs/Glossary/IIFE">Immediately Invoked Function Expression (IIFE)</a></li>
-        <li><a href="https://developer.mozilla.org/docs/Web/JavaScript/Guide/Modules">EcmaScript Module (ESM)</a></li>
-      </ul>
+      Full API documentation is available at <a href="https://jsr.io/@mizu/render/doc/client/~/Mizu">jsr.io/@mizu/render/client</a>.
     </p>
-    <section>
-      <h4 id="api-client-iife"><a href="#api-client-iife">IIFE <i>(<code>.js</code>)</i></a></h4>
-      <p>
-        In this setup <em>mizu.js</em> will automatically start rendering the page once the script is loaded. It is the simplest way to get started, but you will be limited to the default configuration.
-      </p>
-      <pre><code *code[html]>&lt;script src="https://mizu.sh/client.js" defer&gt;&lt;/script&gt;</code></pre>
-    </section>
-    <section>
-      <h4 id="api-client-esm"><a href="#api-client-esm">ESM <i>(<code>.mjs</code>)</i></a></h4>
-      <p>
-        In this setup <em>mizu.js</em> needs to be imported and started manually. This allows you to customize the rendering process like setting the initial context, loading additional directives, etc.
-      </p>
-      <pre
-      >
-<code *clean.spaces>
-        <span *code[html]>&lt;script type="module"&gt;</span><br>
-        &nbsp;&nbsp;<span *code[ts]>import Mizu from "https://mizu.sh/client.mjs"</span><br>
-        &nbsp;&nbsp;<span *code[ts]>await Mizu.render(document.body, { context: { foo: "🌊 Yaa, mizu!" } })</span><br>
-        <span *code[html]>&lt;/script&gt;</span>
-      </code></pre
-      >
-    </section>
-    <section>
-      <h4 id="api-client-defaults"><a href="#api-client-defaults">Defaults</a></h4>
-      <p>
-        When using the client-side API, the following defaults are applied:
-        <dl class="ml-1">
-          <dt>Rendering is explicit</dt>
-          <dd>
-            The <a href="#mizu"><code class="hljs-keyword">*mizu</code></a> attribute is required to enable <em>mizu.js</em> rendering on a subtree.
-          </dd>
-          <dt>Reactivity is enabled</dt>
-          <dd>Changes performed to <a href="#concept-context">contexts</a> will trigger a re-render.</dd>
-        </dl>
-      </p>
-    </section>
-    <section>
-      <h4 id="api-client-documentation"><a href="#api-client-documentation">Documentation</a></h4>
-      <p>
-        Full API documentation is available at <a href="https://jsr.io/@mizu/render/doc/client/~/Mizu">jsr.io/@mizu/render/client</a>.
-      </p>
-    </section>
   </section>
   <section>
     <h3 id="api-server"><a href="#api-server">Server-side API</a></h3>
     <p>
-      To setup <em>mizu.js</em> in a server environment, you will need to install it locally.
-      <em>mizu.js</em> packages are hosted on <a href="https://jsr.io/@mizu">jsr.io/@mizu</a>.
+      Full API documentation is available at <a href="https://jsr.io/@mizu/render/doc/server/~/Mizu">jsr.io/@mizu/render/server</a>.
     </p>
-    <section>
-      <h4 id="api-server-deno"><a href="#api-server-deno">Deno</a></h4>
-      <p>
-        As <a href="https://deno.com/">Deno</a> supports <code>jsr:</code> specifier natively, you can import <em>mizu.js</em> directly.
-      </p>
-      <pre>
-<code *code[ts]>
-        import Mizu from "jsr:@mizu/render/server"
-        await Mizu.render(`&lt;div *text="foo"&gt;&lt;/div&gt;`, { context: { foo: "🌊 Yaa, mizu!" } })
-      </code></pre>
-      <p>
-        Or you can add it to your project using the Deno CLI.
-      </p>
-      <pre>
-<code *code[bash]>
-        deno add jsr:@mizu/render
-      </code></pre>
-    </section>
-    <section>
-      <h4 id="api-server-others-runtimes"><a href="#api-server-others-runtimes">Other runtimes (NodeJS, Bun, etc.)</a></h4>
-      <p>
-        <em>mizu.js</em> can be added to your project using <a href="https://jsr.io/docs/npm-compatibility">JSR npm compatibility layer</a>.
-      </p>
-      <pre>
-<code *code[bash]>
-        # NodeJS
-        npx jsr add @mizu/render
-      </code></pre>
-      <pre>
-<code *code[bash]>
-        # Bun
-        bunx jsr add @mizu/render
-      </code></pre>
-      <p>
-        Once installed, you can use it in your project.
-      </p>
-      <pre>
-<code *code[ts]>
-        import Mizu from "@mizu/render/server"
-        await Mizu.render(`&lt;div *text="foo"&gt;&lt;/div&gt;`, { context: { foo: "🌊 Yaa, mizu!" } })
-      </code></pre>
-    </section>
-    <section>
-      <h4 id="api-server-defaults"><a href="#api-server-defaults">Defaults</a></h4>
-      <p>
-        When using the server-side API, the following defaults are applied:
-        <dl class="ml-1">
-          <dt>Rendering is implicit</dt>
-          <dd>
-            The <a href="#mizu"><code class="hljs-keyword">*mizu</code></a> attribute is <b>NOT</b> required to enable <em>mizu.js</em> rendering on a subtree.
-          </dd>
-          <dt>Reactivity is disabled</dt>
-          <dd>Changes performed to <a href="#concept-context">contexts</a> are not tracked and will not trigger a re-render.</dd>
-        </dl>
-      </p>
-    </section>
-    <section>
-      <h4 id="api-server-documentation"><a href="#api-server-documentation">Documentation</a></h4>
-      <p>
-        Full API documentation is available at <a href="https://jsr.io/@mizu/render/doc/server/~/Mizu">jsr.io/@mizu/render/server</a>.
-      </p>
-    </section>
   </section>
   <section>
     <h3 id="api-static"><a href="#api-static">Static generation API</a></h3>
     <p>
       The static generation API is an extension of the <a href="#api-server">server-side API</a> that allows you to render pages easily during your build process.
     </p>
-    <section>
-      <h4 id="api-static-documentation"><a href="#api-static-documentation">Documentation</a></h4>
-      <p>
-        Full API documentation is available at <a href="https://jsr.io/@mizu/render/doc/static/~/Mizu">jsr.io/@mizu/render/static</a>.
-      </p>
-    </section>
+    <p>
+      Full API documentation is available at <a href="https://jsr.io/@mizu/render/doc/static/~/Mizu">jsr.io/@mizu/render/static</a>.
+    </p>
   </section>
 </section>
 <section>

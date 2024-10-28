@@ -15,7 +15,7 @@ Set context values for an element and its children.
 ## Notes
 
 > [!CAUTION]
-> Context must resolve to a [JavaScript `Object`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object).
+> The context must resolve to a [JavaScript `Object`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object).
 
 > [!NOTE]
-> Context is only initialized once and is not reset upon subsequent renderings, but it can be updated by other directives.
+> The context is initialized once and persists across renderings, but it can still be updated by other directives.

@@ -15,25 +15,23 @@ Create a table of contents from [`<h1>...<h6>`](https://developer.mozilla.org/do
 ## Notes
 
 > [!CAUTION]
-> Heading elements in selected target must satisfy the following conditions:
+> Heading elements must meet these criteria:
 >
-> - Have an [`id`](https://developer.mozilla.org/docs/Web/HTML/Global_attributes/id) attribute.
-> - Have an immediate [`<a>`](https://developer.mozilla.org/docs/Web/HTML/Element/a) child with an anchor link _(which should points towards its parent id)_.
-> - No heading levels is skipped, and they are in descending order.
+> - Include an [`id`](https://developer.mozilla.org/docs/Web/HTML/Global_attributes/id) attribute.
+> - Contain an immediate [`<a>`](https://developer.mozilla.org/docs/Web/HTML/Element/a) child with an anchor link pointing to its parent `id`.
+> - Follow a descending order without skipping levels.
 
 > [!NOTE]
-> When a heading element is found, next level heading elements are searched in [`HTMLElement.parentElement`](https://developer.mozilla.org/docs/Web/API/Node/parentElement). If the parent element is a [`<hgroup>`](https://developer.mozilla.org/docs/Web/HTML/Element/hgroup) or has
-> a `*toc[ignore]` attribute, the search is performed in its grand-parent element instead.
+> When a heading is found, the next level headings are searched within its [`parentElement`](https://developer.mozilla.org/docs/Web/API/Node/parentElement). If the parent is an [`<hgroup>`](https://developer.mozilla.org/docs/Web/HTML/Element/hgroup) or has a `*toc[ignore]`
+> attribute, the search moves to the grandparent element.
 
 ## Modifiers
 
 ### `[string]`
 
-Specify which heading levels should be processed by this directive.
+Define which heading levels to include:
 
-- The syntax for heading levels constraints is defined as follows:
-  - Expression is case-insensitive.
-  - A single heading level can be specified _(e.g. `*toc[h2]`)_.
-    - A « plus sign `+` » may be added to also process heading elements with a higher heading level _(e.g. `*toc[h2+]`)_.
-  - A range can be defined using a « hyphen `-` » between two heading levels _(e.g. `*toc[h2-h4]`)_.
-- The special value `ignore` can be used to exclude an element from the node traversal _(e.g. `*toc[ignore]`)_. When used, no [`.modifiers`](#concept-directive-modifier) or attribute value should be specified.
+- Specify a single level _(e.g., `*toc[h2]`)_.
+  - Add a `+` to include higher levels _(e.g., `*toc[h2+]`)_.
+- Use a range with a `-` to specify multiple levels _(e.g., `*toc[h2-h4]`)_.
+- Use `ignore` to exclude an element from traversal _(e.g., `*toc[ignore]`). No other modifiers or attribute value should be used with this._

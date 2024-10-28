@@ -18,15 +18,11 @@
     <header %http="/html/_/header.html" %response.html></header>
     <template *for="['directive', 'example', 'import', 'modifier', 'note', 'restriction', 'variable', 'warn']" *custom-element="`mizu-${$value}`" %http="`/components/mizu-${$value}.html`" %response.html></template>
     <main>
-      <section class="app">
-        <hgroup *if="page !== 'playground'">
-          <img class="logo" src="/logo.png" alt="" />
-        </hgroup>
-        <section *if="page === 'index'" *for="['about', 'features']" %http="`/html/mizu/${$value}.html`" %response.html></section>
+      <section class="centered">
+        <img *if="page === 'index'" class="logo" src="/logo.png" alt="" />
       </section>
-      <section *if="page === 'index'" *for="['faq', 'concepts', 'directives', 'api']" %http="`/html/mizu/${$value}.html`" %response.html></section>
-      <section *if="page === 'build'" %http="/html/build.html" %response.html></section>
-      <section *if="page === 'playground'" %http="/html/playground.html" %response.html></section>
+      <section *if="page === 'index'" *for="['about', 'features', 'faq', 'usage', 'concepts', 'directives', 'api']" %http="`/html/mizu/${$value}.html`" %response.html></section>
+      <section *else %http="`/html/${page}.html`" %response.html></section>
     </main>
     <aside *if="page === 'index'" data-expandable="☰ Quick navigation">
       <nav class="toc" *toc></nav>

@@ -1,7 +1,7 @@
 // Imports
-import { type Cache, type Directive, Phase } from "@mizu/mizu/core/engine"
+import { type Cache, type Directive, Phase } from "@mizu/render/engine"
 import { boolean } from "./boolean.ts"
-export type * from "@mizu/mizu/core/engine"
+export type * from "@mizu/render/engine"
 
 /** `:bind` directive. */
 export const _bind = {

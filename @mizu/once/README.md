@@ -7,7 +7,7 @@
 Render an element once and skip subsequent updates.
 
 ```html
-<div *once="">
+<div *once>
   <!--...-->
 </div>
 ```

@@ -4,7 +4,7 @@
 | ------------------------------------- | -------------- | ------------------ |
 | ![](https://jsr.io/badges/@mizu/code) | 41 — `CONTENT` | `this.textContent` |
 
-Set element's content after performing syntax highlighting.
+Set element's [`innerHTML`](https://developer.mozilla.org/docs/Web/API/Element/innerHTML) after performing syntax highlighting.
 
 ```html
 <code *code[ts]="'...'">
@@ -15,10 +15,10 @@ Set element's content after performing syntax highlighting.
 ## Notes
 
 > [!IMPORTANT]
-> Using this will dynamically import [`highlight.js`](https://highlightjs.org).
+> This directive dynamically imports [`highlight.js`](https://highlightjs.org).
 
 > [!NOTE]
-> Unsupported languages defaults to `plaintext`
+> Unsupported languages default to `plaintext`.
 
 ## Modifiers
 
@@ -28,4 +28,4 @@ Any supported [language identifier or alias](https://highlightjs.readthedocs.io/
 
 ### `.trim[boolean=true]`
 
-Trim whitespaces and shared indentation.
+Remove leading/trailing whitespaces and shared indentation.

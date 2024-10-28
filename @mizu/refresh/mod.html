@@ -1,7 +1,7 @@
 <mizu-directive id="refresh" directory="refresh">
   <code #name><span class="hljs-keyword">*refresh</span><wbr /><span class="muted">="interval"</span></code>
   <p #description>
-    Force an element to be processed again at a specified interval <i>(in seconds)</i>.
+    Reprocess an element at a specified interval <i>(in seconds)</i>.
   </p>
   <code #example *skip>
     <div *refresh="1.5">
@@ -9,18 +9,18 @@
     </div>
   </code>
   <mizu-warn #note>
-    Context is recreated starting from the initial root context and the element itself, meaning that anything computed in-between is not available. To prevent unexpected behaviour, it is recommended to only use this on elements that can be rendered independently.
+    Context is recreated from the initial root context and the element itself, meaning intermediate computations are not retained. Use this only on elements that can be rendered independently to avoid unexpected behavior.
   </mizu-warn>
   <mizu-warn #note>
-    Avoid using it on iterative directives such as <a href="#for"><code class="hljs-keyword">*for</code></a> as the <a href="#refresh"><code class="hljs-keyword">*refresh</code></a> directive will be duplicated for each generated element.
+    Avoid using with iterative directives like <a href="#for"><code class="hljs-keyword">*for</code></a> as <a href="#refresh"><code class="hljs-keyword">*refresh</code></a> will be duplicated for each generated element.
   </mizu-warn>
   <mizu-note #note>
-    Target element will be rendered regardless of any detected changes. This directive is thus useful to update content that cannot be directly observed, but it is advised to use this sparingly to avoid performance issues.
+    The target element will be rendered regardless of detected changes. This is useful for updating content that cannot be directly observed, but use sparingly to avoid performance issues.
   </mizu-note>
   <mizu-note #note>
-    Set the interval to <code>null</code> to clear the refresh.
+    Set the interval to <code>null</code> to stop refreshing.
   </mizu-note>
   <mizu-note #note>
-    If the element is commented out by a directive, refresh is automatically cleared.
+    If the element is commented out by a directive, the refresh is automatically cleared.
   </mizu-note>
 </mizu-directive>

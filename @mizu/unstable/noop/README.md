@@ -7,5 +7,5 @@
 This directive does nothing.
 
 ```html
-<div *noop=""></div>
+<div *noop></div>
 ```

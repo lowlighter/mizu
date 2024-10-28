@@ -18,7 +18,7 @@
  * {@link https://developer.mozilla.org/docs/Web/API/UI_Events/Keyboard_event_key_values | Reference}
  *
  * ```ts
- * import { Window } from "@mizu/mizu/core/vdom"
+ * import { Window } from "@mizu/render/engine/vdom"
  * const { KeyboardEvent } = new Window()
  *
  * const check = keyboard("a,ctrl+b")

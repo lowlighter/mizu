@@ -1,9 +1,11 @@
-<small class="block mb-.25">
-  <code *clean.spaces>
-    <span *text="$attrs.name" class="hljs-title"></span>:&nbsp;
-    <span class="hljs-attr">
-      <slot name="type"></slot>
-    </span>
-  </code>
+<small class="block">
+  <h5>
+    <code *clean.spaces>
+      <span *text="$attrs.name" class="hljs-meta"></span>:&nbsp;
+      <span class="hljs-attr">
+        <slot name="type"></slot>
+      </span>
+    </code>
+  </h5>
   <slot></slot>
 </small>

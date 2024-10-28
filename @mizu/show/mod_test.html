@@ -18,6 +18,20 @@
   </expect>
 </test>
 
+<test name="[*show] is truthy when empty">
+  <render>
+    <style filter-remove>
+      [\*show] {
+        display: none;
+      }
+    </style>
+    <p *show>foo</p>
+  </render>
+  <expect>
+    <p style="display: initial">foo</p>
+  </expect>
+</test>
+
 <test name="[*show] is reactive">
   <script>
     context.value = false

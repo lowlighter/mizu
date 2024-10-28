@@ -1,7 +1,7 @@
 <mizu-directive id="ref" directory="ref">
   <code #name><span class="hljs-keyword">*ref</span><wbr /><span class="muted">="name"</span></code>
   <p #description>
-    Create a reference to the element for later use.
+    Create a reference to an element for later use.
   </p>
   <code #example *skip>
     <div *ref="foo" data-text="bar">
@@ -10,12 +10,12 @@
   </code>
   <mizu-variable #variable name="$refs">
     <span #type>Record&lt;PropertyKey, HTMLElement&gt;</span>
-    A record of all previously referenced elements in current subtree.
+    A collection of all referenced elements within the current subtree.
   </mizu-variable>
   <mizu-note #note>
-    Redefining a reference will overwrite its previous value for the rest of the subtree without affecting its value in the parent subtree.
+    Redefining a reference will shadow its previous value within the current subtree, without affecting its value in the parent subtree.
   </mizu-note>
   <mizu-modifier #modifier name="raw">
-    Whether to skip expression evaluation or not.
+    Skip expression evaluation if set.
   </mizu-modifier>
 </mizu-directive>

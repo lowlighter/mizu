@@ -9,9 +9,9 @@
     </div>
   </code>
   <mizu-restriction #note>
-    Context must resolve to a <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript <code>Object</code></a>.
+    The context must resolve to a <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript <code>Object</code></a>.
   </mizu-restriction>
   <mizu-note #note>
-    Context is only initialized once and is not reset upon subsequent renderings, but it can be updated by other directives.
+    The context is initialized once and persists across renderings, but it can still be updated by other directives.
   </mizu-note>
 </mizu-directive>

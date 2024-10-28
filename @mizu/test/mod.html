@@ -9,23 +9,23 @@
     </samp>
   </code>
   <mizu-warn #note>
-    Intended for testing purposes only. This is provided for developers that want to test their custom directives in isolation, without having to rely on other directives.
+    For testing only. Use this directive to isolate and test custom directives without relying on others.
   </mizu-warn>
   <mizu-modifier #modifier>
     <span #type>string</span>
-    Any existing <a href="/#concept-phase">Phase</a> name (e.g. <code>~test[testing]</code>, defaults to <code *code[ts]>Phase.TESTING</code>). Directive will be executed during the specified phase before any other directive of said phase, which can be used to simulate specific
-    scenarios.
+    Specify any existing <a href="#concept-phase">Phase</a> name (e.g., <code class="hljs-keyword">~test<span class="hljs-meta">[testing]</span></code>, defaults to <code *code[ts]>Phase.TESTING</code>). The directive will execute during the specified phase before any other
+    directive in that phase, allowing you to simulate specific scenarios.
   </mizu-modifier>
   <mizu-modifier #modifier name="text">
-    Set element's <var><a href="https://developer.mozilla.org/docs/Web/API/Node/textContent">textContent</a></var> with expression result.
+    Set the element's <a href="https://developer.mozilla.org/docs/Web/API/Node/textContent"><code>textContent</code></a> with the expression result.
   </mizu-modifier>
   <mizu-modifier #modifier name="eval">
-    Evaluate a JavaScript expression in the context of the element.
+    Evaluate a JavaScript expression within the element's context.
   </mizu-modifier>
   <mizu-modifier #modifier name="comment">
-    Change the element to a <var><a href="https://developer.mozilla.org/docs/Web/API/Comment">Comment</a></var> if expression is truthy (and revert it back otherwise).
+    Convert the element to a <a href="https://developer.mozilla.org/docs/Web/API/Comment"><code>Comment</code></a> if the expression is truthy, and revert it otherwise.
   </mizu-modifier>
   <mizu-modifier #modifier name="throw">
-    Throw an <var><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/EvalError">EvalError</a></var> if expression is truthy.
+    Throw an <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/EvalError"><code>EvalError</code></a> if the expression is truthy.
   </mizu-modifier>
 </mizu-directive>

@@ -562,6 +562,38 @@
   </expect>
 </test>
 
+<test name="[%response] with `.swap` modifier keeps attributes">
+  <http-server>
+    <response path="/foo" status="OK">
+      <a>foo</a>
+      bar
+      <b>baz</b>
+    </response>
+  </http-server>
+  <render>
+    <section>
+      <div foobar="baz" %http="/foo" %response.swap></div>
+    </section>
+  </render>
+  <expect>
+    <section>
+      <a foobar="baz">foo</a>
+      bar
+      <b foobar="baz">baz</b>
+    </section>
+  </expect>
+  <render>
+    <section>
+      <div foobar="baz" %http="/foo" %response.swap.text></div>
+    </section>
+  </render>
+  <expect>
+    <section>
+      &lt;a&gt;foo&lt;/a&gt; bar &lt;b&gt;baz&lt;/b&gt;
+    </section>
+  </expect>
+</test>
+
 <test name="[%response] skips commented elements">
   <http-server>
     <response path="/foo" status="OK"></response>

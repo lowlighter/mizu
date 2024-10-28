@@ -11,9 +11,9 @@ meta:
           - vercel.json
 
 # Mizu core engine and end-user API
-core:
+engine:
   - changed-files:
-      - any-glob-to-any-file: "@mizu/mizu/core/**"
+      - any-glob-to-any-file: "@mizu/render/engine/**"
 api:
   - changed-files:
       - any-glob-to-any-file: "@mizu/render/**"

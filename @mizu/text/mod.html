@@ -1,7 +1,7 @@
 <mizu-directive id="text" directory="text">
   <code #name><span class="hljs-keyword">*text</span><wbr /><span class="muted">="content"</span></code>
   <p #description>
-    Set element's <var><a href="https://developer.mozilla.org/docs/Web/API/Node/textContent">textContent</a></var>.
+    Set element's <a href="https://developer.mozilla.org/docs/Web/API/Node/textContent"><code>textContent</code></a>.
   </p>
   <code #example *skip>
     <p *text="'...'">
@@ -9,10 +9,10 @@
     </p>
   </code>
   <mizu-note #note>
-    HTML content is escaped.
+    HTML content is automatically escaped.
   </mizu-note>
   <mizu-note #note>
-    Using this directive without any attribute value escapes the element's <var><a href="https://developer.mozilla.org/docs/Web/API/Element/innerHTML">innerHTML</a></var>
-    <i class="muted">(e.g. <code>&lt;a *text&gt;&lt;b&gt;&lt;/b&gt;&lt;/a&gt;</code> will result into <code>&lt;a *text&gt;&amp;lt;b&amp;gt;&amp;lt;/b&amp;gt;&lt;/a&gt;</code>)</i>.
+    Without an attribute value, this directive escapes the element's <a href="https://developer.mozilla.org/docs/Web/API/Element/innerHTML"><code>innerHTML</code></a>
+    <i class="muted">(e.g., <code>&lt;a *text&gt;&lt;b&gt;&lt;/b&gt;&lt;/a&gt;</code> becomes <code>&lt;a *text&gt;&amp;lt;b&amp;gt;&amp;lt;/b&amp;gt;&lt;/a&gt;</code>)</i>.
   </mizu-note>
 </mizu-directive>

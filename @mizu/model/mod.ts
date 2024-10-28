@@ -1,8 +1,8 @@
 // Imports
-import { type Cache, type callback, type Directive, type Modifiers, type Nullable, Phase } from "@mizu/mizu/core/engine"
+import { type Cache, type callback, type Directive, type Modifiers, type Nullable, Phase } from "@mizu/render/engine"
 import { equal } from "@std/assert"
 import { _event } from "@mizu/event"
-export type * from "@mizu/mizu/core/engine"
+export type * from "@mizu/render/engine"
 
 /** `::value` typings. */
 export const typings = {

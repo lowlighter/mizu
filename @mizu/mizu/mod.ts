@@ -1,6 +1,6 @@
 // Imports
-import { type Directive, Phase } from "./core/engine/mod.ts"
-export type * from "./core/engine/mod.ts"
+import { type Directive, Phase } from "@mizu/render/engine"
+export type * from "@mizu/render/engine"
 
 /** `*mizu` directive. */
 export const _mizu = {

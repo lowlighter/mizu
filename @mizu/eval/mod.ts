@@ -1,6 +1,6 @@
 // Imports
-import { type Cache, type Directive, Phase } from "@mizu/mizu/core/engine"
-export type * from "@mizu/mizu/core/engine"
+import { type Cache, type Directive, Phase } from "@mizu/render/engine"
+export type * from "@mizu/render/engine"
 
 /** `*eval` directive. */
 export const _eval = {

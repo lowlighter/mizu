@@ -4,10 +4,10 @@
 | ------------------------------------------- | ------------------------- | ------- | -------- |
 | ![](https://jsr.io/badges/@mizu/http/event) | 35 — `HTTP_INTERACTIVITY` | `null`  | Yes      |
 
-Listen for a dispatched `[Event](https://developer.mozilla.org/docs/web/api/event)` and re-evaluates [`%http`](#http) directive before reacting to its [`Response`](https://developer.mozilla.org/docs/Web/API/Response).
+Listen for a dispatched [`Event`](https://developer.mozilla.org/docs/web/api/event) and re-evaluates [`%http`](#http) directive before reacting to its [`Response`](https://developer.mozilla.org/docs/Web/API/Response).
 
 ```html
-<button %http="https://example.com" %@click.html="">
+<button %http="https://example.com" %@click.html>
   <!--...-->
 </button>
 ```

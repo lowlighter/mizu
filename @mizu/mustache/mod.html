@@ -1,7 +1,7 @@
 <mizu-directive id="mustache" directory="mustache">
   <code #name><span class="hljs-keyword">*mustache</span></code>
   <p #description>
-    Enable content interpolation between <q>mustaches</q> (<code>{{</code> and <code>}}</code>) from <var><a href="https://developer.mozilla.org/docs/Web/API/Text">Text</a></var> child nodes.
+    Enable content interpolation within <q>mustaches</q> (<code>{{</code> and <code>}}</code>) from <a href="https://developer.mozilla.org/docs/Web/API/Text"><code>Text</code></a> child nodes.
   </p>
   <code #example *skip>
     <p *mustache>
@@ -9,9 +9,12 @@
     </p>
   </code>
   <mizu-note #note>
-    HTML content is escaped.
+    Interpolation occurs only within <a href="https://developer.mozilla.org/docs/Web/API/Text"><code>Text</code></a> nodes, not the entire element.
+  </mizu-note>
+  <mizu-note #note>
+    HTML content is automatically escaped.
   </mizu-note>
   <mizu-warn #note>
-    There is currently no distinction between double mustaches (<code>{{</code> and <code>}}</code>) and triple mustaches (<code>{{{</code> and <code>}}}</code>), but future versions may treat them differently.
+    There is currently no distinction between double mustaches (<code>{{</code> and <code>}}</code>) and triple mustaches (<code>{{{</code> and <code>}}}</code>), but future versions may introduce specific behavior for these.
   </mizu-warn>
 </mizu-directive>

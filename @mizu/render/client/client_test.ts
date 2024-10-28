@@ -1,5 +1,5 @@
 import { expect, test } from "@libs/testing"
-import { Window } from "@mizu/mizu/core/vdom"
+import { Window } from "../engine/vdom/mod.ts"
 import { Client } from "./client.ts"
 
 test()("`Client.render()` renders dom content", async () => {

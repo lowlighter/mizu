@@ -1,6 +1,6 @@
 // Imports
-import { type Cache, type Context, type Directive, type Nullable, Phase } from "@mizu/mizu/core/engine"
-export type * from "@mizu/mizu/core/engine"
+import { type Cache, type Context, type Directive, type Nullable, Phase } from "@mizu/render/engine"
+export type * from "@mizu/render/engine"
 
 /** `*set` directive. */
 export const _set = {

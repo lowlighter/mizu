@@ -9,35 +9,35 @@
     </template>
   </code>
   <mizu-restriction #note>
-    Must be defined on a <code><a href="https://developer.mozilla.org/docs/Web/HTML/Element/template">&lt;template&gt;</a></code> element.
+    Must be defined on a <a href="https://developer.mozilla.org/docs/Web/HTML/Element/template"><code>&lt;template&gt;</code></a> element.
   </mizu-restriction>
   <mizu-restriction #note>
-    Specified <code>tagname</code> must satisfy the <a href="https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements#name">definition of a valid name</a>.
+    The <code>tagname</code> must be a <a href="https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements#name">valid custom element name</a>.
   </mizu-restriction>
   <mizu-note #note>
     Valid <a href="https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements#name">custom element names</a> may be specified <q>as is</q>.
   </mizu-note>
   <mizu-note #note>
-    Custom elements registered this way do not use <a href="https://developer.mozilla.org/docs/Web/API/Web_components/Using_shadow_DOM">Shadow DOMs</a> but rather have their content rendered directly.
+    Custom elements registered this way do not use <a href="https://developer.mozilla.org/docs/Web/API/Web_components/Using_shadow_DOM">Shadow DOM</a>, their content is rendered directly.
   </mizu-note>
   <mizu-modifier #modifier name="flat">
-    Replace occurences of this custom element by their content. Note that it not possible to access <code>$slots</code> and <code>$attrs</code> variables when using this modifier.
+    Replace occurrences of this custom element with its content. Note that <code>$slots</code> and <code>$attrs</code> variables are not accessible when using this modifier.
   </mizu-modifier>
   <mizu-variable #variable name="$slots">
     <span #type>Record&lt;PropertyKey, HTMLSlotElement&gt;</span>
-    A record of specified <a href="#slot"><code class="hljs-keyword">#<span class="hljs-meta">slot</span></code></a> elements by <code><a href="https://developer.mozilla.org/docs/Web/HTML/Element/slot">&lt;slot&gt;</a></code> name <i>(unamed slot is accessible using <code
-      >$slots[""]</code>)</i>.
+    A record of <a href="#slot"><code class="hljs-keyword">#<span class="hljs-meta">slot</span></code></a> elements by <a href="https://developer.mozilla.org/docs/Web/HTML/Element/slot"><code>&lt;slot&gt;</code></a> name. The unnamed slot is accessible using <code
+    >$slots[""]</code>.
   </mizu-variable>
   <mizu-variable #variable name="$attrs">
     <span #type>Record&lt;PropertyKey, string&gt;</span>
-    A record of specified <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes">attributes</a> on the custom element.
+    A record of <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes">HTML attributes</a> specified on the custom element.
   </mizu-variable>
 </mizu-directive>
 
 <mizu-directive id="slot" directory="custom-element">
   <code #name><span class="hljs-keyword">#</span><span class="hljs-meta underline-dotted">slot</span></code>
   <p #description>
-    Specify target <code><a href="https://developer.mozilla.org/docs/Web/HTML/Element/slot">&lt;slot&gt;</a></code> in an element defined by a <a href="#custom-element"><code class="hljs-keyword">*custom-element</code></a> directive.
+    Specify target <a href="https://developer.mozilla.org/docs/Web/HTML/Element/slot"><code>&lt;slot&gt;</code></a> in an element defined by a <a href="#custom-element"><code class="hljs-keyword">*custom-element</code></a> directive.
   </p>
   <code #example *skip>
     <my-element>
@@ -45,9 +45,9 @@
     </my-element>
   </code>
   <mizu-note #note>
-    Elements without a <a href="#slot"><code><span class="hljs-keyword">#</span><span class="hljs-meta">slot</span></code></a> directive are appended to the <i>(unamed)</i> default slot.
+    Elements without a <a href="#slot"><code><span class="hljs-keyword">#</span><span class="hljs-meta">slot</span></code></a> directive are appended to the default (unnamed) slot.
   </mizu-note>
   <mizu-note #note>
-    Elements targetting a same slot are all appended to it in the same order they were defined.
+    Elements targeting the same slot are appended in the order they are defined.
   </mizu-note>
 </mizu-directive>

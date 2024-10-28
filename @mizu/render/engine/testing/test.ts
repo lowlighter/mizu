@@ -1,6 +1,6 @@
 // Imports
 import type { testing } from "@libs/testing"
-import type { Arg, Nullable, VirtualWindow } from "../engine/mod.ts"
+import type { Arg, Nullable, VirtualWindow } from "../mod.ts"
 import { delay, retry } from "@std/async"
 import { unescape } from "@std/html"
 import { bgMagenta } from "@std/fmt/colors"
@@ -8,7 +8,7 @@ import { expect as _expect, fn, Status, test as _test } from "@libs/testing"
 import { AsyncFunction } from "@libs/typing/func"
 import { Context } from "@libs/reactive"
 import { Window } from "../vdom/mod.ts"
-import { Renderer } from "../engine/mod.ts"
+import { Renderer } from "../mod.ts"
 import { filter } from "./filter.ts"
 
 /**

@@ -15,7 +15,7 @@ Evaluate a JavaScript expression in the context of the element.
 ## Notes
 
 > [!WARNING]
-> Usage of this directive is discouraged and it is recommended to use alternative directives whenever possible for improved maintainability and security reasons. It is nevertheless still offered to help covering edge cases.
+> Use this directive sparingly, prefer alternative directives for better maintainability and security. This directive is intended for edge cases.
 
 > [!NOTE]
-> It is executed after the element and all of its children have been completely processed.
+> The expression runs **after** the element and all its children have been fully processed.

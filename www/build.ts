@@ -9,6 +9,7 @@ await Mizu.generate([
   { source: () => html("index"), destination: "index.html", render: {} },
   { source: () => html("build"), destination: "build.html", render: {} },
   { source: () => html("playground"), destination: "playground.html", render: {} },
+  { source: () => html("community"), destination: "community.html", render: {} },
   { source: () => js("@mizu/render/client", { format: "iife" }), destination: "client.js" },
   { source: () => js("@mizu/render/client", { format: "esm" }), destination: "client.mjs" },
   { source: new URL("/matcha.css", globalThis.location.href), destination: "matcha.css" },

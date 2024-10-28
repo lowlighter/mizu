@@ -1,5 +1,5 @@
 // Imports
-import type { Directive } from "@mizu/mizu/core/engine"
+import type { Directive } from "../engine/mod.ts"
 import _mizu from "@mizu/mizu"
 import _bind from "@mizu/bind"
 import _custom_element from "@mizu/custom-element"

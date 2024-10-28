@@ -1,7 +1,7 @@
 // Imports
-import { type Arg, type Cache, type Directive, type Nullable, type Optional, Phase } from "@mizu/mizu/core/engine"
+import { type Arg, type Cache, type Directive, type Nullable, type Optional, Phase } from "@mizu/render/engine"
 import { escape } from "@std/html"
-export type * from "@mizu/mizu/core/engine"
+export type * from "@mizu/render/engine"
 
 /** `%header` directive. */
 export const _header = {
@@ -231,10 +231,18 @@ export const _response = {
       // Apply swap modifier
       if (modifiers.swap) {
         $content = await $response.text()
+        // Swap text content
         if ((modifiers.consume === "text") || (modifiers.text)) {
           $content = escape($content)
+          element.outerHTML = $content
+        } // Swap HTML content while preserving non-directive attributes
+        else {
+          const content = renderer.createElement("div", { innerHTML: $content })
+          new Set(Array.from(element.attributes))
+            .difference(new Set(renderer.directives.flatMap((directive) => renderer.getAttributes(element, directive.name))))
+            .forEach((attribute) => Array.from(content.children).forEach((child) => child.attributes.setNamedItem(attribute.cloneNode() as Attr)))
+          renderer.replaceElementWithChildNodes(element, content)
         }
-        element.outerHTML = $content
         consume = null
       }
       // Parse response

@@ -9,7 +9,7 @@
     </div>
   </code>
   <mizu-note #note>
-    If the element has no <a href="#response"><code class="hljs-keyword">%response</code></a> directive attached, request is not automatically performed upon processing.
+    If the element lacks a <a href="#response"><code class="hljs-keyword">%response</code></a> directive, the request is not automatically performed.
   </mizu-note>
   <mizu-note #note>
     Valid <a href="https://developer.mozilla.org/docs/Web/API/URL/canParse_static">URLs</a> may be specified <q>as is</q>.
@@ -19,33 +19,31 @@
     <i class="muted">(in <code>url</code> expression only)</i> The dispatched <a href="https://developer.mozilla.org/docs/web/api/event"><code>Event</code></a> if triggered by a <a href="#http_event"><code class="hljs-keyword">%@event</code></a> directive, or <code>null</code>.
   </mizu-variable>
   <mizu-modifier #modifier name="follow">
-    Control whether <a href="https://developer.mozilla.org/docs/Web/API/Fetch_API"><code>fetch()</code></a> should <a href="https://developer.mozilla.org/docs/Web/API/RequestInit#redirect">follow redirections</a> or not.
+    Control whether <a href="https://developer.mozilla.org/docs/Web/API/Fetch_API"><code>fetch()</code></a> should <a href="https://developer.mozilla.org/docs/Web/API/RequestInit#redirect">follow redirections</a>.
   </mizu-modifier>
   <mizu-modifier #modifier name="history">
-    Whether to <a href="https://developer.mozilla.org/docs/Web/API/History/pushState"><code>history.pushState()</code></a> target URL
-    <a href="https://developer.mozilla.org/docs/Web/API/History/pushState#url"><i>(must be the same origin)</i></a>.
+    Whether to update the browser history with <a href="https://developer.mozilla.org/docs/Web/API/History/pushState"><code>history.pushState()</code></a> for the target URL (must be the same origin).
   </mizu-modifier>
   <mizu-modifier #modifier name="method">
-    Set <a href="https://developer.mozilla.org/docs/Web/HTTP/Methods">HTTP method</a>
-    <i>(uppercased)</i>. This modifier should not be used with one of its aliases.
+    Set the <a href="https://developer.mozilla.org/docs/Web/HTTP/Methods">HTTP method</a> (the value is uppercased). This modifier should not be used with its aliases.
   </mizu-modifier>
   <mizu-modifier #modifier name="get">
-    Alias for <code>.method[get]</code>.
+    Alias for <code class="hljs-meta">.method[get]</code>.
   </mizu-modifier>
   <mizu-modifier #modifier name="head">
-    Alias for <code>.method[head]</code>
+    Alias for <code class="hljs-meta">.method[head]</code>
   </mizu-modifier>
   <mizu-modifier #modifier name="post">
-    Alias for <code>.method[post]</code>
+    Alias for <code class="hljs-meta">.method[post]</code>
   </mizu-modifier>
   <mizu-modifier #modifier name="put">
-    Alias for <code>.method[put]</code>
+    Alias for <code class="hljs-meta">.method[put]</code>
   </mizu-modifier>
   <mizu-modifier #modifier name="patch">
-    Alias for <code>.method[patch]</code>
+    Alias for <code class="hljs-meta">.method[patch]</code>
   </mizu-modifier>
   <mizu-modifier #modifier name="delete">
-    Alias for <code>.method[delete]</code>
+    Alias for <code class="hljs-meta">.method[delete]</code>
   </mizu-modifier>
 </mizu-directive>
 
@@ -82,10 +80,10 @@
   </code>
   <mizu-variable #variable name="$headers">
     <span #type>Headers</span>
-    A <a href="https://developer.mozilla.org/docs/Web/API/Headers"><code>Headers</code></a> object that contains all registered headers from <a href="#header"><code class="hljs-keyword">%header</code></a> directives attached to element.
+    A <a href="https://developer.mozilla.org/docs/Web/API/Headers"><code>Headers</code></a> object containing all registered headers from <a href="#header"><code class="hljs-keyword">%header</code></a> directives attached to the element.
   </mizu-variable>
   <mizu-modifier #modifier name="type">
-    Format body with specified type.
+    Format the body with the specified type:
     <ul>
       <li>
         <code>text</code>: format body with <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/toString"><code>toString()</code></a>.
@@ -106,7 +104,7 @@
     This modifier should not be used with one of its aliases.
   </mizu-modifier>
   <mizu-modifier #modifier name="header">
-    Automatically set <a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Type">Content-Type header</a> when using a <code>.type</code> modifier.
+    Automatically set the <a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Type">Content-Type header</a> when using a <code class="hljs-meta">.type</code> modifier:
     <ul>
       <li>
         <code>text</code>: set <code>Content-Type: text/plain</code>.
@@ -124,16 +122,16 @@
     If the header was already set, it is overwritten.
   </mizu-modifier>
   <mizu-modifier #modifier name="text">
-    Alias for <code>.type[text]</code>.
+    Alias for <code class="hljs-meta">.type[text]</code>.
   </mizu-modifier>
   <mizu-modifier #modifier name="form">
-    Alias for <code>.type[form]</code>.
+    Alias for <code class="hljs-meta">.type[form]</code>.
   </mizu-modifier>
   <mizu-modifier #modifier name="json">
-    Alias for <code>.type[json]</code>.
+    Alias for <code class="hljs-meta">.type[json]</code>.
   </mizu-modifier>
   <mizu-modifier #modifier name="xml">
-    Alias for <code>.type[xml]</code>.
+    Alias for <code class="hljs-meta">.type[xml]</code>.
   </mizu-modifier>
 </mizu-directive>
 
@@ -149,31 +147,30 @@
   </code>
   <mizu-variable #variable name="$response">
     <span #type>Response</span>
-    A <a href="https://developer.mozilla.org/docs/Web/API/Response"><code>Response</code></a> object that contains the fetched data.
+    A <a href="https://developer.mozilla.org/docs/Web/API/Response"><code>Response</code></a> object containing the fetched data.
   </mizu-variable>
   <mizu-variable #variable name="$content">
     <span #type>unknown</span>
-    A variable that contains the <a href="https://developer.mozilla.org/docs/Web/API/Response/body"><code>response.body</code></a>
-    <i>(typing depends on which modifier is used)</i>.
+    Contains the <a href="https://developer.mozilla.org/docs/Web/API/Response/body"><code>response.body</code></a> (type depends on the modifier used).
   </mizu-variable>
   <mizu-modifier #modifier>
     <span #type>string</span>
-    Specify which <a href="https://developer.mozilla.org/docs/Web/HTTP/Status">HTTP status code</a> trigger this directive.
+    Specify which <a href="https://developer.mozilla.org/docs/Web/HTTP/Status">HTTP status codes</a> trigger this directive:
     <ul>
       <li>
         The syntax for status code constraints is defined as follows:
         <ul>
           <li>
-            A range can be defined using a <q>minus sign <code>-</code></q> between two numbers <i>(e.g. <code>%response[200-299]</code>)</i>.
+            Define a range using a <q>minus sign <code>-</code></q> between two numbers <i>(e.g., <code class="hljs-keyword">%response<span class="hljs-meta">[200-299]</span></code>)</i>.
           </li>
           <li>
-            Multiple ranges and status can be specified by separating them with a <q>comma <code>,</code></q>
-            <i>(e.g. <code>%response[200,201-204]</code>)</i>.
+            Specify multiple ranges and statuses by separating them with a <q>comma <code>,</code></q>
+            <i>(e.g., <code class="hljs-keyword">%response<span class="hljs-meta">[200,201-204]</span></code>)</i>.
           </li>
         </ul>
       </li>
       <li>
-        The following aliases <i>(case-insensitive)</i> are supported:
+        Supported aliases:
         <ul>
           <li>
             <code>2XX</code> for <code>200-299</code>.
@@ -192,18 +189,18 @@
     </ul>
   </mizu-modifier>
   <mizu-modifier #modifier name="consume">
-    Consume <a href="https://developer.mozilla.org/docs/Web/API/Response/body"><code>response.body</code></a>.
+    Consume the <a href="https://developer.mozilla.org/docs/Web/API/Response/body"><code>response.body</code></a>:
     <ul>
       <li>
         <code>void</code>: discard body using <a href="https://developer.mozilla.org/docs/Web/API/Response/body"><code>response.body?.cancel()</code></a>.
       </li>
       <li>
-        <code>text</code>: consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/text"><code>response.text()</code></a> and set element's <var><a href="https://developer.mozilla.org/docs/Web/API/Node/textContent">textContent</a></var> if no expression is
-        provided.
+        <code>text</code>: consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/text"><code>response.text()</code></a> and set element's <a href="https://developer.mozilla.org/docs/Web/API/Node/textContent"><code>textContent</code></a> if no expression
+        is provided.
       </li>
       <li>
-        <code>html</code>: consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/text"><code>response.text()</code></a> and set element's <var><a href="https://developer.mozilla.org/docs/Web/API/Element/innerHTML">innerHTML</a></var> if no expression is
-        provided.
+        <code>html</code>: consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/text"><code>response.text()</code></a> and set element's <a href="https://developer.mozilla.org/docs/Web/API/Element/innerHTML"><code>innerHTML</code></a> if no expression
+        is provided.
       </li>
       <li>
         <code>json</code>: consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/json"><code>response.json()</code></a>.
@@ -218,23 +215,27 @@
     This modifier should not be used with one of its aliases.
   </mizu-modifier>
   <mizu-modifier #modifier name="void">
-    Alias for <code>.consume[void]</code>.
+    Alias for <code class="hljs-meta">.consume[void]</code>.
   </mizu-modifier>
   <mizu-modifier #modifier name="text">
-    Alias for <code>.consume[text]</code>.
+    Alias for <code class="hljs-meta">.consume[text]</code>.
   </mizu-modifier>
   <mizu-modifier #modifier name="html">
-    Alias for <code>.consume[html]</code>.
+    Alias for <code class="hljs-meta">.consume[html]</code>.
   </mizu-modifier>
   <mizu-modifier #modifier name="json">
-    Alias for <code>.consume[json]</code>.
+    Alias for <code class="hljs-meta">.consume[json]</code>.
   </mizu-modifier>
   <mizu-modifier #modifier name="xml">
-    Alias for <code>.consume[xml]</code>.
+    Alias for <code class="hljs-meta">.consume[xml]</code>.
   </mizu-modifier>
-  <mizu-variable #modifier name="swap">
-    Consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/text"><code>response.text()</code></a> and set target's <a href="https://developer.mozilla.org/docs/Web/API/Element/outerHTML"><var>outerHTML</var></a>. This modifier takes precedence over the <a
-      href="#consume"
-    ><code>.consume</code></a> modifier and makes it effectless, although if <code>.consume[text]</code> is set swapped content will be escaped.
-  </mizu-variable>
+  <mizu-modifier #modifier name="swap">
+    <p>
+      Consume body using <a href="https://developer.mozilla.org/docs/Web/API/Response/text"><code>response.text()</code></a> and set target's <a href="https://developer.mozilla.org/docs/Web/API/Element/outerHTML"><var>outerHTML</var></a>. This modifier takes precedence over the
+      <code class="hljs-meta">.consume</code> modifier and makes it effectless, although if <code class="hljs-meta">.consume[text]</code> is set, swapped content will be escaped.
+    </p>
+    <p>
+      Any non-directive HTML attributes on the target will be applied to the swapped content elements.
+    </p>
+  </mizu-modifier>
 </mizu-directive>

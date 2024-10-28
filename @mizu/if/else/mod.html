@@ -1,7 +1,7 @@
 <mizu-directive id="else" directory="if/else">
   <code #name><span class="hljs-keyword">*else</span><wbr /><span class="muted">="expression"</span></code>
   <p #description>
-    Conditionally render an element after another <a href="#if"><code class="hljs-keyword">*if</code></a> or <a href="#else"><code class="hljs-keyword">*else</code></a> directive.
+    Conditionally render an element placed after another <a href="#if"><code class="hljs-keyword">*if</code></a> or <a href="#else"><code class="hljs-keyword">*else</code></a> directive.
   </p>
   <code #example *skip>
     <div *if="false"></div>
@@ -9,9 +9,9 @@
     <div *else><!--...--></div>
   </code>
   <mizu-restriction #note>
-    Must be defined on an element immediately preceded by another element with either a <a href="#if"><code class="hljs-keyword">*if</code></a> or <a href="#else"><code class="hljs-keyword">*else</code></a> directive.
+    Must be placed immediately after an element with an <a href="#if"><code class="hljs-keyword">*if</code></a> or <a href="#else"><code class="hljs-keyword">*else</code></a> directive.
   </mizu-restriction>
   <mizu-warn #note>
-    There is currently no special handling for <a href="https://developer.mozilla.org/docs/Web/HTML/Element/template"><code>&lt;template&gt;</code></a> elements, but future versions may treat them differently.
+    There is currently no special handling for <a href="https://developer.mozilla.org/docs/Web/HTML/Element/template"><code>&lt;template&gt;</code></a> elements, but future versions may introduce specific behavior for these elements.
   </mizu-warn>
 </mizu-directive>

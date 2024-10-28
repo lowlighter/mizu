@@ -4,7 +4,7 @@
 | ---------------------------------------- | --------------------- |
 | ![](https://jsr.io/badges/@mizu/refresh) | 99 — `POSTPROCESSING` |
 
-Force an element to be processed again at a specified interval _(in seconds)_.
+Reprocess an element at a specified interval _(in seconds)_.
 
 ```html
 <div *refresh="1.5">
@@ -15,16 +15,16 @@ Force an element to be processed again at a specified interval _(in seconds)_.
 ## Notes
 
 > [!WARNING]
-> Context is recreated starting from the initial root context and the element itself, meaning that anything computed in-between is not available. To prevent unexpected behaviour, it is recommended to only use this on elements that can be rendered independently.
+> Context is recreated from the initial root context and the element itself, meaning intermediate computations are not retained. Use this only on elements that can be rendered independently to avoid unexpected behavior.
 
 > [!WARNING]
-> Avoid using it on iterative directives such as [`*for`](#for) as the [`*refresh`](#refresh) directive will be duplicated for each generated element.
+> Avoid using with iterative directives like [`*for`](#for) as [`*refresh`](#refresh) will be duplicated for each generated element.
 
 > [!NOTE]
-> Target element will be rendered regardless of any detected changes. This directive is thus useful to update content that cannot be directly observed, but it is advised to use this sparingly to avoid performance issues.
+> The target element will be rendered regardless of detected changes. This is useful for updating content that cannot be directly observed, but use sparingly to avoid performance issues.
 
 > [!NOTE]
-> Set the interval to `null` to clear the refresh.
+> Set the interval to `null` to stop refreshing.
 
 > [!NOTE]
-> If the element is commented out by a directive, refresh is automatically cleared.
+> If the element is commented out by a directive, the refresh is automatically cleared.

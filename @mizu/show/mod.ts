@@ -1,26 +1,30 @@
 // Imports
-import { type Directive, Phase } from "@mizu/mizu/core/engine"
-export type * from "@mizu/mizu/core/engine"
+import { type Directive, Phase } from "@mizu/render/engine"
+export type * from "@mizu/render/engine"
 
 /** `*show` directive. */
 export const _show = {
   name: "*show",
   phase: Phase.DISPLAY,
+  default: "true",
   async execute(renderer, element, { attributes: [attribute], ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
-    const result = Boolean(await renderer.evaluate(element, attribute.value, options))
+    const result = Boolean(await renderer.evaluate(element, attribute.value || this.default, options))
     if (result) {
       element.style.removeProperty("display")
       if (!element.style.length) {
         element.removeAttribute("style")
       }
+      if (renderer.window.getComputedStyle(element).display === "none") {
+        element.style.setProperty("display", "initial", "important")
+      }
     } else {
       element.style.setProperty("display", "none", "important")
     }
   },
-} as Directive
+} as Directive & { default: NonNullable<Directive["default"]> }
 
 /** Default exports. */
 export default _show

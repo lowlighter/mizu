@@ -4,10 +4,10 @@
 | ------------------------------------- | ----------------- |
 | ![](https://jsr.io/badges/@mizu/mizu) | 1 — `ELIGIBILITY` |
 
-Enable _**mizu**_ rendering for the element and its children.
+Enable _**mizu.js**_ rendering for the element and its children.
 
 ```html
-<main *mizu="">
+<main *mizu>
   <!--...-->
 </main>
 ```
@@ -15,10 +15,11 @@ Enable _**mizu**_ rendering for the element and its children.
 ## Notes
 
 > [!CAUTION]
-> For performance reasons, it is not possible to specify any attribute [`[tag]`](/#concept-directive-tag) or [`.modifiers`](/#concept-directive-modifier) with this directive.
+> For performance reasons, this directive must not have any [`[tag]`](/#concept-directive-tag) or [`.modifiers`](/#concept-directive-modifier). If it does, the directive will be ignored.
 
 > [!NOTE]
-> If you are using the [user API](/#api-user), you can chose whether to require this directive or not to enable _**mizu**_ rendering using the `implicit` option. By default, rendering is explicit in Client-Side APIs and implicit in Server-Side APIs.
+> You can choose whether to require this directive for _**mizu.js**_ rendering with the [`implicit`](https://jsr.io/@mizu/render@0.5.0/doc/engine/~/RendererRenderOptions.implicit) option when using the [user API](/#api-user). By default, rendering is explicit in Client-Side APIs
+> and implicit in Server-Side APIs.
 
 ## Variables
 

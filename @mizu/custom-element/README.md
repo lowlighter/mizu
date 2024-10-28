@@ -15,32 +15,32 @@ Register a new [custom element](https://developer.mozilla.org/docs/Web/API/Web_c
 ## Notes
 
 > [!CAUTION]
-> Must be defined on a `[<template>](https://developer.mozilla.org/docs/Web/HTML/Element/template)` element.
+> Must be defined on a [`<template>`](https://developer.mozilla.org/docs/Web/HTML/Element/template) element.
 
 > [!CAUTION]
-> Specified `tagname` must satisfy the [definition of a valid name](https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements#name).
+> The `tagname` must be a [valid custom element name](https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements#name).
 
 > [!NOTE]
 > Valid [custom element names](https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements#name) may be specified « as is ».
 
 > [!NOTE]
-> Custom elements registered this way do not use [Shadow DOMs](https://developer.mozilla.org/docs/Web/API/Web_components/Using_shadow_DOM) but rather have their content rendered directly.
+> Custom elements registered this way do not use [Shadow DOM](https://developer.mozilla.org/docs/Web/API/Web_components/Using_shadow_DOM), their content is rendered directly.
 
 ## Variables
 
 ### `$slots: Record<PropertyKey, HTMLSlotElement>`
 
-A record of specified [`# slot`](#slot) elements by `[<slot>](https://developer.mozilla.org/docs/Web/HTML/Element/slot)` name _(unamed slot is accessible using `$slots[""]`)_.
+A record of [`# slot`](#slot) elements by [`<slot>`](https://developer.mozilla.org/docs/Web/HTML/Element/slot) name. The unnamed slot is accessible using `$slots[""]`.
 
 ### `$attrs: Record<PropertyKey, string>`
 
-A record of specified [attributes](https://developer.mozilla.org/docs/Web/HTML/Attributes) on the custom element.
+A record of [HTML attributes](https://developer.mozilla.org/docs/Web/HTML/Attributes) specified on the custom element.
 
 ## Modifiers
 
 ### `.flat[boolean]`
 
-Replace occurences of this custom element by their content. Note that it not possible to access `$slots` and `$attrs` variables when using this modifier.
+Replace occurrences of this custom element with its content. Note that `$slots` and `$attrs` variables are not accessible when using this modifier.
 
 # `#slot`
 
@@ -48,18 +48,18 @@ Replace occurences of this custom element by their content. Note that it not pos
 | ----------------------------------------------- | ---------- |
 | ![](https://jsr.io/badges/@mizu/custom-element) | 0 — `META` |
 
-Specify target `[<slot>](https://developer.mozilla.org/docs/Web/HTML/Element/slot)` in an element defined by a [`*custom-element`](#custom-element) directive.
+Specify target [`<slot>`](https://developer.mozilla.org/docs/Web/HTML/Element/slot) in an element defined by a [`*custom-element`](#custom-element) directive.
 
 ```html
 <my-element>
-  <li #items=""><!--...---></li>
+  <li #items><!--...---></li>
 </my-element>
 ```
 
 ## Notes
 
 > [!NOTE]
-> Elements without a [`#slot`](#slot) directive are appended to the _(unamed)_ default slot.
+> Elements without a [`#slot`](#slot) directive are appended to the default (unnamed) slot.
 
 > [!NOTE]
-> Elements targetting a same slot are all appended to it in the same order they were defined.
+> Elements targeting the same slot are appended in the order they are defined.

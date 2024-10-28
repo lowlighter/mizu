@@ -8,6 +8,13 @@ body > header svg,
 body > footer svg {
   fill: var(--ly-brand);
   transition: fill var(--tr-duration);
+  width: 1rem;
+  height: 1rem;
+}
+
+body > header li.muted svg,
+body > footer li.muted svg {
+  fill: var(--dark-muted);
 }
 
 body > header li:hover svg,
@@ -20,13 +27,14 @@ body > footer svg.sponsor {
   fill: var(--variant);
 }
 
-body > header svg.light, body > header svg.dark {
-  display: none;
-}
-
 /* Additional classes. */
 .underline-dotted {
   text-decoration: underline dotted;
+}
+
+/* App. */
+.logo {
+  width: 360px;
 }
 
 /* Offset all headings by size of the header bar. */
@@ -37,40 +45,6 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   margin-top: calc(-1 * (1rem + var(--ly-header-size)));
   visibility: hidden;
   pointer-events: none;
-}
-
-/** Carbon like examples. */
-.carbon-like {
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  border-radius: var(--bd-radius);
-  box-shadow: 0 16px 68px rgba(0, 0, 0, 0.55);
-  margin-bottom: 1.5rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  .carbon-like {
-    background-color: black;
-  }
-}
-
-.carbon-like .title {
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem;
-  font-family: var(--ft-mono);
-  text-decoration: underline;
-  text-decoration-color: var(--muted);
-}
-
-.carbon-like .title :is(h1, h2, h3, h4, h5, h6) {
-  margin: 0;
-}
-
-.carbon-like pre, .carbon-like .editor {
-  padding-top: 0;
-  background: none;
 }
 
 /* Table of content. */
@@ -94,167 +68,23 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   display: none;
 }
 
-/* App. */
-.app {
-  margin: 4rem auto 4rem;
-}
-
-.app .logo {
-  width: 360px;
-}
-
-.app hgroup {
-  border: none;
+/* Catchphrase. */
+.catchphrase {
   text-align: center;
-}
-
-.app hgroup h1 {
   font-size: 3rem;
-  border: none;
+  font-weight: bold;
+  background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(67, 67, 147, 1) 0%, rgba(0, 212, 255, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.app hgroup h1 a:hover::before {
-  content: "\1F30A";
-}
-
-.app ul.features {
-  padding: 0;
-  list-style: none;
-}
-
-.app .usage-snippet {
-  cursor: pointer;
-  user-select: all;
-  transition: background var(--tr-duration);
-}
-
-.app .usage-snippet:hover {
-  background: var(--bg-subtle);
-}
-
-/* Mizu directives. */
-article {
-  margin-left: 0;
-  margin-right: 0;
-  padding: 0;
-  background-color: var(--bg-default);
-}
-
-article h3 {
-  font-size: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-article h3 a {
-  flex-shrink: 0;
-}
-
-article h4 {
-  font-size: 1rem;
-  margin: 0.5rem 0 !important;
-}
-
-article > header:first-child {
-  padding: 1rem;
-  margin: 0;
-  width: auto;
-}
-
-article section {
-  padding: 0 1rem;
-}
-
-article > footer:last-child {
-  padding: 0;
-  text-align: left;
-  margin: 0;
-}
-
-article > footer:last-child details {
-  margin: 0;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-}
-
-article > footer:last-child details summary {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-article > footer:last-child details summary .pills {
-  justify-content: flex-start;
-}
-
-article .pills {
-  display: inline-flex;
-  flex-grow: 1;
-  flex-wrap: wrap;
-  font-weight: normal;
-  justify-content: flex-end;
-  font-size: 0.85rem;
-}
-
-article .pills > span {
-  margin-left: 0.25rem;
-  padding: 0 0.5rem;
-  border-radius: 1rem;
-}
-
-article .pills > span code {
-  font-size: inherit !important;
-  background: none;
-  padding: 0;
-}
-
-article .pills > span code:not(:first-child) {
-  margin-left: 0.25rem;
-}
-
-article .note svg {
-  fill: currentColor;
-  height: 1em;
-  flex-shrink: 0;
-  margin-top: 0.3rem;
-}
-
-article small ul {
-  margin-bottom: 0;
-}
-
-/** Syntax explanation. */
-.explain {
-  justify-content: center;
-  display: flex;
-  flex-wrap: wrap;
-  font-family: var(--ft-mono);
-  margin-bottom: 1rem;
-}
-
-.explain div {
-  display: inline-flex;
-  border-bottom: 0.25rem solid currentColor;
-  white-space: nowrap;
-}
-
-.explain div.hljs-comment {
-  border-bottom-color: transparent;
-}
-
-/** Anchored definition terms. */
-dt :is(h1, h2, h3, h4, h5, h6) {
-  margin: 0;
-  border-bottom: none;
-  font-size: inherit;
-  line-height: inherit;
-}
-
+/* Features. */
 .features {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.5rem;
 }
 
@@ -272,6 +102,186 @@ dt :is(h1, h2, h3, h4, h5, h6) {
   margin-right: 0.75rem;
   height: 1.25rem;
 }
+
+@media (min-width: 480px) {
+  .features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .features {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/** Usage snippets. */
+.usage-snippet {
+  cursor: pointer;
+  user-select: all;
+  transition: background var(--tr-duration);
+}
+
+.usage-snippet:hover {
+  background: var(--bg-subtle);
+}
+
+/** Syntax explanation. */
+.syntax-explain {
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--ft-mono);
+  margin-bottom: 1rem;
+}
+
+.syntax-explain div {
+  display: inline-flex;
+  border-bottom: 0.25rem solid currentColor;
+  white-space: nowrap;
+}
+
+.syntax-explain div.hljs-comment {
+  border-bottom-color: transparent;
+}
+
+/* Mizu directives. */
+.directive {
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0;
+  background-color: var(--bg-default);
+}
+
+.directive h3 {
+  font-size: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.directive h3 a {
+  flex-shrink: 0;
+}
+
+.directive h3 .pills {
+  margin-top: 1rem;
+  justify-content: flex-start;
+}
+
+@media (min-width: 768px) {
+  .directive h3 {
+    flex-direction: row;
+    align-items: center;
+  }
+  .directive h3 .pills {
+    margin-top: 0;
+    justify-content: flex-end;
+  }
+}
+
+.directive h4, .directive h5 {
+  font-size: 1.25rem;
+  margin: 1rem 0 1rem !important;
+  border-bottom: 1px solid var(--bd-muted);
+  padding-bottom: 0.5rem;
+}
+
+.directive h5 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem !important;
+  border-bottom: 1px dashed var(--bd-muted);
+}
+
+.directive > section {
+  padding: 1rem 1rem 0;
+}
+
+.directive > header:first-child {
+  padding: 1rem;
+  margin: 0;
+  width: auto;
+}
+
+.directive > footer:last-child {
+  padding: 0;
+  text-align: left;
+  margin: 0;
+}
+
+.directive > footer:last-child details {
+  margin: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+.directive > footer:last-child details summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.directive > footer:last-child details summary .pills {
+  justify-content: flex-start;
+}
+
+.directive .notes > * > :last-child {
+  margin-bottom: 0.25rem;
+}
+
+.directive :is(.variables, .modifiers) > :not(h4) > :last-child {
+  margin-bottom: 1.5rem;
+}
+
+.directive :is(.variables, .modifiers) > :not(h4):last-child > :last-child {
+  margin-bottom: 0.5rem;
+}
+
+.directive .notes + .variables {
+  margin-top: 1.5rem;
+}
+
+.directive .variables + .modifiers {
+  margin-top: 1.5rem;
+}
+
+.directive .pills {
+  display: inline-flex;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  font-weight: normal;
+  justify-content: flex-end;
+  font-size: 0.85rem;
+}
+
+.directive .pills > span {
+  margin: 0.25rem;
+  padding: 0 0.5rem;
+  border-radius: 1rem;
+}
+
+.directive .pills > span code {
+  font-size: inherit !important;
+  background: none;
+  padding: 0;
+}
+
+.directive .pills > span code:not(:first-child) {
+  margin-left: 0.25rem;
+}
+
+.directive .note svg {
+  fill: currentColor;
+  height: 1em;
+  flex-shrink: 0;
+  margin-top: 0.3rem;
+}
+
+.directive .note ul {
+  margin-bottom: 0;
+}
+
+/** WIP =============================== */
 
 .mockup-desktop {
   height: 500px;
@@ -338,21 +348,36 @@ dt :is(h1, h2, h3, h4, h5, h6) {
   margin: 0.5rem;
 }
 
-.feature h2 {
-  margin-top: 0;
-  background: -webkit-linear-gradient(#eee, #333);
-  background-clip: text;
-  border: none;
+/** Carbon like examples. */
+.carbon-like {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: var(--bd-radius);
+  box-shadow: 0 16px 68px rgba(0, 0, 0, 0.55);
+  margin-bottom: 1.5rem;
 }
 
-.catchphrase {
-  text-align: center;
-  font-size: 3rem;
-  font-weight: bold;
-  background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(67, 67, 147, 1) 0%, rgba(0, 212, 255, 1) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+@media (prefers-color-scheme: dark) {
+  .carbon-like {
+    background-color: black;
+  }
+}
+
+.carbon-like .title {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  font-family: var(--ft-mono);
+  text-decoration: underline;
+  text-decoration-color: var(--muted);
+}
+
+.carbon-like .title :is(h1, h2, h3, h4, h5, h6) {
+  margin: 0;
+}
+
+.carbon-like pre, .carbon-like .editor {
+  padding-top: 0;
+  background: none;
 }

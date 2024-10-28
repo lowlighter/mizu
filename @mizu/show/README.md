@@ -1,8 +1,8 @@
 # `*show="expression"`
 
-| Version                               | Phase          |
-| ------------------------------------- | -------------- |
-| ![](https://jsr.io/badges/@mizu/show) | 71 — `DISPLAY` |
+| Version                               | Phase          | Default |
+| ------------------------------------- | -------------- | ------- |
+| ![](https://jsr.io/badges/@mizu/show) | 71 — `DISPLAY` | `true`  |
 
 Conditionally display an element.
 
@@ -15,7 +15,13 @@ Conditionally display an element.
 ## Notes
 
 > [!NOTE]
-> The [CSS `display` property](https://developer.mozilla.org/docs/Web/CSS/display) is set to `none !important` when hidden.
+> When hidden, the element's [CSS `display` property](https://developer.mozilla.org/docs/Web/CSS/display) is set to `none !important`.
 
 > [!NOTE]
-> Unlike [`*if`](#if) and [`*else`](#else) directives, element is not removed from the DOM when hidden.
+> When shown and if initially hidden by a CSS stylesheet ( `display: none`), the element's display property is reset to `initial !important`.
+
+> [!NOTE]
+> Unlike [`*if`](#if) and [`*else`](#else) directives, the element remains in the DOM when hidden.
+
+> [!NOTE]
+> You can take advantage of the default value being `true` to hide elements before _**mizu.js**_ loads (e.g. `<style>[\*show]{display:none}</style>`).

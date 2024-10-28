@@ -1,5 +1,5 @@
 // Imports
-import { Window } from "@mizu/mizu/core/vdom"
+import { Window } from "@mizu/render/engine/vdom"
 import { dirname, join } from "@std/path"
 import { expandGlob } from "@std/fs"
 import { Logger } from "@libs/logger"
@@ -39,7 +39,7 @@ export async function htmlToMd(html: string) {
         }
         content.push(table.join("\n"))
         content.push(toMarkdown(Array.from(directive.querySelectorAll("[\\#description]"))))
-        directive.querySelectorAll("[\\#example]").forEach((example) => content.push(`\`\`\`html\n${unindent(example.innerHTML).trim()}\n\`\`\``))
+        directive.querySelectorAll("[\\#example]").forEach((example) => content.push(`\`\`\`html\n${unindent(example.innerHTML.replace(/=""/g, "")).trim()}\n\`\`\``))
 
         // Notes
         if (directive.querySelector("[\\#note]")) {

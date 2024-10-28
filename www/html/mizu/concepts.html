@@ -1,140 +1,143 @@
 <h1 id="concepts"><a href="#concepts">Concepts</a></h1>
 <section>
-  <dl>
-    <dt *toc[ignore]><h2 id="concept-directive"><a href="#concept-directive">Directive</a></h2></dt>
-    <dd>
-      <p>
-        An <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes">HTML attribute</a> recognized by <em>mizu.js</em> which instructs how it should process the element.
-      </p>
-      <p>
-        The syntax is as follows:
-      </p>
-      <div class="explain">
-        <div class="hljs-comment">&lt;tag&nbsp;</div>
-        <div class="hljs-keyword">*name</div>
-        <div class="hljs-meta">
-          <span class="muted">[</span>tag<span class="muted">]</span>
-        </div>
-        <div class="active">
-          <span class="muted">.</span>modifier
-          <div class="hljs-attr">
-            <span class="muted">[</span>value<span class="muted">]</span>
-          </div>
-        </div>
-        <div class="hljs-string">
-          <span class="muted">="</span>expression<span class="muted">"</span>
-        </div>
-        <div class="hljs-comment">&nbsp;/&gt;</div>
+  <h2 id="concept-directive"><a href="#concept-directive">Directive</a></h2>
+  <p>
+    A <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes">HTML attribute</a> recognized by <em>mizu.js</em> which instructs how it should process the element.
+  </p>
+  <p>
+    The syntax is as follows:
+  </p>
+  <div class="syntax-explain">
+    <div class="hljs-comment">&lt;tag&nbsp;</div>
+    <div class="hljs-keyword">*name</div>
+    <div class="hljs-meta">
+      <span class="muted">[</span>tag<span class="muted">]</span>
+    </div>
+    <div class="active">
+      <span class="muted">.</span>modifier
+      <div class="hljs-attr">
+        <span class="muted">[</span>value<span class="muted">]</span>
       </div>
-      <dl>
-        <dt><h3 id="concept-directive-name"><a href="#concept-directive-name"><code class="hljs-keyword">*name</code> Directive name</a></h3></dt>
-        <dd>
-          <p class="mb-0">
-            It usually starts with special characters to avoid collisions with regular HTML attributes while providing a hint about its purpose:
-          </p>
-          <ul>
-            <li><code class="hljs-keyword">*</code> for generic directives.</li>
-            <li>
-              <code class="hljs-keyword">#</code> for <a href="https://developer.mozilla.org/docs/Web/HTML/Element/slot"><code>&lt;slot&gt;</code> elements</a> directives.
-            </li>
-            <li>
-              <code class="hljs-keyword">@</code> for <a href="https://developer.mozilla.org/docs/web/api/event"><code>Event</code></a> directives.
-            </li>
-            <li>
-              <code class="hljs-keyword">:</code> for <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes">HTML attributes</a> binding directives.
-            </li>
-            <li>
-              <code class="hljs-keyword">%</code> for <a href="https://developer.mozilla.org/docs/Web/HTTP">HTTP</a> directives.
-            </li>
-            <li>
-              <code class="hljs-keyword">~</code> for testing directives.
-            </li>
-          </ul>
-        </dd>
-        <dt><h3 id="concept-directive-tag"><a href="#concept-directive-tag"><code class="hljs-meta"><span class="muted">[</span>tag<span class="muted">]</span></code> Tag</a></h3></dt>
-        <dd>
-          It is usually treated as the directive's argument. At most one tag can be specified per directive.
-        </dd>
-        <dt *toc[ignore]><h3 id="concept-directive-modifier"><a href="#concept-directive-modifier"><code class="active"><span class="muted">.</span>modifier</code> Modifier(s)</a></h3></dt>
-        <dd>
-          <p>
-            They alter the behaviour of the directive. Multiple modifiers can be specified on the same directive.<br />
-            <small class="muted">
-              A repeated modifier on one directive is considered undefined behaviour.
-            </small>
-          </p>
-          <dl>
-            <dt><h4 id="concept-directive-modifier-value"><a href="#concept-directive-modifier-value"><code class="hljs-attr"><span class="muted">[</span>value<span class="muted">]</span></code> Modifier(s) value</a></h4></dt>
-            <dd>
-              <p>
-                The value of the modifier. A modifier may have a default value, which will be used if no value is specified.
-              </p>
-              <p class="mb-0">
-                The value is validated and cast to the expected type, and falls back to the defaults if it is not valid. A modifier may accept the following types:
-              </p>
-              <ul class="muted">
-                <li>
-                  <code class="hljs-attr">boolean</code>
-                  <small>, unset defaults to <code>true</code></small>.
-                </li>
-                <li>
-                  <code class="hljs-attr">string</code>
-                  <small>, unset defaults to <code>""</code></small>.
-                </li>
-                <li>
-                  <code class="hljs-attr">number</code>
-                  <small>, unset defaults to <code>0</code></small>.
-                </li>
-                <li>
-                  <code class="hljs-attr">duration</code>
-                  <small>, unset defaults to <code>0ms</code>
-                    <i>(supported units are <code>ms</code>, <code>s</code> and <code>m</code>)</i>.</small>
-                </li>
-              </ul>
-            </dd>
-          </dl>
-        </dd>
-        <dt><h3 id="concept-directive-expression"><a href="#concept-directive-expression"><code class="hljs-string"><span class="muted">"</span>expression<span class="muted">"</span></code> JavaScript Expression</a></h3></dt>
-        <dd>
-          <p>
-            It is set through the <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes">HTML attribute value</a> and is evaluated asynchronously in the <a href="#concept-context">context</a> of the current element upon processing.
-          </p>
-          <p>
-            A directive may have a <span class="bd-muted bg-muted muted px-.5" style="border-radius: 1rem">Default</span> expression, which will be used if no expression is specified.
-          </p>
-          <p>
-            Unless specified otherwise, any <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators">JavaScript expression</a> is allowed.<br />
-            <small class="severe">
-              The full capabilities of the JavaScript engine are offered, including its potential risks. Be cautious when using expressions from untrusted sources.
-            </small>
-          </p>
-        </dd>
-      </dl>
-    </dd>
-    <dt><h2 id="concept-context"><a href="#concept-context">Context</a></h2></dt>
-    <dd>
+    </div>
+    <div class="hljs-string">
+      <span class="muted">="</span>expression<span class="muted">"</span>
+    </div>
+    <div class="hljs-comment">&nbsp;/&gt;</div>
+  </div>
+  <section>
+    <h3 id="concept-directive-name"><a href="#concept-directive-name">Name <small><code class="hljs-keyword">*name</code></small></a></h3>
+    <p>
+      Directives names often begin with special characters to prevent conflicts with standard HTML attributes and to clearly indicate their specific purpose:
+    </p>
+    <ul>
+      <li><code class="hljs-keyword">*</code> for generic directives.</li>
+      <li>
+        <code class="hljs-keyword">#</code> for directives targeting <a href="https://developer.mozilla.org/docs/Web/HTML/Element/slot"><code>&lt;slot&gt;</code> elements</a>.
+      </li>
+      <li>
+        <code class="hljs-keyword">@</code> for directives related to <a href="https://developer.mozilla.org/docs/web/api/event"><code>Event</code></a> handling.
+      </li>
+      <li>
+        <code class="hljs-keyword">:</code> for binding <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes">HTML attributes</a>.
+        <ul>
+          <li><code class="hljs-keyword">::</code> for bi-directional binding.</li>
+        </ul>
+      </li>
+      <li>
+        <code class="hljs-keyword">%</code> for <a href="https://developer.mozilla.org/docs/Web/HTTP">HTTP</a> directives.
+        <ul>
+          <li><code class="hljs-keyword">%@</code> for combined HTTP and Event directives.</li>
+        </ul>
+      </li>
+      <li>
+        <code class="hljs-keyword">~</code> for testing directives.
+      </li>
+    </ul>
+  </section>
+  <section>
+    <h3 id="concept-directive-tag"><a href="#concept-directive-tag">Tag <small><code class="hljs-meta"><span class="muted">[</span>tag<span class="muted">]</span></code></small></a></h3>
+    <p>
+      Typically, this serves as the directive's argument. At most one tag can be specified per directive.
+    </p>
+  </section>
+  <section>
+    <h3 id="concept-directive-modifier"><a href="#concept-directive-modifier">Modifier(s) <small><code class="active"><span class="muted">.</span>modifier</code></small></a></h3>
+    <p>
+      Modifiers adjust the behavior of the directive. You can specify multiple modifiers on the same directive.<br />
+      <small class="muted">
+        Note: Repeating a modifier on a single directive is considered undefined behavior.
+      </small>
+    </p>
+    <section>
+      <h4 id="concept-directive-modifier-value"><a href="#concept-directive-modifier-value">Modifier(s) value <small><code class="hljs-attr"><span class="muted">[</span>value<span class="muted">]</span></code></small></a></h4>
       <p>
-        All <a href="#concept-directive-expression">expressions</a> are evaluated in a specific context, which contains all the defined variables and functions. You may be define them through the <a href="#api-user">user API</a> or directly through <a href="#contextual"
-        >contextutal directives</a>.
+        The value of the modifier. The modifier may have an explicit default value, which is used if no value is specified.
+      </p>
+      <p class="mb-0">
+        The value is validated and cast to the expected type, defaulting if invalid. Modifiers may accept one of the following types:
+      </p>
+      <ul class="muted">
+        <li>
+          <code class="hljs-attr">boolean</code>
+          <small>, unset defaults to <code>true</code></small>.
+        </li>
+        <li>
+          <code class="hljs-attr">string</code>
+          <small>, unset defaults to <code>""</code></small>.
+        </li>
+        <li>
+          <code class="hljs-attr">number</code>
+          <small>, unset defaults to <code>0</code></small>.
+        </li>
+        <li>
+          <code class="hljs-attr">duration</code>
+          <small>, unset defaults to <code>0ms</code>
+            <i>(supported units: <code>ms</code>, <code>s</code>, <code>m</code>)</i>.</small>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h3 id="concept-directive-expression"><a href="#concept-directive-expression">JavaScript Expression <small><code class="hljs-string"><span class="muted">"</span>expression<span class="muted">"</span></code></small></a></h3>
+      <p>
+        Set through the <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes">HTML attribute value</a>, it is evaluated asynchronously within the <a href="#concept-context">context</a> of the current element during processing.
       </p>
       <p>
-        Some <a href="#concept-directive">directives</a> may also expose special variables depending on the current processing state. These are prefixed by a dollar sign (<code>$</code>).
+        A directive may have a <span class="bd-muted bg-muted muted px-.5" style="border-radius: 1rem">Default</span> expression, used when no specific expression is provided.
       </p>
       <p>
-        <em>mizu.js</em> uses <a href="https://jsr.io/@libs/reactive"><var>@libs/reactive</var></a> to track changes in the context and trigger a re-render when necessary.
+        Unless stated otherwise, any <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators">JavaScript expression</a> is permitted.<br />
+        <small class="severe">
+          Note: The full capabilities of the JavaScript engine is available, including its potential risks. Exercise caution when using expressions from untrusted sources.
+        </small>
       </p>
-    </dd>
-    <dt><h2 id="concept-phase"><a href="#concept-phase">Phase</a></h2></dt>
-    <dd>
+    </section>
+    <section>
+      <h2 id="concept-context"><a href="#concept-context">Context</a></h2>
       <p>
-        All <a href="#concept-directive">directives</a> are associated with a specific phase, which determines the <span class="bd-accent bg-accent accent px-.5" style="border-radius: 1rem">Phase</span> order in which they are processed
-        <i>(meaning the order in which they appear on the element is irrelevant unless they have the same phase)</i>.
+        All <a href="#concept-directive-expression">expressions</a> are evaluated within a specific context, which includes all defined variables and functions. You can define these through the <a href="#api-user">user API</a> or directly via <a href="#contextual"
+        >contextual directives</a>.
       </p>
       <p>
-        Directives with the same phase cannot be used on the same element unless they explicity indicate that they can be specified <span class="bd-muted bg-muted muted px-.5" style="border-radius: 1rem">Multiple</span> times.
+        Certain <a href="#concept-directive">directives</a> may also provide special variables based on the current processing state, prefixed with a dollar sign (<code>$</code>).<br />
+        <small class="muted">
+          Note: Although you can also prefix your variables with a dollar sign (<code>$</code>), it is recommended to avoid this practice to prevent confusion with special variables. In case of a conflict, the special variables will shadow user-defined ones until being shadowed
+          themselves.
+        </small>
+      </p>
+      <p>
+        <em>mizu.js</em> leverages <a href="https://jsr.io/@libs/reactive"><var>@libs/reactive</var></a> to monitor context changes and trigger re-renders as needed.
+      </p>
+    </section>
+    <section>
+      <h2 id="concept-phase"><a href="#concept-phase">Phase</a></h2>
+      <p>
+        Each <a href="#concept-directive">directive</a> is tied to a specific phase, dictating the order of processing. The sequence in which directives appear on an element is irrelevant unless they share the same phase.
+      </p>
+      <p>
+        Directives within the same phase cannot coexist on the same element unless explicitly allowed to be specified <span class="bd-muted bg-muted muted px-.5" style="border-radius: 1rem">Multiple</span> times.
         <br />
         <small class="muted">
-          Using conflicting directives on the same element is considered undefined behaviour.
+          Note: Using conflicting directives on the same element results is considered undefined behavior.
         </small>
       </p>
       <details>
@@ -146,6 +149,6 @@
           </li>
         </ul>
       </details>
-    </dd>
-  </dl>
+    </section>
+  </section>
 </section>

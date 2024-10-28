@@ -1,7 +1,7 @@
 // Imports
-import { type Directive, Phase } from "@mizu/mizu/core/engine"
+import { type Directive, Phase } from "@mizu/render/engine"
 import mapping from "./mapping.json" with { type: "json" }
-export type * from "@mizu/mizu/core/engine"
+export type * from "@mizu/render/engine"
 
 /** Typings. */
 export const typings = {
