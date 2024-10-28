@@ -28,11 +28,11 @@ test()("`Server.generate()` can retrieve content from urls", async () => {
   const write = fn() as testing
   const mizu = new Static({ directives: ["@mizu/test"], logger, output, write, mkdir: () => null as testing })
   await mizu.generate([
-    {
-      source: new URL(`data:text/html,<p ~test.text="foo"></p>`),
-      destination: "bar.html",
-      render: { select: "p", context: { foo: "bar" } },
-    },
+    [
+      new URL(`data:text/html,<p ~test.text="foo"></p>`),
+      "bar.html",
+      { render: { select: "p", context: { foo: "bar" } } },
+    ],
   ])
   expect(write).toHaveBeenCalledWith(join(output, "bar.html"), encoder.encode(`<p ~test.text="foo">bar</p>`))
 }, { permissions: { read: true } })
@@ -54,11 +54,11 @@ test()("`Server.generate()` can retrieve content from functions", async () => {
   ) {
     const write = fn() as testing
     await mizu.generate([
-      {
+      [
         source,
-        destination: "bar.html",
-        render: { select: "p", context: { foo: "bar" } },
-      },
+        "bar.html",
+        { render: { select: "p", context: { foo: "bar" } } },
+      ],
     ], { write })
     expect(write).toHaveBeenCalledWith(join(output, "bar.html"), encoder.encode(`<p ~test.text="foo">bar</p>`))
   }
@@ -69,12 +69,24 @@ test()("`Server.generate()` can retrieve content from local files", async () => 
   const mkdir = fn() as testing
   const mizu = new Static({ directives: ["@mizu/test"], logger, output, write, mkdir, read: () => Promise.resolve(encoder.encode(`<p ~test.text="foo"></p>`)) })
   await mizu.generate([
-    {
-      source: "mod.ts",
-      directory: import.meta.dirname!,
-      destination: ".",
-      render: { select: "p", context: { foo: "bar" } },
-    },
+    [
+      "mod.ts",
+      ".",
+      { directory: import.meta.dirname!, render: { select: "p", context: { foo: "bar" } } },
+    ],
   ])
   expect(write).toHaveBeenCalledWith(join(output, "mod.ts"), encoder.encode(`<p ~test.text="foo">bar</p>`))
+}, { permissions: { read: true } })
+
+test()("`Server.generate()` can retrieve content strings", async () => {
+  const write = fn() as testing
+  const mizu = new Static({ directives: ["@mizu/test"], logger, output, write, mkdir: () => null as testing })
+  await mizu.generate([
+    [
+      `<p ~test.text="foo"></p>`,
+      "bar.html",
+      { render: { select: "p", context: { foo: "bar" } } },
+    ],
+  ])
+  expect(write).toHaveBeenCalledWith(join(output, "bar.html"), encoder.encode(`<p ~test.text="foo">bar</p>`))
 }, { permissions: { read: true } })

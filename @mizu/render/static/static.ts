@@ -56,15 +56,18 @@ export class Static extends Server {
    * const mizu = new Static({ logger: new Logger({ level: "disabled" }), directives: ["@mizu/test"], output: "/fake/output" })
    * await mizu.generate(
    *   [
+   *     // Copy content from strings
+   *     [ "<p>foo</p>", "string.html" ],
+   *     [ "<p ~test.text='foo'></p>", "string_render.html", { render: { context: { foo: "bar" } } } ],
    *     // Copy content from local files
-   *     { source: "**\/*", directory: "/fake/static", destination: "public" },
-   *     { source: "*.html", directory: "/fake/partials", destination: "public", render: { context: { foo: "bar "} } },
+   *     [ "**\/*", "public", { directory: "/fake/static" } ],
+   *     [ "*.html", "public", { directory: "/fake/partials", render: { context: { foo: "bar "} } } ],
    *     // Copy content from callback return
-   *     { source: () => `<p ~test.text="'foo'"></p>`, destination: "foo.html", render: { context: { foo: "bar" } } },
-   *     { source: () => JSON.stringify({ foo: "bar" }), destination: "foo.json" },
+   *     [ () => JSON.stringify({ foo: "bar" }), "callback.json" ],
+   *     [ () => `<p ~test.text="'foo'"></p>`, "callback.html", { render: { context: { foo: "bar" } } } ],
    *     // Copy content from URL
-   *     { source: new URL(`data:text/html,<p>foobar</p>`), destination: "bar.html" },
-   *     { source: new URL(`data:text/html,<p ~test.text="foo"></p>`), destination: "baz.html", render: { context: { foo: "bar" } } },
+   *     [ new URL(`data:text/html,<p>foobar</p>`), "url.html" ],
+   *     [ new URL(`data:text/html,<p ~test.text="foo"></p>`), "url_render.html", { render: { context: { foo: "bar" } } } ],
    *   ],
    *   // No-op: do not actually write files and directories
    *   { mkdir: () => null as any, write: () => null as any },
@@ -72,7 +75,7 @@ export class Static extends Server {
    * ```
    */
   async generate(
-    contents: Array<GlobSource | CallbackSource | URLSource>,
+    contents: Array<StringSource | GlobSource | CallbackSource | URLSource>,
     { logger: log = this.options.logger, output = this.options.output, clean = this.options.clean, stat = this.options.stat, write = this.options.write, read = this.options.read, mkdir = this.options.mkdir, rmdir = this.options.rmdir } = {} as GenerateOptions,
   ): Promise<void> {
     // Prepare output directory
@@ -87,34 +90,40 @@ export class Static extends Server {
     log.with({ path: output }).ok()
 
     // Generate files
-    for (const content of contents) {
-      const path = join(output, content.destination)
+    for (const [source, destination, options = {}] of contents) {
+      const path = join(output, destination)
       log.with({ path }).debug("writing...")
       // Copy content from URL
-      if (content.source instanceof URL) {
-        const bytes = await fetch(content.source).then((response) => response.bytes())
-        await write(path, await this.#render(bytes, content.render))
+      if (source instanceof URL) {
+        const bytes = await fetch(source).then((response) => response.bytes())
+        await write(path, await this.#render(bytes, options.render))
         log.with({ path }).ok()
       } // Copy content from callback
-      else if (typeof content.source === "function") {
-        let bytes = await content.source()
+      else if (typeof source === "function") {
+        let bytes = await source()
         if (typeof bytes === "string") {
           bytes = encoder.encode(bytes)
         }
-        await write(path, await this.#render(bytes, content.render))
+        await write(path, await this.#render(bytes, options.render))
         log.with({ path }).ok()
       } // Copy content from local files
-      else {
-        const root = (content as GlobSource).directory
-        for (const source of [content.source].flat()) {
+      else if ("directory" in options) {
+        const root = `${options.directory}`
+        const sources = [source].flat()
+        for (const source of sources) {
           for await (const { path: from } of expandGlob(source, { root, includeDirs: false })) {
             const path = join(output, from.replace(common([root, from]), ""))
             await mkdir(dirname(path), { recursive: true })
-            await write(path, await this.#render(await read(from), content.render))
+            await write(path, await this.#render(await read(from), options.render))
             log.with({ path }).ok()
           }
         }
+      } // Copy content from string
+      else {
+        await write(path, await this.#render(encoder.encode(source as string), options.render))
+        log.with({ path }).ok()
       }
+
       log.ok("done!")
     }
   }
@@ -155,34 +164,60 @@ export type GenerateOptions = {
   rmdir?: (path: string, options?: { recursive?: boolean }) => Promisable<void>
 }
 
-/** Glob source. */
-export type GlobSource = {
+/** String source. */
+export type StringSource = [
+  /** File content. */
+  string,
+  /** Destination path (including filename). */
+  string,
+  /** Options. */
+  {
+    /** Whether to render content with {@linkcode Static.render()}. */
+    render?: Arg<Static["render"], 1>
+  }?,
+]
+
+/**
+ * Glob source.
+ *
+ * The presence of the `directory` option is used to distinguish this type from {@linkcode StringSource}.
+ */
+export type GlobSource = [
   /** A list of file globs. */
-  source: Arrayable<string>
-  /** Source directory. */
-  directory: string
+  Arrayable<string>,
   /** Destination path (excluding filename). */
-  destination: string
-  /** Whether to render content with {@linkcode Static.render()}. */
-  render?: Arg<Static["render"], 1>
-}
+  string,
+  /** Options. */
+  {
+    /** Source directory. */
+    directory: string
+    /** Whether to render content with {@linkcode Static.render()}. */
+    render?: Arg<Static["render"], 1>
+  },
+]
 
 /** Callback source. */
-export type CallbackSource = {
+export type CallbackSource = [
   /** A callback that returns file content. */
-  source: () => Promisable<Arg<NonNullable<GenerateOptions["write"]>, 1> | string>
+  () => Promisable<Arg<NonNullable<GenerateOptions["write"]>, 1> | string>,
   /** Destination path (including filename). */
-  destination: string
-  /** Whether to render content with {@linkcode Static.render()}. */
-  render?: Arg<Static["render"], 1>
-}
+  string,
+  /** Options. */
+  {
+    /** Whether to render content with {@linkcode Static.render()}. */
+    render?: Arg<Static["render"], 1>
+  }?,
+]
 
 /** URL source. */
-export type URLSource = {
+export type URLSource = [
   /** Source URL. */
-  source: URL
-  /**  Destination path (including filename). */
-  destination: string
-  /** Whether to render content with {@linkcode Static.render()}. */
-  render?: Arg<Static["render"], 1>
-}
+  URL,
+  /** Destination path (including filename). */
+  string,
+  /** Options. */
+  {
+    /** Whether to render content with {@linkcode Static.render()}. */
+    render?: Arg<Static["render"], 1>
+  }?,
+]
