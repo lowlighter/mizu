@@ -123,9 +123,8 @@ export class Static extends Server {
         await write(path, await this.#render(encoder.encode(source as string), options.render))
         log.with({ path }).ok()
       }
-
-      log.ok("done!")
     }
+    log.ok("done!")
   }
 
   /** Used by {@linkcode Static#generate()} to render content. */

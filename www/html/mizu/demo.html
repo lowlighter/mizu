@@ -1,61 +1,16 @@
-***mizu.js*** aims to provide a simple alternative for creating dynamic web pages without ///
-
-<div class="mockup-desktop">
-  <div class="background">
-    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <radialGradient id="Gradient1" cx="50%" cy="50%" fx="0.441602%" fy="50%" r=".5">
-          <animate attributeName="fx" dur="68s" values="0%;3%;0%" repeatCount="indefinite"></animate>
-          <stop offset="0%" stop-color="rgba(255, 0, 255, 1)"></stop>
-          <stop offset="100%" stop-color="rgba(255, 0, 255, 0)"></stop>
-        </radialGradient>
-        <radialGradient id="Gradient2" cx="50%" cy="50%" fx="2.68147%" fy="50%" r=".5">
-          <animate attributeName="fx" dur="47s" values="0%;3%;0%" repeatCount="indefinite"></animate>
-          <stop offset="0%" stop-color="rgba(255, 255, 0, 1)"></stop>
-          <stop offset="100%" stop-color="rgba(255, 255, 0, 0)"></stop>
-        </radialGradient>
-        <radialGradient id="Gradient3" cx="50%" cy="50%" fx="0.836536%" fy="50%" r=".5">
-          <animate attributeName="fx" dur="43s" values="0%;3%;0%" repeatCount="indefinite"></animate>
-          <stop offset="0%" stop-color="rgba(0, 255, 255, 1)"></stop>
-          <stop offset="100%" stop-color="rgba(0, 255, 255, 0)"></stop>
-        </radialGradient>
-        <radialGradient id="Gradient4" cx="50%" cy="50%" fx="4.56417%" fy="50%" r=".5">
-          <animate attributeName="fx" dur="46s" values="0%;5%;0%" repeatCount="indefinite"></animate>
-          <stop offset="0%" stop-color="rgba(0, 255, 0, 1)"></stop>
-          <stop offset="100%" stop-color="rgba(0, 255, 0, 0)"></stop>
-        </radialGradient>
-        <radialGradient id="Gradient5" cx="50%" cy="50%" fx="2.65405%" fy="50%" r=".5">
-          <animate attributeName="fx" dur="49s" values="0%;5%;0%" repeatCount="indefinite"></animate>
-          <stop offset="0%" stop-color="rgba(0,0,255, 1)"></stop>
-          <stop offset="100%" stop-color="rgba(0,0,255, 0)"></stop>
-        </radialGradient>
-        <radialGradient id="Gradient6" cx="50%" cy="50%" fx="0.981338%" fy="50%" r=".5">
-          <animate attributeName="fx" dur="51s" values="0%;5%;0%" repeatCount="indefinite"></animate>
-          <stop offset="0%" stop-color="rgba(255,0,0, 1)"></stop>
-          <stop offset="100%" stop-color="rgba(255,0,0, 0)"></stop>
-        </radialGradient>
-      </defs>
-      <rect x="13.744%" y="1.18473%" width="100%" height="100%" fill="url(#Gradient1)" transform="rotate(334.41 50 50)">
-        <animate attributeName="x" dur="80s" values="25%;0%;25%" repeatCount="indefinite"></animate>
-        <animate attributeName="y" dur="42s" values="0%;25%;0%" repeatCount="indefinite"></animate>
-        <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="14s" repeatCount="indefinite"></animateTransform>
-      </rect>
-      <rect x="-2.17916%" y="35.4267%" width="100%" height="100%" fill="url(#Gradient2)" transform="rotate(255.072 50 50)">
-        <animate attributeName="x" dur="92s" values="-25%;0%;-25%" repeatCount="indefinite"></animate>
-        <animate attributeName="y" dur="48s" values="0%;50%;0%" repeatCount="indefinite"></animate>
-        <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="24s" repeatCount="indefinite"></animateTransform>
-      </rect>
-      <rect x="9.00483%" y="14.5733%" width="100%" height="100%" fill="url(#Gradient3)" transform="rotate(139.903 50 50)">
-        <animate attributeName="x" dur="100s" values="0%;25%;0%" repeatCount="indefinite"></animate>
-        <animate attributeName="y" dur="24s" values="0%;25%;0%" repeatCount="indefinite"></animate>
-        <animateTransform attributeName="transform" type="rotate" from="360 50 50" to="0 50 50" dur="18s" repeatCount="indefinite"></animateTransform>
-      </rect>
-    </svg>
-  </div>
-  <div class="windows">
-    <div class="vscode">
-      <div class="titlebar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="54" height="14" viewBox="0 0 54 14">
+<div class="demo loading" *set="{ demo: { browsers: ['iife', 'esm'], deno: ['ssr', 'ssg'] } }" data-color-scheme="dark">
+  <div class="mockups">
+    <div class="mockup runtime">
+      <div class="tabs">
+        <img *for="['deno', 'node', 'bun']" class="app-icon" :src="`https://lecoq.io/cdn/logos/${$value}.svg`" :data-demo-for-runtime="$value" />
+        <div class="tab fake"><small>File</small></div>
+        <div class="tab fake hide-small"><small>Edit</small></div>
+        <div class="tab fake hide-small"><small>View</small></div>
+        <div class="tab fake hide-small"><small>Run</small></div>
+        <div class="tab fake"><small>Terminal</small></div>
+        <div class="tab fake hide-small"><small>Help</small></div>
+        <div class="grow"></div>
+        <svg class="mr-1" xmlns="http://www.w3.org/2000/svg" width="54" height="14" viewBox="0 0 54 14">
           <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
             <circle cx="6" cy="6" r="6.5" fill="var(--danger)"></circle>
             <circle cx="26" cy="6" r="6.5" fill="var(--attention)"></circle>
@@ -64,20 +19,112 @@
         </svg>
       </div>
       <div class="tabs">
-        <div class="tab">app.html</div>
-        <div class="tab active">app.ts</div>
+        <i class="fake" %http="https://lecoq.io/cdn/octicons/three-bars-24.svg" %response.swap></i>
+        <div *for="demo.deno" class="tab" :data-demo-tab="`deno-${$value}`" *mustache>{{ $value }}.ts</div>
       </div>
-      <div>
-        <pre>
-          <code *code[html] %http="`/html/mizu/examples/browsers/client.html`" %response.text></code>
-        </pre>
-        <pre>
-          <code *code[ts] %http="`/html/mizu/examples/deno/server.ts`" %response.text></code>
-        </pre>
+      <div class="app-view">
+        <div class="runtime-view">
+          <pre *for="demo.deno" :data-demo-for-tab="`deno-${$value}`" class="usage-snippet"><code *code[ts] %http="`/html/mizu/examples/deno/${$value}.ts`" %response.text="this.textContent = $content.replace(/^\/\/ deno-lint-ignore.*\n/gm, '')"></code></pre>
+          <pre *for="demo.deno" :data-demo-for-tab="`deno-${$value}`" class="lines"><code %http="`/html/mizu/examples/deno/${$value}.ts`" %response.text="this.textContent = $content.split(`\n`).slice(1).map((_, i) => i).join(&quot;\n&quot;)"></code></pre>
+        </div>
+        <div class="runtime-terminal">
+          <div *for="demo.deno" :data-demo-for-tab="`deno-${$value}`" *mustache><span class="accent">/workspaces/mizu</span> $ deno {{ {ssr:'serve', ssg:'run'}[$value] }} examples/{{ $value }}.ts</div>
+          <div data-demo-for-tab="deno-ssr">
+            <span class="success">deno serve</span>: Listening on <span class="attention">http://0.0.0.0:8000/</span>
+          </div>
+          <div data-demo-for-tab="deno-ssg">
+            <span class="fg-accent">INFO</span> output:<span class="success">"/tmp/output"</span>
+            <span class="success">"generating..."</span>
+          </div>
+          <div data-demo-for-tab="deno-ssg">
+            <span class="fg-success">OK&nbsp;&nbsp;</span>
+            <span class="success">"done!"</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mockup browser" data-demo-for-runtime="browsers">
+      <div class="tabs">
+        <img class="app-icon" src="https://lecoq.io/cdn/logos/browsers.svg" />
+        <div *for="demo.browsers" class="tab" :data-demo-tab="`browsers-${$value}`" *mustache>
+          {{ {iife:"IIFE", esm:"ESM"}[$value] }}
+          <div class="before"></div>
+          <div class="after"></div>
+        </div>
+        <div class="grow"></div>
+        <svg class="mr-1" xmlns="http://www.w3.org/2000/svg" width="54" height="14" viewBox="0 0 54 14">
+          <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+            <circle cx="6" cy="6" r="6.5" fill="var(--danger)"></circle>
+            <circle cx="26" cy="6" r="6.5" fill="var(--attention)"></circle>
+            <circle cx="46" cy="6" r="6.5" fill="var(--success)"></circle>
+          </g>
+        </svg>
+      </div>
+      <div class="urlbar">
+        <i class="fake" %http="https://lecoq.io/cdn/octicons/arrow-left-24.svg" %response.swap></i>
+        <i class="fake" %http="https://lecoq.io/cdn/octicons/arrow-right-24.svg" %response.swap></i>
+        <input *for="demo.browsers" class="fake" type="text" :value="`https://mizu.test/${$value}.html`" :data-demo-for-tab="`browsers-${$value}`" />
+        <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/star-24.svg" %response.swap></i>
+        <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/three-bars-24.svg" %response.swap></i>
+      </div>
+      <div class="app-view">
+        <div class="browser-view">
+          🌊 Yaa, mizu!
+        </div>
+        <div class="browser-inspector">
+          <div class="browser-inspector-bar">
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/link-external-16.svg" %response.swap></i>
+            <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/device-mobile-16.svg" %response.swap></i>
+            <i class="fake hide-small" %http="https://lecoq.io/cdn/octicons/sidebar-collapse-16.svg" %response.swap></i>
+            <div class="active">
+              <i %http="https://lecoq.io/cdn/octicons/code-16.svg" %response.swap></i>
+              <small>Elements</small>
+            </div>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/terminal-16.svg" %response.swap></i>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/bug-16.svg" %response.swap></i>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/broadcast-16.svg" %response.swap></i>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/meter-16.svg" %response.swap></i>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/cpu-16.svg" %response.swap></i>
+            <i class="fake" %http="https://lecoq.io/cdn/octicons/browser-16.svg" %response.swap></i>
+          </div>
+          <div class="browser-inspector-content">
+            <pre *for="demo.browsers" :data-demo-for-tab="`browsers-${$value}`" class="usage-snippet"><code *code[html] %http="`/html/mizu/examples/browsers/${$value}.html`" %response.text></code></pre>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   <div class="dock">
-    <img *for="['browsers', 'node', 'deno', 'bun']" :src="`https://lecoq.io/cdn/logos/${$value}.svg`" />
+    <img *for="['browsers', 'deno']" :data-demo-runtime="$value" :src="`https://lecoq.io/cdn/logos/${$value}.svg`" />
   </div>
+</div>
+<script>
+  window.addEventListener("load", function () {
+    const data = { runtime: "", tab: "" }
+    for (const key of Object.keys(data)) {
+      document.querySelectorAll(`[data-demo-${key}]`).forEach((element) => {
+        element.addEventListener("click", () => {
+          if ((key === "runtime") && (data.runtime !== element.getAttribute(`data-demo-${key}`))) {
+            document.querySelector(`.mockup.${element.getAttribute(`data-demo-${key}`) === "browsers" ? "browser" : "runtime"} [data-demo-tab]`).click()
+          }
+          data[key] = element.getAttribute(`data-demo-${key}`)
+          document.querySelectorAll(`[data-demo-for-${key}]`).forEach((element) => {
+            if (element.getAttribute(`data-demo-for-${key}`) === data[key]) {
+              element.style.removeProperty("display")
+            } else {
+              element.style.setProperty("display", "none", "important")
+            }
+          })
+          document.querySelectorAll(".dock img").forEach((element) => element.classList.toggle("active", element.getAttribute("data-demo-runtime") === data.runtime))
+          document.querySelectorAll(".tab").forEach((element) => element.classList.toggle("active", element.getAttribute("data-demo-tab") === data.tab))
+        })
+      })
+    }
+    document.querySelector(`[data-demo-runtime]`).click()
+    document.querySelector(".demo").classList.remove("loading")
+  })
+</script>
+<div class="flash accent">
+  <p>Want to see <em>mizu.js</em> in action?</p>
+  <p>Dive into our <a href="/playground">interactive playground</a> and start experimenting!</p>
 </div>

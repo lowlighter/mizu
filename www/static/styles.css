@@ -281,71 +281,267 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   margin-bottom: 0;
 }
 
-/** WIP =============================== */
+/* Demo */
+.demo {
+  transition: opacity var(--tr-duration);
+  opacity: 1;
+  background: transparent;
+  margin: 2rem 0 2rem;
+}
 
-.mockup-desktop {
-  height: 500px;
+.demo.loading {
+  opacity: 0;
+}
+
+.demo .dock {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.demo .dock img {
+  max-height: 3rem;
+  margin: 0 1rem;
+  filter: grayscale(1) brightness(0.5);
+}
+
+.demo .dock img:hover {
+  cursor: pointer;
+  filter: grayscale(0.2) brightness(0.8);
+  transition: filter var(--tr-duration);
+}
+
+.demo .dock img.active {
+  filter: grayscale(0) brightness(1);
+}
+
+.demo .mockups {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  height: 600px;
 }
 
-.mockup-desktop .background {
+/* App mockups. */
+.mockup {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   top: 0;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.mockup-desktop .background svg {
-  transform: scale(2);
-}
-
-.mockup-desktop .windows {
-  flex-grow: 1;
-  z-index: 2;
-}
-
-.mockup-desktop .windows .vscode {
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  background: #202327;
+  background: var(--dark);
   border-radius: var(--bd-radius);
+  overflow: hidden;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
 }
 
-.mockup-desktop .windows .vscode .titlebar {
-  padding-left: 0.5rem;
+.mockup .fake {
+  opacity: 0.25;
+  pointer-events: none;
 }
 
-.mockup-desktop .windows .vscode .tabs {
+.mockup .tabs {
   display: flex;
+  align-items: center;
   color: var(--muted);
 }
 
-.mockup-desktop .windows .vscode .tabs .tab {
-  background: #26292e;
-  padding: 0.5rem;
+.mockup .tabs .tab {
+  display: flex;
+  align-items: center;
+  background: var(---bg-default);
+  transition: color var(--tr-duration);
+  cursor: pointer;
 }
 
-.mockup-desktop .windows .vscode .tabs .tab.active {
+.mockup .tabs .tab:hover {
+  color: var(--accent);
+}
+
+.mockup .tabs .tab.active {
   background: var(--bg-muted);
   color: var(--default);
 }
 
-.mockup-desktop .dock {
-  display: inline-flex;
-  border-radius: var(--bd-radius);
-  background-color: hsla(240, 24%, 100%, 0.4);
-  box-shadow: inset 0 0 0 0.2px hsla(0, 0%, 96%, 0.7), 0 0 0 0.2px hsla(0, 0%, 13%, 0.7), #0000004d 2px 5px 19px 7px;
-  z-index: 2;
+.mockup .tabs svg {
+  fill: currentColor;
+  height: 1.5rem;
+  margin: 0 1rem;
 }
 
-.mockup-desktop .dock img {
-  max-height: 3rem;
+.mockup .app-icon {
+  height: 1.5rem;
+  margin: 0 1rem;
+  filter: grayscale(1) brightness(0.5);
+}
+
+.mockup .usage-snippet:hover {
+  background: var(--bg-subtle) !important;
+}
+
+@media (max-width: 768px) {
+  .mockup .hide-small {
+    display: none !important;
+  }
+}
+
+/* Runtime mockup. */
+.mockup.runtime .tabs .tab {
+  padding: 0.5rem 1rem;
+}
+
+.mockup.runtime .app-view {
+  display: grid;
+  grid-template-rows: 0.7fr 0.3fr;
+  flex-grow: 1;
+}
+
+.mockup.runtime .runtime-view {
+  background-color: var(--bg-muted);
+  overflow: auto;
+  border-bottom: 1px solid var(--light-muted);
+  position: relative;
+}
+
+.mockup.runtime .runtime-view .lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 1rem 0.5rem;
+  text-align: right;
+  color: var(--muted);
+}
+
+.mockup.runtime .runtime-view pre {
+  background-color: transparent;
+  padding-left: 3rem;
+  border-radius: 0;
+  margin: 0;
+}
+
+.mockup.runtime .runtime-terminal {
+  font-family: var(--ft-mono);
+  font-size: 0.85rem;
+  background: black;
+  color: var(--muted);
+  padding: 0.5rem;
+  filter: brightness(0.85);
+}
+
+/* Browser mockup. */
+.mockup.browser .tabs .tab {
+  border-top-left-radius: calc(2 * var(--bd-radius));
+  border-top-right-radius: calc(2 * var(--bd-radius));
+  padding: 0.5rem 1rem;
+  position: relative;
+}
+
+.mockup.browser .tabs .tab.active .before, .mockup.browser .tabs .tab.active .after {
+  position: absolute;
+  bottom: 0;
+  left: -1rem;
+  width: 1rem;
+  height: 1rem;
+  background-color: var(--bg-muted);
+}
+
+.mockup.browser .tabs .tab.active .after {
+  left: auto;
+  right: -1rem;
+}
+
+.mockup.browser .tabs .tab.active .before::before, .mockup.browser .tabs .tab.active .after::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: var(--dark);
+  border-bottom-right-radius: calc(2 * var(--bd-radius));
+}
+
+.mockup.browser .tabs .tab.active .after::before {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: calc(2 * var(--bd-radius));
+}
+
+.mockup.browser .urlbar {
+  display: flex;
+  background: var(--bg-muted);
+  padding: 0.5rem;
+  align-items: center;
+}
+
+.mockup.browser .urlbar svg {
+  fill: currentColor;
+  height: 1.5rem;
+  margin: 0 0.5rem;
+}
+
+.mockup.browser .urlbar input {
+  margin: 0;
+  background-color: var(--dark);
+}
+
+.mockup.browser .app-view {
+  display: grid;
+  grid-template-rows: 0.2fr 0.8fr;
+  flex-grow: 1;
+}
+
+.mockup.browser .browser-view {
+  background-color: var(--light);
+  color: var(--light-default);
+  padding: 1rem;
+  border-right: 2px solid var(--light-muted);
+}
+
+.mockup.browser .browser-inspector {
+  display: flex;
+  flex-direction: column;
+}
+
+.mockup.browser .browser-inspector-bar {
+  color: var(--muted);
+  display: flex;
+}
+
+.mockup.browser .browser-inspector-bar .active {
+  display: flex;
+  align-items: center;
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+  background-color: var(--bg-muted);
+  padding-right: 0.5rem;
+}
+
+.mockup.browser .browser-inspector-bar svg {
+  fill: currentColor;
+  height: 1rem;
   margin: 0.5rem;
+}
+
+.mockup.browser .browser-inspector-content {
+  flex-grow: 1;
+  overflow: auto;
+  width: 100%;
+  background-color: var(--bg-muted);
+}
+
+.mockup.browser .browser-inspector-content pre {
+  background-color: transparent;
+  margin: 0;
+  border-radius: 0;
+}
+
+@media (min-width: 768px) {
+  .mockup.browser .tabs .tab {
+    min-width: 10rem;
+  }
+  .mockup.browser .app-view {
+    grid-template-rows: initial;
+    grid-template-columns: 0.3fr 0.7fr;
+    flex-grow: 1;
+  }
 }
 
 /** Carbon like examples. */

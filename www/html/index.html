@@ -21,7 +21,7 @@
       <section class="centered">
         <img *if="page === 'index'" class="logo" src="/logo.png" alt="" />
       </section>
-      <section *if="page === 'index'" *for="['about', 'features', 'faq', 'usage', 'concepts', 'directives', 'api']" %http="`/html/mizu/${$value}.html`" %response.html></section>
+      <section *if="page === 'index'" *for="['about', 'features', 'demo', 'faq', 'usage', 'concepts', 'directives', 'api']" %http="`/html/mizu/${$value}.html`" %response.html></section>
       <section *else %http="`/html/${page}.html`" %response.html></section>
     </main>
     <aside *if="page === 'index'" data-expandable="☰ Quick navigation">
