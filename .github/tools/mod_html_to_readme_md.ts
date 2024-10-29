@@ -38,7 +38,7 @@ export async function mdWithHtmlInclude(path: string) {
     .replace(/(?<open><!-- (?<include>@mizu\/[\/.\w]+\.html) -->)[\s\S]*(?<close><!-- \k<include> -->)/g, (_, open, include, close) => {
       const html = Deno.readTextFileSync(join(fromFileUrl(import.meta.resolve("../../")), include.replace("@mizu/", "")))
       const window = new Window(`<body>${html}</body>`)
-      const markdown = toMarkdown(window.document.querySelector("body"))
+      const markdown = toMarkdown(window.document.querySelector("body")).replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
       window.close()
       return `${open}\n\n${markdown}\n\n${close}`
     })
@@ -159,10 +159,12 @@ function toMarkdown(elements: Array<Node> | Node | null, markdown = "") {
         case "H6":
           markdown += `\n${"#".repeat(Number(node.tagName[1]))} ${toMarkdown(Array.from(node.childNodes))}\n\n`
           break
-        //
+        // Code blocks
         case "PRE": {
           if (node.querySelector("code")) {
-            const language = Array.from(node.querySelector("code")!.attributes).find((attr) => attr.name.startsWith("*code"))?.name.match(/\[(.*)\]/)?.[1] ?? ""
+            const language = Array.from(node.querySelectorAll("*"))
+              .flatMap(child => Array.from(child.attributes))
+              .find((attr) => attr.name.startsWith("*code"))?.name.match(/\[(.*)\]/)?.[1] ?? ""
             markdown += `\n\`\`\`${language}\n${unindent(node.textContent)}\n\`\`\`\n`
             break
           }
