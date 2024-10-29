@@ -13,7 +13,7 @@ body:
     attributes:
       label: Scope
       description: |
-        Select the scope(s) of the issue
+        Select the scope(s) of the issue.
       multiple: true
       options:
         - bind
@@ -50,7 +50,7 @@ body:
   - type: textarea
     id: content
     attributes:
-      label: null
+      label: What do you want to define?
       description: Describe the specification you would like to see added.
       placeholder: |
         Provide a detailed description of the specification.
