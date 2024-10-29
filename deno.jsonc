@@ -32,7 +32,9 @@
     // Build website
     "build:www": "deno run --allow-read --allow-env --allow-net --allow-run --allow-write=.pages,/tmp --location=http://localhost:4649 www/build.ts",
     // Build coverage report
-    "build:coverage": "deno task test:only --filter='/DENO/' --clean --coverage --fail-fast --reporter=dot && deno coverage --html && mv coverage/html .pages/coverage && deno run --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage"
+    "build:coverage": "deno task test:only --filter='/DENO/' --clean --coverage --fail-fast --reporter=dot && deno coverage --html && mv coverage/html .pages/coverage && deno run --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage",
+    // Update repository issue templates
+    "repo:issue-templates": " deno run --allow-read --allow-write=.github/ISSUE_TEMPLATE --allow-run=deno .github/tools/fill_issue_templates.ts"
   },
   "imports": {
     // Aliases
@@ -53,6 +55,7 @@
     "@std/path": "jsr:@std/path@1",
     "@std/regexp": "jsr:@std/regexp@1",
     "@std/text": "jsr:@std/text@1",
+    "@std/yaml": "jsr:@std/yaml@1",
     // External dependencies
     "@dprint/formatter": "jsr:@dprint/formatter@^0.4",
     "@libs/bundle/ts": "jsr:@libs/bundle@12.4.1/ts",

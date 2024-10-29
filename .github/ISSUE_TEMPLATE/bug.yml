@@ -1,4 +1,4 @@
-name: 🐛 Bug Report
+name: "\U0001F41B Bug Report"
 description: File a bug report.
 title: "[Bug]: "
 labels:
@@ -8,50 +8,89 @@ body:
     attributes:
       value: |
         Thank you for taking the time to report a bug!
-  - type: input
+  - type: dropdown
     id: scope
     attributes:
       label: Scope
-      description: What part of the project does this issue affect?
-      placeholder: Describe the scope of the issue.
+      description: Select the scope(s) of the issue.
+      multiple: true
+      options:
+        - bind
+        - clean
+        - code
+        - coverage
+        - custom-element
+        - eval
+        - event
+        - for
+        - html
+        - http
+        - if
+        - is
+        - markdown
+        - mizu
+        - model
+        - mustache
+        - once
+        - ref
+        - refresh
+        - render
+        - set
+        - show
+        - skip
+        - test
+        - text
+        - toc
+        - unstable
+        - www
+        - repo
     validations:
       required: true
   - type: textarea
-    id: report
+    id: content
     attributes:
-      label: What happened?
+      label: What is happening?
       description: Describe the issue and what you expected to happen.
-      placeholder: Provide a detailed description of the bug.
+      placeholder: |
+        Provide a detailed description of the bug.
+        Include screenshots, logs, or any other relevant information.
     validations:
       required: true
   - type: textarea
-    id: logs
+    id: reproduction
     attributes:
-      label: Relevant log output
-      description: Paste any relevant log output here.
-      render: shell
+      label: Minimal reproduction example
+      description: >
+        Provide a minimal example to reproduce the issue. Failure to do so may
+        result in the issue being closed without investigation.
+      render: html
     validations:
       required: true
-  - type: checkboxes
+  - type: dropdown
     id: environment
     attributes:
       label: Environment
-      description: Select the environment(s) where you encountered the issue.
+      description: |
+        Select the environment(s) where you encountered the issue.
+      multiple: true
       options:
-        - label: Chromium-based
-        - label: Firefox
-        - label: Safari
-        - label: Node.js
-        - label: Deno
-        - label: Bun
-        - label: Other
+        - Chromium
+        - Firefox
+        - Safari
+        - Node.js
+        - Deno
+        - Bun
+        - Other
     validations:
       required: true
-  - type: checkboxes
-    id: searched
+  - type: dropdown
+    id: i-did-my-homework
     attributes:
       label: I have searched for existing issues
-      description: Have you checked for existing issues that may already cover this request?
+      description: >-
+        By checking this box, you confirm that you have searched for existing
+        issues.
       options:
-        - label: "Yes"
-          required: true
+        - "Yes"
+    validations:
+      required: true

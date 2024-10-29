@@ -1,19 +1,19 @@
-name: ✨ Feature Request
-description: Request a new feature.
-title: "[Feature]: "
+name: "\U0001F4DC Spec definition"
+description: Propose a new specification.
+title: "[Spec]: "
 labels:
-  - enhancement
+  - spec
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for taking the time to request a feature!
+        Thank you for taking the time to propose a new specification!
   - type: dropdown
     id: scope
     attributes:
       label: Scope
       description: |
-        Select the scope(s) of the issue.
+        Select the scope(s) of the issue
       multiple: true
       options:
         - bind
@@ -48,13 +48,13 @@ body:
     validations:
       required: true
   - type: textarea
-    id: report
+    id: content
     attributes:
-      label: What do you want to happen?
-      description: Describe the feature you would like to see added.
+      label: null
+      description: Describe the specification you would like to see added.
       placeholder: |
-        Provide a detailed description of the feature.
-        Include screenshots, diagrams, or any other relevant information.
+        Provide a detailed description of the specification.
+        Include diagrams, examples, or any other relevant information.
     validations:
       required: true
   - type: dropdown

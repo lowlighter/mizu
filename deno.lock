@@ -84,6 +84,7 @@
       "dependencies": [
         "jsr:@libs/logger",
         "jsr:@libs/run",
+        "jsr:@libs/typing@3",
         "jsr:@luca/esbuild-deno-loader@0.11.0",
         "jsr:@std/assert@1",
         "jsr:@std/async",
@@ -2996,6 +2997,7 @@
       "jsr:@std/path@1",
       "jsr:@std/regexp@1",
       "jsr:@std/text@1",
+      "jsr:@std/yaml@1",
       "npm:jsdom@25"
     ],
     "members": {
