@@ -163,7 +163,7 @@ function toMarkdown(elements: Array<Node> | Node | null, markdown = "") {
         case "PRE": {
           if (node.querySelector("code")) {
             const language = Array.from(node.querySelectorAll("*"))
-              .flatMap(child => Array.from(child.attributes))
+              .flatMap((child) => Array.from(child.attributes))
               .find((attr) => attr.name.startsWith("*code"))?.name.match(/\[(.*)\]/)?.[1] ?? ""
             markdown += `\n\`\`\`${language}\n${unindent(node.textContent)}\n\`\`\`\n`
             break

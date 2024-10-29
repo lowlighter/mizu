@@ -6,13 +6,13 @@ import { fromFileUrl, join } from "@std/path"
 await using _ = Deno.serve({ port: Number(new URL(globalThis.location.href).port) }, serve.fetch)
 
 await Mizu.generate([
-  { source: () => html("index"), destination: "index.html", render: {} },
-  { source: () => html("build"), destination: "build.html", render: {} },
-  { source: () => html("playground"), destination: "playground.html", render: {} },
-  { source: () => html("community"), destination: "community.html", render: {} },
-  { source: () => js("@mizu/render/client", { format: "iife" }), destination: "client.js" },
-  { source: () => js("@mizu/render/client", { format: "esm" }), destination: "client.mjs" },
-  { source: new URL("/matcha.css", globalThis.location.href), destination: "matcha.css" },
-  { source: new URL("/highlight.js", globalThis.location.href), destination: "highlight.js" },
-  { source: "*.{svg,css,png,js}", directory: fromFileUrl(import.meta.resolve("./static")), destination: "." },
+  [() => html("index"), "index.html", { render: {} }],
+  [() => html("build"), "build.html", { render: {} }],
+  [() => html("playground"), "playground.html", { render: {} }],
+  [() => html("community"), "community.html", { render: {} }],
+  [() => js("@mizu/render/client", { format: "iife" }), "client.js"],
+  [() => js("@mizu/render/client", { format: "esm" }), "client.mjs"],
+  [new URL("/matcha.css", globalThis.location.href), "matcha.css"],
+  [new URL("/highlight.js", globalThis.location.href), "highlight.js"],
+  ["*.{svg,css,png,js}", ".", { directory: fromFileUrl(import.meta.resolve("./static")) }],
 ], { output: join(Deno.cwd(), ".pages") })
