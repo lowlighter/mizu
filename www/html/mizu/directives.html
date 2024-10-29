@@ -1,6 +1,6 @@
 <h1 id="directives"><a href="#directives">Directives</a></h1>
 <section>
-  <h2 id="general"><a href="#general">General</a></h2>
+  <h2 id="rendering"><a href="#rendering">Rendering</a></h2>
   <section *for="['mizu']" %http="`/about/directives/${$value}`" %response.html></section>
 </section>
 <section>
@@ -45,14 +45,21 @@
 </section>
 <section>
   <h2 id="testing"><a href="#testing">Testing</a></h2>
+  <p>
+    These directives are for development and testing purposes only. They help developers validate features and renderings before production.
+  </p>
+  <p class="severe">
+    <b>Do not use in production environments.</b>
+  </p>
   <section *for="['test']" %http="`/about/directives/${$value}`" %response.html></section>
 </section>
 <section>
   <h2 id="unstable"><a href="#unstable">Unstable</a></h2>
-  <div class="flash severe">
-    <p>
-      Features listed below may be subject to change in future versions. Use at your own risk.
-    </p>
-  </div>
+  <p>
+    New features that are still in the design phase are published in this package to gather community feedback. These features may undergo significant changes during development and might not be included in the stable release.
+  </p>
+  <p class="severe">
+    <b>Use at your own risk.</b>
+  </p>
   <section *for="['noop']" %http="`/about/directives/unstable/${$value}`" %response.html></section>
 </section>

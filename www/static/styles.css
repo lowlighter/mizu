@@ -489,7 +489,7 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 
 .mockup.browser .app-view {
   display: grid;
-  grid-template-rows: 0.2fr 0.8fr;
+  grid-template-rows: 0.2fr 1fr;
   flex-grow: 1;
 }
 
