@@ -1,13 +1,11 @@
 name: "\U0001F41B Bug Report"
 description: File a bug report.
-title: "[Bug]: "
 labels:
   - bug
 body:
   - type: markdown
     attributes:
-      value: |
-        Thank you for taking the time to report a bug!
+      value: Thank you for taking the time to report a bug!
   - type: dropdown
     id: scope
     attributes:
@@ -26,6 +24,7 @@ body:
         - html
         - http
         - if
+        - internal
         - is
         - markdown
         - mizu
@@ -60,9 +59,12 @@ body:
     id: reproduction
     attributes:
       label: Minimal reproduction example
-      description: >
-        Provide a minimal example to reproduce the issue. Failure to do so may
-        result in the issue being closed without investigation.
+      description: Describe how to reproduce the issue.
+      placeholder: >
+        Provide a minimal example to reproduce the issue.
+
+        Failure to do so may result in the issue being closed without
+        investigation.
       render: html
     validations:
       required: true
@@ -70,8 +72,7 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: |
-        Select the environment(s) where you encountered the issue.
+      description: Select the environment(s) where you encountered the issue.
       multiple: true
       options:
         - Chromium
@@ -87,10 +88,9 @@ body:
     id: i-did-my-homework
     attributes:
       label: I have searched for existing issues
-      description: >-
-        By checking this box, you confirm that you have searched for existing
-        issues.
+      description: You confirm that you took the time to search for existing issues.
       options:
+        - ""
         - "Yes"
     validations:
       required: true

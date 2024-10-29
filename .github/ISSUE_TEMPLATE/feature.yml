@@ -1,19 +1,16 @@
 name: ✨ Feature Request
 description: Request a new feature.
-title: "[Feature]: "
 labels:
-  - enhancement
+  - feature
 body:
   - type: markdown
     attributes:
-      value: |
-        Thank you for taking the time to request a feature!
+      value: Thank you for taking the time to request a feature!
   - type: dropdown
     id: scope
     attributes:
       label: Scope
-      description: |
-        Select the scope(s) of the issue.
+      description: Select the scope(s) of the issue.
       multiple: true
       options:
         - bind
@@ -27,6 +24,7 @@ body:
         - html
         - http
         - if
+        - internal
         - is
         - markdown
         - mizu
@@ -61,10 +59,9 @@ body:
     id: i-did-my-homework
     attributes:
       label: I have searched for existing issues
-      description: >-
-        By checking this box, you confirm that you have searched for existing
-        issues.
+      description: You confirm that you took the time to search for existing issues.
       options:
+        - ""
         - "Yes"
     validations:
       required: true

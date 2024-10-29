@@ -1,19 +1,16 @@
 name: "\U0001F4DC Spec definition"
 description: Propose a new specification.
-title: "[Spec]: "
 labels:
   - spec
 body:
   - type: markdown
     attributes:
-      value: |
-        Thank you for taking the time to propose a new specification!
+      value: Thank you for taking the time to propose a new specification!
   - type: dropdown
     id: scope
     attributes:
       label: Scope
-      description: |
-        Select the scope(s) of the issue.
+      description: Select the scope(s) of the issue.
       multiple: true
       options:
         - bind
@@ -27,6 +24,7 @@ body:
         - html
         - http
         - if
+        - internal
         - is
         - markdown
         - mizu
@@ -61,10 +59,9 @@ body:
     id: i-did-my-homework
     attributes:
       label: I have searched for existing issues
-      description: >-
-        By checking this box, you confirm that you have searched for existing
-        issues.
+      description: You confirm that you took the time to search for existing issues.
       options:
+        - ""
         - "Yes"
     validations:
       required: true
