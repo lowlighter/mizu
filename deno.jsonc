@@ -18,7 +18,7 @@
     // Test code (without any options)
     "test:only": "deno test --allow-read --allow-env --allow-net --parallel",
     // Generate local `README.md` from `mod.html`
-    "doc:html-to-md": "deno run --allow-read --allow-env --allow-write=./@mizu --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD",
+    "doc:html-to-md": "deno run --allow-read --allow-env --allow-write=./@mizu,README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD",
     // Test and lint code
     "qa": "deno task test && deno task lint && deno task doc:html-to-md",
     // Cache dependencies

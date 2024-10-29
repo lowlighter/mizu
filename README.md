@@ -1,76 +1,133 @@
 # 🌊 mizu.js
 
-[![mizu.sh](https://img.shields.io/badge/%F0%9F%8C%8A-See%20it%20live%20on%20mizu.sh!-black?labelColor=black)](https://mizu.sh)
+[![mizu.sh](https://img.shields.io/badge/%F0%9F%8C%8A-mizu.sh-black?labelColor=black)](https://mizu.sh)
 
-<p align="center"><img src="https://mizu.sh/logo.png" width="300"></p>
+<p align="center"><a href="https://mizu.sh"><img src="https://mizu.sh/logo.png" width="300"></a></p>
 
-**mizu.js** is a JavaScript library that provides a simple and efficient way to create dynamic web pages without the hassle of a complex framework nor extra setup.
+Full documentation is available at [mizu.sh](https://mizu.sh).
 
-Ideal for fast prototyping, generating static HTML pages, and developers seeking to work in a lightweight and head environment.
+<!-- @mizu/www/html/mizu/features.html -->
 
-- ✅ **No** build steps
-- ✅ **No** configuration needed
-- ✅ **Any-side** rendering
-- ✅ **Great** for static site generation
+# [Features](#features)
 
-## 🥢 Why choose **mizu.js**?
+## 🍜 Plug-and-play
 
-### 🍜 Agnostic
+Simply [include the library](#usage) and start building amazing things instantly with vanilla JavaScript and HTML.
 
-Compatible with most JavaScript runtimes and browsers. Templates can be rendered server-side, client-side, or using a mixture of both.
+## 🍤 Cross-platform
 
-### 🍤 Straightforward
+Compatible across a wide range of JavaScript and TypeScript runtimes, including all major browsers.
 
-Simply include its [`<script>` or `import` statement](https://mizu.sh/#usage) to get started. No configuration or build steps are required.
+## 🍣 Any-side
 
-### 🍣 Intuitive
+Render your content wherever you need it and however you want it with [user-friendly APIs](#api-user).
 
-Rely on HTML attributes and vanilla JavaScript expressions, no need to learn a new syntax or language.
+## 🍱 Hackable
 
-### 🍱 Customizable
+Cherry-pick features and craft your own setup easily with [developer-friendly APIs](#api-dev) and our [custom builder](/build).
 
-Make your own build using our [custom builder](https://mizu.sh/build) to select specific features and reduce the final build size according to your project's needs, and create your own directives easily through [developer-friendly APIs](https://mizu.sh/#api).
+## 🥡 Community-driven
 
-### 🍙 Open-core
+Build, [share and reuse](/community) custom elements and directives to supercharge your development.
 
-Released under the [AGPLv3 License](/LICENSE) and freely available at [github.com/lowlighter/mizu](https://github.com/lowlighter/mizu).
+Want to effortlessly theme your page? Check out [matcha.css](https://matcha.mizu.sh)!
 
-> A minimum of [$1 monthly sponsorship](https://github.com/sponsors/lowlighter) grants you the right to use it under the [MIT License](/LICENSE).
+## 🍙 Open-core
 
-## 📖 Usage
+Licensed under the [AGPLv3 License](https://github.com/lowlighter/mizu/blob/main/LICENSE#L13-L658), source code fully available on [github.com](https://github.com/lowlighter/mizu).
 
-To utilize _mizu.js_, just include the following line in your HTML document:
+Use [MIT License](https://github.com/lowlighter/mizu/blob/main/LICENSE#L662-L685) terms for non-commercial projects or with an active [$1+ monthly sponsorship](https://github.com/sponsors/lowlighter).
+
+<!-- @mizu/www/html/mizu/features.html -->
+
+<!-- @mizu/www/html/mizu/usage.html -->
+
+# [Usage](#usage)
+
+> [!WARNING]
+>
+> _**mizu.js**_ is still in active development.
+>
+> See [github.com/lowlighter/mizu/issues/34](https://github.com/lowlighter/mizu/issues/34) for more information.
+
+## [Client-side](#usage-client)
+
+Set up _**mizu.js**_ in your browser environment using one of two methods:
+
+- [Immediately Invoked Function Expression (IIFE)](https://developer.mozilla.org/docs/Glossary/IIFE)
+- [EcmaScript Module (ESM)](https://developer.mozilla.org/docs/Web/JavaScript/Guide/Modules)
+
+> [!NOTE]
+>
+> On the client-side...
+>
+> - **Rendering is explicit**, requiring the [`*mizu`](#mizu) attribute to enable _**mizu.js**_ on a subtree.
+> - **Reactivity is enabled**, so changes to [contexts](#concept-context) will trigger a re-render.
+
+### [IIFE _( `.js`)_](#usage-client-iife)
+
+This setup automatically starts rendering the page once the script is loaded. It's the simplest way to get started but limited to the default configuration.
 
 ```html
-<script type="module" href="https://mizu.sh/mizu.js">
+<script src="https://mizu.sh/client.js" defer></script>
 ```
 
-Or to use it as a [JavaScript module](https://developer.mozilla.org/docs/Web/JavaScript/Guide/Modules):
+### [ESM _( `.mjs`)_](#usage-client-esm)
+
+This setup requires you to import and start _**mizu.js**_ manually, allowing customization of the rendering process, such as setting the initial context and loading additional directives.
+
+```
+<script type="module">
+  import Mizu from "https://mizu.sh/client.mjs"
+  await Mizu.render(document.body, { context: { foo: "🌊 Yaa, mizu!" } })
+</script>
+```
+
+## [Server-side](#usage-server)
+
+To set up _**mizu.js**_ in a server environment, install it locally. _**mizu.js**_ packages are hosted on [![](https://jsr.io/badges/@mizu)](https://jsr.io/@mizu).
+
+> [!NOTE]
+>
+> On the server side...
+>
+> - **Rendering is implicit**, so the [`*mizu`](#mizu) attribute is not required.
+> - **Reactivity is disabled**, meaning changes to [contexts](#concept-context) are not tracked and will not trigger a re-render.
+
+### [Deno](#usage-server-deno)
+
+Deno supports the `jsr:` specifier natively, allowing you to import _**mizu.js**_ directly.
 
 ```ts
-import * as Mizu from "@mizu/mizu"
+import Mizu from "jsr:@mizu/render/server"
+await Mizu.render(`<div *text="foo"></div>`, { context: { foo: "🌊 Yaa, mizu!" } })
 ```
 
-Assets are hosted on [Vercel](https://vercel.com) but _mizu.js_ is also available on [![npm](https://img.shields.io/npm/v/@lowlighter%2Fmizu?logo=npm&labelColor=cb0000&color=black)](https://www.npmjs.com/package/@lowlighter/mizu),
-[![jsr](https://jsr.io/badges/@mizu/mizu)](https://jsr.io/@mizu/mizu) and CDN services that distributes npm packages such as [JSdelivr](https://www.jsdelivr.com/package/npm/@lowlighter/mizu).
+Alternatively, add it to your project using the Deno CLI.
 
-All published versions are available in the [`/v/`](https://mizu.sh/v/) directory. By default, the `main` branch is served.
-
-## 🫰 Contributing
-
-> [!WARNING]\
-> _mizu.js_ does not accept contributions at the moment. We are still working on the project and will open it to the community very soon!
-
-# 📜 License
-
-```
-AGPLv3 License
-Copyright (c) 2024-present Simon Lecoq (lowlighter)
+```bash
+deno add jsr:@mizu/render
 ```
 
-> You may use this project under the terms of the MIT License as long as you are sponsoring this project through [GitHub sponsors with a minimal monthly donation of $1 dollar or more](https://github.com/sponsors/lowlighter)
->
-> ```
-> MIT License
-> Copyright (c) 2024-present Simon Lecoq (lowlighter)
-> ```
+### [Other runtimes (NodeJS, Bun, etc.)](#usage-server-others-runtimes)
+
+Add _**mizu.js**_ to your project using the [JSR npm compatibility layer](https://jsr.io/docs/npm-compatibility).
+
+```bash
+# NodeJS
+npx jsr add @mizu/render
+```
+
+```bash
+# Bun
+bunx jsr add @mizu/render
+```
+
+Once installed, use it in your project.
+
+```ts
+import Mizu from "@mizu/render/server"
+await Mizu.render(`<div *text="foo"></div>`, { context: { foo: "🌊 Yaa, mizu!" } })
+```
+
+<!-- @mizu/www/html/mizu/usage.html -->

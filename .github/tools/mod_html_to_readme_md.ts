@@ -1,7 +1,9 @@
 // Imports
+import type { rw } from "@libs/typing/types"
 import { Window } from "@mizu/internal/vdom"
-import { dirname, join } from "@std/path"
+import { dirname, fromFileUrl, join } from "@std/path"
 import { expandGlob } from "@std/fs"
+import * as JSONC from "@std/jsonc"
 import { Logger } from "@libs/logger"
 import { command } from "@libs/run/command"
 import server from "@www/serve.ts"
@@ -9,12 +11,37 @@ const window = new Window()
 const log = new Logger()
 
 if (import.meta.main) {
+  // Directives
   for await (const { path: source } of expandGlob("**/mod.html", { root: Deno.args[0], includeDirs: false })) {
     const destination = join(dirname(source), "README.md")
     await Deno.writeTextFile(destination, await htmlToMd(await Deno.readTextFile(source)))
     await command("deno", ["fmt", destination], { stdout: null, stderr: null })
     log.with({ source, destination }).ok("done")
   }
+
+  // Special cases
+  for await (const { path: source } of expandGlob("**/deno.jsonc", { root: Deno.args[0], includeDirs: false })) {
+    const jsonc = JSONC.parse(await Deno.readTextFile(source)) as rw
+    if ((jsonc.name === "@mizu/render") || ("workspace" in jsonc)) {
+      const destination = join(dirname(source), "README.md")
+      await Deno.writeTextFile(destination, await mdWithHtmlInclude(destination))
+      await command("deno", ["fmt", destination], { stdout: null, stderr: null })
+      log.with({ source, destination }).ok("done")
+    }
+  }
+}
+
+/** Read markdown file and include HTML content. */
+export async function mdWithHtmlInclude(path: string) {
+  const content = await Deno.readTextFile(path)
+  return content
+    .replace(/(?<open><!-- (?<include>@mizu\/[\/.\w]+\.html) -->)[\s\S]*(?<close><!-- \k<include> -->)/g, (_, open, include, close) => {
+      const html = Deno.readTextFileSync(join(fromFileUrl(import.meta.resolve("../../")), include.replace("@mizu/", "")))
+      const window = new Window(`<body>${html}</body>`)
+      const markdown = toMarkdown(window.document.querySelector("body"))
+      window.close()
+      return `${open}\n\n${markdown}\n\n${close}`
+    })
 }
 
 /** Convert `<mizu-directive>` documentation from HTML to markdown. */
@@ -119,10 +146,47 @@ function toMarkdown(elements: Array<Node> | Node | null, markdown = "") {
         // Ignore
         case "WBR":
           break
-        // Content
-        case "SPAN":
+        // New line
+        case "BR":
+          markdown += "\\"
+          break
+        // Heading
+        case "H1":
+        case "H2":
+        case "H3":
+        case "H4":
+        case "H5":
+        case "H6":
+          markdown += `\n${"#".repeat(Number(node.tagName[1]))} ${toMarkdown(Array.from(node.childNodes))}\n\n`
+          break
+        //
+        case "PRE": {
+          if (node.querySelector("code")) {
+            const language = Array.from(node.querySelector("code")!.attributes).find((attr) => attr.name.startsWith("*code"))?.name.match(/\[(.*)\]/)?.[1] ?? ""
+            markdown += `\n\`\`\`${language}\n${unindent(node.textContent)}\n\`\`\`\n`
+            break
+          }
+        }
+        /* falls through */
+        // Block
+        case "DIV": {
+          if (node.classList.contains("flash")) {
+            const type = node.classList.contains("attention") ? "WARNING" : "NOTE"
+            markdown += prefix(`[!${type}]\n\n${toMarkdown(Array.from(node.childNodes))}`, "> ")
+            break
+          }
+        }
+        /* falls through */
+        case "BODY":
+        case "SECTION":
         case "P":
+          markdown += `${toMarkdown(Array.from(node.childNodes))}\n\n`
+          break
+        // Content
         case "UL":
+        case "SPAN":
+        case "SMALL":
+        case "ABBR":
           markdown += toMarkdown(Array.from(node.childNodes))
           break
         // Code
@@ -130,13 +194,22 @@ function toMarkdown(elements: Array<Node> | Node | null, markdown = "") {
         case "VAR":
           markdown += `\`${toMarkdown(Array.from(node.childNodes))}\``
           break
-        // Italic
+        // Italic (or swapped icons)
         case "I":
+          if (node.hasAttribute("%response.swap")) {
+            const icon = node.getAttribute("%http")?.match(/\/([-\w]+)-16\.svg$/)?.[1] ?? ""
+            const emoji = { rocket: "🍜", "project-symlink": "🍤", "ai-model": "🍣", "code-review": "🍱", apps: "🥡", "code-of-conduct": "🍙" }[icon] ?? ""
+            markdown += emoji
+            if (node.nextSibling?.nodeType === window.Node.TEXT_NODE) {
+              node.nextSibling.textContent = ` ${node.nextSibling.textContent?.trimStart()}`
+            }
+            break
+          }
           markdown += `*${toMarkdown(Array.from(node.childNodes))}*`
           break
         // Bold
-        case "STRONG":
         case "B":
+        case "STRONG":
           markdown += `**${toMarkdown(Array.from(node.childNodes))}**`
           break
         // Italic and bold
@@ -151,6 +224,10 @@ function toMarkdown(elements: Array<Node> | Node | null, markdown = "") {
         case "A":
           markdown += `[${toMarkdown(Array.from(node.childNodes))}](${node.getAttribute("href")})`
           break
+        // Image
+        case "IMG":
+          markdown += `![${node.getAttribute("alt") ?? ""}](${node.getAttribute("src")})`
+          break
         // List
         case "LI": {
           let depth = 0
@@ -163,7 +240,6 @@ function toMarkdown(elements: Array<Node> | Node | null, markdown = "") {
           markdown += `\n${"  ".repeat(Math.max(0, depth - 1))}- ${toMarkdown(Array.from(node.childNodes))}`
           break
         }
-
         // Callouts
         case "MIZU-NOTE":
         case "MIZU-WARN":
