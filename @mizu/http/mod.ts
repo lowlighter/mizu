@@ -1,7 +1,7 @@
 // Imports
-import { type Arg, type Cache, type Directive, type Nullable, type Optional, Phase } from "@mizu/render/engine"
+import { type Arg, type Cache, type Directive, type Nullable, type Optional, Phase } from "@mizu/internal/engine"
 import { escape } from "@std/html"
-export type * from "@mizu/render/engine"
+export type * from "@mizu/internal/engine"
 
 /** `%header` directive. */
 export const _header = {

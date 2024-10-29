@@ -14,5 +14,5 @@ Conditionally render an element.
 
 ## Notes
 
-> [!WARNING]
+> [!NOTE]
 > There is currently no special handling for [`<template>`](https://developer.mozilla.org/docs/Web/HTML/Element/template) elements, but future versions may introduce specific behavior for these elements.

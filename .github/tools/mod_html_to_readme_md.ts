@@ -1,5 +1,5 @@
 // Imports
-import { Window } from "@mizu/render/engine/vdom"
+import { Window } from "@mizu/internal/vdom"
 import { dirname, join } from "@std/path"
 import { expandGlob } from "@std/fs"
 import { Logger } from "@libs/logger"

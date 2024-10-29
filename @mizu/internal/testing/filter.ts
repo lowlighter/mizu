@@ -1,5 +1,5 @@
 // Imports
-import type { Arg, Directive, Nullable, Renderer } from "../mod.ts"
+import type { Arg, Directive, Nullable, Renderer } from "../engine/mod.ts"
 import { format } from "./format.ts"
 
 /**
@@ -11,8 +11,8 @@ import { format } from "./format.ts"
  *
  * ```ts
  * import { expect } from "@libs/testing"
- * import { Window } from "@mizu/render/engine/vdom"
- * import { Renderer } from "@mizu/render/engine"
+ * import { Window } from "@mizu/internal/vdom"
+ * import { Renderer } from "@mizu/internal/engine"
  * const renderer = await new Renderer(new Window()).ready
  *
  * await using a = new Window(`<a>foo</a>`)

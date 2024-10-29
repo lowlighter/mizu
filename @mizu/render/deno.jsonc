@@ -2,9 +2,6 @@
   "name": "@mizu/render",
   "version": "0.5.1",
   "exports": {
-    "./engine": "./engine/mod.ts",
-    "./engine/testing": "./engine/testing/mod.ts",
-    "./engine/vdom": "./engine/vdom/mod.ts",
     "./client": "./client/mod.ts",
     "./server": "./server/mod.ts",
     "./static": "./static/mod.ts"

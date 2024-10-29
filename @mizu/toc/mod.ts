@@ -1,6 +1,6 @@
 // Imports
-import { type Cache, type Directive, Phase, type Renderer } from "@mizu/render/engine"
-export type * from "@mizu/render/engine"
+import { type Cache, type Directive, Phase, type Renderer } from "@mizu/internal/engine"
+export type * from "@mizu/internal/engine"
 
 /** `*toc` directive. */
 export const _toc = {

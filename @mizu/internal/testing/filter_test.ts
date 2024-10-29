@@ -2,7 +2,7 @@ import { expect, test } from "@libs/testing"
 import { filter } from "./filter.ts"
 import { format } from "./format.ts"
 import { Window } from "../vdom/mod.ts"
-import { Phase, Renderer } from "../mod.ts"
+import { Phase, Renderer } from "../engine/mod.ts"
 const renderer = await new Renderer(new Window()).ready
 
 test()("`filter()` returns `Element.innerHTML` after filtering it", async () => {

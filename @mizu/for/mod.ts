@@ -1,7 +1,7 @@
 // Imports
-import { type Arg, type Cache, type Directive, type Nullable, Phase } from "@mizu/render/engine"
+import { type Arg, type Cache, type Directive, type Nullable, Phase } from "@mizu/internal/engine"
 import { Expression } from "./parse.ts"
-export type * from "@mizu/render/engine"
+export type * from "@mizu/internal/engine"
 
 /** `*for` directive. */
 export const _for = {

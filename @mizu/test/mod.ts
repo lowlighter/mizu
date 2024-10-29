@@ -1,6 +1,6 @@
 // Imports
-import { type Directive, type NonVoid, Phase } from "@mizu/render/engine"
-export type * from "@mizu/render/engine"
+import { type Directive, type NonVoid, Phase } from "@mizu/internal/engine"
+export type * from "@mizu/internal/engine"
 
 /** Delta for {@linkcode Phase} to prevent collisions when {@linkcode Directive.multiple} is not enabled. */
 const PHASE_TESTING_DELTA = -0.5

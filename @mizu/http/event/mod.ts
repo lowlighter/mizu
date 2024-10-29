@@ -1,8 +1,8 @@
 // Imports
-import { type Cache, type callback, type Directive, Phase } from "@mizu/render/engine"
+import { type Cache, type callback, type Directive, Phase } from "@mizu/internal/engine"
 import { _event } from "@mizu/event"
 import { _body, _header, _http, _response, _response_typings } from "@mizu/http"
-export type * from "@mizu/render/engine"
+export type * from "@mizu/internal/engine"
 export type { _event, typings as _event_typings } from "@mizu/event"
 
 /** `%@event` directive. */

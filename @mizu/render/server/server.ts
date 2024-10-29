@@ -1,9 +1,9 @@
 // Imports
-import type { Arg, Directive, RendererOptions, RendererRenderOptions } from "../engine/mod.ts"
-import { Context, Renderer } from "../engine/mod.ts"
-import { Window } from "../engine/vdom/mod.ts"
+import type { Arg, Directive, RendererOptions, RendererRenderOptions } from "@mizu/internal/engine"
+import { Context, Renderer } from "@mizu/internal/engine"
+import { Window } from "@mizu/internal/vdom"
 import defaults from "./defaults.ts"
-export type * from "../engine/mod.ts"
+export type * from "@mizu/internal/engine"
 
 /**
  * Server side renderer.

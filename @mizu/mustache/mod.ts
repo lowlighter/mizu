@@ -1,7 +1,7 @@
 // Imports
-import { type Cache, type Directive, Phase } from "@mizu/render/engine"
+import { type Cache, type Directive, Phase } from "@mizu/internal/engine"
 import { capture } from "./capture.ts"
-export type * from "@mizu/render/engine"
+export type * from "@mizu/internal/engine"
 
 /** `*mustache` directive. */
 export const _mustache = {

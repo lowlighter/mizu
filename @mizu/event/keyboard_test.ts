@@ -1,5 +1,5 @@
 import { expect, test, type testing } from "@libs/testing"
-import { Window } from "@mizu/render/engine/vdom"
+import { Window } from "@mizu/internal/vdom"
 import { keyboard } from "./keyboard.ts"
 const { KeyboardEvent, MouseEvent } = new Window()
 

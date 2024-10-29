@@ -25,11 +25,11 @@ Render an element for each iteration performed.
 > - A finite `number`.
 >   - The directive is applied the specified number of times.
 
-> [!WARNING]
+> [!NOTE]
 > There is currently no distinction between [`let`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/let), [`const`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/const) and
 > [`var`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/var) declarations inside `for` loops, but future versions may introduce specific behavior for these.
 
-> [!WARNING]
+> [!NOTE]
 > There is currently no special handling for [`<template>`](https://developer.mozilla.org/docs/Web/HTML/Element/template) elements, but future versions may introduce specific behavior for these elements.
 
 ## Variables

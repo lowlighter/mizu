@@ -1,1 +1,1 @@
-await import("@mizu/render/engine/testing").then(({ test }) => test(import.meta))
+await import("@mizu/internal/testing").then(({ test }) => test(import.meta))

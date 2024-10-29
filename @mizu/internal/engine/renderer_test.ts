@@ -1,7 +1,7 @@
 import type { testing } from "@libs/testing"
 import { expect, fn, test, TestingError } from "@libs/testing"
 import { retry } from "@std/async"
-import { Window } from "./vdom/mod.ts"
+import { Window } from "../vdom/mod.ts"
 import { Context, type Directive, Phase, Renderer } from "./renderer.ts"
 import _mizu from "@mizu/mizu"
 import _test from "@mizu/test"

@@ -1,7 +1,7 @@
 // Imports
-import { type Directive, Phase } from "@mizu/render/engine"
+import { type Directive, Phase } from "@mizu/internal/engine"
 import { _if } from "@mizu/if"
-export type * from "@mizu/render/engine"
+export type * from "@mizu/internal/engine"
 
 /** `*else` directive. */
 export const _else = {

@@ -1,5 +1,5 @@
 // Imports
-import type { Directive } from "../engine/mod.ts"
+import type { Directive } from "@mizu/internal/engine"
 import _mizu from "@mizu/mizu"
 import _bind from "@mizu/bind"
 import _clean from "@mizu/clean"

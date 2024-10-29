@@ -14,7 +14,7 @@ Bind an element's [`attribute`](https://developer.mozilla.org/docs/Web/HTML/Attr
 
 ## Notes
 
-> [!WARNING]
+> [!NOTE]
 > Binding directives is not officially supported and is considered undefined behaviour.
 
 > [!WARNING] [`:class`](#bind-class) and [`:style`](#bind-style) have specific handling described below.

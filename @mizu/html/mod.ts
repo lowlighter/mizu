@@ -1,6 +1,6 @@
 // Imports
-import { type Directive, Phase } from "@mizu/render/engine"
-export type * from "@mizu/render/engine"
+import { type Directive, Phase } from "@mizu/internal/engine"
+export type * from "@mizu/internal/engine"
 
 /** `*html` directive. */
 export const _html = {

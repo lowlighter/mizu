@@ -1,8 +1,8 @@
 // Imports
-import { type Cache, type Directive, Phase } from "@mizu/render/engine"
+import { type Cache, type Directive, Phase } from "@mizu/internal/engine"
 import { _for, _id } from "@mizu/for"
 import { _if } from "@mizu/if"
-export type * from "@mizu/render/engine"
+export type * from "@mizu/internal/engine"
 
 /** Typings. */
 export const typings = {

@@ -1,12 +1,12 @@
 // Imports
-import type { Arg, Arrayable, Context, Promisable, Renderer } from "../engine/mod.ts"
+import type { Arg, Arrayable, Context, Promisable, Renderer } from "@mizu/internal/engine"
 import { Logger } from "@libs/logger"
 import { expandGlob } from "@std/fs"
 import { common, dirname, join, resolve } from "@std/path"
 import { readAll, readerFromStreamReader } from "@std/io"
 import { Mizu as Server } from "../server/mod.ts"
 export { Logger }
-export type * from "../engine/mod.ts"
+export type * from "@mizu/internal/engine"
 
 /** Text encoder. */
 const encoder = new TextEncoder()
