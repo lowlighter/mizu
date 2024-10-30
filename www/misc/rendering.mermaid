@@ -1,0 +1,89 @@
+%% This mermaid state diagram describes how the mizu.js renderer processes elements
+stateDiagram-v2
+  classDef next fill: var(--accent);
+  classDef title font-weight: bold;
+  class if_setup_next, if_execute_next, if_cleanup_next next
+  class if_setup_next_iteration, if_execute_next_iteration, if_cleanup_next_iteration next
+  class Render, Setup, Execute, Cleanup title
+
+  %% Render
+  Render: Element rendering
+  ResolveSource: Resolve source node **IF** in cache
+  state if_applicable <<choice>>
+
+  %% Setup
+  Setup: Directives setup
+  SetupCall: Call <code>directive.setup()</code>
+  SetupUpdateState: Update <code>state</code> **IF** present in returned value
+  SetupUpdateExecute: Set forced eligibility **IF** present in returned value
+  state if_setup_false <<choice>>
+  state if_setup_next <<choice>>
+  state if_setup_next_iteration <<choice>>
+
+  %% Execute
+  Execute: Directives execution
+  ExecuteCall: Call <code>directive.execute()</code>
+  ExecuteNotifyMisuses: Notify any misuses **IF** applicable (e.g. conflicts, duplicates, etc.)
+  ExecuteReplaceNode: Replace current node reference **IF** present in returned value
+  ExecuteUpdateState: Update <code>state</code> **IF** present in returned value
+  ExecuteUpdateContext: Update <code>context</code> **IF** present in returned value
+  ExecuteRecurseChildren: Recursively call rendering on node children
+  state if_execute_eligible <<choice>>
+  state if_execute_final <<choice>>
+  state if_execute_next <<choice>>
+  state if_execute_next_iteration <<choice>>
+
+  %% Cleanup
+  Cleanup: Directives cleanup
+  CleanupCall: Call <code>directive.cleanup()</code>
+  state if_cleanup_next <<choice>>
+  state if_cleanup_next_iteration <<choice>>
+
+  [*] --> Render
+
+  state Render {
+    [*] --> if_applicable
+    if_applicable --> Setup: Node is an Element **OR** Node is in cache
+    if_applicable --> [*]
+
+    state Setup {
+      [*] --> SetupCall
+      if_setup_next_iteration --> SetupCall
+      SetupCall --> if_setup_false
+      if_setup_false --> SetupUpdateState
+      if_setup_false --> [*]: Returned value is <code>false</code>
+      SetupUpdateState --> SetupUpdateExecute
+      SetupUpdateExecute --> if_setup_next
+      if_setup_next --> [*]
+    }
+
+    Setup --> ResolveSource
+    ResolveSource --> Execute
+
+    state Execute {
+      [*] --> if_execute_eligible
+      if_execute_next_iteration --> if_execute_eligible
+      if_execute_eligible --> ExecuteNotifyMisuses: Node has a matching attribute **OR** eligibility has been forced to <code>true</code> during setup
+      if_execute_eligible --> [*]: Node has **NO** matching attributes **OR** eligibility has been forced to <code>false</code> during setup
+      ExecuteNotifyMisuses --> ExecuteCall
+      ExecuteCall --> ExecuteReplaceNode
+      ExecuteReplaceNode --> if_execute_final
+      if_execute_final --> ExecuteUpdateState
+      if_execute_final --> [*]: Returned value has <code>final</code> set to <code>true</code>
+      ExecuteUpdateState --> ExecuteUpdateContext
+      ExecuteUpdateContext --> ExecuteRecurseChildren
+      ExecuteRecurseChildren --> if_execute_next
+      if_execute_next --> [*]
+    }
+
+    Execute --> Cleanup
+
+    state Cleanup {
+      [*] --> CleanupCall
+      if_cleanup_next_iteration --> CleanupCall
+      CleanupCall --> if_cleanup_next
+      if_cleanup_next --> [*]
+    }
+
+    Cleanup --> [*]
+  }
