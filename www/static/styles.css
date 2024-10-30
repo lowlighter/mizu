@@ -77,12 +77,18 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   text-align: center;
   font-size: 3rem;
   font-weight: bold;
-  background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(67, 67, 147, 1) 0%, rgba(0, 212, 255, 1) 100%);
+  background: linear-gradient(180deg, var(--dark-accent), var(--light-accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  .catchphrase {
+    filter: brightness(2);
+  }
 }
 
 /* Features. */
@@ -304,19 +310,33 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   margin-top: 2rem;
 }
 
-.demo .dock img {
-  max-height: 3rem;
+.demo .dock > * {
+  border-bottom: 4px solid transparent;
+  transition: border-bottom-color var(--tr-duration);
   margin: 0 1rem;
-  filter: grayscale(1) brightness(0.5);
+  padding-bottom: 0.5rem;
+  cursor: pointer;
 }
 
-.demo .dock img:hover {
-  cursor: pointer;
-  filter: grayscale(0.2) brightness(0.8);
+.demo .dock img {
+  max-height: 3rem;
+  filter: grayscale(1) brightness(0.5);
   transition: filter var(--tr-duration);
 }
 
-.demo .dock img.active {
+.demo .dock :hover {
+  border-bottom-color: var(--muted);
+}
+
+.demo .dock :hover img {
+  filter: grayscale(0.2) brightness(0.8);
+}
+
+.demo .dock .active {
+  border-bottom-color: var(--accent);
+}
+
+.demo .dock .active img {
   filter: grayscale(0) brightness(1);
 }
 
@@ -354,7 +374,6 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 .mockup .tabs .tab {
   display: flex;
   align-items: center;
-  background: var(---bg-default);
   transition: color var(--tr-duration);
   cursor: pointer;
 }
@@ -395,6 +414,11 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   padding: 0.5rem 1rem;
 }
 
+.mockup.runtime .tabs svg {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .mockup.runtime .app-view {
   display: grid;
   grid-template-rows: 0.7fr 0.3fr;
@@ -404,17 +428,22 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 .mockup.runtime .runtime-view {
   background-color: var(--bg-muted);
   overflow: auto;
-  border-bottom: 1px solid var(--light-muted);
   position: relative;
 }
 
-.mockup.runtime .runtime-view .lines {
+.mockup.runtime .runtime-view pre {
+  height: calc(100% - 2rem);
+}
+
+.mockup.runtime .runtime-view .lines,
+.mockup.runtime .runtime-terminal .prompt {
   position: absolute;
   top: 0;
   left: 0;
   padding: 1rem 0.5rem;
   text-align: right;
   color: var(--muted);
+  pointer-events: none;
 }
 
 .mockup.runtime .runtime-view pre {
@@ -424,13 +453,54 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   margin: 0;
 }
 
+.mockup.runtime .runtime-view pre .hljs-meta:first-child {
+  color: var(--comment);
+}
+
 .mockup.runtime .runtime-terminal {
-  font-family: var(--ft-mono);
   font-size: 0.85rem;
   background: black;
-  color: var(--muted);
-  padding: 0.5rem;
-  filter: brightness(0.85);
+  display: flex;
+  flex-direction: column;
+}
+
+.mockup.runtime .runtime-terminal .tabs {
+  background: var(--light-default);
+  border-top: 1px solid var(--light-muted);
+  border-bottom: 1px solid var(--light-muted);
+}
+
+.mockup.runtime .runtime-terminal .tabs .tab:first-child {
+  color: var(--default);
+  pointer-events: no-events;
+}
+
+.mockup.runtime .runtime-terminal .tabs .tab:first-child span {
+  border-bottom: 2px solid var(--accent);
+}
+
+.mockup.runtime .runtime-terminal .terminal {
+  overflow: auto;
+  position: relative;
+  flex-grow: 1;
+}
+
+.mockup.runtime .runtime-terminal .prompt {
+  padding: 1rem 0.5rem;
+}
+
+.mockup.runtime .runtime-terminal pre {
+  border-radius: 0;
+  padding-left: 2rem;
+  height: calc(100% - 2rem);
+  background: transparent;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .mockup.runtime .runtime-terminal pre {
+    padding-left: 7rem;
+  }
 }
 
 /* Browser mockup. */
@@ -559,6 +629,8 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   background-color: transparent;
   margin: 0;
   border-radius: 0;
+  padding-bottom: 0;
+  height: calc(100% - 1rem);
 }
 
 .mockup.browser .browser-inspector-content .wrapper {

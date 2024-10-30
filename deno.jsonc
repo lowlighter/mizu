@@ -34,7 +34,11 @@
     // Build coverage report
     "build:coverage": "deno task test:only --filter='/DENO/' --clean --coverage --fail-fast --reporter=dot && deno coverage --html && mv coverage/html .pages/coverage && deno run --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage",
     // Update repository issue templates
-    "repo:issue-templates": " deno run --allow-read --allow-write=.github/ISSUE_TEMPLATE --allow-run=deno .github/tools/fill_issue_templates.ts"
+    "repo:fill-scopes": " deno run --allow-read --allow-write=.github/ISSUE_TEMPLATE --allow-run=deno .github/tools/fill_github_scopes.ts",
+    // Resolve browser path for astral
+    "resolve:browser": "ASTRAL_QUIET_INSTALL=1 deno run --allow-env=DEBUG,ASTRAL_QUIET_INSTALL --allow-read --allow-net=googlechromelabs.github.io,storage.googleapis.com --allow-write=.cache .github/tools/generate_mermaid.ts --bin-path",
+    // Build mermaid diagrams
+    "build:mermaid": "deno run --allow-env=DEBUG --allow-read --allow-net=127.0.0.1,localhost,cdn.jsdelivr.net --allow-write=www/static/rendering.svg --allow-run=$(deno task resolve:browser) .github/tools/generate_mermaid.ts www/misc/rendering.mermaid www/static/rendering.svg"
   },
   "imports": {
     // Aliases
@@ -101,7 +105,8 @@
     "exclude": [
       "**/node_modules",
       "**/coverage",
-      "**/.pages"
+      "**/.pages",
+      "**/.cache"
     ]
   },
   "lint": {
@@ -125,7 +130,8 @@
     "exclude": [
       "**/node_modules",
       "**/coverage",
-      "**/.pages"
+      "**/.pages",
+      "**/.cache"
     ]
   },
   "publish": {

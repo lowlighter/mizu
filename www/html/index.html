@@ -19,7 +19,7 @@
     <template *for="['directive', 'example', 'import', 'modifier', 'note', 'restriction', 'tbd', 'variable', 'warn']" *custom-element="`mizu-${$value}`" %http="`/components/mizu-${$value}.html`" %response.html></template>
     <main>
       <section class="centered">
-        <img *if="page === 'index'" class="logo" src="/logo.png" alt="" />
+        <img *if="page === 'index'" class="logo" src="/logo.png" alt="mizu.js" />
       </section>
       <section *if="page === 'index'" *for="['about', 'features', 'demo', 'faq', 'usage', 'concepts', 'directives', 'api', 'tbd']" %http="`/html/mizu/${$value}.html`" %response.html></section>
       <div *else %http="`/html/${page}.html`" %response.html></div>

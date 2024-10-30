@@ -1,7 +1,6 @@
 #!/usr/bin/env -S deno serve --allow-read --allow-env
 // Server-Side Rendering (SSR) with Mizu
-// deno-lint-ignore no-external-import
-import Mizu from "jsr:@mizu/render/server"
+import Mizu from "@mizu/render/server"
 
 export default {
   async fetch() {

@@ -4,7 +4,7 @@ import type { Directive as _Directive } from "./directive.ts"
 /**
  * Enum representing all possible value that a {@linkcode _Directive | Directive.phase} can have.
  *
- * For more information, see the {@link https://mizu.sh/#concept-phase | mizu.sh documentation}.
+ * For more information, see the {@link https://mizu.sh/#concept-rendering-phase | mizu.sh documentation}.
  */
 export enum Phase {
   /** Placeholder value (intended for internal use only). */

@@ -147,24 +147,41 @@
     </section>
   </section>
   <section>
-    <h2 id="concept-phase"><a href="#concept-phase">Phase</a></h2>
+    <h2 id="concept-rendering"><a href="#concept-rendering">Rendering</a></h2>
     <p>
-      Each <a href="#concept-directive">directive</a> is tied to a specific phase, dictating the order of processing. The sequence in which directives appear on an element is irrelevant unless they share the same phase.
+      Rendering is the process of evaluating and applying <em>mizu.js</em>
+      <a href="#concept-directive">directives</a>. This occurs recursively on a subtree and modifies the current DOM.
     </p>
-    <p>
-      Directives within the same phase cannot coexist on the same element unless explicitly allowed to be specified <span class="bd-muted bg-muted muted px-.5" style="border-radius: 1rem">Multiple</span> times.
-    </p>
-    <mizu-tbd>
-      Using conflicting directives on the same element results is considered undefined behavior.
-    </mizu-tbd>
-    <details class="mt-1">
-      <summary class="muted">Phase list</summary>
-      <ul %http="/about/phases" %response.json="phases = $content">
-        <li *for="phases">
-          <code *text="`${$value}`.padStart(2, '0')"></code>
-          <code class="hljs-attr" *text="$key"></code>
-        </li>
-      </ul>
+    <details>
+      <summary class="muted">Rendering process schema explanation</summary>
+      <div class="centered">
+        <i %http="/rendering.svg" %response.swap></i>
+      </div>
     </details>
+    <mizu-tbd>
+      Dynamically adding and removing <em>mizu.js</em> directives is not officially supported. While it may work currently due to the rendering engine's lack of optimization, future versions may cache directives to enhance performance. This change would prevent dynamically added
+      directives from being processed.
+    </mizu-tbd>
+    <section>
+      <h3 id="concept-rendering-phase"><a href="#concept-rendering-phase">Phase</a></h3>
+      <p>
+        Each <a href="#concept-directive">directive</a> is tied to a specific phase, dictating the order of processing. The sequence in which directives appear on an element is irrelevant unless they share the same phase.
+      </p>
+      <p>
+        Directives within the same phase cannot coexist on the same element unless explicitly allowed to be specified <span class="bd-muted bg-muted muted px-.5" style="border-radius: 1rem">Multiple</span> times.
+      </p>
+      <mizu-tbd>
+        Using conflicting directives on the same element results is considered undefined behavior.
+      </mizu-tbd>
+      <details class="mt-1">
+        <summary class="muted">Phase list</summary>
+        <ul %http="/about/phases" %response.json="phases = $content">
+          <li *for="phases">
+            <code *text="`${$value}`.padStart(2, '0')"></code>
+            <code class="hljs-attr" *text="$key"></code>
+          </li>
+        </ul>
+      </details>
+    </section>
   </section>
 </section>

@@ -6,6 +6,7 @@ import { Logger } from "@libs/logger"
 import { command } from "@libs/run/command"
 const log = new Logger()
 
+/*** Fill GitHub files with current existing scopes. */
 if (import.meta.main) {
   const scopes = [...await Array.fromAsync(Deno.readDir("@mizu"))].map(({ name }) => name)
   scopes.push("www", "repo")

@@ -6,40 +6,6 @@
 
 Full documentation is available at [mizu.sh](https://mizu.sh).
 
-<!-- @mizu/www/html/mizu/features.html -->
-
-# Features
-
-## 🍜 Plug-and-play
-
-Simply include the library and start building amazing things instantly with vanilla JavaScript and HTML.
-
-## 🍤 Cross-platform
-
-Compatible across a wide range of JavaScript and TypeScript runtimes, including all major browsers.
-
-## 🍣 Any-side
-
-Render your content wherever you need it and however you want it with user-friendly APIs.
-
-## 🍱 Hackable
-
-Cherry-pick features and craft your own setup easily with developer-friendly APIs and our custom builder.
-
-## 🥡 Community-driven
-
-Build, share and reuse custom elements and directives to supercharge your development.
-
-Want to effortlessly theme your page? Check out matcha.css!
-
-## 🍙 Open-core
-
-Licensed under the AGPLv3 License, source code fully available on github.com.
-
-Use MIT License terms for non-commercial projects or with an active $1+ monthly sponsorship.
-
-<!-- @mizu/www/html/mizu/features.html -->
-
 <!-- @mizu/www/html/mizu/usage.html -->
 
 # Usage
@@ -85,7 +51,7 @@ This setup requires you to import and start _**mizu.js**_ manually, allowing cus
 
 ## Server-side
 
-To set up _**mizu.js**_ in a server environment, install it locally. _**mizu.js**_ packages are hosted on ![](https://jsr.io/@mizu).
+To set up _**mizu.js**_ in a server environment, install it locally. _**mizu.js**_ packages are hosted on ![jsr.io/@mizu](https://jsr.io/@mizu).
 
 > [!NOTE]
 >

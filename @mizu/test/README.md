@@ -21,7 +21,7 @@ Special directive for testing purposes.
 
 ### `[string]`
 
-Specify any existing [Phase](#concept-phase) name (e.g., `~test [testing]`, defaults to `Phase.TESTING`). The directive will execute during the specified phase before any other directive in that phase, allowing you to simulate specific scenarios.
+Specify any existing [Phase](#concept-rendering-phase) name (e.g., `~test [testing]`, defaults to `Phase.TESTING`). The directive will execute during the specified phase before any other directive in that phase, allowing you to simulate specific scenarios.
 
 ### `.text[boolean]`
 

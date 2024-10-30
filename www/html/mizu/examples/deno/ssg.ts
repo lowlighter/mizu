@@ -1,7 +1,6 @@
 #!/usr/bin/env -S deno run --allow-read --allow-env --allow-net --allow-write=/tmp/output
 // Static Site Generation (SSG) with Mizu
-// deno-lint-ignore no-external-import
-import Mizu from "jsr:@mizu/render/static"
+import Mizu from "@mizu/render/static"
 
 await Mizu.generate([
   // Copy content from strings

@@ -10,6 +10,7 @@ import server from "@www/serve.ts"
 const window = new Window()
 const log = new Logger()
 
+/*** Generate documentation for modules. */
 if (import.meta.main) {
   // Directives
   for await (const { path: source } of expandGlob("**/mod.html", { root: Deno.args[0], includeDirs: false })) {

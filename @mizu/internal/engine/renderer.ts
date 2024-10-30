@@ -338,32 +338,7 @@ export class Renderer {
   /**
    * Used by {@linkcode Renderer.render()} to recursively render an {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} and its subtree.
    *
-   * Rendering process is defined as follows:
-   * - 1. Ensure `element` is an {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} node (or a {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment} node created by {@linkcode Renderer.comment()}).
-   *   - 1.1 If not, end the process.
-   * - R1. Start watching context if `reactive` is enabled.
-   * - 2. For each {@linkcode Renderer.directives}:
-   *   - 2.1 Call {@linkcode Directive.setup()}.
-   *     - 2.1.1 If `false` is returned, end the process.
-   *     - 2.1.2 If `state` is returned, update accordingly.
-   *     - 2.1.3 If `execute` is returned, store directive eligibility.
-   * - 3. Retrieve source {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} node from {@linkcode Renderer.cache()} (if applicable).
-   *   - 3.1 This occurs when `element` is a {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment} node.
-   * - 4. For each {@linkcode Renderer.directives}:
-   *   - 4.1 Check if source node is elligible and has at least one matching {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr}.
-   *     - 4.1.1 If not, continue to the next directive.
-   *   - 4.2 Notify any misuses:
-   *     - 4.2.1 If current {@linkcode Directive.phase} has already been processed (conflicts).
-   *     - 4.2.2 If current {@linkcode Directive.multiple} is not set but more than one matching {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} is found (duplicates).
-   *   - 4.3 Call {@linkcode Directive.execute()} with `element`
-   *     - 4.3.1 If `element` is returned, update accordingly.
-   *     - 4.3.2 If `final: true` is returned, end the process (it occurs after `element` update to ensure that {@linkcode Directive.cleanup()} is called with correct target).
-   *     - 4.3.3 If `context` or `state` is returned, update accordingly.
-   * - 5. Recurse on {@linkcode https://developer.mozilla.org/docs/Web/API/Node/childNodes | Element.childNodes}.
-   *   - R*. Disable reactivity during recursion if `reactive` is enabled so that watched contexts are created with correct elements.
-   * - 6. For each {@linkcode Renderer.directives}:
-   *   - 6.1 Call {@linkcode Directive.cleanup()}.
-   * - R2. Stop watching context if `reactive` is enabled, and enable reactivity.
+   * For more information, see the {@link https://mizu.sh/#concept-rendering | mizu.sh documentation}.
    */
   async #render(element: HTMLElement | Comment, { context, state, reactive, root }: { context: Context; state: State; reactive: boolean; root: InitialContextState }) {
     // 1. Ignore non-element nodes unless they were processed before and put into cache
@@ -386,7 +361,7 @@ export class Renderer {
         if (changes?.state) {
           Object.assign(state, changes.state)
         }
-        if ((changes?.execute === false) || (changes?.execute === true)) {
+        if (typeof changes?.execute === "boolean") {
           forced.set(directive, changes.execute)
         }
       }

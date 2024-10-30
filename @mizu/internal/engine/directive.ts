@@ -57,7 +57,7 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * >
    * > {@linkcode Phase.TESTING} is intended for testing purposes only.
    *
-   * For more information, see the {@link https://mizu.sh/#concept-phase | mizu.sh documentation}.
+   * For more information, see the {@link https://mizu.sh/#concept-renderering-phase | mizu.sh documentation}.
    *
    * ```ts
    * const foo = {

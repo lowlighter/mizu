@@ -2,7 +2,7 @@
   <div class="mockups">
     <div class="mockup runtime">
       <div class="tabs">
-        <img *for="['deno', 'node', 'bun']" class="app-icon" :src="`https://lecoq.io/cdn/logos/${$value}.svg`" :data-demo-for-runtime="$value" />
+        <img *for="['deno', 'node', 'bun']" class="app-icon" :src="`https://lecoq.io/cdn/logos/${$value}.svg`" :data-demo-for-runtime="$value" alt="" />
         <div class="tab fake"><small>File</small></div>
         <div class="tab fake hide-small"><small>Edit</small></div>
         <div class="tab fake hide-small"><small>View</small></div>
@@ -20,32 +20,38 @@
       </div>
       <div class="tabs">
         <i class="fake" %http="https://lecoq.io/cdn/octicons/three-bars-24.svg" %response.swap></i>
-        <div *for="demo.deno" class="tab" :data-demo-tab="`deno-${$value}`" *mustache>{{ $value }}.ts</div>
+        <div *for="demo.deno" class="tab" :data-demo-tab="`deno-${$value}`" data-demo-for-runtime="deno" *mustache>{{ $value }}.ts</div>
       </div>
       <div class="app-view">
         <div class="runtime-view">
-          <pre *for="demo.deno" :data-demo-for-tab="`deno-${$value}`" class="usage-snippet"><code *code[ts] %http="`/html/mizu/examples/deno/${$value}.ts`" %response.text="this.textContent = $content.replace(/^\/\/ deno-lint-ignore.*\n/gm, '')"></code></pre>
-          <pre *for="demo.deno" :data-demo-for-tab="`deno-${$value}`" class="lines"><code %http="`/html/mizu/examples/deno/${$value}.ts`" %response.text="this.textContent = $content.split(`\n`).slice(1).map((_, i) => i).join(&quot;\n&quot;)"></code></pre>
+          <pre data-demo-for-runtime="node" class="usage-snippet"><code *code[ts]>// Coming soon!</code></pre>
+          <pre data-demo-for-runtime="bun" class="usage-snippet"><code *code[ts]>// Coming soon!</code></pre>
+          <pre *for="demo.deno" :data-demo-for-tab="`deno-${$value}`" data-demo-for-runtime="deno" class="usage-snippet"><code *code[ts] %http="`/html/mizu/examples/deno/${$value}.ts`" %response.text></code></pre>
+          <pre
+            *for="demo.deno"
+            :data-demo-for-tab="`deno-${$value}`"
+            data-demo-for-runtime="deno"
+            class="lines"
+          ><code %http="`/html/mizu/examples/deno/${$value}.ts`" %response.text="this.textContent = $content.split(`\n`).slice(1).map((_, i) => i+1).join(&quot;\n&quot;)"></code></pre>
         </div>
         <div class="runtime-terminal">
-          <div *for="demo.deno" :data-demo-for-tab="`deno-${$value}`" *mustache><span class="accent">/workspaces/mizu</span> $ deno {{ {ssr:'serve', ssg:'run'}[$value] }} examples/{{ $value }}.ts</div>
-          <div data-demo-for-tab="deno-ssr">
-            <span class="success">deno serve</span>: Listening on <span class="attention">http://0.0.0.0:8000/</span>
+          <div class="tabs">
+            <div class="tab"><span>Terminal</span></div>
+            <div class="tab fake">Output</div>
+            <div class="tab fake">Ports</div>
           </div>
-          <div data-demo-for-tab="deno-ssg">
-            <span class="fg-accent">INFO</span> output:<span class="success">"/tmp/output"</span>
-            <span class="success">"generating..."</span>
-          </div>
-          <div data-demo-for-tab="deno-ssg">
-            <span class="fg-success">OK&nbsp;&nbsp;</span>
-            <span class="success">"done!"</span>
+          <div class="terminal">
+            <pre class="prompt"><code><span class="hide-small">dev@mizu:~</span> $</code></pre>
+            <pre data-demo-for-runtime="deno" class="usage-snippet">deno add jsr:@mizu/render</pre>
+            <pre data-demo-for-runtime="node" class="usage-snippet">npx jsr add @mizu/render</pre>
+            <pre data-demo-for-runtime="bun" class="usage-snippet">bunx jsr add @mizu/render</pre>
           </div>
         </div>
       </div>
     </div>
     <div class="mockup browser" data-demo-for-runtime="browsers">
       <div class="tabs">
-        <img class="app-icon" src="https://lecoq.io/cdn/logos/browsers.svg" />
+        <img class="app-icon" src="https://lecoq.io/cdn/logos/browsers.svg" alt="" />
         <div *for="demo.browsers" class="tab" :data-demo-tab="`browsers-${$value}`" *mustache>
           {{ {iife:"IIFE", esm:"ESM"}[$value] }}
           <div class="before"></div>
@@ -95,7 +101,9 @@
     </div>
   </div>
   <div class="dock">
-    <img *for="['browsers', 'deno']" :data-demo-runtime="$value" :src="`https://lecoq.io/cdn/logos/${$value}.svg`" />
+    <div *for="['browsers', 'deno', 'node', 'bun']" :data-demo-runtime="$value">
+      <img :src="`https://lecoq.io/cdn/logos/${$value}.svg`" :alt="$value" />
+    </div>
   </div>
 </div>
 <script>
@@ -109,14 +117,14 @@
           }
           data[key] = element.getAttribute(`data-demo-${key}`)
           document.querySelectorAll(`[data-demo-for-${key}]`).forEach((element) => {
-            if (element.getAttribute(`data-demo-for-${key}`) === data[key]) {
+            if (Object.keys(data).every((key) => (element.getAttribute(`data-demo-for-${key}`) === data[key]) || (!element.hasAttribute(`data-demo-for-${key}`)))) {
               element.style.removeProperty("display")
             } else {
               element.style.setProperty("display", "none", "important")
             }
           })
-          document.querySelectorAll(".dock img").forEach((element) => element.classList.toggle("active", element.getAttribute("data-demo-runtime") === data.runtime))
-          document.querySelectorAll(".tab").forEach((element) => element.classList.toggle("active", element.getAttribute("data-demo-tab") === data.tab))
+          document.querySelectorAll(".dock > *").forEach((element) => element.classList.toggle("active", element.getAttribute("data-demo-runtime") === data.runtime))
+          document.querySelectorAll(".tab[data-demo-tab]").forEach((element) => element.classList.toggle("active", element.getAttribute("data-demo-tab") === data.tab))
         })
       })
     }
