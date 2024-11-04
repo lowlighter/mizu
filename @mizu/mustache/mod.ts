@@ -7,6 +7,7 @@ export type * from "@mizu/internal/engine"
 export const _mustache = {
   name: "*mustache",
   phase: Phase.CONTENT,
+  multiple: true,
   init(renderer) {
     renderer.cache<Cache<typeof _mustache>>(this.name, new WeakMap())
   },
