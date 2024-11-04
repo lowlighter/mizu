@@ -1,6 +1,7 @@
 // Imports
 import Mizu from "@mizu/render/static"
-import { default as serve, html, js } from "./serve.ts"
+import { html, js } from "./tools.ts"
+import serve from "./serve.ts"
 import { fromFileUrl, join } from "@std/path"
 
 await using _ = Deno.serve({ port: Number(new URL(globalThis.location.href).port) }, serve.fetch)

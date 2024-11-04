@@ -33,7 +33,7 @@ export class Server {
   /**
    * Default rendering context.
    *
-   * All properties assigned to this object will be available during rendering.
+   * All properties assigned to this object are accessible during rendering.
    */
   // deno-lint-ignore no-explicit-any
   get context(): Record<PropertyKey, any> {
@@ -44,7 +44,7 @@ export class Server {
   }
 
   /**
-   * Parse a HTML string and render all subtrees marked with a `*mizu` attribute.
+   * Parse an HTML string and render all subtrees marked with the `*mizu` attribute.
    *
    * ```ts
    * const mizu = new Server({ context: { foo: "bar" } })

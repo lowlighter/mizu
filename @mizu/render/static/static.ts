@@ -5,6 +5,8 @@ import { expandGlob } from "@std/fs"
 import { common, dirname, join, resolve } from "@std/path"
 import { readAll, readerFromStreamReader } from "@std/io"
 import { Mizu as Server } from "../server/mod.ts"
+import { mkdir, readFile as read, rmdir, stat, writeFile as write } from "@node/fs/promises"
+import { Buffer } from "@node/buffer"
 export { Logger }
 export type * from "@mizu/internal/engine"
 
@@ -32,11 +34,12 @@ export class Static extends Server {
     options.logger ??= new Logger()
     options.output ??= "./output"
     options.clean ??= true
-    options.stat ??= Deno.lstat
-    options.write ??= Deno.writeFile
-    options.read ??= Deno.readFile
-    options.mkdir ??= Deno.mkdir
-    options.rmdir ??= Deno.remove
+    options.fs ??= {}
+    options.fs.stat ??= stat
+    options.fs.mkdir ??= mkdir
+    options.fs.rmdir ??= rmdir
+    options.fs.read ??= read
+    options.fs.write ??= write
     this.options = options as Required<GenerateOptions>
   }
 
@@ -44,13 +47,19 @@ export class Static extends Server {
   readonly options: Required<GenerateOptions>
 
   /**
-   * Generate static files.
+   * Generate static files from various sources.
    *
-   * Set `output` option to specify the output directory.
-   * Set `clean` option to clean the output directory before generation.
+   * Options:
+   * - `output`: Specify the path to the output directory.
+   * - `clean`: Empty the `output` directory before generating files.
    *
-   * Content can be retrieved from local files, callback return or URLs.
-   * Rendering using {@linkcode Static.render()} can be enabled by setting the `render` option.
+   * Supported sources:
+   * - {@linkcode StringSource}: Generate content from raw strings.
+   * - {@linkcode GlobSource}: Generate content from local files matching the provided glob patterns.
+   * - {@linkcode CallbackSource}: Generate content from callback returns.
+   * - {@linkcode URLSource}: Generate content from fetched URLs.
+   *
+   * Each source can be templated using mizu rendering by passing a `render` option.
    *
    * ```ts
    * const mizu = new Static({ logger: new Logger({ level: "disabled" }), directives: ["@mizu/test"], output: "/fake/output" })
@@ -70,41 +79,42 @@ export class Static extends Server {
    *     [ new URL(`data:text/html,<p ~test.text="foo"></p>`), "url_render.html", { render: { context: { foo: "bar" } } } ],
    *   ],
    *   // No-op: do not actually write files and directories
-   *   { mkdir: () => null as any, write: () => null as any },
+   *   { fs: { mkdir: () => null as any, write: () => null as any } },
    * )
    * ```
    */
   async generate(
-    contents: Array<StringSource | GlobSource | CallbackSource | URLSource>,
-    { logger: log = this.options.logger, output = this.options.output, clean = this.options.clean, stat = this.options.stat, write = this.options.write, read = this.options.read, mkdir = this.options.mkdir, rmdir = this.options.rmdir } = {} as GenerateOptions,
+    sources: Array<StringSource | GlobSource | CallbackSource | URLSource>,
+    { logger: log = this.options.logger, output = this.options.output, clean = this.options.clean, fs: _fs } = {} as GenerateOptions,
   ): Promise<void> {
+    const fs = { ...this.options.fs, ..._fs } as FileSystemOptions
     // Prepare output directory
     output = resolve(output)
     log.with({ output }).info("generating...")
-    if ((await stat(output).then(() => true).catch(() => false)) && clean) {
+    if ((await Promise.resolve(fs.stat(output)).then(() => true).catch(() => false)) && clean) {
       log.with({ path: output }).debug("cleaning...")
-      await rmdir(output, { recursive: true })
+      await fs.rmdir(output, { recursive: true })
       log.with({ path: output }).ok("cleaned")
     }
-    await mkdir(output, { recursive: true })
+    await fs.mkdir(output, { recursive: true })
     log.with({ path: output }).ok()
 
     // Generate files
-    for (const [source, destination, options = {}] of contents) {
+    for (const [source, destination, options = {}] of sources) {
       const path = join(output, destination)
       log.with({ path }).debug("writing...")
       // Copy content from URL
       if (source instanceof URL) {
         const bytes = await fetch(source).then((response) => response.bytes())
-        await write(path, await this.#render(bytes, options.render))
+        await fs.write(path, await this.#render(Buffer.from(bytes), options.render))
         log.with({ path }).ok()
       } // Copy content from callback
       else if (typeof source === "function") {
         let bytes = await source()
         if (typeof bytes === "string") {
-          bytes = encoder.encode(bytes)
+          bytes = Buffer.from(encoder.encode(bytes))
         }
-        await write(path, await this.#render(bytes, options.render))
+        await fs.write(path, await this.#render(bytes, options.render))
         log.with({ path }).ok()
       } // Copy content from local files
       else if ("directory" in options) {
@@ -113,14 +123,14 @@ export class Static extends Server {
         for (const source of sources) {
           for await (const { path: from } of expandGlob(source, { root, includeDirs: false })) {
             const path = join(output, from.replace(common([root, from]), ""))
-            await mkdir(dirname(path), { recursive: true })
-            await write(path, await this.#render(await read(from), options.render))
+            await fs.mkdir(dirname(path), { recursive: true })
+            await fs.write(path, await this.#render(await fs.read(from), options.render))
             log.with({ path }).ok()
           }
         }
       } // Copy content from string
       else {
-        await write(path, await this.#render(encoder.encode(source as string), options.render))
+        await fs.write(path, await this.#render(Buffer.from(encoder.encode(source as string)), options.render))
         log.with({ path }).ok()
       }
     }
@@ -128,13 +138,13 @@ export class Static extends Server {
   }
 
   /** Used by {@linkcode Static#generate()} to render content. */
-  async #render(content: Arg<NonNullable<GenerateOptions["write"]>, 1>, render?: Arg<Static["render"], 1>): Promise<Arg<NonNullable<GenerateOptions["write"]>, 1>> {
+  async #render(content: Arg<NonNullable<FileSystemOptions["write"]>, 1>, render?: Arg<Static["render"], 1>): Promise<Arg<NonNullable<FileSystemOptions["write"]>, 1>> {
     if (render) {
       if (content instanceof ReadableStream) {
-        content = await readAll(readerFromStreamReader(content.getReader()))
+        content = Buffer.from(await readAll(readerFromStreamReader(content.getReader())))
       }
       const rendered = await this.render(decoder.decode(content), render)
-      content = encoder.encode(rendered)
+      content = Buffer.from(encoder.encode(rendered))
     }
     return content
   }
@@ -151,16 +161,22 @@ export type GenerateOptions = {
   output?: string
   /** Clean output directory before generation. */
   clean?: boolean
+  /** File system options. */
+  fs?: Partial<FileSystemOptions>
+}
+
+/** File system options. */
+export type FileSystemOptions = {
   /** Stat callback. */
-  stat?: (path: string) => Promise<unknown>
+  stat: (path: string) => Promise<unknown>
   /** Read callback. */
-  read?: (path: string) => Promise<Uint8Array | ReadableStream<Uint8Array>>
+  read: (path: string) => Promise<Buffer>
   /** Write callback. */
-  write?: (path: string, data: Awaited<ReturnType<NonNullable<GenerateOptions["read"]>>>) => Promisable<void>
+  write: (path: string, data: Buffer) => Promisable<void>
   /** Make directory callback. */
-  mkdir?: (path: string, options?: { recursive?: boolean }) => Promisable<void>
+  mkdir: (path: string, options?: { recursive?: boolean }) => Promisable<unknown>
   /** Remove directory callback. */
-  rmdir?: (path: string, options?: { recursive?: boolean }) => Promisable<void>
+  rmdir: (path: string, options?: { recursive?: boolean }) => Promisable<unknown>
 }
 
 /** String source. */
@@ -198,7 +214,7 @@ export type GlobSource = [
 /** Callback source. */
 export type CallbackSource = [
   /** A callback that returns file content. */
-  () => Promisable<Arg<NonNullable<GenerateOptions["write"]>, 1> | string>,
+  () => Promisable<Arg<NonNullable<FileSystemOptions["write"]>, 1> | string>,
   /** Destination path (including filename). */
   string,
   /** Options. */

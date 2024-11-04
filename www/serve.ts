@@ -1,70 +1,13 @@
 // Imports
-import type { Arg, callback } from "@libs/typing"
+import type { callback } from "@libs/typing"
 import { dirname, fromFileUrl, join } from "@std/path"
-import { pick } from "@std/collections"
 import { route } from "@std/http/route"
 import { accepts, serveDir } from "@std/http"
 import { toSnakeCase } from "@std/text"
-import * as JSONC from "@std/jsonc"
-import { Logger } from "@libs/logger"
-import { bundle } from "@libs/bundle/ts"
 import { Phase } from "@mizu/internal/engine"
 import { Mizu as RenderClient } from "@mizu/render/client"
 import { Mizu as RenderServer } from "@mizu/render/server"
-import Mizu from "@mizu/render/server"
-const log = new Logger()
-
-/** Base project url. */
-const base = import.meta.resolve("../")
-
-/** Root project path. */
-const root = fromFileUrl(base)
-
-/** Project metadata. */
-const meta = {
-  ...pick(await config("@mizu/mizu"), ["name", "version"]),
-  ...pick(await config("."), ["homepage", "license", "author"]),
-}
-log.with({ root, base }).debug()
-log.with(meta).info()
-
-/** License banner. */
-const banner = [
-  `${meta.name} — ${meta.version}`,
-  `Copyright © ${new Date().getFullYear()} ${meta.author}`,
-  `${meta.license} license — ${meta.homepage}`,
-].join("\n")
-
-/** Parse `deno.jsonc` of specified package. */
-function config(name: string, options: { parse: false }): URL
-function config(name: string, options?: { parse: true }): Promise<Record<PropertyKey, unknown>>
-function config(name: string, { parse = true } = {} as { parse?: boolean }) {
-  const url = new URL(`./${name}/deno.jsonc`, base)
-  if (parse) {
-    return fetch(url.href).then((response) => response.text()).then((text) => JSONC.parse(text) as Record<PropertyKey, unknown>)
-  }
-  return url
-}
-
-/** Generate JS. */
-export function js(exported: string, options = {} as Pick<NonNullable<Arg<typeof bundle, 1>>, "format"> & { raw?: Record<PropertyKey, unknown> }) {
-  const name = exported.match(/^(?<name>@[a-z0-9][-a-z0-9]*[a-z0-9]\/[a-z0-9][-a-z0-9]*[a-z0-9]).*$/)?.groups?.name ?? exported
-  const url = import.meta.resolve(exported)
-  log.with({ name, url }).debug("bundling javascript")
-  if (options?.format === "iife") {
-    options.raw ??= {}
-    options.raw.target = "es2020"
-    options.raw.define = { "import.meta.main": "true" }
-  }
-  return bundle(new URL(url), { ...options, banner })
-}
-
-/** Render HTML. */
-export async function html(page: string) {
-  Mizu.context = { page }
-  log.with({ context: Mizu.context }).debug("rendering html")
-  return Mizu.render(await fetch(import.meta.resolve("./html/index.html")).then((response) => response.text()))
-}
+import { docs, html, js } from "./tools.ts"
 
 /** Serve files */
 export default {
@@ -96,6 +39,10 @@ export default {
     {
       pattern: new URLPattern({ pathname: "/client.mjs" }),
       handler: async () => new Response(await js("@mizu/render/client", { format: "esm" }), { headers: { "Content-Type": "application/javascript; charset=utf-8", "Access-Control-Allow-Origin": "*" } }),
+    },
+    {
+      pattern: new URLPattern({ pathname: "/about/api/render/:export" }),
+      handler: async (_, __, params) => new Response(JSON.stringify(await docs(`@mizu/render/${params?.pathname.groups.export}`)), { headers: { "content-type": "application/json; charset=utf-8" } }),
     },
     {
       pattern: new URLPattern({ pathname: "/about/phases" }),

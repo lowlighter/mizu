@@ -68,7 +68,7 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   color: var(--muted);
 }
 
-.toc-hidden {
+.toc .toc-hidden {
   display: none;
 }
 
@@ -161,6 +161,29 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   height: 1em;
   flex-shrink: 0;
   margin-top: 0.3rem;
+}
+
+/* Mizu api. */
+.api {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.api h4[id] {
+  font-size: 1.5rem;
+}
+
+.api .toc-hidden, .api .toc-hidden [class*="hljs-"] {
+  color: var(--muted) !important;
+  font-weight: normal !important;
+}
+
+.api .toc-hidden {
+  font-size: 1rem;
+}
+
+.api .hljs-title.class_ {
+  color: var(--bullet);
 }
 
 /* Mizu directives. */

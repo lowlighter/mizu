@@ -44,6 +44,9 @@
     // Aliases
     "@www/": "./www/",
     "@tools/": "./.github/tools/",
+    // Node dependencies
+    "@node/fs/promises": "node:fs/promises",
+    "@node/buffer": "node:buffer",
     // Standard library dependencies
     "@std/assert": "jsr:@std/assert@1",
     "@std/async": "jsr:@std/async@1",

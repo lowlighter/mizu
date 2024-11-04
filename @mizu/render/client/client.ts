@@ -31,14 +31,14 @@ export class Client {
   /**
    * Rendering context.
    *
-   * All properties assigned to this object will be available during rendering.
+   * All properties assigned to this object are available during rendering.
    *
-   * Changes on this object are reactive and will trigger a re-render on related elements.
-   * This is done by using {@linkcode Context} which use {@linkcode https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Proxy | Proxy} handlers under the hood.
+   * Changes to this object are reactive and will trigger a re-render of related elements.
+   * This is achieved using {@linkcode Context}, which leverages {@linkcode https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Proxy | Proxy} handlers.
    *
    * > [!NOTE]
-   * > You cannot reassign this property directly to prevent accidental loss of reactivity.
-   * > It is possible to obtain a similar effect by using {@linkcode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign | Object.assign()} instead.
+   * > You cannot reassign this property directly to ensure reactivity is maintained.
+   * > To achieve a similar effect, use {@linkcode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign | Object.assign()}.
    */
   // deno-lint-ignore no-explicit-any
   get context(): Record<PropertyKey, any> {
@@ -46,7 +46,7 @@ export class Client {
   }
 
   /**
-   * Start rendering all subtrees marked with a {@link _mizu | `*mizu` attribute}.
+   * Start rendering all subtrees marked with the `*mizu` attribute.
    *
    * ```ts ignore
    * const mizu = new Client({ context: { foo: "bar" } })

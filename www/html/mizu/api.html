@@ -12,19 +12,31 @@
   <p>
     If you wish to develop custom directives, please refer to the <a href="#api-dev">Developer API</a> section instead.
   </p>
-  <section>
+  <section %http="/about/api/render/client" %response.json="api = $content">
     <h3 id="api-client"><a href="#api-client">Client-side API</a></h3>
     <p>
       Full API documentation is available at <a href="https://jsr.io/@mizu/render/doc/client/~/Mizu">jsr.io/@mizu/render/client</a>.
     </p>
+    <article *for="api" class="api">
+      <header>
+        <h4 :id="`api-client-${$value.name}`"><a :href="`#api-client-${$value.name}`"><code><span *code[ts]="$value.signature.name"></span><span class="toc-hidden" *code[ts]="$value.signature.args"></span></code></a></h4>
+      </header>
+      <div *markdown[gfm,highlighting,sanitize]="$value.documentation"></div>
+    </article>
   </section>
-  <section>
+  <section %http="/about/api/render/server" %response.json="api = $content">
     <h3 id="api-server"><a href="#api-server">Server-side API</a></h3>
     <p>
       Full API documentation is available at <a href="https://jsr.io/@mizu/render/doc/server/~/Mizu">jsr.io/@mizu/render/server</a>.
     </p>
+    <article *for="api" class="api">
+      <header>
+        <h4 :id="`api-server-${$value.name}`"><a :href="`#api-server-${$value.name}`"><code><span *code[ts]="$value.signature.name"></span><span class="toc-hidden" *code[ts]="$value.signature.args"></span></code></a></h4>
+      </header>
+      <div *markdown[gfm,highlighting,sanitize]="$value.documentation"></div>
+    </article>
   </section>
-  <section>
+  <section %http="/about/api/render/static" %response.json="api = $content">
     <h3 id="api-static"><a href="#api-static">Static generation API</a></h3>
     <p>
       The static generation API is an extension of the <a href="#api-server">server-side API</a> that allows you to render pages easily during your build process.
@@ -32,6 +44,12 @@
     <p>
       Full API documentation is available at <a href="https://jsr.io/@mizu/render/doc/static/~/Mizu">jsr.io/@mizu/render/static</a>.
     </p>
+    <article *for="api" class="api">
+      <header>
+        <h4 :id="`api-static-${$value.name}`"><a :href="`#api-static-${$value.name}`"><code><span *code[ts]="$value.signature.name"></span><span class="toc-hidden" *code[ts]="$value.signature.args"></span></code></a></h4>
+      </header>
+      <div *markdown[gfm,highlighting,sanitize]="$value.documentation"></div>
+    </article>
   </section>
 </section>
 <section>
