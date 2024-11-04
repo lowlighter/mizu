@@ -24,9 +24,6 @@ export const _refresh = {
       renderer.warn(`[${this.name}] expects a finite positive number but got ${value}, ignoring`, element)
       return
     }
-    if (cache.get(element)?.interval === interval) {
-      return
-    }
     clearTimeout(cache.get(element)?.id)
     cache.set(element, { interval, id: NaN })
   },
