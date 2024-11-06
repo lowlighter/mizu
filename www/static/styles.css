@@ -36,11 +36,6 @@ main {
   text-decoration: underline dotted;
 }
 
-/* App. */
-.logo {
-  width: 360px;
-}
-
 /* Offset all headings by size of the header bar. */
 main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   content: "";
@@ -72,7 +67,11 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   display: none;
 }
 
-/* Catchphrase. */
+/* Logo and catchphrase. */
+.logo {
+  margin-top: 6rem;
+}
+
 .catchphrase {
   text-align: center;
   font-size: 3rem;
@@ -83,6 +82,7 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   background-clip: text;
   text-fill-color: transparent;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+  margin-bottom: 4rem;
 }
 
 @media (prefers-color-scheme: dark) {
