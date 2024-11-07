@@ -1,8 +1,8 @@
 # `*mustache`
 
-| Version                                   | Phase          |
-| ----------------------------------------- | -------------- |
-| ![](https://jsr.io/badges/@mizu/mustache) | 41 — `CONTENT` |
+| Version                                   | Phase                        | Multiple |
+| ----------------------------------------- | ---------------------------- | -------- |
+| ![](https://jsr.io/badges/@mizu/mustache) | 42 — `CONTENT_INTERPOLATION` | Yes      |
 
 Enable content interpolation within « mustaches » ( `{{` and `}}`) from [`Text`](https://developer.mozilla.org/docs/Web/API/Text) child nodes.
 

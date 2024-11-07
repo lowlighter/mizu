@@ -62,7 +62,7 @@ export function js(exported: string, options = {} as Pick<NonNullable<Arg<typeof
 export async function html(page: string) {
   Mizu.context = { page }
   log.with({ context: Mizu.context }).debug("rendering html")
-  return Mizu.render(await fetch(import.meta.resolve("./html/index.html")).then((response) => response.text()), {warn:() => null})
+  return Mizu.render(await fetch(import.meta.resolve("./html/index.html")).then((response) => response.text()), { warn: () => null })
 }
 
 /** Generate documentation for an exported class. */

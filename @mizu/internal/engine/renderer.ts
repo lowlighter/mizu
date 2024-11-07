@@ -1126,7 +1126,8 @@ export class Renderer {
    */
   warn(message: string, target?: Nullable<HTMLElement | Comment>): void {
     if (this.#warn) {
-      return this.#warn(message, target)
+      this.#warn(message, target)
+      return
     }
     if (target && ((this.isHtmlElement(target)) || (this.isComment(target)))) {
       return this.setAttribute(target, "*warn", message)
