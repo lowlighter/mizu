@@ -6,7 +6,7 @@ export type * from "@mizu/internal/engine"
 /** `*mustache` directive. */
 export const _mustache = {
   name: "*mustache",
-  phase: Phase.CONTENT,
+  phase: Phase.CONTENT_INTERPOLATION,
   multiple: true,
   init(renderer) {
     renderer.cache<Cache<typeof _mustache>>(this.name, new WeakMap())

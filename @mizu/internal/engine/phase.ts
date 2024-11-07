@@ -58,6 +58,9 @@ export enum Phase {
   /** Directives that set content. */
   CONTENT = 41,
 
+  /** Directives that interpolate content. */
+  CONTENT_INTERPOLATION = 42,
+
   /** Directives that clean content. */
   CONTENT_CLEANING = 49,
 
