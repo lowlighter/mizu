@@ -9,14 +9,22 @@ export type * from "@mizu/internal/engine"
  * @module
  */
 export class Client {
-  /** Default directives. */
+  /**
+   * Default options for {@linkcode Client}.
+   *
+   * These default options are used when creating a new {@linkcode Client} instance if a property is not provided.
+   */
   static defaults = {
-    directives: defaults as Array<Partial<Directive> | string>,
-  }
+    window: globalThis.window,
+    directives: defaults,
+    context: {},
+    // deno-lint-ignore no-console
+    warn: console.warn,
+  } as unknown as Required<ClientOptions>
 
   /** {@linkcode Client} constructor. */
-  // deno-lint-ignore no-console
-  constructor({ directives = Client.defaults.directives, context = {}, window = globalThis.window, warn = console.warn } = {} as ClientOptions) {
+  constructor(options?: ClientOptions) {
+    const { directives, window, warn, context } = { ...Client.defaults, ...options }
     this.#renderer = new Renderer(window, { directives, warn })
     // deno-lint-ignore no-explicit-any
     this.#context = new Context<any>(context)
@@ -46,7 +54,7 @@ export class Client {
   }
 
   /**
-   * Start rendering all subtrees marked with the `*mizu` attribute.
+   * Start rendering all subtrees marked with the {@linkcode https://mizu.sh/#mizu | *mizu} attribute.
    *
    * ```ts ignore
    * const mizu = new Client({ context: { foo: "bar" } })
@@ -71,7 +79,9 @@ export class Client {
 }
 
 /** {@linkcode Client} options. */
-export type ClientOptions = Pick<RendererOptions, "directives" | "warn"> & {
+export type ClientOptions = Pick<RendererOptions, "warn"> & {
+  /** Default directives. */
+  directives?: Array<Partial<Directive> | string>
   /**
    * Initial rendering {@linkcode Context}.
    *
