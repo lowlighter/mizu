@@ -42,7 +42,18 @@ export default {
     },
     {
       pattern: new URLPattern({ pathname: "/about/api/render/:export" }),
-      handler: async (_, __, params) => new Response(JSON.stringify(await docs(`@mizu/render/${params?.pathname.groups.export}`)), { headers: { "content-type": "application/json; charset=utf-8" } }),
+      handler: async (_, __, params) => {
+        const exported = params?.pathname.groups.export!
+        return new Response(JSON.stringify(await docs(`@mizu/render/${exported}`, { kind: "class", name: `${exported.charAt(0).toLocaleUpperCase()}${exported.substring(1)}` })), { headers: { "content-type": "application/json; charset=utf-8" } })
+      },
+    },
+    {
+      pattern: new URLPattern({ pathname: "/about/api/internal/engine/directives" }),
+      handler: async () => new Response(JSON.stringify(await docs(`@mizu/internal/engine`, { kind: "interface", name: "Directive" })), { headers: { "content-type": "application/json; charset=utf-8" } }),
+    },
+    {
+      pattern: new URLPattern({ pathname: "/about/api/internal/engine/renderer" }),
+      handler: async () => new Response(JSON.stringify(await docs(`@mizu/internal/engine`, { kind: "class", name: "Renderer" })), { headers: { "content-type": "application/json; charset=utf-8" } }),
     },
     {
       pattern: new URLPattern({ pathname: "/about/phases" }),

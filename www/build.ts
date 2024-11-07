@@ -1,5 +1,5 @@
 // Imports
-import Mizu from "@mizu/render/static"
+import Mizu from "@mizu/render/server"
 import { html, js } from "./tools.ts"
 import serve from "./serve.ts"
 import { fromFileUrl, join } from "@std/path"

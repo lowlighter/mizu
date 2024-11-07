@@ -1,12 +1,12 @@
 // Imports
 import type { Arg } from "@libs/typing"
-import type { ClassMethodDef, DocNodeClass, JsDoc, ParamDef, TsTypeDef } from "jsr:@deno/doc"
+import type { ClassMethodDef, DocNodeClass, DocNodeInterface, JsDoc, ParamDef, TsTypeDef } from "@deno/doc"
 import { fromFileUrl } from "@std/path"
 import { pick } from "@std/collections"
 import * as JSONC from "@std/jsonc"
 import { bundle } from "@libs/bundle/ts"
 import { Logger } from "@libs/logger"
-import { doc } from "jsr:@deno/doc"
+import { doc } from "@deno/doc"
 import Mizu from "@mizu/render/server"
 const log = new Logger()
 
@@ -62,14 +62,28 @@ export function js(exported: string, options = {} as Pick<NonNullable<Arg<typeof
 export async function html(page: string) {
   Mizu.context = { page }
   log.with({ context: Mizu.context }).debug("rendering html")
-  return Mizu.render(await fetch(import.meta.resolve("./html/index.html")).then((response) => response.text()))
+  return Mizu.render(await fetch(import.meta.resolve("./html/index.html")).then((response) => response.text()), {warn:() => null})
 }
 
 /** Generate documentation for an exported class. */
-export async function docs(path: string) {
+export async function docs(path: string, { kind, name: exported }: { kind: "class" | "interface"; name: string }) {
   const { package: packaged, name } = path.match(jsr)?.groups ?? {}
   const nodes = await doc(import.meta.resolve(path))
-  return nodes.filter((node): node is DocNodeClass => (node.kind === "class") && (node.name !== "Mizu"))
+  if (kind === "interface") {
+    return nodes.filter((node): node is DocNodeInterface => (node.kind === "interface") && (node.name === exported))
+      .flatMap((node) => [
+        ...node.interfaceDef.properties.map((leaf) => ({
+          name: leaf.name,
+          signature: {
+            name: `${node.name}${leaf.optional ? "?" : ""}.${leaf.name}`,
+            args: `: ${type(leaf.tsType)}`,
+          },
+          documentation: jsdoc({ packaged, name }, leaf.jsDoc),
+          readonly: leaf.readonly,
+        })),
+      ])
+  }
+  return nodes.filter((node): node is DocNodeClass => (node.kind === "class") && (node.name === exported))
     .flatMap((node) => [
       ...node.classDef.constructors.map((leaf) => ({
         name: leaf.name,
@@ -86,6 +100,8 @@ export async function docs(path: string) {
           args: `: ${type(leaf.tsType)}`,
         },
         documentation: jsdoc({ packaged, name }, leaf.jsDoc),
+        readonly: leaf.readonly,
+        static: leaf.isStatic,
       })),
       ...node.classDef.methods.filter((subnode) => ["getter", "method"].includes(subnode.kind)).map((leaf) => ({
         name: leaf.name,
@@ -102,6 +118,7 @@ export async function docs(path: string) {
 function jsdoc({ packaged, name }: { packaged: string; name: string }, def?: JsDoc) {
   return def?.doc
     ?.replace(/\[!NOTE\]/, "")
+    ?.replace(/\[!IMPORTANT\]/, "")
     ?.replace(/{@linkcode (?<link>[^|}]*?) \| (?<text>[^}]*?)}/g, `[\`$<text>\`]($<link>)`)
     ?.replace(/{@linkcode (?<text>[^}]*?)}/g, `[\`$<text>\`](https://jsr.io/${packaged}/doc/${name}/~/$<text>)`) ?? ""
 }
@@ -137,8 +154,12 @@ function type(def?: TsTypeDef): string {
       return `${def.typeRef.typeName}${def.typeRef.typeParams ? `<${def.typeRef.typeParams.map(type).join(def.typeRef.typeParams.some(({ kind }) => kind === "union") ? "" : ", ")}>` : ""}`
     case "union":
       return def.union.map(type).join(" | ")
+    case "intersection":
+      return def.intersection.map(type).join(" & ")
     case "keyword":
       return def.keyword
+    case "array":
+      return `${type(def.array)}[]`
     case "indexedAccess":
       return `${type(def.indexedAccess.objType)}[${type(def.indexedAccess.indexType)}]`
     case "literal":
@@ -152,6 +173,14 @@ function type(def?: TsTypeDef): string {
       return `${def.typeQuery}`
     case "typeLiteral":
       return `{ ${def.typeLiteral.properties.map((property) => `${property.name}: ${type(property.tsType)}`)} }`
+    case "typePredicate":
+      return `${def.repr}`
+    case "this":
+      return `${def.repr}`
+    case "fnOrConstructor":
+      return "Function"
+    case undefined:
+      return ""
   }
   log.warn("type", def)
   return ""

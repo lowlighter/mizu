@@ -12,7 +12,7 @@ export class Client {
   /**
    * Default options for {@linkcode Client}.
    *
-   * These default options are used when creating a new {@linkcode Client} instance if a property is not provided.
+   * These default options are merged with the provided options when creating a new {@linkcode Client} instance.
    */
   static defaults = {
     window: globalThis.window,

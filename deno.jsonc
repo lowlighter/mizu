@@ -64,6 +64,7 @@
     "@std/text": "jsr:@std/text@1",
     "@std/yaml": "jsr:@std/yaml@1",
     // External dependencies
+    "@deno/doc": "jsr:@deno/doc@0.156.0",
     "@dprint/formatter": "jsr:@dprint/formatter@^0.4",
     "@libs/bundle/ts": "jsr:@libs/bundle@12.4.1/ts",
     "@libs/logger": "jsr:@libs/logger@3",

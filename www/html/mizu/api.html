@@ -1,9 +1,4 @@
 <h1 id="api"><a href="#api">API</a></h1>
-<div class="flash attention">
-  <p>
-    This section is still under construction.
-  </p>
-</div>
 <section>
   <h2 id="api-user"><a href="#api-user">User API</a></h2>
   <p>
@@ -20,16 +15,21 @@
     <section>
       <h4 id="api-client-defaults"><a href="#api-client-defaults">Defaults directives</a></h4>
       <p>
-        The following directives are enabled by default in the client-side API.
-        You can customize the enabled directives by creating a custom instance rather than using the default one.
+        The following directives are enabled by default in the client-side API. You can customize the enabled directives by creating a custom instance rather than using the default one.
       </p>
       <ul *html="Array.from(this.ownerDocument.querySelectorAll('[data-mizu-client]')).map(h => `&lt;li&gt;${h.querySelector('a')?.outerHTML}&lt;/li&gt;`).join('')"></ul>
     </section>
     <article *for="api" class="api">
       <header>
-        <h4 :id="`api-client-${$value.name}`"><a :href="`#api-client-${$value.name}`"><code><span *code[ts]="$value.signature.name"></span><span class="toc-hidden" *code[ts]="$value.signature.args"></span></code></a></h4>
+        <h4 :id="`api-client-${$value.name}`">
+          <a :href="`#api-client-${$value.name}`"><code><span *code[ts]="$value.signature.name"></span><span class="toc-hidden" *code[ts]="$value.signature.args"></span></code></a>
+          <div class="pills">
+            <span *if="$value.static" class="bd-active bg-active active">Static</span>
+            <span *if="$value.readonly" class="bd-success bg-success success">Readonly</span>
+          </div>
+        </h4>
       </header>
-      <div *markdown[gfm,highlighting,sanitize]="$value.documentation"></div>
+      <div *markdown[highlighting,gfm]="$value.documentation"></div>
     </article>
   </section>
   <section %http="/about/api/render/server" %response.json="api = $content">
@@ -40,16 +40,21 @@
     <section>
       <h4 id="api-server-defaults"><a href="#api-server-defaults">Defaults directives</a></h4>
       <p>
-        The following directives are enabled by default in the server-side API.
-        You can customize the enabled directives by creating a custom instance rather than using the default one.
+        The following directives are enabled by default in the server-side API. You can customize the enabled directives by creating a custom instance rather than using the default one.
       </p>
       <ul *html="Array.from(this.ownerDocument.querySelectorAll('[data-mizu-server]')).map(h => `&lt;li&gt;${h.querySelector('a')?.outerHTML}&lt;/li&gt;`).join('')"></ul>
     </section>
     <article *for="api" class="api">
       <header>
-        <h4 :id="`api-server-${$value.name}`"><a :href="`#api-server-${$value.name}`"><code><span *code[ts]="$value.signature.name"></span><span class="toc-hidden" *code[ts]="$value.signature.args"></span></code></a></h4>
+        <h4 :id="`api-server-${$value.name}`">
+          <a :href="`#api-server-${$value.name}`"><code><span *code[ts]="$value.signature.name"></span><span class="toc-hidden" *code[ts]="$value.signature.args"></span></code></a>
+          <div class="pills">
+            <span *if="$value.static" class="bd-active bg-active active">Static</span>
+            <span *if="$value.readonly" class="bd-success bg-success success">Readonly</span>
+          </div>
+        </h4>
       </header>
-      <div *markdown[gfm,highlighting,sanitize]="$value.documentation"></div>
+      <div *markdown[highlighting,gfm]="$value.documentation"></div>
     </article>
   </section>
 </section>
@@ -61,13 +66,38 @@
   <p>
     If you wish to render templates, please refer to the <a href="#api-user">User API</a> section instead.
   </p>
-  <section *if="false">
+  <section %http="/about/api/internal/engine/directives" %response.json="api = $content">
     <h3 id="api-directive"><a href="#api-directive">Directive API</a></h3>
+    <p>
+      Full API documentation is available at <a href="https://jsr.io/@mizu/internal/doc/engine/~/Directive">jsr.io/@mizu/internal/engine</a>.
+    </p>
+    <p>
+      This section covers the <code>Directive</code> interface, essential for creating custom directives. Each built-in directive is also an instance of this interface. It follows the steps outlined in the <a href="#concept-rendering">Rendering concept</a>.
+    </p>
+    <p class="flash accent">
+      When manipulating the DOM, use the <a href="https://jsr.io/@mizu/internal/doc/engine/~/Renderer#method"><code>Renderer</code> methods</a> to ensure compatibility between virtual and real DOMs. These methods also provide helpful tools to simplify the creation of custom
+      directives.
+    </p>
+    <article *for="api" class="api">
+      <header>
+        <h4 :id="`api-directive-${$value.name}`">
+          <a :href="`#api-directive-${$value.name}`"><code><span *code[ts]="$value.signature.name"></span><span class="toc-hidden" *code[ts]="$value.signature.args"></span></code></a>
+          <div class="pills">
+            <span *if="$value.static" class="bd-active bg-active active">Static</span>
+            <span *if="$value.readonly" class="bd-success bg-success success">Readonly</span>
+          </div>
+        </h4>
+      </header>
+      <div *markdown[highlighting,gfm]="$value.documentation"></div>
+    </article>
   </section>
-  <section *if="false">
-    <h3 id="api-renderer"><a href="#api-renderer">Renderer API</a></h3>
-  </section>
-  <section *if="false">
-    <h3 id="api-testing"><a href="#api-testing">Testing API</a></h3>
+  <section>
+    <h3 id="api-internal"><a href="#api-internal">Internal API</a></h3>
+    <p>
+      Full API documentation is available at <a href="https://jsr.io/@mizu/internal/doc">jsr.io/@mizu/internal</a>.
+    </p>
+    <p>
+      This package includes several APIs used by <em>mizu.js</em>, such as the <code>Renderer</code>, virtual DOM implementations, the testing framework, and more. These symbols are documented in the source code and are intended for development environments.
+    </p>
   </section>
 </section>

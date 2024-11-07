@@ -167,10 +167,29 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 .api {
   margin-left: 0;
   margin-right: 0;
+  margin-bottom: 2rem;
 }
 
-.api h4[id] {
+.api h4 {
   font-size: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.api h4 .pills {
+  margin-top: 1rem;
+  justify-content: flex-start;
+}
+
+@media (min-width: 768px) {
+  .api h4 {
+    flex-direction: row;
+    align-items: center;
+  }
+  .api h4 .pills {
+    margin-top: 0;
+    justify-content: flex-end;
+  }
 }
 
 .api .toc-hidden, .api .toc-hidden [class*="hljs-"] {
@@ -286,7 +305,12 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   margin-top: 1.5rem;
 }
 
-.directive .pills {
+.directive .note ul {
+  margin-bottom: 0;
+}
+
+/* Pills */
+.pills {
   display: inline-flex;
   flex-grow: 1;
   flex-wrap: wrap;
@@ -295,24 +319,20 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   font-size: 0.85rem;
 }
 
-.directive .pills > span {
+.pills > span {
   margin: 0.25rem;
   padding: 0 0.5rem;
   border-radius: 1rem;
 }
 
-.directive .pills > span code {
+.pills > span code {
   font-size: inherit !important;
   background: none;
   padding: 0;
 }
 
-.directive .pills > span code:not(:first-child) {
+.pills > span code:not(:first-child) {
   margin-left: 0.25rem;
-}
-
-.directive .note ul {
-  margin-bottom: 0;
 }
 
 /* Demo */

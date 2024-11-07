@@ -20,7 +20,7 @@ export class Server {
   /**
    * Default options for {@linkcode Server}.
    *
-   * These default options are used when creating a new {@linkcode Server} instance if a property is not provided.
+   * These default options are merged with the provided options when creating a new {@linkcode Server} instance.
    */
   static defaults = {
     directives: defaults,
@@ -63,14 +63,16 @@ export class Server {
   }
 
   /**
-   * Parse an HTML string and render all subtrees marked with the `*mizu` attribute.
+   * Parse an HTML string and render all subtrees.
+   *
+   * The {@linkcode https://mizu.sh/#mizu | *mizu} attribute is only required if `implicit` is set to `false`.
    *
    * ```ts
    * const mizu = new Server({ context: { foo: "bar" } })
    * await mizu.render(`<html><body><a ~test.text="foo"></a></body></html>`)
    * ```
    */
-  async render(content: string | Arg<Renderer["render"]>, options?: ServerRenderOptions): Promise<string> {
+  async render(content: string | Arg<Renderer["render"]>, options?: ServerRenderOptions & Pick<ServerOptions, "warn">): Promise<string> {
     await using window = new Window(typeof content === "string" ? content : `<body>${content.outerHTML}</body>`)
     const { directives, warn, context: _context } = { ...this.#options, ...options }
     const renderer = await new Renderer(window, { directives, warn }).ready

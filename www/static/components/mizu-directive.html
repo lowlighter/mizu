@@ -1,6 +1,6 @@
 <article %http="`/about/directives/${$attrs.directory}?name=${$attrs.id}`" %header[accept]="'application/json'" %response.json="meta = $content" class="directive">
   <header *clean.directives>
-    <h3 :id="$attrs.id">
+    <h3 :id="$attrs.id" :data-mizu-client="meta.preset.includes('client') ? true : null" :data-mizu-server="meta.preset.includes('server') ? true : null">
       <a :href="`#${this.parentElement.id}`"><slot name="name"></slot></a>
       <div class="pills">
         <span *if="meta?.default" class="bd-muted bg-muted">

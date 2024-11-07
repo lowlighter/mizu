@@ -1139,7 +1139,7 @@ export type RendererOptions = {
   /** Initial {@linkcode Directive}s. */
   directives?: Arg<Renderer["load"]>
   /** Warnings callback. */
-  warn?: (message: string, target?: Nullable<HTMLElement | Comment>) => void
+  warn?: (message: string, target?: Nullable<HTMLElement | Comment>) => unknown
 }
 
 /** {@linkcode Renderer.evaluate()} options. */

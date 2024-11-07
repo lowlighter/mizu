@@ -6,6 +6,7 @@
     "jsr:@deno-library/progress@1.4.9": "1.4.9",
     "jsr:@deno/cache-dir@0.11": "0.11.1",
     "jsr:@deno/doc@*": "0.156.0",
+    "jsr:@deno/doc@0.156.0": "0.156.0",
     "jsr:@deno/graph@0.82": "0.82.3",
     "jsr:@deno/graph@~0.73.1": "0.73.1",
     "jsr:@dprint/formatter@0.4": "0.4.1",
@@ -3164,6 +3165,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@deno/doc@0.156.0",
       "jsr:@dprint/formatter@0.4",
       "jsr:@libs/bundle@12.4.1",
       "jsr:@libs/logger@3",
