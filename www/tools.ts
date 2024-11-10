@@ -53,7 +53,7 @@ export function js(exported: string, options = {} as Pick<NonNullable<Arg<typeof
   if (options?.format === "iife") {
     options.raw ??= {}
     options.raw.target = "es2020"
-    options.raw.define = { "import.meta.main": "true" }
+    options.raw.define = { "globalThis.MIZU_IIFE": "true" }
   }
   return bundle(new URL(url), { ...options, banner })
 }

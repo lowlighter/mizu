@@ -374,6 +374,15 @@
   </script>
 </test>
 
+<test name="[@] with null object is effectless">
+  <render>
+    <p @="null"></p>
+  </render>
+  <expect>
+    <p></p>
+  </expect>
+</test>
+
 <test name="[@] (error) empty shorthand expects an object">
   <render>
     <p @="false"></p>

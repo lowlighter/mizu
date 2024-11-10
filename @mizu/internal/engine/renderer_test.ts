@@ -668,6 +668,7 @@ for (
     ['and rounds values with `"ms"` unit', `*foo=".9ms"`, { value: 1 }, { type: Date }],
     ['and rounds values with `"s"` unit', `*foo=".9s"`, { value: 900 }, { type: Date }],
     ['and rounds values with `"m"` unit', `*foo=".9m"`, { value: 54_000 }, { type: Date }],
+    ["and fallbacks to `0` on negative values", `*foo="-1"`, { value: 0 }, { type: Date }],
     ["and fallbacks to `0` on invalid values", `*foo="bar"`, { value: 0 }, { type: Date }],
     ["and fallbacks to `default` on invalid values", `*foo="bar"`, { value: 1 }, { type: Date, default: 1 }],
     ["and fallbacks on invalid units", `*foo="1xx"`, { value: 0 }, { type: Date }],

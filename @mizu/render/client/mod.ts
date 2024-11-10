@@ -10,6 +10,7 @@ export type * from "./client.ts"
 export default Client.default as Client
 
 // Start the client-side renderer if this module is the main entry point
-if ((import.meta.main) && (globalThis.window?.document)) {
+// @ts-expect-error: iife handling
+if ((globalThis.MIZU_IIFE) && (globalThis.window?.document)) {
   Client.default.render()
 }
