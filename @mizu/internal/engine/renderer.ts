@@ -390,7 +390,9 @@ export class Renderer {
         const changes = await directive.execute?.(this, element, { cache: this.cache(directive.name), context, state, attributes, root })
         if (changes?.element) {
           if (reactive && (this.#watched.get(context)?.has(element))) {
-            this.#watched.get(context)!.set(changes.element, this.#watched.get(context)!.get(element)!)
+            this.#unwatch(context, element)
+            this.#watch(context, changes.element)
+            this.#watched.get(context)!.get(element)!.properties.forEach((property) => this.#watched.get(context)!.get(changes.element!)!.properties.add(property))
             this.#watched.get(context)!.delete(element)
           }
           element = changes.element
@@ -476,6 +478,7 @@ export class Renderer {
       watched._set = ({ detail: { path, property } }: CustomEvent) => {
         const key = [...path, property].join(".")
         if (watched.properties.has(key)) {
+          this.debug(`"${key}" has been modified, queuing reactive render request`, element)
           this.#queueReactiveRender(element, { context, state, root })
         }
       }
@@ -516,6 +519,7 @@ export class Renderer {
         if (flushed) {
           controller.abort()
         }
+        this.debug("processing queued reactive render requests")
         await Promise.all(this.#queued.map(([element, options]) => {
           return this.#render(element, { reactive: true, ...options })
         }))
