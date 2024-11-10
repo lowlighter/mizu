@@ -22,7 +22,7 @@ export const _eval = {
     if (cache.has(element)) {
       const attribute = cache.get(element)!
       cache.delete(element)
-      await renderer.evaluate(element, attribute.value, options)
+      await renderer.evaluate(element, attribute.value, { ...options, args: [] })
     }
   },
 } as Directive<WeakMap<HTMLElement, Attr>>

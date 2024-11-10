@@ -1,8 +1,29 @@
 <load directives="@mizu/eval,@mizu/test"></load>
 
-<test name="[*eval] evaluates raw script">
+<test name="[*eval] evaluates raw scripts">
   <render>
     <div *eval="this.textContent = 'bar'">foo</div>
+  </render>
+  <expect>
+    <div>bar</div>
+  </expect>
+</test>
+
+<test name="[*eval] evaluates raw scripts with context">
+  <script>
+    context.foo = 1
+  </script>
+  <render>
+    <div *eval="foo++"></div>
+  </render>
+  <script>
+    expect(context.foo).toBe(2)
+  </script>
+</test>
+
+<test name="[*eval] evaluates callable raw scripts">
+  <render>
+    <div *eval="function () { this.textContent = 'bar' }">foo</div>
   </render>
   <expect>
     <div>bar</div>
