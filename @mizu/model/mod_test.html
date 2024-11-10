@@ -338,6 +338,182 @@
   </expect>
 </test>
 
+<test name="[::value] with `.nullish` modifier casts to `null` if empty">
+  <script>
+    context.value = []
+  </script>
+  <render>
+    <input type="checkbox" name="raw" ::="value" value="" />
+    <input type="checkbox" name="casted" ::.nullish="value" value="" />
+  </render>
+  <script>
+    // Raw value
+    raw = document.querySelector("input[name=raw]")
+    raw.checked = true
+    raw.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual([""]))
+    // Casted value
+    casted = document.querySelector("input[name=casted]")
+    casted.checked = true
+    casted.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["", null]))
+    // Reverse mapping
+    context.value = [""]
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input[name=raw]").checked).toBe(true)
+    expect(document.querySelector("input[name=casted]").checked).toBe(false)
+    context.value = [null]
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input[name=raw]").checked).toBe(false)
+    expect(document.querySelector("input[name=casted]").checked).toBe(true)
+  </script>
+</test>
+
+<test name="[::value] with `.number` modifier casts to `Number()`">
+  <script>
+    context.value = []
+  </script>
+  <render>
+    <input type="checkbox" name="raw" ::="value" value="0" />
+    <input type="checkbox" name="casted" ::.number="value" value="0" />
+  </render>
+  <script>
+    // Raw value
+    raw = document.querySelector("input[name=raw]")
+    raw.checked = true
+    raw.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["0"]))
+    // Casted value
+    casted = document.querySelector("input[name=casted]")
+    casted.checked = true
+    casted.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["0", 0]))
+    // Reverse mapping
+    context.value = ["0"]
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input[name=raw]").checked).toBe(true)
+    expect(document.querySelector("input[name=casted]").checked).toBe(false)
+    context.value = [0]
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input[name=raw]").checked).toBe(false)
+    expect(document.querySelector("input[name=casted]").checked).toBe(true)
+  </script>
+</test>
+
+<test name="[::value] with `.boolean` modifier casts to YAML-like `Boolean()`">
+  <script>
+    context.value = []
+  </script>
+  <render>
+    <input type="checkbox" name="raw" ::="value" value="yes" />
+    <input type="checkbox" name="casted" ::.boolean="value" value="yes" />
+  </render>
+  <script>
+    // Raw value
+    raw = document.querySelector("input[name=raw]")
+    raw.checked = true
+    raw.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["yes"]))
+    // Casted value
+    casted = document.querySelector("input[name=casted]")
+    casted.checked = true
+    casted.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["yes", true]))
+    // Reverse mapping
+    context.value = ["yes"]
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input[name=raw]").checked).toBe(true)
+    expect(document.querySelector("input[name=casted]").checked).toBe(false)
+    context.value = [true]
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input[name=raw]").checked).toBe(false)
+    expect(document.querySelector("input[name=casted]").checked).toBe(true)
+  </script>
+  <script>
+    context.value = []
+  </script>
+  <render>
+    <input type="checkbox" name="raw" ::="value" value="no" />
+    <input type="checkbox" name="casted" ::.boolean="value" value="no" />
+  </render>
+  <script>
+    // Raw value
+    raw = document.querySelector("input[name=raw]")
+    raw.checked = true
+    raw.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["no"]))
+    // Casted value
+    casted = document.querySelector("input[name=casted]")
+    casted.checked = true
+    casted.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual(["no", false]))
+    // Reverse mapping
+    context.value = ["no"]
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input[name=raw]").checked).toBe(true)
+    expect(document.querySelector("input[name=casted]").checked).toBe(false)
+    context.value = [false]
+  </script>
+  <render></render>
+  <script>
+    expect(document.querySelector("input[name=raw]").checked).toBe(false)
+    expect(document.querySelector("input[name=casted]").checked).toBe(true)
+  </script>
+</test>
+
+<test name="[::value] with `.string` modifier casts to `String()`">
+  <script>
+    context.value = { raw: null, casted: null }
+  </script>
+  <render>
+    <input type="number" name="raw" ::="value.raw" />
+    <input type="number" name="casted" ::.string="value.casted" />
+  </render>
+  <script>
+    // Raw value
+    raw = document.querySelector("input[name=raw]")
+    raw.value = "0"
+    raw.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value.raw).toBe(0))
+    // Casted value
+    casted = document.querySelector("input[name=casted]")
+    casted.value = "0"
+    casted.dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value.casted).toBe("0"))
+  </script>
+</test>
+
+<test name="[::value] with type modifier supports `&lt;select multiple&gt;`">
+  <script>
+    context.value = []
+  </script>
+  <render>
+    <select ::.number="value" multiple>
+      <option value="1" selected></option>
+      <option value="2" selected></option>
+    </select>
+  </render>
+  <script>
+    document.querySelectorAll("option").forEach((option) => option.selected = true)
+    document.querySelector("select").dispatchEvent(new Event("input"))
+    await retry(() => expect(context.value).toEqual([1, 2]))
+  </script>
+</test>
+
 <test name="[::value] skips commented elements">
   <script>
     context.value = true
