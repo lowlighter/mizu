@@ -32,6 +32,7 @@ export class Server {
     },
     // deno-lint-ignore no-console
     warn: console.warn,
+    debug: undefined,
   } as unknown as Required<ServerOptions>
 
   /** {@linkcode Server} constructor. */
@@ -129,7 +130,7 @@ export class Server {
 }
 
 /** {@linkcode Server} options. */
-export type ServerOptions = Pick<RendererOptions, "warn"> & {
+export type ServerOptions = Pick<RendererOptions, "warn" | "debug"> & {
   /** Default directives. */
   directives?: Array<Partial<Directive> | string>
   /**

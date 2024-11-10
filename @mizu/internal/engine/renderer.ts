@@ -15,10 +15,11 @@ export type * from "./directive.ts"
  */
 export class Renderer {
   /** {@linkcode Renderer} constructor. */
-  constructor(window: Window, { warn, directives = [] } = {} as RendererOptions) {
+  constructor(window: Window, { warn, debug, directives = [] } = {} as RendererOptions) {
     this.window = window as Renderer["window"]
     this.cache("*", new WeakMap())
     this.#warn = warn
+    this.#debug = debug
     this.#directives = [] as Directive[]
     this.#flush = { request: Promise.withResolvers<true>(), response: Promise.withResolvers<void>() }
     this.ready = this.load(directives)
@@ -1133,6 +1134,24 @@ export class Renderer {
       return this.setAttribute(target, "*warn", message)
     }
   }
+
+  /** Debug callback. */
+  readonly #debug
+
+  /**
+   * Generate a debug message.
+   *
+   * ```ts
+   * import { Window } from "@mizu/internal/vdom"
+   * const renderer = await new Renderer(new Window()).ready
+   *
+   * const element = renderer.createElement("div")
+   * renderer.debug("foo", element)
+   * ```
+   */
+  debug(message: string, target?: Nullable<HTMLElement | Comment>): void {
+    this.#debug?.(message, target)
+  }
 }
 
 /** {@linkcode Renderer} options. */
@@ -1141,6 +1160,8 @@ export type RendererOptions = {
   directives?: Arg<Renderer["load"]>
   /** Warnings callback. */
   warn?: (message: string, target?: Nullable<HTMLElement | Comment>) => unknown
+  /** Debug callback. */
+  debug?: (message: string, target?: Nullable<HTMLElement | Comment>) => unknown
 }
 
 /** {@linkcode Renderer.evaluate()} options. */

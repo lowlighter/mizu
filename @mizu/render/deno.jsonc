@@ -1,6 +1,6 @@
 {
   "name": "@mizu/render",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "exports": {
     "./client": "./client/mod.ts",
     "./server": "./server/mod.ts"

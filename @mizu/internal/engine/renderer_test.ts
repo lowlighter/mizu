@@ -155,7 +155,9 @@ test()("`Renderer.render()` requires `*mizu` attribute when `implicit: false`", 
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "" } }), { implicit: false })).not.resolves.toThrow()
   expect(directive.execute).not.toBeCalled()
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "", [_mizu.name]: "" } }), { implicit: false })).not.resolves.toThrow()
-  expect(directive.execute).toBeCalled()
+  expect(directive.execute).toBeCalledTimes(1)
+  await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "" }, innerHTML: `<a *foo ${_mizu.name}><b ${_mizu.name}></b></a>` }), { implicit: false })).not.resolves.toThrow()
+  expect(directive.execute).toBeCalledTimes(2)
 })
 
 test()("`Renderer.render()` returns selected element with `select` option", async () => {
@@ -727,4 +729,22 @@ test()("`Renderer.isComment()` checks if the given node is a `Comment`", async (
   const comment = renderer.document.createComment("")
   expect(renderer.isComment(element)).toBe(false)
   expect(renderer.isComment(comment)).toBe(true)
+})
+
+test()("`Renderer.warn()` calls the `warn()` callback", async () => {
+  await using window = new Window()
+  const warn = fn() as testing
+  const renderer = await new Renderer(window, { ...options, warn }).ready
+  const element = renderer.createElement("div")
+  renderer.warn("foo", element)
+  expect(warn).toBeCalledWith("foo", element)
+})
+
+test()("`Renderer.debug()` calls the `debug()` callback", async () => {
+  await using window = new Window()
+  const debug = fn() as testing
+  const renderer = await new Renderer(window, { ...options, debug }).ready
+  const element = renderer.createElement("div")
+  renderer.debug("foo", element)
+  expect(debug).toBeCalledWith("foo", element)
 })

@@ -20,6 +20,7 @@ export class Client {
     context: {},
     // deno-lint-ignore no-console
     warn: console.warn,
+    debug: undefined,
   } as unknown as Required<ClientOptions>
 
   /** {@linkcode Client} constructor. */
@@ -79,7 +80,7 @@ export class Client {
 }
 
 /** {@linkcode Client} options. */
-export type ClientOptions = Pick<RendererOptions, "warn"> & {
+export type ClientOptions = Pick<RendererOptions, "warn" | "debug"> & {
   /** Default directives. */
   directives?: Array<Partial<Directive> | string>
   /**
