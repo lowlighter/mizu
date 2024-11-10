@@ -1,12 +1,42 @@
-<form *set="{ food: '🍱🍜🍚🍣🍥🍡🍵🍙🥟', selected: '' }">
-  <label *mustache>
-    What's your favorite food? 😋
-    <small *if="selected">So you like {{ selected }}?</small>
-    <small *else>I want to know!</small>
-    <select ::="selected" required>
-      <option value="" disabled>Select a food</option>
-      <option *for="[...food]" *id="$i" :value="$value" *once>{{ $value }}</option>
-    </select>
-  </label>
-</form>
-<time class="muted" *refresh="1" *text="new Date().toISOString()"></time>
+<main *set="{ coins: 0, income: 1, built: ['🏪'], build: { selected: 0, progress: 0, time: 0 } }" *mustache>
+  <div class="flash accent">
+    You have {{ coins }} 🪙<br />
+    Last refresh: <time class="muted" *refresh="1" *text="new Date().toISOString().slice(11, 19)" *eval="$refresh && (coins += income)"></time>
+  </div>
+  <form *set="{ buildings: ['🏪 Store', '🏬 Mall', '🏟️ Bank', '🏯 Castle'] }">
+    <label>
+      ⛏️ Mine
+      <small>Click on the button to get coins.</small>
+      <button @click.prevent="coins++">Become rich!</button>
+    </label>
+    <label>
+      🛠️ Build
+      <small>Create buildings to generate passive income.</small>
+      <select ::.number="build.selected" :disabled="build.progress" @change="build.time = 5 + build.selected ** 2">
+        <option value="0">Choose a building</option>
+        <option *for="buildings" :value="$I" :id="$value">{{ $value }}</option>
+      </select>
+    </label>
+    <section *if="build.selected">
+      <table class="width">
+        <tr>
+          <th>🪙/s</th>
+          <td>+{{ build.selected }}</td>
+        </tr>
+        <tr>
+          <th>🕐</th>
+          <td>{{ build.time }}s</td>
+        </tr>
+      </table>
+      <button *if="!build.progress" @click.prevent="build.progress = 1">Build it!</button>
+      <progress *if="build.progress" *refresh="1" :value="build.progress" :max="build.time" *eval="$refresh && (build.progress++ >= build.time && (income += build.selected, built.push(buildings[build.selected]), build.selected = build.progress = 0))"></progress>
+    </section>
+  </form>
+  <div class="flash success">
+    <b>You have {{ built.length }} building(s) in your city!</b>
+    <br>
+    <sub>+ {{ income }} 🪙/s</sub>
+    <br>
+    <span *for="built">{{ [...$value][0] }}</span>
+  </div>
+</main>

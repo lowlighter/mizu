@@ -125,6 +125,7 @@
     const messages = document.querySelector(".messages")
     const button = document.querySelector("#render")
     const iframe = document.querySelector("iframe")
+    const debug = false
 
     // Setup code editor
     function coloration(value, target = highlight) {
@@ -164,7 +165,7 @@
     }
     globalThis.addEventListener("message", (event) => {
       const { data: { type, message, target } } = event
-      if (!message) {
+      if ((!message)||((!debug)&&(type === "debug"))) {
         return
       }
       const element = document.querySelector(".message.template").cloneNode(true)

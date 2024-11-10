@@ -713,6 +713,11 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   left: 0.5rem;
 }
 
+.mockup.browser .browser-inspector-content .message.debug {
+  color: var(--muted);
+  background-color: var(--bg-muted);
+}
+
 .mockup.browser .browser-inspector-content .message.info {
   color: var(--accent);
   background-color: var(--bg-infoaccent);
