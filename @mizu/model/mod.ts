@@ -1,5 +1,5 @@
 // Imports
-import { type Cache, type callback, type Directive, type Modifiers, type Nullable, Phase } from "@mizu/internal/engine"
+import { type Arg, type Arrayable, type Cache, type callback, type Directive, type Modifiers, type Nullable, Phase } from "@mizu/internal/engine"
 import { equal } from "@std/assert"
 import { _event } from "@mizu/event"
 export type * from "@mizu/internal/engine"
@@ -13,6 +13,10 @@ export const typings = {
     throttle: { type: Date, default: 250 },
     debounce: { type: Date, default: 250 },
     keys: { type: String },
+    nullish: { type: Boolean },
+    boolean: { type: Boolean },
+    number: { type: Boolean },
+    string: { type: Boolean },
   },
 } as const
 
@@ -98,12 +102,12 @@ export const _model_value = {
           // Radio: clean value if last value unchecked
           case "radio":
             if ((equal(model, value)) && (!input.checked)) {
-              value = undefined
+              value = undefined as unknown as typeof value
             }
             break
           // Number: convert value to number
           case "number":
-            value = Number(value)
+            value = parse(Number(value) as unknown as Arg<typeof parse>, parsed.modifiers)
         }
         await renderer.evaluate(input, `${attribute.value}=${renderer.internal("value")}`, { ...options, state: { ...options.state, [renderer.internal("value")]: value } })
       }
@@ -133,7 +137,7 @@ export default [_model_value]
 
 /** Read input value. */
 function read(input: HTMLElement) {
-  let value = null as unknown
+  let value = null as Nullable<Arrayable<string>>
   switch (input.tagName) {
     case "SELECT": {
       const select = input as HTMLSelectElement
@@ -151,6 +155,21 @@ function read(input: HTMLElement) {
 }
 
 /** Parse input value. */
-function parse(value: unknown, _modifiers: Modifiers<typeof _model_value>) {
-  return value
+function parse(value: ReturnType<typeof read>, modifiers: Modifiers<typeof _model_value>) {
+  const parsed = [value].flat().map((value) => {
+    if ((modifiers.nullish) && (!value)) {
+      return null
+    }
+    if (modifiers.number) {
+      return Number(value)
+    }
+    if (modifiers.boolean) {
+      return !(value.length && /^(?:[Ff]alse|FALSE|[Nn]o|NO|[Oo]ff|OFF)$/.test(value))
+    }
+    if (modifiers.string) {
+      return `${value}`
+    }
+    return value
+  })
+  return Array.isArray(value) ? parsed : parsed[0]
 }
