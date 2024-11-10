@@ -159,19 +159,24 @@
 
     // Setup messages
     function cleanMessages() {
-      document.querySelectorAll(".message.warn").forEach((element) => element.remove())
+      document.querySelectorAll(".message.warn, .message.debug").forEach((element) => element.remove())
       document.querySelector(".errors-count small b").textContent = ""
     }
     globalThis.addEventListener("message", (event) => {
-      const { data: { message, target } } = event
+      const { data: { type, message, target } } = event
+      if (!message) {
+        return
+      }
       const element = document.querySelector(".message.template").cloneNode(true)
       element.querySelector(".content").textContent = message
       if (target) {
         coloration(target, element.querySelector(".target"))
       }
       element.classList.remove("template")
-      element.classList.add("warn")
-      document.querySelector(".errors-count small b").textContent++
+      element.classList.add(type)
+      if (element.classList.contains("warn")) {
+        document.querySelector(".errors-count small b").textContent++
+      }
       messages.appendChild(element)
     })
 
@@ -216,8 +221,16 @@
         await new Mizu({
           warn(message, target) {
             globalThis.parent.postMessage({
+              type: "warn",
               message,
-              target: target?.outerHTML?.replace(target.innerHTML, "") ?? null
+              target: target?.nodeType === globalThis.window.document.COMMENT_NODE ? \`<!--\${target.textContent}-->\` : target?.outerHTML?.replace(target.innerHTML, "") ?? null
+            }, "*")
+          },
+          debug(message, target) {
+            globalThis.parent.postMessage({
+              type: "debug",
+              message,
+              target: target?.nodeType === globalThis.window.document.COMMENT_NODE ? \`<!--\${target.textContent}-->\` : target?.outerHTML?.replace(target.innerHTML, "") ?? null
             }, "*")
           }
         }).render()

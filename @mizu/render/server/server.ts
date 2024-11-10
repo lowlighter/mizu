@@ -75,8 +75,8 @@ export class Server {
    */
   async render(content: string | Arg<Renderer["render"]>, options?: ServerRenderOptions & Pick<ServerOptions, "warn">): Promise<string> {
     await using window = new Window(typeof content === "string" ? content : `<body>${content.outerHTML}</body>`)
-    const { directives, warn, context: _context } = { ...this.#options, ...options }
-    const renderer = await new Renderer(window, { directives, warn }).ready
+    const { directives, warn, debug, context: _context } = { ...this.#options, ...options }
+    const renderer = await new Renderer(window, { directives, warn, debug }).ready
     let context = this.#context
     if (_context) {
       context = context.with(_context)

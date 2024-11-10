@@ -25,8 +25,8 @@ export class Client {
 
   /** {@linkcode Client} constructor. */
   constructor(options?: ClientOptions) {
-    const { directives, window, warn, context } = { ...Client.defaults, ...options }
-    this.#renderer = new Renderer(window, { directives, warn })
+    const { directives, window, warn, debug, context } = { ...Client.defaults, ...options }
+    this.#renderer = new Renderer(window, { directives, warn, debug })
     // deno-lint-ignore no-explicit-any
     this.#context = new Context<any>(context)
   }

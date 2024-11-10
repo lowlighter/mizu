@@ -3,6 +3,7 @@ import type { Directive } from "@mizu/internal/engine"
 import _mizu from "@mizu/mizu"
 import _bind from "@mizu/bind"
 import _custom_element from "@mizu/custom-element"
+import _eval from "@mizu/eval"
 import _event from "@mizu/event"
 import _for from "@mizu/for/empty"
 import _html from "@mizu/html"
@@ -23,6 +24,7 @@ export default [
   _mizu,
   _bind,
   _custom_element,
+  _eval,
   _event,
   _for,
   _html,
