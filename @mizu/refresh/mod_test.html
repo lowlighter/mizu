@@ -57,6 +57,28 @@
   </script>
 </test>
 
+<test name="[*refresh] exposes `$refresh` variable">
+  <script>
+    context.interval = .100
+  </script>
+  <render>
+    <p *refresh="interval" ~test.text="$refresh"></p>
+  </render>
+  <expect>
+    <p>false</p>
+  </expect>
+  <script>
+    await delay(context.interval * 1000)
+  </script>
+  <expect>
+    <p>true</p>
+  </expect>
+  <script>
+    context.interval = null
+  </script>
+  <render></render>
+</test>
+
 <test name="[*refresh] (error) expects a finite positive number">
   <render>
     <p *refresh="NaN"></p>

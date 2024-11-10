@@ -9,8 +9,14 @@ export const _refresh = {
   init(renderer) {
     renderer.cache<Cache<typeof _refresh>>(this.name, new WeakMap())
   },
+  setup(_, __, { state }) {
+    if (!("$refresh" in state)) {
+      Object.assign(state, { $refresh: false })
+    }
+    return { state }
+  },
   async execute(renderer, element, { attributes: [attribute], cache, ...options }) {
-    const value = await renderer.evaluate(element, attribute.value, { ...options }) as string
+    const value = await renderer.evaluate(element, attribute.value, options) as string
 
     // Clear interval if value is null
     if (value === null) {
@@ -27,7 +33,7 @@ export const _refresh = {
     clearTimeout(cache.get(element)?.id)
     cache.set(element, { interval, id: NaN })
   },
-  cleanup(renderer, element, { cache, root }) {
+  cleanup(renderer, element, { cache, ...options }) {
     // Cleanup interval from commented out elements
     if ((renderer.isComment(element)) && (cache.has(renderer.cache("*").get(element)!))) {
       element = renderer.cache("*").get(element)!
@@ -40,7 +46,7 @@ export const _refresh = {
     if (!Number.isNaN(cache.get(element)?.id)) {
       return
     }
-    cache.get(element)!.id = setTimeout(() => renderer.render(element as HTMLElement, { ...root }), cache.get(element)!.interval)
+    cache.get(element)!.id = setTimeout(() => renderer.render(element as HTMLElement, { ...options, state: { ...options.state, $refresh: true } }), cache.get(element)!.interval)
   },
 } as Directive<WeakMap<HTMLElement | Comment, { id: number; interval: number }>>
 

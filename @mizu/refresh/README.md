@@ -31,3 +31,9 @@ Reprocess an element at a specified interval _(in seconds)_.
 
 > [!NOTE]
 > Refresh operations are performed using [`setTimeout`](https://developer.mozilla.org/docs/Web/API/Window/setTimeout). New calls are scheduled when the directive is processed again, ensuring a consistent interval.
+
+## Variables
+
+### `$refresh: boolean`
+
+A flag that indicates whether the element is being refreshed.
