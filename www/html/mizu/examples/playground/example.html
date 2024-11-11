@@ -3,7 +3,7 @@
     You have {{ coins }} 🪙<br />
     Last refresh: <time class="muted" *refresh="1" *text="new Date().toISOString().slice(11, 19)" *eval="$refresh && (coins += income)"></time>
   </div>
-  <form *set="{ buildings: ['🏪 Store', '🏬 Mall', '🏟️ Bank', '🏯 Castle'] }">
+  <form *set="{ buildings: ['Choose a building', '🏪 Store', '🏬 Mall', '🏟️ Bank', '🏯 Castle'] }">
     <label>
       ⛏️ Mine
       <small>Click on the button to get coins.</small>
@@ -12,9 +12,8 @@
     <label>
       🛠️ Build
       <small>Create buildings to generate passive income.</small>
-      <select ::.number="build.selected" :disabled="build.progress" @change="build.time = 5 + build.selected ** 2">
-        <option value="0">Choose a building</option>
-        <option *for="buildings" :value="$I" :id="$value">{{ $value }}</option>
+      <select ::.number="build.selected" :disabled="build.progress" @change="build.time = 1 + (build.selected ** 2)">
+        <option *for="buildings" :value="$i">{{ $value }}</option>
       </select>
     </label>
     <section *if="build.selected">
@@ -37,6 +36,6 @@
     <br>
     <sub>+ {{ income }} 🪙/s</sub>
     <br>
-    <span *for="built">{{ [...$value][0] }}</span>
+    {{ built.map(building => [...building][0]).join(' ') }}
   </div>
 </main>

@@ -439,7 +439,7 @@ export class Renderer {
   }
 
   /** Watched {@linkcode Context}s. */
-  readonly #watched = new WeakMap<Context, WeakMap<HTMLElement | Comment, { properties: Set<string>; _get: Nullable<callback>; _set: Nullable<callback> }>>()
+  readonly #watched = new WeakMap<Context, WeakMap<HTMLElement | Comment, { properties: Set<string>; _get: Nullable<callback>; _set: Nullable<callback>, _call: Nullable<callback> }>>()
 
   /** Start watching a {@linkcode Context} for properties read operations. */
   #watch(context: Context, element: HTMLElement | Comment) {
@@ -447,7 +447,7 @@ export class Renderer {
       this.#watched.set(context, new WeakMap())
     }
     if (!this.#watched.get(context)!.has(element)) {
-      this.#watched.get(context)!.set(element, { properties: new Set(), _get: null, _set: null })
+      this.#watched.get(context)!.set(element, { properties: new Set(), _get: null, _set: null, _call:null })
     }
     const watched = this.#watched.get(context)!.get(element)!
     if (!watched._get) {
@@ -482,8 +482,21 @@ export class Renderer {
           this.#queueReactiveRender(element, { context, state, root })
         }
       }
+      context.addEventListener("set", watched._set as EventListener)
     }
-    context.addEventListener("set", watched._set as EventListener)
+    // TODO(@lowlighter): should find a better way to handle built-in mutations
+    if (!watched._call) {
+      watched._call = ({ detail: { target, path, property } }: CustomEvent) => {
+        if ((Array.isArray(target))&&(["push", "pop", "shift", "unshift", "splice", "sort"].includes(property))) {
+          const key = path.slice(0, -1).join(".")
+          if (watched.properties.has(key)) {
+            this.debug(`"${key}.${property}()" has been called, queuing reactive render request`, element)
+            this.#queueReactiveRender(element, { context, state, root })
+          }
+        }
+      }
+      context.addEventListener("call", watched._call as EventListener)
+    }
   }
 
   /**
