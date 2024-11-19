@@ -110,6 +110,7 @@ export const _model_value = {
             value = parse(Number(value) as unknown as Arg<typeof parse>, parsed.modifiers)
         }
         await renderer.evaluate(input, `${attribute.value}=${renderer.internal("value")}`, { ...options, state: { ...options.state, [renderer.internal("value")]: value } })
+        input.dispatchEvent(new renderer.window.Event("::", { bubbles: true }))
       }
     }
 

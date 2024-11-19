@@ -12,7 +12,7 @@
     <label>
       🛠️ Build
       <small>Create buildings to generate passive income.</small>
-      <select ::.number="build.selected" :disabled="build.progress" @change="build.time = 1 + (build.selected ** 2)">
+      <select ::.number="build.selected" :disabled="build.progress" @::="build.time = 1 + (build.selected ** 2)">
         <option *for="buildings" :value="$i">{{ $value }}</option>
       </select>
     </label>

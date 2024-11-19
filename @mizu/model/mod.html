@@ -14,6 +14,10 @@
     <a href="https://developer.mozilla.org/docs/Web/HTML/Element/input/checkbox"><code>&lt;input type="checkbox"&gt;</code></a> and
     <a href="https://developer.mozilla.org/docs/Web/HTML/Element/select#multiple"><code>&lt;select multiple&gt;</code></a> elements will bind to an array of values.
   </mizu-warn>
+  <mizu-warn #note>
+    Using a modeled value within <a href="#event"><code class="hljs-keyword">@input</code> or <code class="hljs-keyword">@change</code></a> expressions can cause precedence issues, as the model relies on these events to update. To avoid this, listen to the <code class="hljs-meta"
+    >::</code> event, which is always triggered after the model has been updated.
+  </mizu-warn>
   <mizu-restriction #note>
     Must be used on elements with a <code>value</code> property, such as <a href="https://developer.mozilla.org/docs/Web/HTML/Element/input"><code>&lt;input&gt;</code></a>, <a href="https://developer.mozilla.org/docs/Web/HTML/Element/select"><code>&lt;select&gt;</code></a>, or <a
       href="https://developer.mozilla.org/docs/Web/HTML/Element/textarea"

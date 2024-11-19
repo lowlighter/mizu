@@ -17,6 +17,9 @@ Bind an [`<input>`](https://developer.mozilla.org/docs/Web/HTML/Element/input), 
 
 > [!WARNING] [`<input type="checkbox">`](https://developer.mozilla.org/docs/Web/HTML/Element/input/checkbox) and [`<select multiple>`](https://developer.mozilla.org/docs/Web/HTML/Element/select#multiple) elements will bind to an array of values.
 
+> [!WARNING]
+> Using a modeled value within [`@input` or `@change`](#event) expressions can cause precedence issues, as the model relies on these events to update. To avoid this, listen to the `::` event, which is always triggered after the model has been updated.
+
 > [!CAUTION]
 > Must be used on elements with a `value` property, such as [`<input>`](https://developer.mozilla.org/docs/Web/HTML/Element/input), [`<select>`](https://developer.mozilla.org/docs/Web/HTML/Element/select), or
 > [`<textarea>`](https://developer.mozilla.org/docs/Web/HTML/Element/textarea). For other elements, use the [`: attribute`](#bind) directive.
