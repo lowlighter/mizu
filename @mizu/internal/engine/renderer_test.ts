@@ -353,6 +353,7 @@ test()("`Renderer.render() // R` reacts to properties changes using the closest 
   const a = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.a()" } })
   const b = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.b()", "~test.text": "foo" } })
   const c = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.c()", "~test.text": "1 + 1" } })
+  renderer.document.body.appendChild(a)
   a.appendChild(b)
   a.appendChild(c)
   await renderer.render(a, { context, reactive: true })
@@ -378,6 +379,7 @@ test()("`Renderer.render() // R` reacts to properties changes and avoid queuing 
   const a = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.a()", "~test[content].eval": "a" } })
   const b = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.b()", "~test[content].eval": "b" } })
   const c = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.c()", "~test[content].eval": "c" } })
+  renderer.document.body.appendChild(a)
   a.appendChild(b)
   b.appendChild(c)
   await renderer.render(a, { context, reactive: true })
@@ -399,6 +401,7 @@ test()("`Renderer.render() // R` reacts to properties changes and continue to tr
   const context = new Context({ foo: "bar", comment: true })
   const renderer = new Renderer(window, { ...options, directives: [_test] })
   const element = renderer.createElement("div", { innerHTML: `<div ~test[postprocessing].comment="comment" ~test[preprocessing]="foo"></div>` })
+  renderer.document.body.appendChild(element)
   await renderer.render(element, { context, reactive: true })
   expect(element.childNodes[0].nodeType).toBe(renderer.window.Node.COMMENT_NODE)
   context.target.comment = false
@@ -423,6 +426,7 @@ test()("`Renderer.render() // R` reacts to properties changes and continue to tr
   } as Directive
   const renderer = new Renderer(window, { ...options, directives: [_test, directive] })
   const element = renderer.createElement("div", { attributes: { "*foo": "", "~test[preprocessing].eval": "foo", "~test[content].text": "foo + bar" } })
+  renderer.document.body.appendChild(element)
   await renderer.render(element, { context, reactive: true })
   expect(element.textContent).toBe("barbaz")
   override.target.bar = "qux"
@@ -436,6 +440,7 @@ test()("`Renderer.flushReactiveRenderQueue()` flushes queued reactive render req
   const context = new Context({ foo: "bar" })
   const renderer = new Renderer(window, { ...options, directives: [_test] })
   const element = renderer.createElement("div", { attributes: { "~test.text": "foo" } })
+  renderer.document.body.appendChild(element)
   await renderer.render(element, { context, reactive: true })
   expect(element.textContent).toBe("bar")
   for (let i = 0; i < 10; i++) {
