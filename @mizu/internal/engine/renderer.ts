@@ -533,7 +533,7 @@ export class Renderer {
         this.debug("processing queued reactive render requests")
         await Promise.all(
           Array.from(this.#queued.entries()).map(([element, { entrypoint, ...options }]) => {
-            if (entrypoint) {
+            if (entrypoint && (element.isConnected)) {
               return this.#render(element, { reactive: true, ...options })
             }
           }),

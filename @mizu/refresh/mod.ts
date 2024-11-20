@@ -46,7 +46,11 @@ export const _refresh = {
     if (!Number.isNaN(cache.get(element)?.id)) {
       return
     }
-    cache.get(element)!.id = setTimeout(() => renderer.render(element as HTMLElement, { ...options, state: { ...options.state, $refresh: true } }), cache.get(element)!.interval)
+    cache.get(element)!.id = setTimeout(() => {
+      if (element.isConnected) {
+        renderer.render(element as HTMLElement, { ...options, state: { ...options.state, $refresh: true } })
+      }
+    }, cache.get(element)!.interval)
   },
 } as Directive<WeakMap<HTMLElement | Comment, { id: number; interval: number }>>
 

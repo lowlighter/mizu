@@ -1,9 +1,9 @@
-<main *set="{ coins: 0, income: 1, built: ['🏪'], build: { selected: 0, progress: 0, time: 0 } }" *mustache>
+<main *set="{ coins: 0, income: 5, built: ['🏛️ Town hall'], build: { selected: 0, progress: 0, time: 0 } }" *mustache>
   <div class="flash accent">
     You have {{ coins }} 🪙<br />
     Last refresh: <time class="muted" *refresh="1" *text="new Date().toISOString().slice(11, 19)" *eval="$refresh && (coins += income)"></time>
   </div>
-  <form *set="{ buildings: ['Choose a building', '🏪 Store', '🏬 Mall', '🏟️ Bank', '🏯 Castle'] }">
+  <form *set="{ buildings: ['Choose a building', '🏪 Store', '🏬 Mall', '🏟️ Stadium', '🏯 Castle'] }">
     <label>
       ⛏️ Mine
       <small>Click on the button to get coins.</small>
@@ -28,7 +28,7 @@
         </tr>
       </table>
       <button *if="!build.progress" @click.prevent="build.progress = 1">Build it!</button>
-      <progress *if="build.progress" *refresh="1" :value="build.progress" :max="build.time" *eval="$refresh && (build.progress++ >= build.time && (income += build.selected, built.push(buildings[build.selected]), build.selected = build.progress = 0))"></progress>
+      <progress *else *refresh="1" :value="build.progress" :max="build.time" *eval="$refresh && (build.progress++ >= build.time && (income += build.selected, built.push(buildings[build.selected]), build.selected = build.progress = 0))"></progress>
     </section>
   </form>
   <div class="flash success">
@@ -37,5 +37,37 @@
     <sub>+ {{ income }} 🪙/s</sub>
     <br>
     {{ built.map(building => [...building][0]).join(' ') }}
+  </div>
+  <hr>
+  <div class="flash muted">
+    <b>🧑‍🔬 DEBUG</b>
+    <br>
+    <small>The table below let you know about the current values used in this example.</small>
+    <table *mustache>
+      <tr>
+        <td><code>coins</code></td>
+        <td>{{ coins }}</td>
+      </tr>
+      <tr>
+        <td><code>income</code></td>
+        <td>{{ income }}</td>
+      </tr>
+      <tr>
+        <td><code>built</code></td>
+        <td>{{ built }}</td>
+      </tr>
+      <tr>
+        <td><code>build.selected</code></td>
+        <td>{{ build.selected }}</td>
+      </tr>
+      <tr>
+        <td><code>build.progress</code></td>
+        <td>{{ build.progress }}</td>
+      </tr>
+      <tr>
+        <td><code>build.time</code></td>
+        <td>{{ build.time }}</td>
+      </tr>
+    </table>
   </div>
 </main>
