@@ -68,7 +68,7 @@
     "@dprint/formatter": "jsr:@dprint/formatter@^0.4",
     "@libs/bundle/ts": "jsr:@libs/bundle@12.4.1/ts",
     "@libs/logger": "jsr:@libs/logger@3",
-    "@libs/reactive": "jsr:@libs/reactive@4",
+    "@libs/reactive": "jsr:@libs/reactive@5",
     "@libs/run": "jsr:@libs/run@3",
     "@libs/testing": "jsr:@libs/testing@3",
     "@libs/typing": "jsr:@libs/typing@3",

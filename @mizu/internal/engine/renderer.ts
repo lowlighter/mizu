@@ -347,13 +347,16 @@ export class Renderer {
       return
     }
     try {
-      // R1. Watch context
+      state = { ...state }
+      // R1. Watch context and restore queued context state
       if (reactive) {
         this.#watch(context, element)
+        if (this.#queued.get(element)?.entrypoint === false) {
+          Object.assign(state, this.#queued.get(element)!.state)
+        }
       }
       // 2. Setup directives
       const forced = new WeakMap<Directive, boolean>()
-      state = { ...state }
       for (const directive of this.#directives) {
         const changes = await directive.setup?.(this, element, { cache: this.cache(directive.name), context, state, root })
         if (changes === false) {
@@ -484,19 +487,6 @@ export class Renderer {
       }
       context.addEventListener("set", watched._set as EventListener)
     }
-    // TODO(@lowlighter): should find a better way to handle built-in mutations
-    if (!watched._call) {
-      watched._call = ({ detail: { target, path, property } }: CustomEvent) => {
-        if ((Array.isArray(target)) && (["push", "pop", "shift", "unshift", "splice", "sort"].includes(property))) {
-          const key = path.slice(0, -1).join(".")
-          if (watched.properties.has(key)) {
-            this.debug(`"${key}.${property}()" has been called, queuing reactive render request`, element)
-            this.#queueReactiveRender(element, { context, state, root })
-          }
-        }
-      }
-      context.addEventListener("call", watched._call as EventListener)
-    }
   }
 
   /**
@@ -508,11 +498,19 @@ export class Renderer {
    * The actual rendering call is throttled to prevent over-rendering.
    */
   #queueReactiveRender(element: HTMLElement | Comment, options: { context: Context; state: State; root: InitialContextState }) {
-    if (this.#queued.some(([ancestor]) => (ancestor === element) || (ancestor.contains(element)))) {
-      return
-    }
-    this.#queued = this.#queued.filter(([ancestor]) => !element.contains(ancestor))
-    this.#queued.push([element, options])
+    this.#queued.set(element, { ...options, entrypoint: true })
+    this.#queued.forEach((_, element) => {
+      let ancestor = element.parentElement
+      while (ancestor) {
+        if (this.#queued.has(ancestor)) {
+          break
+        }
+        ancestor = ancestor.parentElement
+      }
+      if (ancestor) {
+        this.#queued.get(element)!.entrypoint = false
+      }
+    })
     this.#reactiveRender()
   }
 
@@ -523,7 +521,7 @@ export class Renderer {
     let active = false
     let flushed = false
     return async () => {
-      if (active || (!this.#queued.length) || (Date.now() - t <= throttle)) {
+      if (active || (!this.#queued.size) || (Date.now() - t <= throttle)) {
         return
       }
       try {
@@ -533,12 +531,16 @@ export class Renderer {
           controller.abort()
         }
         this.debug("processing queued reactive render requests")
-        await Promise.all(this.#queued.map(([element, options]) => {
-          return this.#render(element, { reactive: true, ...options })
-        }))
+        await Promise.all(
+          Array.from(this.#queued.entries()).map(([element, { entrypoint, ...options }]) => {
+            if (entrypoint) {
+              return this.#render(element, { reactive: true, ...options })
+            }
+          }),
+        )
       } finally {
         t = Date.now()
-        this.#queued = []
+        this.#queued.clear()
         active = false
         if (flushed) {
           flushed = false
@@ -559,7 +561,7 @@ export class Renderer {
   }
 
   /** Queued reactive render requests. */
-  #queued = [] as Array<[HTMLElement | Comment, { context: Context; state: State; root: InitialContextState }]>
+  #queued = new Map<HTMLElement | Comment, { context: Context; state: State; root: InitialContextState; entrypoint: boolean }>()
 
   /**
    * Create a new {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} within {@linkcode Renderer.document}.
