@@ -57,6 +57,21 @@
   </expect>
 </test>
 
+<test name="[~test] with `event` modifier listens to specified event">
+  <script>
+    context.callback = fn()
+  </script>
+  <render>
+    <div ~test.event[foo]="callback"></div>
+  </render>
+  <script>
+    document.querySelector("div").dispatchEvent(new Event("bar"))
+    expect(context.callback).not.toHaveBeenCalled()
+    document.querySelector("div").dispatchEvent(new Event("foo"))
+    expect(context.callback).toHaveBeenCalled()
+  </script>
+</test>
+
 <test name="[~test] with `throw` modifier throws `EvalError`">
   <render throw>
     <p ~test.throw></p>

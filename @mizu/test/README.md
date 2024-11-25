@@ -17,6 +17,9 @@ Special directive for testing purposes.
 > [!WARNING]
 > For testing only. Use this directive to isolate and test custom directives without relying on others.
 
+> [!WARNING]
+> The modifiers may not be compatible with each other.
+
 ## Modifiers
 
 ### `[string]`

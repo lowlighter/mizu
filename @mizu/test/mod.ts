@@ -12,6 +12,7 @@ export const typings = {
     comment: { type: Boolean },
     eval: { type: Boolean },
     throw: { type: Boolean },
+    event: { type: String },
   },
 } as const
 
@@ -57,6 +58,10 @@ export const _test = {
         if (parsed.modifiers.eval) {
           await renderer.evaluate(element, attribute.value, options)
           continue
+        }
+        // Evaluate attribute value on `event` modifier value
+        if (parsed.modifiers.event) {
+          element.addEventListener(parsed.modifiers.event, (event) => renderer.evaluate(element, attribute.value, { context: options.context, state: { ...options.state, $event: event }, args: [event] }))
         }
         // Throw error on truthy `throw` modifier value
         if ((parsed.modifiers.throw) && (await renderer.evaluate(element, attribute.value || "'true'", options))) {
