@@ -15,7 +15,7 @@ Reprocess an element at a specified interval _(in seconds)_.
 ## Notes
 
 > [!WARNING]
-> Context is recreated from the initial root context and the element itself, meaning intermediate computations are not retained. Use this only on elements that can be rendered independently to avoid unexpected errors.
+> Ensure proper context management to prevent unexpected errors.
 
 > [!WARNING]
 > Avoid using with iterative directives like [`*for`](#for) as [`*refresh`](#refresh) will be duplicated for each generated element.
@@ -36,4 +36,4 @@ Reprocess an element at a specified interval _(in seconds)_.
 
 ### `$refresh: boolean`
 
-A flag that indicates whether the element is being refreshed.
+Indicates if the element is currently being refreshed.

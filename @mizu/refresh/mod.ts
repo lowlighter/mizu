@@ -21,6 +21,7 @@ export const _refresh = {
     // Clear interval if value is null
     if (value === null) {
       clearTimeout(cache.get(element)?.id)
+      cache.delete(element)
       return
     }
 
@@ -30,8 +31,11 @@ export const _refresh = {
       renderer.warn(`[${this.name}] expects a finite positive number but got ${value}, ignoring`, element)
       return
     }
-    clearTimeout(cache.get(element)?.id)
-    cache.set(element, { interval, id: NaN })
+    const cached = cache.get(element) ?? cache.set(element, { interval, id: NaN }).get(element)!
+    if (((cached.interval !== interval) && (!Number.isNaN(cached.id))) || (options.state[renderer.internal("refreshing")])) {
+      clearTimeout(cached.id)
+      cached.id = NaN
+    }
   },
   cleanup(renderer, element, { cache, ...options }) {
     // Cleanup interval from commented out elements
@@ -48,7 +52,7 @@ export const _refresh = {
     }
     cache.get(element)!.id = setTimeout(() => {
       if (element.isConnected) {
-        renderer.render(element as HTMLElement, { ...options, state: { ...options.state, $refresh: true } })
+        renderer.render(element as HTMLElement, { ...options, state: { ...options.state, $refresh: true, [renderer.internal("refreshing")]: true } })
       }
     }, cache.get(element)!.interval)
   },
