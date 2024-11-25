@@ -129,7 +129,7 @@
 
     // Setup code editor
     function coloration(value, target = highlight) {
-      target.innerHTML = hljs.highlight(value, { language: "xml" }).value
+      target.innerHTML = `${hljs.highlight(value, { language: "xml" }).value}\n`
     }
     textarea.addEventListener("input", () => coloration(textarea.value))
     textarea.addEventListener("input", () => render())

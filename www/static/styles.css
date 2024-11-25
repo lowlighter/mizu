@@ -687,6 +687,7 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   padding: 0;
   height: 100%;
   border-radius: 0;
+  border: none;
 }
 .mockup.browser .browser-inspector-content .editor textarea:hover,
 .mockup.browser .browser-inspector-content .editor textarea:focus {
