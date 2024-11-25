@@ -332,6 +332,40 @@
   </script>
 </test>
 
+<test name="[%http] performs a new request only when target url changes">
+  <http-server>
+    <response path="/foo" status="OK"></response>
+    <response path="/bar" status="OK"></response>
+  </http-server>
+  <script>
+    context.url = "/foo"
+  </script>
+  <render>
+    <div %http="url" %response.void></div>
+  </render>
+  <script>
+    expect(http.request).toBeInstanceOf(Request)
+    expect(new URL(http.request.url).pathname).toBe("/foo")
+    storage.request = http.request
+  </script>
+  <render></render>
+  <script>
+    expect(http.request).toBe(storage.request)
+    context.url = "/bar"
+  </script>
+  <render></render>
+  <script>
+    expect(http.request).not.toBe(storage.request)
+    expect(http.request).toBeInstanceOf(Request)
+    expect(new URL(http.request.url).pathname).toBe("/bar")
+    storage.request = http.request
+  </script>
+  <render></render>
+  <script>
+    expect(http.request).toBe(storage.request)
+  </script>
+</test>
+
 <test name="[%http] skips commented elements">
   <http-server>
     <response path="/foo" status="OK"></response>

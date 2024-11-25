@@ -9,10 +9,19 @@
     </div>
   </code>
   <mizu-note #note>
-    If the element lacks a <a href="#response"><code class="hljs-keyword">%response</code></a> directive, the request is not automatically performed.
+    Without a <a href="#response"><code class="hljs-keyword">%response</code></a> directive, the request won't be performed automatically. Use <a href="#response"><code class="hljs-keyword">%response<span class="hljs-meta">.void</span></code></a> if you want to trigger the
+    request but ignore the response.
   </mizu-note>
   <mizu-note #note>
     Valid <a href="https://developer.mozilla.org/docs/Web/API/URL/canParse_static">URLs</a> may be specified <q>as is</q>.
+  </mizu-note>
+  <mizu-note #note>
+    A new request is triggered for the same element if:
+    <ul>
+      <li>Its reference changes.</li>
+      <li>The evaluated URL changes.</li>
+    </ul>
+    Since predicting when a new request will be performed is challenging, use this directive only for read-only operations. For endpoints with side effects, consider the <a href="#http_event"><code class="hljs-keyword">%@event</code></a> directive.
   </mizu-note>
   <mizu-variable #variable name="$event">
     <span #type>Event | null</span>

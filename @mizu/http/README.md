@@ -15,10 +15,16 @@ Perform a [`fetch()`](https://developer.mozilla.org/docs/Web/API/Fetch_API) call
 ## Notes
 
 > [!NOTE]
-> If the element lacks a [`%response`](#response) directive, the request is not automatically performed.
+> Without a [`%response`](#response) directive, the request won't be performed automatically. Use [`%response .void`](#response) if you want to trigger the request but ignore the response.
 
 > [!NOTE]
 > Valid [URLs](https://developer.mozilla.org/docs/Web/API/URL/canParse_static) may be specified « as is ».
+
+> [!NOTE]
+> A new request is triggered for the same element if:
+>
+> - Its reference changes.
+> - The evaluated URL changes. Since predicting when a new request will be performed is challenging, use this directive only for read-only operations. For endpoints with side effects, consider the [`%@event`](#http_event) directive.
 
 ## Variables
 

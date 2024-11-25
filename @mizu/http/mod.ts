@@ -133,7 +133,10 @@ export const _http = {
   prefix: "%",
   phase: Phase.HTTP_REQUEST,
   typings: _http_typings,
-  execute(renderer, element, { attributes: [attribute], state, ...options }) {
+  init(renderer) {
+    renderer.cache<Cache<typeof _http>>(this.name, new WeakMap())
+  },
+  execute(renderer, element, { cache, attributes: [attribute], state, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -152,6 +155,12 @@ export const _http = {
     const callback = async function ($event: Nullable<Event>) {
       const value = attribute.value
       const url = new URL(URL.canParse(value) || /^\.?\//.test(value) ? value : `${await renderer.evaluate(element, value, { state: { ...state, $event }, ...options })}`, globalThis.location?.href)
+      if ($event === null) {
+        if (cache.get(element) === url.href) {
+          return
+        }
+        cache.set(element, url.href)
+      }
       if (modifiers.history) {
         renderer.window.history.pushState(null, "", url.href)
       }
@@ -169,7 +178,7 @@ export const _http = {
     }
     return callback(null).then(($response) => ({ state: { $response } }))
   },
-} as Directive & { execute: NonNullable<Directive["execute"]> }
+} as Directive<WeakMap<Element, string>> & { execute: NonNullable<Directive["execute"]> }
 
 /** `%response` typings. */
 export const _response_typings = {
