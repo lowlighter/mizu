@@ -168,6 +168,7 @@ async function script(operation: HTMLElement, testing: Testing) {
     retry,
     fetch: testing.context.target.fetch,
     Status,
+    rerender: () => testing.renderer.render(testing.renderer.document.documentElement, { context: testing.context, select: "body", implicit: true, throw: true }),
   } as unknown as VirtualWindow
   const script = new AsyncFunction(...Object.keys(args), operation.innerHTML)
   await _expect(script(...Object.values(args))).resolves.not.toThrow()

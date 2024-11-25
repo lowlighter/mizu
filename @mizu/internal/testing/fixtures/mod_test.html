@@ -59,6 +59,26 @@
   </script>
 </test>
 
+<test name="`&lt;script/&gt;` evaluates specified script">
+  <load directives="@mizu/test"></load>
+  <script>
+    context.foo = "bar"
+  </script>
+  <render>
+    <p ~test.text="foo"></p>
+  </render>
+  <expect>
+    <p>bar</p>
+  </expect>
+  <script>
+    context.foo = "baz"
+    await rerender()
+  </script>
+  <expect>
+    <p>baz</p>
+  </expect>
+</test>
+
 <test name="`&lt;expect/&gt;` asserts rendered content matches expected content and honors `comments` option">
   <render>
     <p>
