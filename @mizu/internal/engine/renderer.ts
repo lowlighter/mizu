@@ -1,5 +1,5 @@
 // Imports
-import type { Arg, Arrayable, callback, DeepReadonly, NonVoid, Nullable, Optional } from "@libs/typing/types"
+import type { Arg, Arrayable, callback, NonVoid, Nullable, Optional } from "@libs/typing/types"
 import type { Cache, Directive } from "./directive.ts"
 import { escape } from "@std/regexp"
 import { AsyncFunction } from "@libs/typing/func"
@@ -318,7 +318,7 @@ export class Renderer {
     let subtrees = implicit || (element.hasAttribute(Renderer.#explicit)) ? [element] : Array.from(element.querySelectorAll<HTMLElement>(`[${escape(Renderer.#explicit)}]`))
     subtrees = subtrees.filter((element) => subtrees.every((ancestor) => (ancestor === element) || (!ancestor.contains(element))))
     // Render subtrees
-    const rendered = await Promise.allSettled(subtrees.map((element) => this.#render(element, { context, state, reactive, root: { context, state } })))
+    const rendered = await Promise.allSettled(subtrees.map((element) => this.#render(element, { context, state, reactive })))
     const rejected = rendered.filter((render) => render.status === "rejected")
     if (rejected.length) {
       const error = new AggregateError(rejected.map((render) => render.reason))
@@ -341,7 +341,7 @@ export class Renderer {
    *
    * For more information, see the {@link https://mizu.sh/#concept-rendering | mizu.sh documentation}.
    */
-  async #render(element: HTMLElement | Comment, { context, state, reactive, root }: { context: Context; state: State; reactive: boolean; root: InitialContextState }) {
+  async #render(element: HTMLElement | Comment, { context, state, reactive }: { context: Context; state: State; reactive: boolean }) {
     // 1. Ignore non-element nodes unless they were processed before and put into cache
     if ((element.nodeType !== this.window.Node.ELEMENT_NODE) && (!this.cache("*").has(element))) {
       return
@@ -358,7 +358,7 @@ export class Renderer {
       // 2. Setup directives
       const forced = new WeakMap<Directive, boolean>()
       for (const directive of this.#directives) {
-        const changes = await directive.setup?.(this, element, { cache: this.cache(directive.name), context, state, root })
+        const changes = await directive.setup?.(this, element, { cache: this.cache(directive.name), context, state })
         if (changes === false) {
           return
         }
@@ -390,7 +390,7 @@ export class Renderer {
         }
         // 4.3 Execute directive
         phases.set(directive.phase, directive.name)
-        const changes = await directive.execute?.(this, element, { cache: this.cache(directive.name), context, state, attributes, root })
+        const changes = await directive.execute?.(this, element, { cache: this.cache(directive.name), context, state, attributes })
         if (changes?.element) {
           if (reactive && (this.#watched.get(context)?.has(element))) {
             this.#unwatch(context, element)
@@ -420,7 +420,7 @@ export class Renderer {
         this.#unwatch(context, element)
       }
       for (const child of Array.from(element.childNodes) as Array<HTMLElement | Comment>) {
-        await this.#render(child, { context, state, reactive, root })
+        await this.#render(child, { context, state, reactive })
       }
       if (reactive) {
         this.#watch(context, element)
@@ -431,12 +431,12 @@ export class Renderer {
     } finally {
       // 6. Cleanup directives
       for (const directive of this.#directives) {
-        await directive.cleanup?.(this, element, { cache: this.cache(directive.name), context, state, root })
+        await directive.cleanup?.(this, element, { cache: this.cache(directive.name), context, state })
       }
       // R2. Unwatch context and start reacting
       if (reactive) {
         this.#unwatch(context, element)
-        this.#react(element, { context, state, root })
+        this.#react(element, { context, state })
       }
     }
   }
@@ -470,7 +470,7 @@ export class Renderer {
   }
 
   /** Start reacting to any {@linkcode Context} properties changes. */
-  #react(element: HTMLElement | Comment, { context, state, root }: { context: Context; state: State; root: InitialContextState }) {
+  #react(element: HTMLElement | Comment, { context, state }: { context: Context; state: State }) {
     if (!this.#watched.get(context)?.get(element)?.properties.size) {
       return
     }
@@ -482,7 +482,7 @@ export class Renderer {
         const key = [...path, property].join(".")
         if (watched.properties.has(key)) {
           this.debug(`"${key}" has been modified, queuing reactive render request`, element)
-          this.#queueReactiveRender(element, { context, state, root })
+          this.#queueReactiveRender(element, { context, state })
         }
       }
       context.addEventListener("set", watched._set as EventListener)
@@ -497,7 +497,7 @@ export class Renderer {
    *
    * The actual rendering call is throttled to prevent over-rendering.
    */
-  #queueReactiveRender(element: HTMLElement | Comment, options: { context: Context; state: State; root: InitialContextState }) {
+  #queueReactiveRender(element: HTMLElement | Comment, options: { context: Context; state: State }) {
     this.#queued.set(element, { ...options, entrypoint: true })
     this.#queued.forEach((_, element) => {
       let ancestor = element.parentElement
@@ -561,7 +561,7 @@ export class Renderer {
   }
 
   /** Queued reactive render requests. */
-  #queued = new Map<HTMLElement | Comment, { context: Context; state: State; root: InitialContextState; entrypoint: boolean }>()
+  #queued = new Map<HTMLElement | Comment, { context: Context; state: State; entrypoint: boolean }>()
 
   /**
    * Create a new {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} within {@linkcode Renderer.document}.
@@ -1218,14 +1218,6 @@ export type RendererParseAttributeOptions = {
   /** Attribute name prefix to strip. */
   prefix?: string
 }
-
-/** {@linkcode Renderer.render()} initial {@linkcode Context} and {@linkcode State}. */
-export type InitialContextState = Readonly<{
-  /** Initial {@linkcode Context}. */
-  context: Context
-  /** Initial {@linkcode State}. */
-  state: DeepReadonly<State>
-}>
 
 /** Current {@linkcode Renderer.render()} state. */
 export type State = Record<`$${string}` | `${typeof Renderer.internal}_${string}`, unknown>

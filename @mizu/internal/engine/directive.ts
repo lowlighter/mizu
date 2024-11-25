@@ -1,6 +1,6 @@
 // Imports
 import type { DeepReadonly, Promisable } from "@libs/typing/types"
-import type { AttrTypings, Context, InferAttrTypings, InitialContextState, Renderer, State } from "./renderer.ts"
+import type { AttrTypings, Context, InferAttrTypings, Renderer, State } from "./renderer.ts"
 import { Phase } from "./phase.ts"
 export { Phase }
 export type { DeepReadonly, Promisable }
@@ -166,7 +166,7 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * } as Directive & { name: string }
    * ```
    */
-  readonly setup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Cache; context: Context; state: DeepReadonly<State>; root: InitialContextState }) => Promisable<void | Partial<{ state: State; execute: boolean } | false>>
+  readonly setup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Cache; context: Context; state: DeepReadonly<State> }) => Promisable<void | Partial<{ state: State; execute: boolean } | false>>
   /**
    * Directive execution callback.
    *
@@ -194,7 +194,7 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
   readonly execute?: (
     renderer: Renderer,
     element: HTMLElement | Comment,
-    _: { cache: Cache; context: Context; state: DeepReadonly<State>; attributes: Readonly<Attr[]>; root: InitialContextState },
+    _: { cache: Cache; context: Context; state: DeepReadonly<State>; attributes: Readonly<Attr[]> },
   ) => Promisable<void | Partial<{ element: HTMLElement | Comment; context: Context; state: State; final: boolean }>>
   /**
    * Directive cleanup callback.
@@ -214,7 +214,7 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * } as Directive & { name: string }
    * ```
    */
-  readonly cleanup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Cache; context: Context; state: DeepReadonly<State>; root: InitialContextState }) => Promisable<void>
+  readonly cleanup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Cache; context: Context; state: DeepReadonly<State> }) => Promisable<void>
 }
 
 /** Extracts the cache type from a {@linkcode Directive}. */
