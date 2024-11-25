@@ -1,6 +1,6 @@
 {
   "name": "@mizu/eval",
-  "version": "0.2.1",
+  "version": "0.7.0",
   "exports": {
     ".": "./mod.ts"
   }

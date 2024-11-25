@@ -1,6 +1,6 @@
 {
   "name": "@mizu/unstable",
-  "version": "0.2.0",
+  "version": "0.7.0",
   "exports": {
     "./noop": "./noop/mod.ts"
   }
