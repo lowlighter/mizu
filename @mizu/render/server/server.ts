@@ -1,12 +1,14 @@
 // Imports
 import type { Arg, Directive, Promisable, RendererOptions, RendererRenderOptions } from "@mizu/internal/engine"
-import type { Buffer } from "node:buffer"
 import type { CallbackSource, GlobSource, StringSource, URLSource } from "./generate.ts"
+// deno-lint-ignore no-external-import
+import type { Buffer } from "node:buffer"
 import { Context, Renderer } from "@mizu/internal/engine"
 import { Window } from "@mizu/internal/vdom"
-import { mkdir, readdir, readFile as read, rmdir, stat, writeFile as write } from "node:fs/promises"
 import defaults from "./defaults.ts"
 import { generate } from "./generate.ts"
+// deno-lint-ignore no-external-import
+import { mkdir, readdir, readFile as read, rmdir, stat, writeFile as write } from "node:fs/promises"
 export type * from "@mizu/internal/engine"
 export type { CallbackSource, GlobSource, StringSource, URLSource } from "./generate.ts"
 

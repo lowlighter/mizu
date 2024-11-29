@@ -3,6 +3,7 @@ import type { Arg, Arrayable, Promisable } from "@mizu/internal/engine"
 import type { Server, ServerGenerateFileSystemOptions as FileSystemOptions, ServerGenerateOptions as GenerateOptions } from "./server.ts"
 import { common, dirname, globToRegExp, join, resolve } from "@std/path"
 import { readAll, readerFromStreamReader } from "@std/io"
+// deno-lint-ignore no-external-import
 import { Buffer } from "node:buffer"
 
 /** Text encoder. */

@@ -11,7 +11,9 @@ import { fromFileUrl } from "@std/path"
 import { Window } from "../vdom/mod.ts"
 import { Renderer } from "../engine/mod.ts"
 import { filter } from "./filter.ts"
+// deno-lint-ignore no-external-import
 import { readFileSync } from "node:fs"
+// deno-lint-ignore no-external-import
 import { createServer } from "node:http"
 
 /**
@@ -250,17 +252,20 @@ async function http(operation: HTMLElement, testing: Testing) {
   const { promise, resolve } = Promise.withResolvers<void>()
   testing.http.server = createServer(async (incoming, outgoing) => {
     // Parse incoming message into web standards objects
-    const headers = new Headers(incoming.headers as any)
+    const headers = new Headers(incoming.headers as HeadersInit)
     const url = new URL(incoming.url!, `http://${headers.get("host")}`)
     const body = await new Promise<string>((resolve) => {
       let content = ""
-      incoming.on("data", (chunk) => content += chunk)
-      incoming.on("end", () => resolve(content))
+      if (Number(headers.get("content-length"))) {
+        incoming.on("data", (chunk) => content += chunk)
+        incoming.on("end", () => resolve(content))
+      }
+      else {
+        resolve(content)
+      }
     })
-    const request = new Request(url.href, { method: incoming.method, headers, body: !["GET", "HEAD"].includes(`${incoming.method}`) ? body : null })
-    const response = new Response(null, { status: Status.NotFound })
-    testing.http.request = Object.assign(request, { received: { body, headers } })
-    testing.http.response = response
+    testing.http.request = Object.assign(new Request(url.href, { method: incoming.method, headers, body: !["GET", "HEAD"].includes(`${incoming.method}`) ? body : null }), { received: { body, headers } })
+    testing.http.response = new Response(null, { status: Status.NotFound })
     // Route incoming message
     for (const route of Array.from(operation.querySelectorAll("response"))) {
       if ((route.getAttribute("path") ?? "/") === url.pathname) {
@@ -278,7 +283,7 @@ async function http(operation: HTMLElement, testing: Testing) {
       }
     }
     // Send outgoing message
-    outgoing.writeHead(testing.http.response.status, Object.fromEntries(new Headers(testing.http.response.headers).entries()))
+    outgoing.writeHead(testing.http.response.status, Object.fromEntries(testing.http.response.headers.entries()))
     outgoing.end(await testing.http.response.text())
   })
   // Start server and update global location

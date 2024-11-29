@@ -1,6 +1,7 @@
 // Imports
 import { createFromBuffer } from "@dprint/formatter"
 import { fromFileUrl } from "@std/path"
+// deno-lint-ignore no-external-import
 import { readFileSync } from "node:fs"
 
 /** HTML formatter. */
