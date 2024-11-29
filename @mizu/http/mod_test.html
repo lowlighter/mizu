@@ -500,7 +500,7 @@
     context.result = null
   </script>
   <render>
-    <div %http="/foo" %response.html="result = $content"></div>
+    <div %http="/foo" %response.html="result = $content.innerHTML"></div>
   </render>
   <script>
     expect(context.result).toBe("<foo>bar</foo>")

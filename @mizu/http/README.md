@@ -201,7 +201,7 @@ Consume the [`response.body`](https://developer.mozilla.org/docs/Web/API/Respons
 
 - `void`: discard body using [`response.body?.cancel()`](https://developer.mozilla.org/docs/Web/API/Response/body).
 - `text`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and set element's [`textContent`](https://developer.mozilla.org/docs/Web/API/Node/textContent) if no expression is provided.
-- `html`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and set element's [`innerHTML`](https://developer.mozilla.org/docs/Web/API/Element/innerHTML) if no expression is provided.
+- `html`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text), parse it into a `<body>` element, and set element's [`innerHTML`](https://developer.mozilla.org/docs/Web/API/Element/innerHTML) if no expression is provided.
 - `json`: consume body using [`response.json()`](https://developer.mozilla.org/docs/Web/API/Response/json).
 - `xml`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and parse it with [`parse` from _@libs/xml_](https://jsr.io/@libs/xml). > [!IMPORTANT]
 

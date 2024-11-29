@@ -271,9 +271,9 @@ export const _response = {
         }
         // HTML response
         case (modifiers.consume === "html") || (modifiers.html): {
-          $content = await $response.text()
+          $content = renderer.createElement("body", { innerHTML: await $response.text() }) as HTMLBodyElement
           if (!expression) {
-            element.innerHTML = $content
+            element.innerHTML = $content.innerHTML
           }
           break
         }
