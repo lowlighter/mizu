@@ -1,10 +1,10 @@
 // Imports
 import type { Arg, Directive, Promisable, RendererOptions, RendererRenderOptions } from "@mizu/internal/engine"
-import type { Buffer } from "@node/buffer"
+import type { Buffer } from "node:buffer"
 import type { CallbackSource, GlobSource, StringSource, URLSource } from "./generate.ts"
 import { Context, Renderer } from "@mizu/internal/engine"
 import { Window } from "@mizu/internal/vdom"
-import { mkdir, readFile as read, rmdir, stat, writeFile as write } from "@node/fs/promises"
+import { mkdir, readdir, readFile as read, rmdir, stat, writeFile as write } from "node:fs/promises"
 import defaults from "./defaults.ts"
 import { generate } from "./generate.ts"
 export type * from "@mizu/internal/engine"
@@ -28,7 +28,7 @@ export class Server {
     generate: {
       output: "./output",
       clean: true,
-      fs: { stat, mkdir, rmdir, read, write },
+      fs: { stat, readdir, mkdir, rmdir, read, write },
     },
     // deno-lint-ignore no-console
     warn: console.warn,
@@ -117,7 +117,7 @@ export class Server {
    *     [ new URL(`data:text/html,<p ~test.text="foo"></p>`), "url_render.html", { render: { context: { foo: "bar" } } } ],
    *   ],
    *   // No-op: do not actually write files and directories
-   *   { fs: { mkdir: () => null as any, write: () => null as any } },
+   *   { fs: { readdir: () => [], mkdir: () => null as any, write: () => null as any } },
    * )
    * ```
    */
@@ -172,7 +172,7 @@ export type ServerGenerateOptions = {
 /** File system options. */
 export type ServerGenerateFileSystemOptions = {
   /** Stat callback. */
-  stat: (path: string) => Promise<unknown>
+  stat: (path: string) => Promise<{ isFile: boolean | (() => boolean); isDirectory: boolean | (() => boolean) }>
   /** Read callback. */
   read: (path: string) => Promise<Buffer>
   /** Write callback. */
@@ -181,4 +181,6 @@ export type ServerGenerateFileSystemOptions = {
   mkdir: (path: string, options?: { recursive?: boolean }) => Promisable<unknown>
   /** Remove directory callback. */
   rmdir: (path: string, options?: { recursive?: boolean }) => Promisable<unknown>
+  /** Read directory callback. */
+  readdir: (path: string) => Promise<string[] | { name: string }[]>
 }

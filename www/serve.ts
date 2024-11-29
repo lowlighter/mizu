@@ -1,7 +1,7 @@
 // Imports
 import type { callback } from "@libs/typing"
 import { dirname, fromFileUrl, join } from "@std/path"
-import { route } from "@std/http/route"
+import { route } from "@std/http/unstable-route"
 import { accepts, serveDir } from "@std/http"
 import { toSnakeCase } from "@std/text"
 import { Phase } from "@mizu/internal/engine"

@@ -4,7 +4,7 @@ import { Window } from "@mizu/internal/vdom"
 import { type Directive, Phase, Renderer } from "@mizu/internal/engine"
 import directive from "./mod.ts"
 
-test()("[@event] supports `_event` internal api", async () => {
+test("[@event] supports `_event` internal api", async () => {
   await using window = new Window()
   const tested = {
     name: "~tested",
@@ -18,7 +18,7 @@ test()("[@event] supports `_event` internal api", async () => {
   expect(element.addEventListener).toHaveBeenCalledWith("testing", expect.any(Function), expect.any(Object))
 })
 
-test()("[@event] supports `_callback` internal api", async () => {
+test("[@event] supports `_callback` internal api", async () => {
   await using window = new Window()
   const callback = fn()
   const tested = {

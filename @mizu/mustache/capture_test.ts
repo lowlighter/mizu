@@ -1,7 +1,7 @@
 import { expect, test } from "@libs/testing"
 import { capture } from "./capture.ts"
 
-test()("`capture()` captures content between double delimiters", () => {
+test("`capture()` captures content between double delimiters", () => {
   expect(capture("foo {{ bar }} baz")).toMatchObject({
     captured: "bar",
     match: "{{ bar }}",
@@ -11,7 +11,7 @@ test()("`capture()` captures content between double delimiters", () => {
   })
 })
 
-test()("`capture()` captures content between triple delimiters", () => {
+test("`capture()` captures content between triple delimiters", () => {
   expect(capture("foo {{{ bar }}} baz")).toMatchObject({
     captured: "bar",
     match: "{{{ bar }}}",
@@ -21,7 +21,7 @@ test()("`capture()` captures content between triple delimiters", () => {
   })
 })
 
-test()("`capture()` handles nested delimiters", () => {
+test("`capture()` handles nested delimiters", () => {
   for (const d of ["{{", "{{{"]) {
     const b = { "{{": "}}", "{{{": "}}}" }[d]
     for (const q of ["'", '"', "`"]) {
@@ -36,6 +36,6 @@ test()("`capture()` handles nested delimiters", () => {
   }
 })
 
-test()("`capture()` throws `new SyntaxError()` on unclosed expressions", () => {
-  expect(() => capture("foo {{ bar baz"))._toThrow(SyntaxError, "Unclosed expression")
+test("`capture()` throws `new SyntaxError()` on unclosed expressions", () => {
+  expect(() => capture("foo {{ bar baz")).toThrow(SyntaxError, "Unclosed expression")
 })

@@ -1,8 +1,10 @@
 // Imports
-import { createStreaming } from "@dprint/formatter"
+import { createFromBuffer } from "@dprint/formatter"
+import { fromFileUrl } from "@std/path"
+import { readFileSync } from "node:fs"
 
 /** HTML formatter. */
-const formatter = await createStreaming(fetch("https://lecoq.io/cdn/dprint/markup_fmt-v0.13.1.wasm"))
+const formatter = createFromBuffer(readFileSync(fromFileUrl(import.meta.resolve("./fixtures/markup_fmt-v0.13.1.wasm"))))
 formatter.setConfig({}, { printWidth: 120, closingBracketSameLine: true, closingTagLineBreakForEmpty: "never", preferAttrsSingleLine: true, whitespaceSensitivity: "ignore" })
 
 /** Format HTML. */

@@ -1,6 +1,6 @@
 // Imports
 import type { VirtualWindow } from "../engine/mod.ts"
-import { JSDOM } from "@npm/jsdom"
+import { JSDOM } from "jsdom"
 export type { VirtualWindow }
 
 /**

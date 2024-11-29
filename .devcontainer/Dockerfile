@@ -11,7 +11,9 @@ ENV PATH=${DENO_INSTALL}/bin:${PATH} \
 
 # Install Node.js
 RUN apt-get update \
-    && apt-get install -y nodejs npm
+    && apt-get install -y curl \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs
 
 # Install Bun
 ENV BUN_INSTALL=/bun

@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "paths": {
+      "@mizu/bind": ["./@mizu/bind/mod.ts"],
+      "@mizu/clean": ["./@mizu/clean/mod.ts"],
+      "@mizu/code": ["./@mizu/code/mod.ts"],
+      "@mizu/custom-element": ["./@mizu/custom-element/mod.ts"],
+      "@mizu/eval": ["./@mizu/eval/mod.ts"],
+      "@mizu/event": ["./@mizu/event/mod.ts"],
+      "@mizu/for": ["./@mizu/for/mod.ts"],
+      "@mizu/for/empty": ["./@mizu/for/empty/mod.ts"],
+      "@mizu/html": ["./@mizu/html/mod.ts"],
+      "@mizu/http": ["./@mizu/http/mod.ts"],
+      "@mizu/http/event": ["./@mizu/http/event/mod.ts"],
+      "@mizu/if": ["./@mizu/if/mod.ts"],
+      "@mizu/if/else": ["./@mizu/if/else/mod.ts"],
+      "@mizu/internal": ["./@mizu/internal/mod.ts"],
+      "@mizu/internal/engine": ["./@mizu/internal/engine/mod.ts"],
+      "@mizu/internal/testing": ["./@mizu/internal/testing/mod.ts"],
+      "@mizu/internal/vdom": ["./@mizu/internal/vdom/mod.ts"],
+      "@mizu/is": ["./@mizu/is/mod.ts"],
+      "@mizu/markdown": ["./@mizu/markdown/mod.ts"],
+      "@mizu/mizu": ["./@mizu/mizu/mod.ts"],
+      "@mizu/model": ["./@mizu/model/mod.ts"],
+      "@mizu/mustache": ["./@mizu/mustache/mod.ts"],
+      "@mizu/once": ["./@mizu/once/mod.ts"],
+      "@mizu/ref": ["./@mizu/ref/mod.ts"],
+      "@mizu/refresh": ["./@mizu/refresh/mod.ts"],
+      "@mizu/render": ["./@mizu/render/mod.ts"],
+      "@mizu/set": ["./@mizu/set/mod.ts"],
+      "@mizu/show": ["./@mizu/show/mod.ts"],
+      "@mizu/skip": ["./@mizu/skip/mod.ts"],
+      "@mizu/test": ["./@mizu/test/mod.ts"],
+      "@mizu/text": ["./@mizu/text/mod.ts"],
+      "@mizu/toc": ["./@mizu/toc/mod.ts"],
+      "@mizu/unstable": ["./@mizu/unstable/mod.ts"],
+      "@mizu/unstable/noop": ["./@mizu/unstable/noop/mod.ts"]
+    }
+  }
+}

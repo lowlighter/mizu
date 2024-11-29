@@ -2,7 +2,7 @@ import { expect, test } from "@libs/testing"
 import { Window } from "@mizu/internal/vdom"
 import { Client } from "./client.ts"
 
-test()("`Client.render()` renders dom content", async () => {
+test("`Client.render()` renders dom content", async () => {
   await using window = new Window(`<html><body><a *mizu ~test.text="foo"></a><b ~test.text="foo"></b><c *mizu ~test.text="$renderer"></c></body></html>`)
   Client.defaults.directives.push("@mizu/test")
   const mizu = new Client({ context: { foo: "" }, window })

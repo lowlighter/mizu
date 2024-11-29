@@ -1,6 +1,6 @@
 // Imports
 import { type Cache, type Directive, type Nullable, Phase } from "@mizu/internal/engine"
-import { isValidCustomElementName } from "@std/html/is-valid-custom-element-name"
+import { isValidCustomElementName } from "@std/html/unstable-is-valid-custom-element-name"
 export type * from "@mizu/internal/engine"
 
 /** `*custom-element` typings. */

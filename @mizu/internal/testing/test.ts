@@ -7,9 +7,12 @@ import { bgMagenta } from "@std/fmt/colors"
 import { expect as _expect, fn, Status, test as _test } from "@libs/testing"
 import { AsyncFunction } from "@libs/typing/func"
 import { Context } from "@libs/reactive"
+import { fromFileUrl } from "@std/path"
 import { Window } from "../vdom/mod.ts"
 import { Renderer } from "../engine/mod.ts"
 import { filter } from "./filter.ts"
+import { readFileSync } from "node:fs"
+import { createServer } from "node:http"
 
 /**
  * Test a HTML file with the specified test cases.
@@ -20,14 +23,16 @@ import { filter } from "./filter.ts"
  * await test(import.meta.resolve("./operations_test.html"))
  * ```
  */
-export async function test(path: string | ImportMeta, runner = _test) {
+export function test(path: string | ImportMeta, runner = _test) {
   if (typeof path === "object") {
-    path = path.resolve("./mod_test.html")
+    path = readFileSync(fromFileUrl(path.resolve("./mod_test.html")), "utf-8")
+  } else if (path.startsWith("file://")) {
+    path = readFileSync(fromFileUrl(path), "utf-8")
   }
-  const { document } = new Window(await fetch(path).then((response) => response.text()))
+  const { document } = new Window(path)
   document.querySelectorAll("body > test").forEach((testcase: testing) => {
     const test = testcase.hasAttribute("skip") ? runner.skip : testcase.hasAttribute("only") ? runner.only : runner
-    test()(`${testcase.getAttribute("name") ?? ""}`.replace(/^\[(.*?)\]/, (_, name) => bgMagenta(` ${name} `)), async () => {
+    test(`${testcase.getAttribute("name") ?? ""}`.replace(/^\[(.*?)\]/, (_, name) => bgMagenta(` ${name} `)), async () => {
       const testing = {
         renderer: await new Renderer(new Window(), { directives: [] }).ready,
         rendered: null,
@@ -38,7 +43,7 @@ export async function test(path: string | ImportMeta, runner = _test) {
           fetch() {
             let url = arguments[0]
             if (!URL.canParse(url)) {
-              const { hostname, port } = testing.http.server?.addr as testing
+              const { address: hostname, port } = testing.http.server?.address() as { address: string; port: number }
               url = `http://${hostname}:${port}${arguments[0]}`
             }
             return fetch(url, ...Array.from(arguments).slice(1))
@@ -71,7 +76,7 @@ export async function test(path: string | ImportMeta, runner = _test) {
           }
         }
       } finally {
-        await testing.http.server?.shutdown()
+        await testing.http.server?.close()
       }
     }, { permissions: { net: ["localhost", "0.0.0.0"] } })
   })
@@ -243,12 +248,22 @@ async function expect(operation: HTMLElement, testing: Testing) {
  */
 async function http(operation: HTMLElement, testing: Testing) {
   const { promise, resolve } = Promise.withResolvers<void>()
-  testing.http.server = Deno.serve({ port: 0, onListen: () => resolve() }, async (request) => {
-    const url = new URL(request.url)
-    testing.http.request = Object.assign(request, { received: { body: await request.text(), headers: new Headers(request.headers) } })
-    testing.http.response = new Response(null, { status: Status.NotFound })
+  testing.http.server = createServer(async (incoming, outgoing) => {
+    // Parse incoming message into web standards objects
+    const headers = new Headers(incoming.headers as any)
+    const url = new URL(incoming.url!, `http://${headers.get("host")}`)
+    const body = await new Promise<string>((resolve) => {
+      let content = ""
+      incoming.on("data", (chunk) => content += chunk)
+      incoming.on("end", () => resolve(content))
+    })
+    const request = new Request(url.href, { method: incoming.method, headers, body: !["GET", "HEAD"].includes(`${incoming.method}`) ? body : null })
+    const response = new Response(null, { status: Status.NotFound })
+    testing.http.request = Object.assign(request, { received: { body, headers } })
+    testing.http.response = response
+    // Route incoming message
     for (const route of Array.from(operation.querySelectorAll("response"))) {
-      if (new URLPattern(route.getAttribute("path") ?? "/", url.origin).test(url)) {
+      if ((route.getAttribute("path") ?? "/") === url.pathname) {
         const status = Status[route.getAttribute("status") as keyof typeof Status] || Number(route.getAttribute("status")) || Status.OK
         if (route.hasAttribute("redirect")) {
           testing.http.response = Response.redirect(new URL(route.getAttribute("redirect")!, url.origin).href, Status.TemporaryRedirect)
@@ -262,14 +277,20 @@ async function http(operation: HTMLElement, testing: Testing) {
         break
       }
     }
-    return testing.http.response
+    // Send outgoing message
+    outgoing.writeHead(testing.http.response.status, Object.fromEntries(new Headers(testing.http.response.headers).entries()))
+    outgoing.end(await testing.http.response.text())
   })
-  const { hostname, port } = testing.http.server?.addr as testing
-  globalThis.location = Object.assign(new URL(`http://${hostname}:${port}`), {
-    ancestorOrigins: testing.renderer.window.location.ancestorOrigins,
-    assign: testing.renderer.window.location.assign,
-    replace: testing.renderer.window.location.replace,
-    reload: testing.renderer.window.location.reload,
+  // Start server and update global location
+  testing.http.server.listen(0, "0.0.0.0", () => {
+    const { address: hostname, port } = testing.http.server?.address() as { address: string; port: number }
+    globalThis.location = Object.assign(new URL(`http://${hostname}:${port}`), {
+      ancestorOrigins: testing.renderer.window.location.ancestorOrigins,
+      assign: testing.renderer.window.location.assign,
+      replace: testing.renderer.window.location.replace,
+      reload: testing.renderer.window.location.reload,
+    }) as unknown as typeof globalThis.location
+    resolve()
   })
   return await promise
 }
@@ -293,7 +314,7 @@ export type Testing = {
   /** HTTP testing. */
   http: {
     /** Local HTTP server. */
-    server: Nullable<Deno.HttpServer>
+    server: Nullable<ReturnType<typeof createServer>>
     /** Last received `Request` with additional parsed properties for easier testing. */
     request: Nullable<Request & { received: { body: string; headers: Headers } }>
     /** Last returned `Response`. */

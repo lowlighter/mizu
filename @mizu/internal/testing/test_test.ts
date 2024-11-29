@@ -2,31 +2,31 @@ import type { testing } from "@libs/testing"
 import { expect, fn, test } from "@libs/testing"
 import { test as runner } from "./test.ts"
 
-test()("`<test/>` generates `Deno.test()` cases", async () => {
+test("`<test/>` generates `Deno.test` cases", () => {
   const callback = () => () => {}
   const test = Object.assign(fn(callback), { skip: fn(callback), only: fn(callback) })
-  await runner(`data:text/html;charset=utf-8,<test></test>`, test as testing)
+  runner(`<test></test>`, test as testing)
   expect(test).toBeCalledTimes(1)
   expect(test.skip).not.toBeCalled()
   expect(test.only).not.toBeCalled()
 })
 
-test()("`<test only/>` generates `Deno.test.only()` cases", async () => {
+test("`<test only/>` generates `Deno.test.only()` cases", () => {
   const callback = () => () => {}
   const test = Object.assign(fn(callback), { skip: fn(callback), only: fn(callback) })
-  await runner(`data:text/html;charset=utf-8,<test only></test>`, test as testing)
+  runner(`<test only></test>`, test as testing)
   expect(test).not.toBeCalled()
   expect(test.skip).not.toBeCalled()
   expect(test.only).toBeCalledTimes(1)
 })
 
-test()("`<test skip/>` generates `Deno.test.ignore()` cases", async () => {
+test("`<test skip/>` generates `Deno.test.ignore()` cases", () => {
   const callback = () => () => {}
   const test = Object.assign(fn(callback), { skip: fn(callback), only: fn(callback) })
-  await runner(`data:text/html;charset=utf-8,<test skip></test>`, test as testing)
+  runner(`<test skip></test>`, test as testing)
   expect(test).not.toBeCalled()
   expect(test.skip).toBeCalledTimes(1)
   expect(test.only).not.toBeCalled()
 })
 
-await runner(import.meta.resolve("./fixtures/mod_test.html"))
+runner(import.meta.resolve("./fixtures/mod_test.html"))

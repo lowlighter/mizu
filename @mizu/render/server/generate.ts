@@ -1,10 +1,9 @@
 // Imports
 import type { Arg, Arrayable, Promisable } from "@mizu/internal/engine"
 import type { Server, ServerGenerateFileSystemOptions as FileSystemOptions, ServerGenerateOptions as GenerateOptions } from "./server.ts"
-import { expandGlob } from "@std/fs"
-import { common, dirname, join, resolve } from "@std/path"
+import { common, dirname, globToRegExp, join, resolve } from "@std/path"
 import { readAll, readerFromStreamReader } from "@std/io"
-import { Buffer } from "@node/buffer"
+import { Buffer } from "node:buffer"
 
 /** Text encoder. */
 const encoder = new TextEncoder()
@@ -40,7 +39,7 @@ export async function generate(server: Server, sources: Array<StringSource | Glo
       const root = `${options.directory}`
       const sources = [source].flat()
       for (const source of sources) {
-        for await (const { path: from } of expandGlob(source, { root, includeDirs: false })) {
+        for await (const { path: from } of expandGlob(source, { fs, root })) {
           const path = join(output, from.replace(common([root, from]), ""))
           await fs.mkdir(dirname(path), { recursive: true })
           await fs.write(path, await render(server, await fs.read(from), options.render))
@@ -122,3 +121,19 @@ export type URLSource = [
     render?: Arg<Server["render"], 1>
   }?,
 ]
+
+/** Expand glob patterns. */
+async function* expandGlob(glob: string, { fs, root, directory = root }: { fs: Pick<FileSystemOptions, "readdir" | "stat">; root: string; directory?: string }): AsyncGenerator<{ path: string }> {
+  for (const entry of await fs.readdir(directory)) {
+    const file = typeof entry === "object" ? entry.name : entry
+    const path = join(directory, file)
+    const stats = await fs.stat(path)
+    if (stats) {
+      if (typeof stats.isDirectory === "function" ? stats.isDirectory() : stats.isDirectory) {
+        yield* expandGlob(glob, { fs, root, directory: path })
+      } else if (globToRegExp(glob, { extended: true, globstar: true }).test(path)) {
+        yield { path: path.replace(common([root, path]), "") }
+      }
+    }
+  }
+}

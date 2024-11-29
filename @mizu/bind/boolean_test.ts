@@ -31,7 +31,7 @@ for (
     ["other", { p: false }],
   ] as const
 ) {
-  test()(`{:attribute} boolean() treats accordingly {${attribute}}`, () => {
+  test(`{:attribute} boolean() treats accordingly {${attribute}}`, () => {
     for (const [tagname, expected] of Object.entries(tags)) {
       expect(boolean(tagname.toUpperCase(), attribute)).toBe(expected)
     }

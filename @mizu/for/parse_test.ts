@@ -63,7 +63,7 @@ for (
     [`const {a = ({a = 1} = {}) => [a + 1], b = Math.random(), [Symbol.for("@")]:{d = 1}} of []`, ["a", "b", "d"]],
   ] as const
 ) {
-  test()(`\`Expression.parse()\` parses \`${expression} => ${expected === SyntaxError ? "new SyntaxError()" : expected}\``, () => {
+  test(`\`Expression.parse()\` parses \`${expression} => ${expected === SyntaxError ? "new SyntaxError()" : expected}\``, () => {
     if (expected === SyntaxError) {
       expect(() => Expression.parse(expression)).toThrow()
     } else {

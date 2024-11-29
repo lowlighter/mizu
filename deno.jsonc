@@ -16,11 +16,19 @@
     },
     "test": {
       "description": "Test code and print detailed coverage",
-      "command": "cd $INIT_CWD && deno task --cwd=$INIT_CWD test:only --doc --clean --coverage && deno coverage --detailed --include=$INIT_CWD"
+      "command": "cd $INIT_CWD && deno task --cwd=$INIT_CWD test:deno --doc --clean --coverage && deno task --cwd=$INIT_CWD test:node && deno task --cwd=$INIT_CWD test:bun && deno coverage --detailed --include=$INIT_CWD"
     },
-    "test:only": {
+    "test:deno": {
       "description": "Test code (without any options)",
-      "command": "deno test --allow-read --allow-env --allow-net --parallel"
+      "command": "cd $INIT_CWD && deno test --allow-read --allow-env --allow-net --parallel"
+    },
+    "test:node": {
+      "description": "Test code (node)",
+      "command": "cd $INIT_CWD && npx tsx --test"
+    },
+    "test:bun": {
+      "description": "Test code (bun)",
+      "command": "cd $INIT_CWD && bun test"
     },
     "doc:html-to-md": {
       "description": "Generate local `README.md` from `mod.html`",
@@ -52,7 +60,7 @@
     },
     "build:coverage": {
       "description": "Build coverage report",
-      "command": "deno task test:only --filter='/DENO/' --clean --coverage --fail-fast --reporter=dot && deno coverage --html && mv coverage/html .pages/coverage && deno run --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage"
+      "command": "deno task test:deno --clean --coverage --fail-fast --reporter=dot && deno coverage --html && mv coverage/html .pages/coverage && deno run --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage"
     },
     "repo:fill-scopes": {
       "description": "Update repository issue templates",
@@ -71,19 +79,14 @@
     // Aliases
     "@www/": "./www/",
     "@tools/": "./.github/tools/",
-    // Node dependencies
-    "@node/fs/promises": "node:fs/promises",
-    "@node/buffer": "node:buffer",
     // Standard library dependencies
     "@std/assert": "jsr:@std/assert@1",
     "@std/async": "jsr:@std/async@1",
     "@std/collections": "jsr:@std/collections@1",
     "@std/fmt/colors": "jsr:@std/fmt@1/colors",
     "@std/fs": "jsr:@std/fs@1",
-    "@std/html": "jsr:@std/html@1/entities",
-    "@std/html/is-valid-custom-element-name": "jsr:@std/html@1/unstable-is-valid-custom-element-name",
+    "@std/html": "jsr:@std/html@1",
     "@std/http": "jsr:@std/http@1",
-    "@std/http/route": "jsr:@std/http@1/unstable-route",
     "@std/io": "jsr:@std/io@^0.224",
     "@std/jsonc": "jsr:@std/jsonc@1",
     "@std/path": "jsr:@std/path@1",
@@ -97,9 +100,8 @@
     "@libs/logger": "jsr:@libs/logger@3",
     "@libs/reactive": "jsr:@libs/reactive@5",
     "@libs/run": "jsr:@libs/run@3",
-    "@libs/testing": "jsr:@libs/testing@3",
-    "@libs/typing": "jsr:@libs/typing@3",
-    "@npm/jsdom": "npm:jsdom@25"
+    "@libs/testing": "jsr:@libs/testing@4.0.1",
+    "@libs/typing": "jsr:@libs/typing@3"
   },
   "workspace": [
     "@mizu/bind",
@@ -130,6 +132,7 @@
     "@mizu/toc",
     "@mizu/unstable"
   ],
+  "nodeModulesDir": "auto",
   "fmt": {
     "semiColons": false,
     "lineWidth": 280,

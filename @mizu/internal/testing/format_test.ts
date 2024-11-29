@@ -1,7 +1,7 @@
 import { expect, test } from "@libs/testing"
 import { format } from "./format.ts"
 
-test()("`format()` formats html and tries to put at most one node per line", () => {
+test("`format()` formats html and tries to put at most one node per line", () => {
   expect(format(`
 <main><a>foo</a><b></b></main>
 `.trim())).toBe(`
@@ -14,7 +14,7 @@ test()("`format()` formats html and tries to put at most one node per line", () 
 `.trim())
 })
 
-test()("`format()` formats html and tries to put empty nodes on the same line", () => {
+test("`format()` formats html and tries to put empty nodes on the same line", () => {
   expect(format(`
 <main>
 </main>

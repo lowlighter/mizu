@@ -38,6 +38,11 @@
     await delay(context.interval * 1000)
     expect(context.foo).not.toHaveBeenCalled()
   </script>
+  <script>
+    context.interval = null
+    await rerender()
+    await delay(context.interval * 1000)
+  </script>
 </test>
 
 <test name="[*refresh] does not reset upon normal rerenderings">
@@ -65,8 +70,9 @@
   </script>
   <script>
     context.interval = null
+    await rerender()
+    await delay(context.interval * 1000)
   </script>
-  <render></render>
 </test>
 
 <test name="[*refresh] handles commented elements">
@@ -90,6 +96,11 @@
     await delay(context.interval * 1000)
     expect(context.foo).not.toHaveBeenCalled()
   </script>
+  <script>
+    context.interval = null
+    await rerender()
+    await delay(context.interval * 1000)
+  </script>
 </test>
 
 <test name="[*refresh] exposes `$refresh` variable">
@@ -110,8 +121,9 @@
   </expect>
   <script>
     context.interval = null
+    await rerender()
+    await delay(context.interval * 1000)
   </script>
-  <render></render>
 </test>
 
 <test name="[*refresh] (error) expects a finite positive number">
