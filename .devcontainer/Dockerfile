@@ -9,6 +9,16 @@ RUN mkdir -p /deno \
 ENV PATH=${DENO_INSTALL}/bin:${PATH} \
     DENO_DIR=${DENO_INSTALL}/.cache/deno
 
+# Install Node.js
+RUN apt-get update \
+    && apt-get install -y nodejs npm
+
+# Install Bun
+ENV BUN_INSTALL=/bun
+RUN curl -fsSL https://bun.sh/install | bash \
+    && chown -R vscode /bun
+ENV PATH=${BUN_INSTALL}/bin:${PATH}
+
 # Setup Chrome
 RUN apt-get update \
     && apt-get install -y wget gnupg \
