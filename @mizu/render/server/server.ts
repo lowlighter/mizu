@@ -119,7 +119,7 @@ export class Server {
    *     [ new URL(`data:text/html,<p ~test.text="foo"></p>`), "url_render.html", { render: { context: { foo: "bar" } } } ],
    *   ],
    *   // No-op: do not actually write files and directories
-   *   { fs: { readdir: () => [], mkdir: () => null as any, write: () => null as any } },
+   *   { fs: { readdir: () => Promise<string>.resolve([]), mkdir: () => null as any, write: () => null as any } },
    * )
    * ```
    */

@@ -283,7 +283,7 @@ async function http(operation: HTMLElement, testing: Testing) {
       }
     }
     // Send outgoing message
-    outgoing.writeHead(testing.http.response.status, Object.fromEntries(testing.http.response.headers.entries()))
+    outgoing.writeHead(testing.http.response.status, Object.fromEntries([...testing.http.response.headers]))
     outgoing.end(await testing.http.response.text())
   })
   // Start server and update global location
