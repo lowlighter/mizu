@@ -40,7 +40,7 @@
             data-demo-for-runtime="node"
             class="lines"
           ><code %http="`/html/mizu/examples/node/${$value}.mjs`" %response.text="this.textContent = $content.split(`\n`).slice(1).map((_, i) => i+1).join(&quot;\n&quot;)"></code></pre>
-          <pre *for="demo.bun" :data-demo-for-tab="`bun-${$value}`" data-demo-for-runtime="bun" class="usage-snippet"><code *code[ts] %http="`/html/mizu/examples/bun/${$value}.ts`" %response.text="this.textContent = $content.replace(/^.. @ts-expect-error.*/, '')"></code></pre>
+          <pre *for="demo.bun" :data-demo-for-tab="`bun-${$value}`" data-demo-for-runtime="bun" class="usage-snippet"><code *code[ts] %http="`/html/mizu/examples/bun/${$value}.ts`" %response.text="this.textContent = $content.replace(/^.. @ts-expect-error.*/m, '')"></code></pre>
           <pre
             *for="demo.bun"
             :data-demo-for-tab="`bun-${$value}`"
