@@ -69,7 +69,7 @@
     },
     "build:coverage": {
       "description": "Build coverage report",
-      "command": "deno test --quiet --allow-read --allow-env --allow-net --parallel --clean --coverage > /dev/null || deno coverage --html && ls -l coverage/html && echo '===' && ls -l .page && mv coverage/html .pages/coverage && deno run --quiet --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage",
+      "command": "deno test --quiet --allow-read --allow-env --allow-net --parallel --clean --coverage > /dev/null || deno coverage --html && sleep 5 && ls -l coverage/html && mv coverage/html .pages/coverage && deno run --quiet --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage",
       "dependencies": ["build:clean"]
     },
     "build:clean": {
