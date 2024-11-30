@@ -60,16 +60,16 @@
     },
     "build:readmes": {
       "description": "Build `README.md` from `mod.html`",
-      "command": "deno run --allow-read --allow-env --allow-write=./@mizu,README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
+      "command": "deno run --quiet --allow-read --allow-env --allow-write=./@mizu,README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
     },
     "build:www": {
       "description": "Build website",
-      "command": "deno run --allow-read --allow-env --allow-net --allow-run --allow-write=.pages,/tmp --location=http://localhost:4649 www/build.ts",
+      "command": "deno run --quiet --allow-read --allow-env --allow-net --allow-run --allow-write=.pages,/tmp --location=http://localhost:4649 www/build.ts",
       "dependencies": ["build:clean"]
     },
     "build:coverage": {
       "description": "Build coverage report",
-      "command": "deno test --allow-read --allow-env --allow-net --parallel --clean --coverage && deno coverage --html && mv coverage/html .pages/coverage && deno run --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage",
+      "command": "deno test --quiet --allow-read --allow-env --allow-net --parallel --clean --coverage || deno coverage --html && mv coverage/html .pages/coverage && deno run --quiet --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage",
       "dependencies": ["build:clean"]
     },
     "build:clean": {
@@ -134,7 +134,35 @@
     "@std/yaml": "jsr:@std/yaml@1"
   },
   "workspace": [
-    "@mizu/*"
+    "@mizu/bind",
+    "@mizu/clean",
+    "@mizu/code",
+    "@mizu/custom-element",
+    "@mizu/eval",
+    "@mizu/event",
+    "@mizu/for",
+    "@mizu/html",
+    "@mizu/http",
+    "@mizu/if",
+    "@mizu/internal",
+    "@mizu/is",
+    "@mizu/markdown",
+    "@mizu/mizu",
+    "@mizu/model",
+    "@mizu/mustache",
+    "@mizu/once",
+    "@mizu/ref",
+    "@mizu/refresh",
+    "@mizu/render",
+    "@mizu/set",
+    "@mizu/show",
+    "@mizu/skip",
+    "@mizu/test",
+    "@mizu/text",
+    "@mizu/toc",
+    "@mizu/unstable"
+    // https://github.com/lucacasonato/esbuild_deno_loader/issues/156
+    // "@mizu/*"
   ],
   "nodeModulesDir": "auto",
   "fmt": {
