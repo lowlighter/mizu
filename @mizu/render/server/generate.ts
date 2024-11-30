@@ -133,11 +133,16 @@ async function* expandGlob(glob: string, { fs, root, directory = root }: { fs: P
     const path = join(directory, file)
     const stats = await fs.stat(path)
     if (stats) {
-      const subpath = path.replace(common([root, path]), "")
       if (typeof stats.isDirectory === "function" ? stats.isDirectory() : stats.isDirectory) {
         yield* expandGlob(glob, { fs, root, directory: path })
-      } else if (globToRegExp(glob, { extended: true, globstar: true }).test(subpath)) {
-        yield { path: subpath }
+      } else {
+        let relative = common([root, directory])
+        if (!relative.endsWith("/")) {
+          relative += "/"
+        }
+        if (globToRegExp(glob, { extended: true, globstar: true }).test(path.replace(relative, ""))) {
+          yield { path }
+        }
       }
     }
   }
