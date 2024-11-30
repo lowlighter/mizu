@@ -22,7 +22,7 @@
     },
     "lint:doc": {
       "description": "Lint documentation",
-      "command": "cd $INIT_CWD && deno test --no-run && deno doc --lint **/mod.ts"
+      "command": "cd $INIT_CWD && deno doc --lint **/mod.ts"
     },
     "lint:pkg": {
       "description": "Lint package",

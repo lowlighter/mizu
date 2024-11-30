@@ -17,7 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
-      - run: npm ci
+      - run: npm install
+      - run: deno task cache
       - run: deno task lint
 
   test:
@@ -43,7 +44,7 @@ jobs:
         if: matrix.runtime == 'node' || matrix.runtime == 'bun'
       - run: deno task test:${{ matrix.runtime }}
       # https://github.com/denoland/deno/issues/27166
-      - run: npx tsx --test
+      - run: npx tsx --test **/*_test.ts
         if: matrix.runtime == 'node'
 
   publish:
