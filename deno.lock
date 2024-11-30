@@ -9,6 +9,7 @@
     "jsr:@deno/doc@0.161": "0.161.2",
     "jsr:@deno/graph@0.82": "0.82.3",
     "jsr:@deno/graph@~0.73.1": "0.73.1",
+    "jsr:@dprint/formatter@0.4.1": "0.4.1",
     "jsr:@libs/bundle@12": "12.4.4",
     "jsr:@libs/logger@3": "3.1.3",
     "jsr:@libs/logger@^3.1.3": "3.1.3",
@@ -185,6 +186,9 @@
     },
     "@deno/graph@0.82.3": {
       "integrity": "5c1fe944368172a9c87588ac81b82eb027ca78002a57521567e6264be322637e"
+    },
+    "@dprint/formatter@0.4.1": {
+      "integrity": "96449ab83aa9f72df98caa5030d3f4a921c5c29d9b0e0d0da83d79e2024a9637"
     },
     "@libs/bundle@12.4.4": {
       "integrity": "7167736f634a990e21b6a83ea7317fb9cfc2e3b7453a7c122d84d74dac55153d",
