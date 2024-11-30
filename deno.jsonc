@@ -22,7 +22,7 @@
     },
     "lint:doc": {
       "description": "Lint documentation",
-      "command": "cd $INIT_CWD && deno doc --lint **/mod.ts"
+      "command": "cd $INIT_CWD && deno test --no-run && deno doc --lint **/mod.ts"
     },
     "lint:pkg": {
       "description": "Lint package",
@@ -99,6 +99,10 @@
     "resolve:browser": {
       "description": "Resolve browser path for astral",
       "command": "ASTRAL_QUIET_INSTALL=1 deno run --allow-env=DEBUG,ASTRAL_QUIET_INSTALL --allow-read --allow-net=googlechromelabs.github.io,storage.googleapis.com --allow-write=.cache .github/tools/browser_path.ts"
+    },
+    "cache": {
+      "description": "Cache dependencies",
+      "command": "deno cache **/mod.ts www/*.ts && deno test --no-run"
     }
   },
   "imports": {
