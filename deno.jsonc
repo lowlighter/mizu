@@ -99,10 +99,6 @@
     "resolve:browser": {
       "description": "Resolve browser path for astral",
       "command": "ASTRAL_QUIET_INSTALL=1 deno run --allow-env=DEBUG,ASTRAL_QUIET_INSTALL --allow-read --allow-net=googlechromelabs.github.io,storage.googleapis.com --allow-write=.cache .github/tools/browser_path.ts"
-    },
-    "cache": {
-      "description": "Cache dependencies",
-      "command": "deno cache **/mod.ts www/*.ts && deno test --no-run"
     }
   },
   "imports": {
@@ -119,7 +115,7 @@
     "@std/regexp": "jsr:@std/regexp@1",
     "jsdom": "npm:jsdom@25",
     // Development dependencies
-    "@dprint/formatter": "jsr:@dprint/formatter@~0.4",
+    "@dprint/formatter": "jsr:@dprint/formatter@0.4.1",
     "@libs/testing": "jsr:@libs/testing@4",
     "@std/fmt": "jsr:@std/fmt@1",
     // Development server dependencies

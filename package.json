@@ -14,7 +14,7 @@
     "jsdom": "^25.0.0"
   },
   "devDependencies": {
-    "@dprint/formatter": "npm:@jsr/dprint__formatter@~0.4.0",
+    "@dprint/formatter": "npm:@jsr/dprint__formatter@0.4.1",
     "@libs/testing": "npm:@jsr/libs__testing@^4.0.0",
     "@std/fmt": "npm:@jsr/std__fmt@^1.0.0",
     "jsr": "^0.13.2",
