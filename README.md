@@ -1,10 +1,21 @@
-# 🌊 mizu.js
+<p align="center"><a href="https://mizu.sh"><img src="https://mizu.sh/logo.png" width="400"></a></p>
 
-[![mizu.sh](https://img.shields.io/badge/%F0%9F%8C%8A-mizu.sh-black?labelColor=black)](https://mizu.sh)
+<p align="center">
+  <a href="https://mizu.sh">
+    <img height="28" src="https://img.shields.io/badge/%F0%9F%93%9A-Documentation-black?labelColor=black" alt="Documentation">
+  </a>
+  <a href="https://mizu.sh/playground">
+    <img height="28" src="https://img.shields.io/badge/%F0%9F%A7%AA-Playground-black?labelColor=black" alt="Playground">
+  </a>
+  <a href="https://mizu.sh/build">
+    <img height="28" src="https://img.shields.io/badge/%F0%9F%94%A7-Custom%20builder-black?labelColor=black" alt="Custom builder">
+  </a>
+  <a href="https://jsr.io/@mizu">
+    <img height="28" src="https://img.shields.io/jsr/v/%40mizu/render?logo=jsr&label=jsr.io&labelColor=black&color=black" alt="jsr.io">
+  </a>
+</p>
 
-<p align="center"><a href="https://mizu.sh"><img src="https://mizu.sh/logo.png" width="300"></a></p>
-
-Full documentation is available at [mizu.sh](https://mizu.sh).
+<p align="center"><a href="https://mizu.sh/playground"><img src="https://mizu.sh/demo_browser.png"></a></p>
 
 <!-- @mizu/www/html/mizu/usage.html -->
 
