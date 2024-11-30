@@ -1,8 +1,10 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@astral/astral@0.4.8": "0.4.8",
     "jsr:@b-fuze/deno-dom@~0.1.48": "0.1.48",
     "jsr:@cliffy/table@1.0.0-rc.7": "1.0.0-rc.7",
+    "jsr:@deno-library/progress@1.4.9": "1.4.9",
     "jsr:@deno/cache-dir@0.11": "0.11.1",
     "jsr:@deno/doc@0.161": "0.161.2",
     "jsr:@deno/graph@0.82": "0.82.3",
@@ -25,6 +27,7 @@
     "jsr:@std/assert@0.223": "0.223.0",
     "jsr:@std/assert@1": "1.0.8",
     "jsr:@std/assert@^1.0.8": "1.0.8",
+    "jsr:@std/async@0.223.0": "0.223.0",
     "jsr:@std/async@1": "1.0.9",
     "jsr:@std/bytes@0.223": "0.223.0",
     "jsr:@std/bytes@^1.0.2": "1.0.4",
@@ -35,11 +38,13 @@
     "jsr:@std/encoding@1": "1.0.5",
     "jsr:@std/encoding@^1.0.5": "1.0.5",
     "jsr:@std/expect@1": "1.0.8",
+    "jsr:@std/fmt@0.221.0": "0.221.0",
     "jsr:@std/fmt@0.223": "0.223.0",
     "jsr:@std/fmt@1": "1.0.3",
     "jsr:@std/fmt@^1.0.3": "1.0.3",
     "jsr:@std/fmt@~1.0.2": "1.0.3",
     "jsr:@std/fs@0.223": "0.223.0",
+    "jsr:@std/fs@0.223.0": "0.223.0",
     "jsr:@std/fs@1": "1.0.6",
     "jsr:@std/html@1": "1.0.3",
     "jsr:@std/html@^1.0.3": "1.0.3",
@@ -52,6 +57,7 @@
     "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/net@^1.0.4": "1.0.4",
     "jsr:@std/path@0.223": "0.223.0",
+    "jsr:@std/path@0.223.0": "0.223.0",
     "jsr:@std/path@1": "1.0.8",
     "jsr:@std/path@^1.0.6": "1.0.8",
     "jsr:@std/path@^1.0.8": "1.0.8",
@@ -62,6 +68,7 @@
     "jsr:@std/tar@~0.1.4": "0.1.4",
     "jsr:@std/text@1": "1.0.8",
     "jsr:@std/yaml@1": "1.0.5",
+    "jsr:@zip-js/zip-js@2.7.41": "2.7.41",
     "npm:@jsr/dprint__formatter@0.4": "0.4.1",
     "npm:@jsr/libs__markdown@2": "2.0.2",
     "npm:@jsr/libs__reactive@5": "5.0.2",
@@ -77,6 +84,7 @@
     "npm:@jsr/std__regexp@1": "1.0.0",
     "npm:@mdn/browser-compat-data@^5.6.19": "5.6.20",
     "npm:@types/hast@3": "3.0.4",
+    "npm:@types/node@*": "22.5.4",
     "npm:browserslist@^4.24.2": "4.24.2",
     "npm:css-tree@^3.0.1": "3.0.1",
     "npm:csso@^5.0.5": "5.0.5",
@@ -122,6 +130,7 @@
     "npm:stylelint-order@^6.0.4": "6.0.4_stylelint@16.11.0__@csstools+css-tokenizer@3.0.3__@csstools+css-parser-algorithms@3.0.4___@csstools+css-tokenizer@3.0.3__postcss-selector-parser@7.0.0__typescript@5.7.2__postcss@8.4.49_postcss@8.4.49_typescript@5.7.2",
     "npm:stylelint@^16.11.0": "16.11.0_@csstools+css-tokenizer@3.0.3_@csstools+css-parser-algorithms@3.0.4__@csstools+css-tokenizer@3.0.3_postcss-selector-parser@7.0.0_typescript@5.7.2_postcss@8.4.49",
     "npm:terser@^5.36.0": "5.36.0",
+    "npm:tsx@4.19.2": "4.19.2",
     "npm:tsx@^4.19.2": "4.19.2",
     "npm:typescript@5.7.2": "5.7.2",
     "npm:typescript@^5.7.2": "5.7.2",
@@ -130,6 +139,16 @@
     "npm:unist-util-visit@5": "5.0.0"
   },
   "jsr": {
+    "@astral/astral@0.4.8": {
+      "integrity": "7eb1f4e6d56ec9d5f4565cb2b7f166dc43ab0cbeffd49e5a9248094d2666fdd4",
+      "dependencies": [
+        "jsr:@deno-library/progress",
+        "jsr:@std/async@0.223.0",
+        "jsr:@std/fs@0.223.0",
+        "jsr:@std/path@0.223.0",
+        "jsr:@zip-js/zip-js"
+      ]
+    },
     "@b-fuze/deno-dom@0.1.48": {
       "integrity": "bf5b591aef2e9e9c59adfcbb93a9ecd45bab5b7c8263625beafa5c8f1662e7da"
     },
@@ -137,6 +156,12 @@
       "integrity": "9fdd9776eda28a0b397981c400eeb1aa36da2371b43eefe12e6ff555290e3180",
       "dependencies": [
         "jsr:@std/fmt@~1.0.2"
+      ]
+    },
+    "@deno-library/progress@1.4.9": {
+      "integrity": "86db695ae338cb1ae3ffa46d6f2e6a9cdef33a15c2ace6fa25354a91a9dd3909",
+      "dependencies": [
+        "jsr:@std/fmt@0.221.0"
       ]
     },
     "@deno/cache-dir@0.11.1": {
@@ -175,7 +200,7 @@
         "jsr:@libs/typing@^3.1.2",
         "jsr:@luca/esbuild-deno-loader",
         "jsr:@std/assert@1",
-        "jsr:@std/async",
+        "jsr:@std/async@1",
         "jsr:@std/cli@1",
         "jsr:@std/encoding@1",
         "jsr:@std/fmt@1",
@@ -276,7 +301,7 @@
       "dependencies": [
         "jsr:@libs/logger@^3.1.3",
         "jsr:@libs/typing@^3.1.2",
-        "jsr:@std/async",
+        "jsr:@std/async@1",
         "jsr:@std/streams@1"
       ]
     },
@@ -321,6 +346,12 @@
         "jsr:@std/internal"
       ]
     },
+    "@std/async@0.223.0": {
+      "integrity": "b42f635d89fb8f9e0e7dc258fbc8f33233e4977f61e0b20da08a8b51fd7b2c5d",
+      "dependencies": [
+        "jsr:@std/assert@0.223"
+      ]
+    },
     "@std/async@1.0.9": {
       "integrity": "c6472fd0623b3f3daae023cdf7ca5535e1b721dfbf376562c0c12b3fb4867f91"
     },
@@ -345,6 +376,9 @@
         "jsr:@std/assert@^1.0.8",
         "jsr:@std/internal"
       ]
+    },
+    "@std/fmt@0.221.0": {
+      "integrity": "379fed69bdd9731110f26b9085aeb740606b20428ce6af31ef6bd45ef8efa62a"
     },
     "@std/fmt@0.223.0": {
       "integrity": "6deb37794127dfc7d7bded2586b9fc6f5d50e62a8134846608baf71ffc1a5208"
@@ -440,6 +474,9 @@
     },
     "@std/yaml@1.0.5": {
       "integrity": "71ba3d334305ee2149391931508b2c293a8490f94a337eef3a09cade1a2a2742"
+    },
+    "@zip-js/zip-js@2.7.41": {
+      "integrity": "a883116c1b46673de643f9cd3b6619d746271b96cd9a8e2b9d0bb8353d764d3d"
     }
   },
   "npm": {
@@ -1286,6 +1323,12 @@
     },
     "@types/ms@0.7.34": {
       "integrity": "sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g=="
+    },
+    "@types/node@22.5.4": {
+      "integrity": "sha512-FDuKUJQm/ju9fT/SeX/6+gBzoPzlVCzfzmGkwKvRHQVxi4BntVbyIwf6a4Xn62mrvndLiml6z/UBXIdEVjQLXg==",
+      "dependencies": [
+        "undici-types"
+      ]
     },
     "@types/trusted-types@2.0.7": {
       "integrity": "sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw=="
@@ -3992,6 +4035,9 @@
     "ufo@1.5.4": {
       "integrity": "sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ=="
     },
+    "undici-types@6.19.8": {
+      "integrity": "sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw=="
+    },
     "unicode-emoji-modifier-base@1.0.0": {
       "integrity": "sha512-yLSH4py7oFH3oG/9K+XWrz1pSi3dfUrWEnInbxMfArOfc1+33BlGPQtLsOYwvdMy11AwUBetYuaRxSPqgkq+8g=="
     },
@@ -4246,6 +4292,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@astral/astral@0.4.8",
       "jsr:@deno/doc@0.161",
       "jsr:@dprint/formatter@0.4",
       "jsr:@libs/bundle@12",

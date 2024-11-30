@@ -1,6 +1,5 @@
-// deno-lint-ignore-file no-external-import no-console
-// Import Astral
-import { getBinary, launch } from "jsr:@astral/astral@0.4.8"
+// Imports
+import { launch } from "@astral/astral"
 
 /* Matcha theming. */
 const css = `
@@ -70,10 +69,6 @@ const css = `
 
 /*** Render a mermaid diagram from an input file. */
 if (import.meta.main) {
-  if ((Deno.args.length === 1) && (Deno.args[0] === "--bin-path")) {
-    console.log(await getBinary("chrome", { cache: ".cache" }))
-    Deno.exit(0)
-  }
   const [input, output, ...gargbage] = Deno.args
   if (!input) {
     throw new Error("Input file is required.")

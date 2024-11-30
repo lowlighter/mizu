@@ -16,7 +16,6 @@ body:
         - bind
         - clean
         - code
-        - coverage
         - custom-element
         - eval
         - event
