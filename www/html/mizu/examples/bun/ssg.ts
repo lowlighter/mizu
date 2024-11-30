@@ -1,4 +1,3 @@
-#!/usr/bin/env -S deno run --allow-read --allow-env --allow-net --allow-write=/tmp/output
 // Static Site Generation (SSG) with Mizu
 import Mizu from "@mizu/render/server"
 
