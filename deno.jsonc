@@ -56,15 +56,11 @@
     "build": {
       "description": "Build project",
       "command": "sleep 0",
-      "dependencies": ["build:readmes", "build:mermaid", "build:www", "build:coverage"]
+      "dependencies": ["build:readmes", "build:www", "build:coverage"]
     },
     "build:readmes": {
       "description": "Build `README.md` from `mod.html`",
       "command": "deno run --allow-read --allow-env --allow-write=./@mizu,README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
-    },
-    "build:mermaid": {
-      "description": "Build mermaid diagrams",
-      "command": "deno run --allow-env=DEBUG --allow-read --allow-net=127.0.0.1,localhost,cdn.jsdelivr.net --allow-write=www/static/rendering.svg --allow-run=$(deno task resolve:browser) .github/tools/generate_mermaid.ts www/misc/rendering.mermaid www/static/rendering.svg"
     },
     "build:www": {
       "description": "Build website",
@@ -90,13 +86,16 @@
       "description": "Serve website locally",
       "command": "deno serve --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp --port=4649 --location=http://localhost:4649 www/serve.ts"
     },
-    // Repository managing tasks
+    // Miscellaneous tasks
     "repo:fill-scopes": {
       "description": "Update repository issue templates",
       "command": " deno run --allow-read --allow-write=.github/ISSUE_TEMPLATE --allow-run=deno .github/tools/fill_github_scopes.ts"
     },
-    // Miscellaneous tasks
-    "resolve:browser": {
+    "render:mermaid": {
+      "description": "Render mermaid diagrams",
+      "command": "deno run --allow-env=DEBUG --allow-read --allow-net=127.0.0.1,localhost,cdn.jsdelivr.net --allow-write=www/static/rendering.svg --allow-run=$(deno task resolve:browser-path) .github/tools/generate_mermaid.ts www/misc/rendering.mermaid www/static/rendering.svg"
+    },
+    "resolve:browser-path": {
       "description": "Resolve browser path for astral",
       "command": "ASTRAL_QUIET_INSTALL=1 deno run --allow-env=DEBUG,ASTRAL_QUIET_INSTALL --allow-read --allow-net=googlechromelabs.github.io,storage.googleapis.com --allow-write=.cache .github/tools/browser_path.ts"
     }
