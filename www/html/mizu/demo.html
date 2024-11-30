@@ -127,7 +127,8 @@
       document.querySelectorAll(`[data-demo-${key}]`).forEach((element) => {
         element.addEventListener("click", () => {
           if ((key === "runtime") && (data.runtime !== element.getAttribute(`data-demo-${key}`))) {
-            document.querySelector(`.mockup.${element.getAttribute(`data-demo-${key}`) === "browsers" ? "browser" : "runtime"} [data-demo-tab][data-demo-for-runtime="${data.runtime}"]`).click()
+            const selector = element.getAttribute(`data-demo-${key}`) === "browsers" ? ".mockup.browser [data-demo-tab]" : `.mockup.runtime [data-demo-tab][data-demo-for-runtime="${element.getAttribute(`data-demo-${key}`)}"]`
+            document.querySelector(selector)?.click()
           }
           data[key] = element.getAttribute(`data-demo-${key}`)
           document.querySelectorAll(`[data-demo-for-${key}]`).forEach((element) => {
