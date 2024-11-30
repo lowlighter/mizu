@@ -67,12 +67,12 @@ test("`Server.generate()` can retrieve content from local files", async () => {
   for (
     const { readdir, stat } of [
       {
-        readdir: (path: string) => ({ "/": ["a"], "/a": ["b"], "/a/b": ["foo.html"] })[path],
-        stat: (path: string) => ({ isFile: path.includes("foo.html"), isDirectory: !path.includes("foo.html") }),
+        readdir: (path: string) => ({ "/": ["a", "bar.html"], "/a": ["b"], "/a/b": ["foo.html"] })[path],
+        stat: (path: string) => ({ isFile: path.includes("."), isDirectory: !path.includes(".") }),
       },
       {
-        readdir: (path: string) => ({ "/": [{ name: "a" }], "/a": [{ name: "b" }], "/a/b": [{ name: "foo.html" }] })[path],
-        stat: (path: string) => ({ isFile: () => path.includes("foo.html"), isDirectory: () => !path.includes("foo.html") }),
+        readdir: (path: string) => ({ "/": [{ name: "a" }, { name: "bar.html" }], "/a": [{ name: "b" }], "/a/b": [{ name: "foo.html" }] })[path],
+        stat: (path: string) => ({ isFile: () => path.includes("."), isDirectory: () => !path.includes(".") }),
       },
     ] as const
   ) {
@@ -88,8 +88,14 @@ test("`Server.generate()` can retrieve content from local files", async () => {
         ".",
         { directory: "/", render: { select: "p", context: { foo: "bar" } } },
       ],
+      [
+        "*.html",
+        ".",
+        { directory: "/", render: { select: "p", context: { foo: "baz" } } },
+      ],
     ])
     expect(write).toHaveBeenCalledWith("/fake/path/a/b/foo.html", encoder.encode(`<p ~test.text="foo">bar</p>`))
+    expect(write).toHaveBeenCalledWith("/fake/path/bar.html", encoder.encode(`<p ~test.text="foo">baz</p>`))
   }
 }, { permissions: { read: true } })
 
