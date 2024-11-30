@@ -3,12 +3,10 @@
   "dependencies": {
     "@libs/markdown": "npm:@jsr/libs__markdown@^2.0.2",
     "@libs/reactive": "npm:@jsr/libs__reactive@^5.0.2",
-    "@libs/testing": "npm:@jsr/libs__testing@^4.0.1",
     "@libs/typing": "npm:@jsr/libs__typing@^3.1.2",
     "@libs/xml": "npm:@jsr/libs__xml@^6.0.2",
     "@std/assert": "npm:@jsr/std__assert@^1.0.8",
     "@std/async": "npm:@jsr/std__async@^1.0.9",
-    "@std/fmt": "npm:@jsr/std__fmt@^1.0.3",
     "@std/html": "npm:@jsr/std__html@^1.0.3",
     "@std/io": "npm:@jsr/std__io@^0.225.0",
     "@std/path": "npm:@jsr/std__path@^1.0.8",
@@ -17,6 +15,8 @@
   },
   "devDependencies": {
     "@dprint/formatter": "npm:@jsr/dprint__formatter@^0.4.1",
+    "@libs/testing": "npm:@jsr/libs__testing@^4.0.1",
+    "@std/fmt": "npm:@jsr/std__fmt@^1.0.3",
     "jsr": "^0.13.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"

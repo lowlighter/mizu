@@ -76,32 +76,36 @@
     }
   },
   "imports": {
-    // Aliases
-    "@www/": "./www/",
-    "@tools/": "./.github/tools/",
-    // Standard library dependencies
+    // Dependencies
+    "@libs/markdown": "jsr:@libs/markdown@2",
+    "@libs/reactive": "jsr:@libs/reactive@5",
+    "@libs/typing": "jsr:@libs/typing@3",
+    "@libs/xml": "jsr:@libs/xml@6",
     "@std/assert": "jsr:@std/assert@1",
     "@std/async": "jsr:@std/async@1",
-    "@std/collections": "jsr:@std/collections@1",
-    "@std/fmt/colors": "jsr:@std/fmt@1/colors",
-    "@std/fs": "jsr:@std/fs@1",
     "@std/html": "jsr:@std/html@1",
-    "@std/http": "jsr:@std/http@1",
     "@std/io": "jsr:@std/io@^0.224",
-    "@std/jsonc": "jsr:@std/jsonc@1",
     "@std/path": "jsr:@std/path@1",
     "@std/regexp": "jsr:@std/regexp@1",
-    "@std/text": "jsr:@std/text@1",
-    "@std/yaml": "jsr:@std/yaml@1",
-    // External dependencies
-    "@deno/doc": "jsr:@deno/doc@0.156.0",
+    "jsdom": "npm:jsdom@25",
+    // Development dependencies
     "@dprint/formatter": "jsr:@dprint/formatter@^0.4",
-    "@libs/bundle/ts": "jsr:@libs/bundle@12.4.1/ts",
-    "@libs/logger": "jsr:@libs/logger@3",
-    "@libs/reactive": "jsr:@libs/reactive@5",
-    "@libs/run": "jsr:@libs/run@3",
     "@libs/testing": "jsr:@libs/testing@4.0.1",
-    "@libs/typing": "jsr:@libs/typing@3"
+    "@std/fmt": "jsr:@std/fmt@1",
+    // Development server dependencies
+    "@www/": "./www/",
+    "@deno/doc": "jsr:@deno/doc@0.156.0",
+    "@libs/bundle": "jsr:@libs/bundle@12.4.1",
+    "@libs/logger": "jsr:@libs/logger@3",
+    "@std/collections": "jsr:@std/collections@1",
+    "@std/http": "jsr:@std/http@1",
+    "@std/jsonc": "jsr:@std/jsonc@1",
+    "@std/text": "jsr:@std/text@1",
+    // Tooling dependencies
+    "@tools/": "./.github/tools/",
+    "@libs/run": "jsr:@libs/run@3",
+    "@std/fs": "jsr:@std/fs@1",
+    "@std/yaml": "jsr:@std/yaml@1"
   },
   "workspace": [
     "@mizu/*"
