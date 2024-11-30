@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
-      - run: deno install
+      - run: npm ci
       - run: deno task lint
 
   test:
@@ -35,7 +35,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
-        if: matrix.runtime == 'deno'
       - uses: actions/setup-node@v4
         if: matrix.runtime == 'node'
       - uses: oven-sh/setup-bun@v2
