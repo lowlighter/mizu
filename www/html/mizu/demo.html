@@ -33,7 +33,14 @@
             data-demo-for-runtime="deno"
             class="lines"
           ><code %http="`/html/mizu/examples/deno/${$value}.ts`" %response.text="this.textContent = $content.split(`\n`).slice(1).map((_, i) => i+1).join(&quot;\n&quot;)"></code></pre>
-          <pre *for="demo.bun" :data-demo-for-tab="`bun-${$value}`" data-demo-for-runtime="bun" class="usage-snippet"><code *code[ts] %http="`/html/mizu/examples/bun/${$value}.ts`" %response.text></code></pre>
+          <pre *for="demo.node" :data-demo-for-tab="`node-${$value}`" data-demo-for-runtime="node" class="usage-snippet"><code *code[js] %http="`/html/mizu/examples/node/${$value}.mjs`" %response.text></code></pre>
+          <pre
+            *for="demo.node"
+            :data-demo-for-tab="`node-${$value}`"
+            data-demo-for-runtime="node"
+            class="lines"
+          ><code %http="`/html/mizu/examples/node/${$value}.mjs`" %response.text="this.textContent = $content.split(`\n`).slice(1).map((_, i) => i+1).join(&quot;\n&quot;)"></code></pre>
+          <pre *for="demo.bun" :data-demo-for-tab="`bun-${$value}`" data-demo-for-runtime="bun" class="usage-snippet"><code *code[ts] %http="`/html/mizu/examples/bun/${$value}.ts`" %response.text="this.textContent = $content.replace(/^.. @ts-expect-error.*/, '')"></code></pre>
           <pre
             *for="demo.bun"
             :data-demo-for-tab="`bun-${$value}`"
@@ -120,7 +127,7 @@
       document.querySelectorAll(`[data-demo-${key}]`).forEach((element) => {
         element.addEventListener("click", () => {
           if ((key === "runtime") && (data.runtime !== element.getAttribute(`data-demo-${key}`))) {
-            document.querySelector(`.mockup.${element.getAttribute(`data-demo-${key}`) === "browsers" ? "browser" : "runtime"} [data-demo-tab]`).click()
+            document.querySelector(`.mockup.${element.getAttribute(`data-demo-${key}`) === "browsers" ? "browser" : "runtime"} [data-demo-tab][data-demo-for-runtime="${data.runtime}"]`).click()
           }
           data[key] = element.getAttribute(`data-demo-${key}`)
           document.querySelectorAll(`[data-demo-for-${key}]`).forEach((element) => {

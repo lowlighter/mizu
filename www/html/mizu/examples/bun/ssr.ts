@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-console
 // Server-Side Rendering (SSR) with Mizu
 import Mizu from "@mizu/render/server"
 // @ts-expect-error: bun
