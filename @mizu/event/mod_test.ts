@@ -1,8 +1,10 @@
-await import("@mizu/internal/testing").then(({ test }) => test(import.meta))
 import { expect, fn, test, type testing } from "@libs/testing"
+import { test as _test } from "@mizu/internal/testing"
 import { Window } from "@mizu/internal/vdom"
 import { type Directive, Phase, Renderer } from "@mizu/internal/engine"
 import directive from "./mod.ts"
+
+_test(import.meta)
 
 test("[@event] supports `_event` internal api", async () => {
   await using window = new Window()

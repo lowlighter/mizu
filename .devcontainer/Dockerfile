@@ -9,6 +9,8 @@ RUN mkdir -p /deno \
 ENV PATH=${DENO_INSTALL}/bin:${PATH} \
     DENO_DIR=${DENO_INSTALL}/.cache/deno
 
+RUN deno upgrade
+
 # Install Node.js
 RUN apt-get update \
     && apt-get install -y curl \

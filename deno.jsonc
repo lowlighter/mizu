@@ -104,33 +104,7 @@
     "@libs/typing": "jsr:@libs/typing@3"
   },
   "workspace": [
-    "@mizu/bind",
-    "@mizu/clean",
-    "@mizu/code",
-    "@mizu/custom-element",
-    "@mizu/eval",
-    "@mizu/event",
-    "@mizu/for",
-    "@mizu/html",
-    "@mizu/http",
-    "@mizu/if",
-    "@mizu/internal",
-    "@mizu/is",
-    "@mizu/markdown",
-    "@mizu/mizu",
-    "@mizu/model",
-    "@mizu/mustache",
-    "@mizu/once",
-    "@mizu/ref",
-    "@mizu/refresh",
-    "@mizu/render",
-    "@mizu/set",
-    "@mizu/show",
-    "@mizu/skip",
-    "@mizu/test",
-    "@mizu/text",
-    "@mizu/toc",
-    "@mizu/unstable"
+    "@mizu/*"
   ],
   "nodeModulesDir": "auto",
   "fmt": {
@@ -182,6 +156,7 @@
   "compilerOptions": {
     "lib": [
       "dom",
+      "dom.iterable",
       "deno.ns"
     ],
     "useUnknownInCatchVariables": false

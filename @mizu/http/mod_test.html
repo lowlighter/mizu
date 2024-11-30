@@ -312,11 +312,11 @@
     <response path="/foo" status="OK"></response>
   </http-server>
   <render>
-    <div %http.method[foo]="/foo" %response.void></div>
+    <div %http.method[options]="/foo" %response.void></div>
   </render>
   <script>
     expect(http.request).toBeInstanceOf(Request)
-    expect(http.request.method).toBe("FOO")
+    expect(http.request.method).toBe("OPTIONS")
   </script>
 </test>
 

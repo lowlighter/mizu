@@ -1,30 +1,24 @@
 {
   "type": "module",
   "dependencies": {
-    "@deno/doc": "npm:@jsr/deno__doc@^0.161.2",
-    "@dprint/formatter": "npm:@jsr/dprint__formatter@^0.4.1",
-    "@libs/bundle": "npm:@jsr/libs__bundle@^12.4.4",
-    "@libs/logger": "npm:@jsr/libs__logger@^3.1.3",
     "@libs/markdown": "npm:@jsr/libs__markdown@^2.0.2",
     "@libs/reactive": "npm:@jsr/libs__reactive@^5.0.2",
-    "@libs/run": "npm:@jsr/libs__run@^3.0.2",
     "@libs/testing": "npm:@jsr/libs__testing@^4.0.1",
     "@libs/typing": "npm:@jsr/libs__typing@^3.1.2",
     "@libs/xml": "npm:@jsr/libs__xml@^6.0.2",
     "@std/assert": "npm:@jsr/std__assert@^1.0.8",
     "@std/async": "npm:@jsr/std__async@^1.0.9",
-    "@std/collections": "npm:@jsr/std__collections@^1.0.9",
     "@std/fmt": "npm:@jsr/std__fmt@^1.0.3",
-    "@std/fs": "npm:@jsr/std__fs@^1.0.6",
     "@std/html": "npm:@jsr/std__html@^1.0.3",
-    "@std/http": "npm:@jsr/std__http@^1.0.11",
     "@std/io": "npm:@jsr/std__io@^0.225.0",
-    "@std/jsonc": "npm:@jsr/std__jsonc@^1.0.1",
     "@std/path": "npm:@jsr/std__path@^1.0.8",
     "@std/regexp": "npm:@jsr/std__regexp@^1.0.0-rc.1",
-    "@std/text": "npm:@jsr/std__text@^1.0.8",
-    "@std/yaml": "npm:@jsr/std__yaml@^1.0.5",
-    "jsdom": "^25.0.1",
+    "jsdom": "^25.0.1"
+  },
+  "devDependencies": {
+    "@dprint/formatter": "npm:@jsr/dprint__formatter@^0.4.1",
+    "jsr": "^0.13.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
 }

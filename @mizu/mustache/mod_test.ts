@@ -1,1 +1,2 @@
-await import("@mizu/internal/testing").then(({ test }) => test(import.meta))
+import { test } from "@mizu/internal/testing"
+test(import.meta)

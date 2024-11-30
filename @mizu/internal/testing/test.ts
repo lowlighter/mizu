@@ -31,8 +31,8 @@ export function test(path: string | ImportMeta, runner = _test) {
   } else if (path.startsWith("file://")) {
     path = readFileSync(fromFileUrl(path), "utf-8")
   }
-  const { document } = new Window(path)
-  document.querySelectorAll("body > test").forEach((testcase: testing) => {
+  const window = new Window(path)
+  window.document.querySelectorAll("body > test").forEach((testcase: testing) => {
     const test = testcase.hasAttribute("skip") ? runner.skip : testcase.hasAttribute("only") ? runner.only : runner
     test(`${testcase.getAttribute("name") ?? ""}`.replace(/^\[(.*?)\]/, (_, name) => bgMagenta(` ${name} `)), async () => {
       const testing = {
@@ -55,8 +55,8 @@ export function test(path: string | ImportMeta, runner = _test) {
         http: { server: null, request: null, response: null },
       } as Testing
       try {
-        if (document.querySelector("body > load")) {
-          await load(document.querySelector("body > load") as HTMLElement, testing)
+        if (window.document.querySelector("body > load")) {
+          await load(window.document.querySelector("body > load") as HTMLElement, testing)
         }
         for (const operation of testcase.children) {
           switch (operation.tagName.toLowerCase()) {
@@ -259,8 +259,7 @@ async function http(operation: HTMLElement, testing: Testing) {
       if (Number(headers.get("content-length"))) {
         incoming.on("data", (chunk) => content += chunk)
         incoming.on("end", () => resolve(content))
-      }
-      else {
+      } else {
         resolve(content)
       }
     })
@@ -283,7 +282,7 @@ async function http(operation: HTMLElement, testing: Testing) {
       }
     }
     // Send outgoing message
-    outgoing.writeHead(testing.http.response.status, Object.fromEntries([...testing.http.response.headers]))
+    outgoing.writeHead(testing.http.response.status, Object.fromEntries(testing.http.response.headers.entries()))
     outgoing.end(await testing.http.response.text())
   })
   // Start server and update global location

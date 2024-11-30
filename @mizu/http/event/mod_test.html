@@ -29,13 +29,13 @@
     context.content = null
   </script>
   <render>
-    <div %http.method[foo]="/foo" %header[x-foo]="'bar'" %body.text="'foobar'" %@event.text="event = $event, content = $content"></div>
+    <div %http.method[options]="/foo" %header[x-foo]="'bar'" %body.text="'foobar'" %@event.text="event = $event, content = $content"></div>
   </render>
   <script>
     rendered.querySelector("div").dispatchEvent(new Event("event"))
     await delay(100)
     expect(http.request).toBeInstanceOf(Request)
-    expect(http.request.method).toBe("FOO")
+    expect(http.request.method).toBe("OPTIONS")
     expect(http.request.headers.get("x-foo")).toBe("bar")
     expect(http.request.received.body).toBe("foobar")
     expect(context.event).toBeInstanceOf(Event)
@@ -52,7 +52,7 @@
     context.b = 0
   </script>
   <render>
-    <p %http.method[foo]="/foo" %@a.void="a++" %@b.void="b++"></p>
+    <p %http.method[options]="/foo" %@a.void="a++" %@b.void="b++"></p>
   </render>
   <script>
     rendered.querySelector("p").dispatchEvent(new Event("a"))
