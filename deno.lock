@@ -85,7 +85,7 @@
     "npm:highlight.js@11": "11.10.0",
     "npm:highlight.js@^11.10.0": "11.10.0",
     "npm:jsdom@25": "25.0.1",
-    "npm:jsr@0.13.0": "0.13.0",
+    "npm:jsr@~0.13.2": "0.13.2",
     "npm:octokit@^4.0.2": "4.0.2_@octokit+core@6.1.2",
     "npm:rehype-autolink-headings@7": "7.1.0",
     "npm:rehype-autolink-headings@^7.1.0": "7.1.0",
@@ -122,8 +122,9 @@
     "npm:stylelint-order@^6.0.4": "6.0.4_stylelint@16.11.0__@csstools+css-tokenizer@3.0.3__@csstools+css-parser-algorithms@3.0.4___@csstools+css-tokenizer@3.0.3__postcss-selector-parser@7.0.0__typescript@5.7.2__postcss@8.4.49_postcss@8.4.49_typescript@5.7.2",
     "npm:stylelint@^16.11.0": "16.11.0_@csstools+css-tokenizer@3.0.3_@csstools+css-parser-algorithms@3.0.4__@csstools+css-tokenizer@3.0.3_postcss-selector-parser@7.0.0_typescript@5.7.2_postcss@8.4.49",
     "npm:terser@^5.36.0": "5.36.0",
-    "npm:tsx@4.19.2": "4.19.2",
+    "npm:tsx@^4.19.2": "4.19.2",
     "npm:typescript@5.7.2": "5.7.2",
+    "npm:typescript@^5.7.2": "5.7.2",
     "npm:unified@11": "11.0.5",
     "npm:unified@^11.0.5": "11.0.5",
     "npm:unist-util-visit@5": "5.0.0"
@@ -2392,8 +2393,8 @@
     "json-schema-traverse@1.0.0": {
       "integrity": "sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug=="
     },
-    "jsr@0.13.0": {
-      "integrity": "sha512-1Ndg3dpv+zXhg+yVd0n6QtAGsA4A8jkYl1/Do3w53+7mJg361n/ge7GpkNmT/zPxmQtUIxLIKdmHn0CfAkn+Hw==",
+    "jsr@0.13.2": {
+      "integrity": "sha512-c4ir0ql2Xgpg9mSOSPKBANS9oTvlV8fSzpesCsHP04VAOJ3pBm7YygY2LVkHC0jz9G36JBGh1oiEZTWO4UyctA==",
       "dependencies": [
         "kolorist",
         "node-stream-zip",
@@ -4286,9 +4287,9 @@
         "npm:@jsr/std__path@1",
         "npm:@jsr/std__regexp@1",
         "npm:jsdom@25",
-        "npm:jsr@0.13.0",
-        "npm:tsx@4.19.2",
-        "npm:typescript@5.7.2"
+        "npm:jsr@~0.13.2",
+        "npm:tsx@^4.19.2",
+        "npm:typescript@^5.7.2"
       ]
     },
     "members": {
