@@ -197,7 +197,9 @@
       "**/node_modules",
       "**/coverage",
       "**/.pages",
-      "**/.cache"
+      "**/.cache",
+      "www/html/mizu/examples/bun",
+      "www/html/mizu/examples/node"
     ]
   },
   "publish": {

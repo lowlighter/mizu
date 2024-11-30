@@ -1,4 +1,4 @@
-<div class="demo loading" *set="{ demo: { browsers: ['iife', 'esm'], deno: ['ssr', 'ssg'] } }" data-color-scheme="dark">
+<div class="demo loading" *set="{ demo: { browsers: ['iife', 'esm'], bun: ['ssr', 'ssg'], node: ['ssr', 'ssg'], deno: ['ssr', 'ssg'] } }" data-color-scheme="dark">
   <div class="mockups">
     <div class="mockup runtime">
       <div class="tabs">
@@ -21,11 +21,11 @@
       <div class="tabs">
         <i class="fake" %http="https://lecoq.io/cdn/octicons/three-bars-24.svg" %response.swap></i>
         <div *for="demo.deno" class="tab" :data-demo-tab="`deno-${$value}`" data-demo-for-runtime="deno" *mustache>{{ $value }}.ts</div>
+        <div *for="demo.node" class="tab" :data-demo-tab="`node-${$value}`" data-demo-for-runtime="node" *mustache>{{ $value }}.mjs</div>
+        <div *for="demo.bun" class="tab" :data-demo-tab="`bun-${$value}`" data-demo-for-runtime="bun" *mustache>{{ $value }}.ts</div>
       </div>
       <div class="app-view">
         <div class="runtime-view">
-          <pre data-demo-for-runtime="node" class="usage-snippet"><code *code[ts]>// Coming soon!</code></pre>
-          <pre data-demo-for-runtime="bun" class="usage-snippet"><code *code[ts]>// Coming soon!</code></pre>
           <pre *for="demo.deno" :data-demo-for-tab="`deno-${$value}`" data-demo-for-runtime="deno" class="usage-snippet"><code *code[ts] %http="`/html/mizu/examples/deno/${$value}.ts`" %response.text></code></pre>
           <pre
             *for="demo.deno"
@@ -33,6 +33,20 @@
             data-demo-for-runtime="deno"
             class="lines"
           ><code %http="`/html/mizu/examples/deno/${$value}.ts`" %response.text="this.textContent = $content.split(`\n`).slice(1).map((_, i) => i+1).join(&quot;\n&quot;)"></code></pre>
+          <pre *for="demo.node" :data-demo-for-tab="`node-${$value}`" data-demo-for-runtime="node" class="usage-snippet"><code *code[js] %http="`/html/mizu/examples/node/${$value}.mjs`" %response.text></code></pre>
+          <pre
+            *for="demo.node"
+            :data-demo-for-tab="`node-${$value}`"
+            data-demo-for-runtime="node"
+            class="lines"
+          ><code %http="`/html/mizu/examples/node/${$value}.mjs`" %response.text="this.textContent = $content.split(`\n`).slice(1).map((_, i) => i+1).join(&quot;\n&quot;)"></code></pre>
+          <pre *for="demo.bun" :data-demo-for-tab="`bun-${$value}`" data-demo-for-runtime="bun" class="usage-snippet"><code *code[ts] %http="`/html/mizu/examples/bun/${$value}.ts`" %response.text="this.textContent = $content.replace(/^.. @ts-expect-error.*/m, '')"></code></pre>
+          <pre
+            *for="demo.bun"
+            :data-demo-for-tab="`bun-${$value}`"
+            data-demo-for-runtime="bun"
+            class="lines"
+          ><code %http="`/html/mizu/examples/bun/${$value}.ts`" %response.text="this.textContent = $content.split(`\n`).slice(1).map((_, i) => i+1).join(&quot;\n&quot;)"></code></pre>
         </div>
         <div class="runtime-terminal">
           <div class="tabs">
@@ -113,7 +127,8 @@
       document.querySelectorAll(`[data-demo-${key}]`).forEach((element) => {
         element.addEventListener("click", () => {
           if ((key === "runtime") && (data.runtime !== element.getAttribute(`data-demo-${key}`))) {
-            document.querySelector(`.mockup.${element.getAttribute(`data-demo-${key}`) === "browsers" ? "browser" : "runtime"} [data-demo-tab]`).click()
+            const selector = element.getAttribute(`data-demo-${key}`) === "browsers" ? ".mockup.browser [data-demo-tab]" : `.mockup.runtime [data-demo-tab][data-demo-for-runtime="${element.getAttribute(`data-demo-${key}`)}"]`
+            document.querySelector(selector)?.click()
           }
           data[key] = element.getAttribute(`data-demo-${key}`)
           document.querySelectorAll(`[data-demo-for-${key}]`).forEach((element) => {
