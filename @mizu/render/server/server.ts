@@ -8,7 +8,7 @@ import { Window } from "@mizu/internal/vdom"
 import defaults from "./defaults.ts"
 import { generate } from "./generate.ts"
 // deno-lint-ignore no-external-import
-import { mkdir, readdir, readFile as read, rmdir, stat, writeFile as write } from "node:fs/promises"
+import { mkdir, readdir, readFile as read, rm, stat, writeFile as write } from "node:fs/promises"
 export type * from "@mizu/internal/engine"
 export type { CallbackSource, GlobSource, StringSource, URLSource } from "./generate.ts"
 
@@ -30,7 +30,7 @@ export class Server {
     generate: {
       output: "./output",
       clean: true,
-      fs: { stat, readdir, mkdir, rmdir, read, write },
+      fs: { stat, read, write, rm, readdir, mkdir },
     },
     // deno-lint-ignore no-console
     warn: console.warn,
@@ -179,10 +179,10 @@ export type ServerGenerateFileSystemOptions = {
   read: (path: string) => Promise<Buffer>
   /** Write callback. */
   write: (path: string, data: Buffer) => Promisable<void>
+  /** Remove callback. */
+  rm: (path: string, options?: { recursive?: boolean }) => Promisable<unknown>
   /** Make directory callback. */
   mkdir: (path: string, options?: { recursive?: boolean }) => Promisable<unknown>
-  /** Remove directory callback. */
-  rmdir: (path: string, options?: { recursive?: boolean }) => Promisable<unknown>
   /** Read directory callback. */
   readdir: (path: string) => Promise<string[] | { name: string }[]>
 }

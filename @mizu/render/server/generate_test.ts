@@ -4,22 +4,22 @@ import { join } from "@std/path"
 import { Server } from "./server.ts"
 const output = "/fake/path"
 const encoder = new TextEncoder()
-const fs = { stat: fn(), mkdir: fn(), rmdir: fn(), read: fn(), readdir: fn(() => []), write: fn() } as testing
+const fs = { stat: fn(), mkdir: fn(), rm: fn(), read: fn(), readdir: fn(() => []), write: fn() } as testing
 
 test("`Server.generate()` manages `output` directory", async () => {
   let exists = false
   const stat = fn(() => exists ? Promise.resolve({}) : Promise.reject("Not found")) as testing
   const mkdir = fn() as testing
-  const rmdir = fn() as testing
-  const mizu = new Server({ generate: { output, fs: { ...fs, stat, mkdir, rmdir } } })
+  const rm = fn() as testing
+  const mizu = new Server({ generate: { output, fs: { ...fs, stat, mkdir, rm } } })
   await mizu.generate([], { clean: false })
   expect(stat).toHaveBeenCalledWith(output)
-  expect(rmdir).not.toBeCalled()
+  expect(rm).not.toBeCalled()
   expect(mkdir).toHaveBeenCalledWith(output, { recursive: true })
   exists = true
   await mizu.generate([], { clean: true })
   expect(stat).toHaveBeenCalledWith(output)
-  expect(rmdir).toHaveBeenCalledWith(output, { recursive: true })
+  expect(rm).toHaveBeenCalledWith(output, { recursive: true })
   expect(mkdir).toHaveBeenCalledWith(output, { recursive: true })
 }, { permissions: { read: true } })
 
@@ -64,20 +64,33 @@ test("`Server.generate()` can retrieve content from functions", async () => {
 }, { permissions: { read: true } })
 
 test("`Server.generate()` can retrieve content from local files", async () => {
-  const write = fn() as testing
-  const mkdir = fn() as testing
-  const mizu = new Server({
-    directives: ["@mizu/test"],
-    generate: { output, fs: { ...fs, write, mkdir, readdir: () => [join(import.meta.dirname!, "mod.ts")], stat: () => ({ isFile: true, isDirectory: false }), read: () => Promise.resolve(encoder.encode(`<p ~test.text="foo"></p>`)) } },
-  })
-  await mizu.generate([
-    [
-      "**/*.ts",
-      ".",
-      { directory: import.meta.dirname!, render: { select: "p", context: { foo: "bar" } } },
-    ],
-  ])
-  expect(write).toHaveBeenCalledWith(join(output, "mod.ts"), encoder.encode(`<p ~test.text="foo">bar</p>`))
+  for (
+    const { readdir, stat } of [
+      {
+        readdir: (path: string) => ({ "/": ["a"], "/a": ["b"], "/a/b": ["foo.html"] })[path],
+        stat: (path: string) => ({ isFile: path.includes("foo.html"), isDirectory: !path.includes("foo.html") }),
+      },
+      {
+        readdir: (path: string) => ({ "/": [{ name: "a" }], "/a": [{ name: "b" }], "/a/b": [{ name: "foo.html" }] })[path],
+        stat: (path: string) => ({ isFile: () => path.includes("foo.html"), isDirectory: () => !path.includes("foo.html") }),
+      },
+    ] as const
+  ) {
+    const write = fn() as testing
+    const mkdir = fn() as testing
+    const mizu = new Server({
+      directives: ["@mizu/test"],
+      generate: { output, fs: { ...fs, write, mkdir, readdir, stat, read: () => Promise.resolve(encoder.encode(`<p ~test.text="foo"></p>`)) } },
+    })
+    await mizu.generate([
+      [
+        "**/*.html",
+        ".",
+        { directory: "/", render: { select: "p", context: { foo: "bar" } } },
+      ],
+    ])
+    expect(write).toHaveBeenCalledWith("/fake/path/a/b/foo.html", encoder.encode(`<p ~test.text="foo">bar</p>`))
+  }
 }, { permissions: { read: true } })
 
 test("`Server.generate()` can retrieve content strings", async () => {
