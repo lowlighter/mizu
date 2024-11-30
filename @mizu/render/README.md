@@ -10,12 +10,6 @@ Full documentation is available at [mizu.sh](https://mizu.sh).
 
 # Usage
 
-> [!WARNING]
->
-> _**mizu.js**_ is still in active development.
->
-> See github.com/lowlighter/mizu/issues/34 for more information.
-
 ## Client-side
 
 Set up _**mizu.js**_ in your browser environment using one of two methods:
