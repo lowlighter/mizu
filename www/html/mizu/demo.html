@@ -26,8 +26,6 @@
       </div>
       <div class="app-view">
         <div class="runtime-view">
-          <pre data-demo-for-runtime="node" class="usage-snippet"><code *code[ts]>// Coming soon!</code></pre>
-          <pre data-demo-for-runtime="bun" class="usage-snippet"><code *code[ts]>// Coming soon!</code></pre>
           <pre *for="demo.deno" :data-demo-for-tab="`deno-${$value}`" data-demo-for-runtime="deno" class="usage-snippet"><code *code[ts] %http="`/html/mizu/examples/deno/${$value}.ts`" %response.text></code></pre>
           <pre
             *for="demo.deno"
