@@ -17,7 +17,7 @@ export async function generate(server: Server, sources: Array<StringSource | Glo
   // Prepare output directory
   output = resolve(output)
   if ((await Promise.resolve(fs.stat(output)).then(() => true).catch(() => false)) && clean) {
-    await fs.rmdir(output, { recursive: true })
+    await fs.rm(output, { recursive: true })
   }
   await fs.mkdir(output, { recursive: true })
 
@@ -125,6 +125,9 @@ export type URLSource = [
 
 /** Expand glob patterns. */
 async function* expandGlob(glob: string, { fs, root, directory = root }: { fs: Pick<FileSystemOptions, "readdir" | "stat">; root: string; directory?: string }): AsyncGenerator<{ path: string }> {
+  if (!await Promise.resolve(fs.stat(directory)).then(() => true).catch(() => false)) {
+    return
+  }
   for (const entry of await fs.readdir(directory)) {
     const file = typeof entry === "object" ? entry.name : entry
     const path = join(directory, file)
