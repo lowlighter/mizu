@@ -63,7 +63,7 @@ test("`Server.generate()` can retrieve content from functions", async () => {
   }
 }, { permissions: { read: true } })
 
-test.only("`Server.generate()` can retrieve content from local files", async () => {
+test("`Server.generate()` can retrieve content from local files", async () => {
   for (
     const { readdir, stat } of [
       {
