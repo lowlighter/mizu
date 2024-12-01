@@ -36,10 +36,14 @@ jobs:
       - uses: denoland/setup-deno@v2
       - uses: actions/setup-node@v4
         if: matrix.runtime == 'node'
+        with:
+          node-version: 22.x
+      - run: npm ci
+        if: matrix.runtime == 'node'
       - uses: oven-sh/setup-bun@v2
         if: matrix.runtime == 'bun'
-      - run: npm ci
-        if: matrix.runtime == 'node' || matrix.runtime == 'bun'
+      - run: bun install
+        if: matrix.runtime == 'bun'
       - run: deno task test:${{ matrix.runtime }}
 
   publish:
