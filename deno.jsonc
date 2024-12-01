@@ -44,9 +44,7 @@
     },
     "test:node": {
       "description": "Test code (node)",
-      "command": "cd $INIT_CWD && echo 'Not supported yet'"
-      // https://github.com/denoland/deno/issues/27166
-      // npx tsx --test"
+      "command": "cd $INIT_CWD && npm test"
     },
     "test:bun": {
       "description": "Test code (bun)",

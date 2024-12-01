@@ -41,9 +41,6 @@ jobs:
       - run: npm ci
         if: matrix.runtime == 'node' || matrix.runtime == 'bun'
       - run: deno task test:${{ matrix.runtime }}
-      # https://github.com/denoland/deno/issues/27166
-      - run: npx tsx --test
-        if: matrix.runtime == 'node'
 
   publish:
     name: Publish

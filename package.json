@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "scripts": {
+    "test": "npx tsx --test"
+  },
   "dependencies": {
     "@libs/markdown": "npm:@jsr/libs__markdown@^2.0.0",
     "@libs/reactive": "npm:@jsr/libs__reactive@^5.0.0",
