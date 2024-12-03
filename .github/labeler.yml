@@ -1,5 +1,5 @@
-# Meta files
-meta:
+# Repository files
+repo:
   - changed-files:
       - any-glob-to-any-file:
           - .devcontainer/**
