@@ -134,6 +134,7 @@
   },
   "workspace": [
     "api",
+    ".vercel/builders", // Test workspace vercel
     "@mizu/bind",
     "@mizu/clean",
     "@mizu/code",
