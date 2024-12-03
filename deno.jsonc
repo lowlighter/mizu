@@ -82,7 +82,7 @@
     },
     "serve": {
       "description": "Serve website locally",
-      "command": "deno serve --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp --port=4649 --location=http://localhost:4649 www/serve.ts"
+      "command": "deno serve --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp --allow-sys=osRelease --port=4649 --location=http://localhost:4649 www/serve.ts"
     },
     // Miscellaneous tasks
     "repo:fill-scopes": {
@@ -116,9 +116,10 @@
     "@libs/testing": "jsr:@libs/testing@4",
     "@std/fmt": "jsr:@std/fmt@1",
     // Development server dependencies
+    "@api/": "./api/",
     "@www/": "./www/",
     "@deno/doc": "jsr:@deno/doc@~0.161",
-    "@libs/bundle": "jsr:@libs/bundle@12",
+    "@libs/bundle": "jsr:@libs/bundle@12.5",
     "@libs/logger": "jsr:@libs/logger@3",
     "@std/collections": "jsr:@std/collections@1",
     "@std/http": "jsr:@std/http@1",
@@ -132,6 +133,7 @@
     "@std/yaml": "jsr:@std/yaml@1"
   },
   "workspace": [
+    "api",
     "@mizu/bind",
     "@mizu/clean",
     "@mizu/code",

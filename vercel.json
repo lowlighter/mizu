@@ -4,5 +4,8 @@
   "framework": null,
   "installCommand": "curl -fsSL https://deno.land/install.sh | sh && cp /vercel/.deno/bin/deno /usr/local/bin && deno --version",
   "buildCommand": "deno task build",
-  "outputDirectory": ".pages"
+  "outputDirectory": ".pages",
+  "functions": {
+    "api/**/*.ts": { "runtime": "vercel-deno@3.1.0" }
+  }
 }

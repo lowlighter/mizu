@@ -1,13 +1,14 @@
 // Imports
 import type { callback } from "@libs/typing"
-import { dirname, fromFileUrl, join } from "@std/path"
+import { dirname, fromFileUrl, join, toFileUrl } from "@std/path"
 import { route } from "@std/http/unstable-route"
 import { accepts, serveDir } from "@std/http"
 import { toSnakeCase } from "@std/text"
 import { Phase } from "@mizu/internal/engine"
 import { Mizu as RenderClient } from "@mizu/render/client"
 import { Mizu as RenderServer } from "@mizu/render/server"
-import { docs, html, js } from "./tools.ts"
+import { docs, html, js } from "@www/tools.ts"
+import apiBuild from "@api/build.ts"
 
 /** Serve files */
 export default {
@@ -41,6 +42,11 @@ export default {
       handler: async () => new Response(await js("@mizu/render/client", { format: "esm" }), { headers: { "Content-Type": "application/javascript; charset=utf-8", "Access-Control-Allow-Origin": "*" } }),
     },
     {
+      pattern: new URLPattern({ pathname: "/api/build" }),
+      handler: apiBuild,
+      method: "POST",
+    },
+    {
       pattern: new URLPattern({ pathname: "/about/api/render/:export" }),
       handler: async (_, __, params) => {
         const exported = params?.pathname.groups.export!
@@ -70,7 +76,7 @@ export default {
         if (requested === "application/json") {
           headers.set("content-type", "application/json; charset=utf-8")
           try {
-            const { [`_${toSnakeCase(url.searchParams.get("name") ?? name)}`]: directive } = await import(join(path, "mod.ts"))
+            const { [`_${toSnakeCase(url.searchParams.get("name") ?? name)}`]: directive } = await import(Deno.build.os === "windows" ? toFileUrl(join(path, "mod.ts")).href : join(path, "mod.ts"))
             const json = JSON.parse(JSON.stringify(directive))
             if (directive.name instanceof RegExp) {
               json.name = `/${directive.name.source}/`
