@@ -58,7 +58,7 @@
     },
     "build:readmes": {
       "description": "Build `README.md` from `mod.html`",
-      "command": "deno run --quiet --allow-read --allow-env --allow-write=@mizu/**/README.md,README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
+      "command": "deno run --quiet --allow-read --allow-env --allow-write=@mizu,README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
     },
     "build:www": {
       "description": "Build website",
