@@ -23,7 +23,8 @@
     "jsr:@libs/typing@2": "2.9.0",
     "jsr:@libs/typing@3": "3.1.2",
     "jsr:@libs/typing@^3.1.2": "3.1.2",
-    "jsr:@libs/xml@6": "6.0.2",
+    "jsr:@libs/xml@6": "6.0.3",
+    "jsr:@lowlighter/std-http@1": "1.0.11",
     "jsr:@luca/esbuild-deno-loader@~0.11.0-rc.1": "0.11.0",
     "jsr:@std/assert@0.221": "0.221.0",
     "jsr:@std/assert@0.223": "0.223.0",
@@ -39,6 +40,7 @@
     "jsr:@std/bytes@^1.0.3": "1.0.4",
     "jsr:@std/cli@1": "1.0.7",
     "jsr:@std/cli@^1.0.6": "1.0.7",
+    "jsr:@std/cli@^1.0.7": "1.0.7",
     "jsr:@std/cli@~0.224.3": "0.224.7",
     "jsr:@std/collections@1": "1.0.9",
     "jsr:@std/console@0.221": "0.221.0",
@@ -354,6 +356,22 @@
       "integrity": "317ee0c34acb9ce68ac4a0de0b456eb90f826c8ebd06bbe6e836d6516bff4850",
       "dependencies": [
         "jsr:@libs/typing@^3.1.2"
+      ]
+    },
+    "@libs/xml@6.0.3": {
+      "integrity": "85506d5c61b0110d26dbb02059ce5a543226c3501fccbc7692e2ba4921f95567"
+    },
+    "@lowlighter/std-http@1.0.11": {
+      "integrity": "515d9f2cdc20d2cb0a6861559b675d102fb9e8c229d5391a70a72fa65ab3f572",
+      "dependencies": [
+        "jsr:@std/cli@^1.0.7",
+        "jsr:@std/encoding@^1.0.5",
+        "jsr:@std/fmt@^1.0.3",
+        "jsr:@std/html@^1.0.3",
+        "jsr:@std/media-types@^1.1.0",
+        "jsr:@std/net",
+        "jsr:@std/path@^1.0.8",
+        "jsr:@std/streams@^1.0.8"
       ]
     },
     "@luca/esbuild-deno-loader@0.11.0": {
@@ -4370,6 +4388,7 @@
       "jsr:@libs/testing@4",
       "jsr:@libs/typing@3",
       "jsr:@libs/xml@6",
+      "jsr:@lowlighter/std-http@1",
       "jsr:@std/assert@1",
       "jsr:@std/async@1",
       "jsr:@std/collections@1",

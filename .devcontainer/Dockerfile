@@ -11,6 +11,8 @@ ENV PATH=${DENO_INSTALL}/bin:${PATH} \
 
 RUN deno upgrade
 
+RUN deno install -gArf jsr:@deno/deployctl
+
 # Install Node.js
 RUN apt-get update \
     && apt-get install -y curl \

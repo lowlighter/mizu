@@ -2,17 +2,27 @@
 import type { callback } from "@libs/typing"
 import { dirname, fromFileUrl, join, toFileUrl } from "@std/path"
 import { route } from "@std/http/unstable-route"
-import { accepts, serveDir } from "@std/http"
+import { accepts } from "@std/http"
+import { serveDir } from "@lowlighter/std-http"
 import { toSnakeCase } from "@std/text"
 import { Phase } from "@mizu/internal/engine"
 import { Mizu as RenderClient } from "@mizu/render/client"
 import { Mizu as RenderServer } from "@mizu/render/server"
 import { docs, html, js } from "@www/tools.ts"
-import apiBuild from "@api/build.ts"
+import apiBuild from "@www/api/build.ts"
+
+/** Is in production ? */
+const production = Boolean(Deno.env.get("DENO_DEPLOYMENT_ID"))
 
 /** Serve files */
-export default {
-  fetch: route([
+const handler = {
+  fetch: production ? route([
+    {
+      pattern: new URLPattern({ pathname: "/api/build" }),
+      handler: apiBuild,
+      method: "POST",
+    }
+  ], (request) => serveDir(new Request(request.url.replace(/\.html$/, ""), request), { fsRoot: fromFileUrl(import.meta.resolve("./.pages")), cleanUrls: true })) : route([
     {
       pattern: new URLPattern({ pathname: "/{index.html}?" }),
       handler: async () => new Response(await html("index"), { headers: { "Content-Type": "text/html" } }),
@@ -115,4 +125,9 @@ export default {
       handler: (request) => serveDir(request, { quiet: true, urlRoot: "html", fsRoot: fromFileUrl(import.meta.resolve("./html")) }),
     },
   ], (request) => serveDir(request, { quiet: true, fsRoot: fromFileUrl(import.meta.resolve("./static")) })),
+}
+export default handler
+
+if (import.meta.main) {
+  Deno.serve(handler.fetch)
 }
