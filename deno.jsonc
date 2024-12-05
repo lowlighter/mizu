@@ -62,17 +62,28 @@
     },
     "build:www": {
       "description": "Build website",
-      "command": "LOG_LEVEL=debug deno run --quiet --allow-read --allow-env --allow-net --allow-run --allow-write=$DENO_DIR,/tmp,www/.pages --location=http://localhost:4651 www/build.ts",
+      "command": "deno run --quiet --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp,www/.pages --allow-sys=osRelease --location=http://localhost:4649 www/build.ts",
       "dependencies": ["build:clean"]
     },
     "build:coverage": {
       "description": "Build coverage report",
       "command": "rm -rf www/.pages/coverage && deno coverage --html && mv coverage/html www/.pages/coverage && deno run --quiet --allow-read --allow-net=img.shields.io --allow-write=www/.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=www/.pages/coverage",
-      "dependencies": ["build:clean"]
+      "dependencies": ["build:clean", "test:deno"]
     },
     "build:clean": {
       "description": "Clean build artifacts",
       "command": "rm -rf www/.pages && mkdir -p www/.pages"
+    },
+    // Deployment tasks
+    "deploy:preview": {
+      "description": "Deploy website (preview)",
+      "command": "deno run --allow-sys --allow-env --allow-read --allow-net=cdn.deno.land,dash.deno.com jsr:@deno/deployctl deploy",
+      "dependencies": ["build"]
+    },
+    "deploy:prod": {
+      "description": "Deploy website (production)",
+      "command": "deno run --allow-sys --allow-env --allow-read --allow-net=cdn.deno.land,dash.deno.com jsr:@deno/deployctl deploy --prod",
+      "dependencies": ["build"]
     },
     // Development tasks
     "qa": {
@@ -82,7 +93,7 @@
     },
     "serve": {
       "description": "Serve website locally",
-      "command": "DENO_DEPLOYMENT_ID=1 deno serve --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp --allow-sys=osRelease --port=4650 --location=http://localhost:4650 www/serve.ts"
+      "command": "deno serve --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp --allow-sys=osRelease --port=4649 --location=http://localhost:4649 www/serve.ts"
     },
     // Miscellaneous tasks
     "repo:fill-scopes": {
@@ -223,16 +234,19 @@
   "deploy": {
     "project": "eef27b1b-755a-4828-bf83-a073e41e5677",
     "entrypoint": "www/serve.ts",
+    "include": [
+      "@mizu/**",
+      "www/.pages/**",
+      "www/api/*.ts",
+      "www/*.ts",
+      "**/deno.jsonc",
+    ],
     "exclude": [
-      ".devcontainer/**",
-      ".github/**",
       "@mizu/**/*.html",
       "@mizu/**/*_test.ts",
+      "www/build.ts",
       "**/node_modules",
       "**/coverage"
-    ],
-    "include": [
-      "www/.pages/**"
     ]
   }
 }

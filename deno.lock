@@ -359,7 +359,10 @@
       ]
     },
     "@libs/xml@6.0.3": {
-      "integrity": "85506d5c61b0110d26dbb02059ce5a543226c3501fccbc7692e2ba4921f95567"
+      "integrity": "85506d5c61b0110d26dbb02059ce5a543226c3501fccbc7692e2ba4921f95567",
+      "dependencies": [
+        "jsr:@libs/typing@^3.1.2"
+      ]
     },
     "@lowlighter/std-http@1.0.11": {
       "integrity": "515d9f2cdc20d2cb0a6861559b675d102fb9e8c229d5391a70a72fa65ab3f572",
