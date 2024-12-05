@@ -58,7 +58,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
-      - run: 'deno task deploy:preview --token $(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange")'
+      - name: Run deno task deploy:preview
+        run: |
+          DENO_DEPLOY_TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange")
+          deno task deploy:preview
 
   publish:
     name: Publish
