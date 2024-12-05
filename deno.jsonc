@@ -67,7 +67,7 @@
     },
     "build:coverage": {
       "description": "Build coverage report",
-      "command": "rm -rf www/.pages/coverage && deno coverage --html && mv coverage/html www/.pages/coverage && deno run --quiet --allow-read --allow-net=img.shields.io --allow-write=www/.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=www/.pages/coverage",
+      "command": "deno test --allow-read --allow-env --allow-net --parallel --clean --coverage; rm -rf www/.pages/coverage && deno coverage --html && mv coverage/html www/.pages/coverage && deno run --quiet --allow-read --allow-net=img.shields.io --allow-write=www/.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=www/.pages/coverage",
       "dependencies": ["build:clean", "test:deno"]
     },
     "build:clean": {
@@ -77,12 +77,12 @@
     // Deployment tasks
     "deploy:preview": {
       "description": "Deploy website (preview)",
-      "command": "deno run --allow-sys --allow-env --allow-read --allow-net=cdn.deno.land,dash.deno.com jsr:@deno/deployctl deploy",
+      "command": "deno run --allow-sys --allow-env --allow-read --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy",
       "dependencies": ["build"]
     },
     "deploy:prod": {
       "description": "Deploy website (production)",
-      "command": "deno run --allow-sys --allow-env --allow-read --allow-net=cdn.deno.land,dash.deno.com jsr:@deno/deployctl deploy --prod",
+      "command": "deno run --allow-sys --allow-env --allow-read --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy --prod",
       "dependencies": ["build"]
     },
     // Development tasks
@@ -239,7 +239,7 @@
       "www/.pages/**",
       "www/api/*.ts",
       "www/*.ts",
-      "**/deno.jsonc",
+      "**/deno.jsonc"
     ],
     "exclude": [
       "@mizu/**/*.html",

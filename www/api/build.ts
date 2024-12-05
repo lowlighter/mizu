@@ -1,5 +1,4 @@
 #!/usr/bin/env DENO_DIR=/tmp deno run --version=v2.1.2
-// deno-lint-ignore-file no-external-import
 // Imports
 import { STATUS_CODE as Status, STATUS_TEXT as StatusText } from "@std/http"
 import { banner as _banner, js, meta } from "@www/tools.ts"
