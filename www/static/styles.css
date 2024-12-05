@@ -818,3 +818,30 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   padding-top: 0;
   background: none;
 }
+
+/** Builder */
+.builder .directives small {
+  margin-left: 1.75rem;
+}
+
+.builder small.no-after::after {
+  content: "";
+}
+
+.builder.pending {
+  cursor: progress;
+}
+
+.builder.pending :is(input, textarea, select) {
+  background-color: var(--bg-muted);
+}
+
+.builder.pending label, .builder.pending label *, .builder.pending button {
+  color: var(--muted) !important;
+  pointer-events: none;
+}
+
+.builder.pending :is(input[type="checkbox"], input[type="radio"], textarea, select, button) {
+  color: var(--muted);
+  border-color: var(--bd-muted);
+}

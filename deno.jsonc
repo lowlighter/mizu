@@ -58,21 +58,32 @@
     },
     "build:readmes": {
       "description": "Build `README.md` from `mod.html`",
-      "command": "deno run --quiet --allow-read --allow-env --allow-write=./@mizu,README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
+      "command": "deno run --quiet --allow-read --allow-env --allow-write=@mizu,README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
     },
     "build:www": {
       "description": "Build website",
-      "command": "deno run --quiet --allow-read --allow-env --allow-net --allow-run --allow-write=.pages,/tmp --location=http://localhost:4649 www/build.ts",
+      "command": "deno run --quiet --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp,www/.pages --allow-sys=osRelease --location=http://localhost:4649 www/build.ts",
       "dependencies": ["build:clean"]
     },
     "build:coverage": {
       "description": "Build coverage report",
-      "command": "deno test --quiet --allow-read --allow-env --allow-net --parallel --clean --coverage --reporter=dot; deno coverage --html && mv coverage/html .pages/coverage && deno run --quiet --allow-read --allow-net=img.shields.io --allow-write=.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=.pages/coverage",
-      "dependencies": ["build:clean"]
+      "command": "deno test --allow-read --allow-env --allow-net --parallel --clean --coverage; rm -rf www/.pages/coverage && deno coverage --html && mv coverage/html www/.pages/coverage && deno run --quiet --allow-read --allow-net=img.shields.io --allow-write=www/.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=www/.pages/coverage",
+      "dependencies": ["build:clean", "test:deno"]
     },
     "build:clean": {
       "description": "Clean build artifacts",
-      "command": "rm -rf .pages && mkdir -p .pages"
+      "command": "rm -rf www/.pages && mkdir -p www/.pages"
+    },
+    // Deployment tasks
+    "deploy:preview": {
+      "description": "Deploy website (preview)",
+      "command": "deno run --allow-sys --allow-env --allow-read --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy",
+      "dependencies": ["build"]
+    },
+    "deploy:prod": {
+      "description": "Deploy website (production)",
+      "command": "deno run --allow-sys --allow-env --allow-read --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy --prod",
+      "dependencies": ["build"]
     },
     // Development tasks
     "qa": {
@@ -82,7 +93,7 @@
     },
     "serve": {
       "description": "Serve website locally",
-      "command": "deno serve --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp --port=4649 --location=http://localhost:4649 www/serve.ts"
+      "command": "deno serve --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp --allow-sys=osRelease --port=4649 --location=http://localhost:4649 www/serve.ts"
     },
     // Miscellaneous tasks
     "repo:fill-scopes": {
@@ -118,8 +129,9 @@
     // Development server dependencies
     "@www/": "./www/",
     "@deno/doc": "jsr:@deno/doc@~0.161",
-    "@libs/bundle": "jsr:@libs/bundle@12",
+    "@libs/bundle": "jsr:@libs/bundle@12.5",
     "@libs/logger": "jsr:@libs/logger@3",
+    "@lowlighter/std-http": "jsr:@lowlighter/std-http@1",
     "@std/collections": "jsr:@std/collections@1",
     "@std/http": "jsr:@std/http@1",
     "@std/jsonc": "jsr:@std/jsonc@1",
@@ -167,10 +179,10 @@
     "semiColons": false,
     "lineWidth": 280,
     "exclude": [
-      "**/node_modules",
+      ".cache",
+      "www/.pages",
       "**/coverage",
-      "**/.pages",
-      "**/.cache"
+      "**/node_modules"
     ]
   },
   "lint": {
@@ -192,12 +204,12 @@
       ]
     },
     "exclude": [
-      "**/node_modules",
-      "**/coverage",
-      "**/.pages",
-      "**/.cache",
+      ".cache",
+      "www/.pages",
       "www/html/mizu/examples/bun",
-      "www/html/mizu/examples/node"
+      "www/html/mizu/examples/node",
+      "**/coverage",
+      "**/node_modules"
     ]
   },
   "publish": {
@@ -218,5 +230,23 @@
       "deno.ns"
     ],
     "useUnknownInCatchVariables": false
+  },
+  "deploy": {
+    "project": "eef27b1b-755a-4828-bf83-a073e41e5677",
+    "entrypoint": "www/serve.ts",
+    "include": [
+      "@mizu/**",
+      "www/.pages/**",
+      "www/api/*.ts",
+      "www/*.ts",
+      "**/deno.jsonc"
+    ],
+    "exclude": [
+      "@mizu/**/*.html",
+      "@mizu/**/*_test.ts",
+      "www/build.ts",
+      "**/node_modules",
+      "**/coverage"
+    ]
   }
 }
