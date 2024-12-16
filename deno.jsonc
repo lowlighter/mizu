@@ -54,7 +54,7 @@
     "build": {
       "description": "Build project",
       "command": "sleep 0",
-      "dependencies": ["build:readmes", "build:www", "build:coverage"]
+      "dependencies": ["build:readmes", "build:www"] //, "build:coverage"]
     },
     "build:readmes": {
       "description": "Build `README.md` from `mod.html`",
@@ -253,7 +253,7 @@
       "www/api/**",
       "www/*.ts",
       "www/@esbuild/**",
-      "**/deno.jsonc",
+      "**/deno.jsonc"
     ],
     "exclude": [
       "@mizu/**/*.html",
