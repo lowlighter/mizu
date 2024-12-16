@@ -525,3 +525,18 @@
     <!--[~test.comment=""]-->
   </expect>
 </test>
+
+<test name="[::value] supports empty value shorthand">
+  <script>
+    context.value = "foo"
+  </script>
+  <render>
+    <input ::>
+    <input ::.name>
+  </render>
+  <script>
+    input = document.querySelector("input")
+  input.dispatchEvent(new Event("input"))
+  expect(input.value).toBe("foo")
+  </script>
+</test>

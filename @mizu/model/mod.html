@@ -53,4 +53,17 @@
     Specify which keys must be pressed for the listener to trigger on a <a href="https://developer.mozilla.org/docs/Web/API/KeyboardEvent"><code>KeyboardEvent</code></a>. See <a href="#event"><code><span class="hljs-keyword">@event</span><span class="hljs-meta">.keys</span></code
       > modifier</a> for more information.
   </mizu-modifier>
+  <mizu-modifier #modifier name="nullish">
+    Set the model value to <code>null</code> if the value is empty.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="boolean">
+    Convert the model value using <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean"><code>Boolean()</code></a>. Additionally, any non-empty value matching the <a href="https://yaml.org/type/bool.html"
+    >YAML 1.1 definition of <q>falsy boolean</q> values</a> are set to <code>false</code>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="number">
+    Convert the model value using <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number"><code>Number()</code></a>.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="string">
+    Convert the model value using <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String"><code>String()</code></a>.
+  </mizu-modifier>
 </mizu-directive>

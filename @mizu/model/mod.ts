@@ -26,6 +26,7 @@ export const _model_value = {
   prefix: "::",
   phase: Phase.ATTRIBUTE_MODEL_VALUE,
   typings,
+  default: "value",
   init(renderer) {
     if (!renderer.cache(this.name)) {
       renderer.cache<Cache<typeof _model_value>>(this.name, new WeakMap())
@@ -39,11 +40,12 @@ export const _model_value = {
     const cached = cache.get(element)?.get(element) || cache.set(element, new WeakMap([[element, { model: { read: null, sync: null }, event: null, init: false }]])).get(element)!.get(element)!
     const input = element as HTMLInputElement
     const type = input.tagName === "INPUT" ? input.getAttribute("type") : input.tagName === "SELECT" ? input.tagName : null
+    const defaults = this.default
 
     // Setup model sync callback (model > value)
     if (!cached.model.sync) {
       cached.model.sync = async function () {
-        const model = await renderer.evaluate(input, attribute.value, options)
+        const model = await renderer.evaluate(input, attribute.value || defaults, options)
         const value = parse(read(input), parsed.modifiers)
         switch (type) {
           // Radio: checked if model is equal to value
@@ -78,7 +80,7 @@ export const _model_value = {
     // Setup model read callback (value > model)
     if (!cached.model.read) {
       cached.model.read = async function () {
-        const model = await renderer.evaluate(input, attribute.value, options)
+        const model = await renderer.evaluate(input, attribute.value || defaults, options)
         let value = parse(read(input), parsed.modifiers)
         switch (type) {
           // Checkbox: toggle value in model
@@ -109,7 +111,7 @@ export const _model_value = {
           case "number":
             value = parse(Number(value) as unknown as Arg<typeof parse>, parsed.modifiers)
         }
-        await renderer.evaluate(input, `${attribute.value}=${renderer.internal("value")}`, { ...options, state: { ...options.state, [renderer.internal("value")]: value } })
+        await renderer.evaluate(input, `${attribute.value || defaults}=${renderer.internal("value")}`, { ...options, state: { ...options.state, [renderer.internal("value")]: value } })
         input.dispatchEvent(new renderer.window.Event("::", { bubbles: true }))
       }
     }
@@ -119,11 +121,11 @@ export const _model_value = {
       cached.init = true
       // Auto-assign name attribute if missing
       if (parsed.modifiers.name && (!input.hasAttribute("name"))) {
-        input.setAttribute("name", attribute.value)
+        input.setAttribute("name", attribute.value || defaults)
       }
       // Auto-initialize value if missing
       if (parsed.modifiers.value && (input.getAttribute("value"))) {
-        await renderer.evaluate(input, `${attribute.value}??=${renderer.internal("value")}`, { ...options, state: { ...options.state, [renderer.internal("value")]: parse(read(input), parsed.modifiers) } })
+        await renderer.evaluate(input, `${attribute.value || defaults}??=${renderer.internal("value")}`, { ...options, state: { ...options.state, [renderer.internal("value")]: parse(read(input), parsed.modifiers) } })
       }
       // Setup event listener
       await _event.execute.call(this, renderer, element, { ...arguments[2], attributes: [attribute], _event: parsed.modifiers.event, _callback: cached.model.read })
@@ -131,7 +133,7 @@ export const _model_value = {
 
     await cached.model.sync()
   },
-} as Directive<WeakMap<HTMLElement, WeakMap<HTMLElement, { model: Record<"read" | "sync", Nullable<callback>>; event: Nullable<string>; init: boolean }>>, typeof typings>
+} as Directive<WeakMap<HTMLElement, WeakMap<HTMLElement, { model: Record<"read" | "sync", Nullable<callback>>; event: Nullable<string>; init: boolean }>>, typeof typings> & { default: string }
 
 /** Default exports. */
 export default [_model_value]
@@ -165,10 +167,10 @@ function parse(value: ReturnType<typeof read>, modifiers: Modifiers<typeof _mode
       return Number(value)
     }
     if (modifiers.boolean) {
-      return !(value.length && /^(?:[Ff]alse|FALSE|[Nn]o|NO|[Oo]ff|OFF)$/.test(value))
+      return Boolean(value) && !(value.length && /^(?:[Ff]alse|FALSE|[Nn]|[Nn]o|NO|[Oo]ff|OFF)$/.test(value))
     }
     if (modifiers.string) {
-      return `${value}`
+      return String(value)
     }
     return value
   })
