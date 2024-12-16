@@ -4,4 +4,3 @@
 coverage
 node_modules
 www/.pages
-www/@esbuild

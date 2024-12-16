@@ -19,6 +19,7 @@ export default async function (request: Request) {
   try {
     const options = await request.json()
     const bundled = await js("@mizu/render/client", {
+      builder: "wasm",
       banner: _banner.replace(`${meta.name} — ${meta.version}\n`, `${meta.name} — ${meta.version} — Custom build (${new Date().toDateString()})\n`),
       minify: options.minify === true ? "terser" : false,
       format: ["iife", "esm"].includes(options.format) ? options.format : throws("format: must be 'iife' or 'esm'"),

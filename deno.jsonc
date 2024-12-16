@@ -128,8 +128,7 @@
     "@std/regexp": "jsr:@std/regexp@^1.0.0",
     "jsdom": "npm:jsdom@^25.0.1",
     // Deno deploy dependencies
-    "@esbuild/linux-x64": "npm:@esbuild/linux-x64@^0.24.0",
-    "@libs/bundle/ts": "jsr:@libs/bundle@^12.5.0/ts",
+    "@libs/bundle/ts": "jsr:@libs/bundle@^12.6.2/ts",
     "@libs/typing/func": "jsr:@libs/typing@^3.1.2/func",
     "@std/http/unstable-route": "jsr:@std/http@^1.0.12/unstable-route",
     "@std/html/unstable-is-valid-custom-element-name": "jsr:@std/html@^1.0.3/unstable-is-valid-custom-element-name",
@@ -140,7 +139,7 @@
     // Development server dependencies
     "@www/": "./www/",
     "@deno/doc": "jsr:@deno/doc@^0.161.3",
-    "@libs/bundle": "jsr:@libs/bundle@^12.5.0",
+    "@libs/bundle": "jsr:@libs/bundle@^12.6.2",
     "@libs/logger": "jsr:@libs/logger@^3.1.3",
     "@lowlighter/std-http": "jsr:@lowlighter/std-http@^1.0.11",
     "@std/collections": "jsr:@std/collections@^1.0.9",
@@ -252,7 +251,6 @@
       "www/.pages/**",
       "www/api/**",
       "www/*.ts",
-      "www/@esbuild/**",
       "**/deno.jsonc"
     ],
     "exclude": [
