@@ -54,7 +54,7 @@
     "build": {
       "description": "Build project",
       "command": "sleep 0",
-      "dependencies": ["build:readmes", "build:www"] //, "build:coverage"]
+      "dependencies": ["build:readmes", "build:www", "build:coverage"]
     },
     "build:readmes": {
       "description": "Build `README.md` from `mod.html`",
@@ -251,10 +251,10 @@
       "www/.pages/**",
       "www/api/**",
       "www/*.ts",
-      "**/deno.jsonc",
-      "deno.lock",
-      "package.json",
-      "package-lock.json"
+      "**/deno.jsonc"
+      // "deno.lock",
+      // "package.json",
+      // "package-lock.json"
     ],
     "exclude": [
       "@mizu/**/*.html",
