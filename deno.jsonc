@@ -248,7 +248,6 @@
     "include": [
       "@mizu/**",
       "www/.pages/**",
-      "www/.pages/coverage/**",
       "www/api/*.ts",
       "www/*.ts",
       "**/deno.jsonc",
@@ -258,8 +257,8 @@
       "@mizu/**/*.html",
       "@mizu/**/*_test.ts",
       "www/build.ts",
-      "**/node_modules",
-      "**/coverage"
+      "node_modules",
+      "coverage"
     ]
   }
 }
