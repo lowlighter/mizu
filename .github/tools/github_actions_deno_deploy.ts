@@ -9,6 +9,6 @@ core.setOutput("project", config.deploy.project)
 core.setOutput("entrypoint", config.deploy.entrypoint)
 core.setOutput("include", config.deploy.include.join(","))
 core.setOutput("exclude", config.deploy.exclude.join(","))
-core.setOutput("import_map", ".imports_map.json")
+core.setOutput("import_map", "deno.jsonc")
 
 await Deno.writeTextFile(".imports_map.json", JSON.stringify({ imports: config.imports }))
