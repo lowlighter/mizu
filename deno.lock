@@ -10,7 +10,7 @@
     "jsr:@deno/graph@0.86": "0.86.3",
     "jsr:@deno/graph@~0.82.3": "0.82.3",
     "jsr:@dprint/formatter@~0.4.1": "0.4.1",
-    "jsr:@libs/bundle@^12.6.2": "12.6.2",
+    "jsr:@libs/bundle@^12.6.3": "12.6.3",
     "jsr:@libs/logger@^3.1.3": "3.1.3",
     "jsr:@libs/markdown@1": "1.2.3",
     "jsr:@libs/markdown@^2.0.2": "2.0.2",
@@ -188,14 +188,13 @@
     "@dprint/formatter@0.4.1": {
       "integrity": "96449ab83aa9f72df98caa5030d3f4a921c5c29d9b0e0d0da83d79e2024a9637"
     },
-    "@libs/bundle@12.6.2": {
-      "integrity": "a1ad27b910a2720be6709cbcb34f0419838fe32122fc190812b9f49ce062bc03",
+    "@libs/bundle@12.6.3": {
+      "integrity": "49704e05acecd3a826235eb13d40c2c0613ed892fb41586474c3cc3f7b69979e",
       "dependencies": [
         "jsr:@b-fuze/deno-dom",
         "jsr:@cliffy/table",
         "jsr:@libs/logger",
         "jsr:@libs/run",
-        "jsr:@libs/typing@^3.1.2",
         "jsr:@luca/esbuild-deno-loader",
         "jsr:@std/assert@1",
         "jsr:@std/async@1",
@@ -4292,7 +4291,7 @@
       "jsr:@astral/astral@0.5",
       "jsr:@deno/doc@~0.161.3",
       "jsr:@dprint/formatter@~0.4.1",
-      "jsr:@libs/bundle@^12.6.2",
+      "jsr:@libs/bundle@^12.6.3",
       "jsr:@libs/logger@^3.1.3",
       "jsr:@libs/markdown@^2.0.2",
       "jsr:@libs/reactive@^5.0.2",
