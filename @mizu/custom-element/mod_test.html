@@ -183,3 +183,29 @@
     <template *warn="&lt;x-custom&gt; is already registered as a custom element, ignoring"></template>
   </expect>
 </test>
+
+<test name="[*custom-element + *for] behaves as expected">
+  <load directives="@mizu/test,@mizu/custom-element,@mizu/for"></load>
+  <render>
+    <template *custom-element="x-foo" filter-remove>
+      <b>
+        <slot name="bar"></slot>
+      </b>
+    </template>
+    <x-foo *for="['a', 'b']">
+      <span #bar ~test.text="$value"></span>
+    </x-foo>
+  </render>
+  <expect comments="false">
+    <x-foo>
+      <b>
+        <span #bar>a</span>
+      </b>
+    </x-foo>
+    <x-foo>
+      <b>
+        <span #bar>b</span>
+      </b>
+    </x-foo>
+  </expect>
+</test>

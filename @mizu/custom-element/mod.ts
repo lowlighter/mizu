@@ -59,6 +59,11 @@ export const _custom_element = {
       tagname,
       class extends renderer.window.HTMLElement {
         connectedCallback(this: HTMLElement) {
+          // Skip element if it has an expansion directive
+          if (renderer.elementHasPhase(this, Phase.EXPAND)) {
+            return
+          }
+
           // Store provided content and replace it by the template
           const content = Array.from(renderer.createElement("div", { innerHTML: this.innerHTML.trim() }).childNodes) as HTMLElement[]
           this.innerHTML = element.innerHTML
