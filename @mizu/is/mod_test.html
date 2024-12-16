@@ -40,8 +40,8 @@
 <test name="[*is] does not changes element reference unless needed">
   <script>
     storage.element = null
-    storage.child = null
-    context.is = "div"
+  storage.child = null
+  context.is = "div"
   </script>
   <render>
     <div *is="is">
@@ -50,7 +50,7 @@
   </render>
   <script>
     storage.element = document.querySelector("div")
-    storage.child = document.querySelector("a")
+  storage.child = document.querySelector("a")
   </script>
   <render></render>
   <expect>
@@ -60,7 +60,7 @@
   </expect>
   <script>
     expect(storage.element).toBe(document.querySelector("div"))
-    expect(storage.child).toBe(document.querySelector("a"))
+  expect(storage.child).toBe(document.querySelector("a"))
   </script>
 </test>
 

@@ -72,7 +72,7 @@
   </expect>
   <script>
     context.foo = "baz"
-    await rerender()
+  await rerender()
   </script>
   <expect>
     <p>baz</p>
@@ -143,8 +143,8 @@
   </http-server>
   <script>
     await expect(fetch("/")).resolves.toRespondWithStatus(Status.Teapot)
-    expect(http.request).toBeInstanceOf(Request)
-    expect(http.response).toBeInstanceOf(Response)
+  expect(http.request).toBeInstanceOf(Request)
+  expect(http.response).toBeInstanceOf(Response)
   </script>
 </test>
 
@@ -154,7 +154,7 @@
   </http-server>
   <script>
     await expect(fetch("/")).resolves.toRespondWithStatus("2XX")
-    await expect(testing.renderer.evaluate(null, `fetch("/")`, { context: testing.context })).resolves.toRespondWithStatus("2XX")
+  await expect(testing.renderer.evaluate(null, `fetch("/")`, { context: testing.context })).resolves.toRespondWithStatus("2XX")
   </script>
 </test>
 
@@ -172,7 +172,7 @@
   </http-server>
   <script>
     await expect(fetch("/redirect", { redirect: "follow" })).resolves.toRespondWithStatus(Status.OK)
-    await expect(fetch("/redirect", { redirect: "manual" })).resolves.toRespondWithStatus(Status.TemporaryRedirect)
+  await expect(fetch("/redirect", { redirect: "manual" })).resolves.toRespondWithStatus(Status.TemporaryRedirect)
   </script>
 </test>
 
@@ -182,9 +182,9 @@
   </http-server>
   <script>
     await expect(fetch("/api", { method: "POST", body: "foobar", headers: { "x-foo": "bar" } })).resolves.toRespondWithStatus("2XX")
-    expect(http.request.method).toBe("POST")
-    expect(http.request.received.body).toBe("foobar")
-    expect(http.request.received.headers.get("x-foo")).toBe("bar")
+  expect(http.request.method).toBe("POST")
+  expect(http.request.received.body).toBe("foobar")
+  expect(http.request.received.headers.get("x-foo")).toBe("bar")
   </script>
 </test>
 
@@ -195,8 +195,8 @@
   </http-server>
   <script>
     response = await fetch("/text")
-    await expect(response.text()).resolves.toBe("foo")
-    response = await fetch("/escaped")
-    await expect(response.text()).resolves.toBe("<foo>")
+  await expect(response.text()).resolves.toBe("foo")
+  response = await fetch("/escaped")
+  await expect(response.text()).resolves.toBe("<foo>")
   </script>
 </test>

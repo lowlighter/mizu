@@ -1,5 +1,6 @@
 .cache
-.pages
 .vercel
+.imports_map.json
 coverage
 node_modules
+www/.pages

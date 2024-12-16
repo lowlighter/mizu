@@ -30,7 +30,7 @@
  * @author Simon Lecoq (lowlighter)
  * @license MIT
  */
-export function keyboard(keys: string) {
+export function keyboard(keys: string): (event: KeyboardEvent) => boolean {
   const combinations = keys.split(",").map((combination) => combination.split("+").map((key) => key.trim().toLowerCase()))
   return function (event: KeyboardEvent) {
     if (!/^key(?:down|press|up)$/.test(event.type)) {

@@ -66,9 +66,9 @@
   </render>
   <script>
     document.querySelector("div").dispatchEvent(new Event("bar"))
-    expect(context.callback).not.toHaveBeenCalled()
-    document.querySelector("div").dispatchEvent(new Event("foo"))
-    expect(context.callback).toHaveBeenCalled()
+  expect(context.callback).not.toHaveBeenCalled()
+  document.querySelector("div").dispatchEvent(new Event("foo"))
+  expect(context.callback).toHaveBeenCalled()
   </script>
 </test>
 
@@ -87,7 +87,7 @@
   </render>
   <script>
     expect(testing.error).toBe(null)
-    context.value = true
+  context.value = true
   </script>
   <render throw></render>
   <script>

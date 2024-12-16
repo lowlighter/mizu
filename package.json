@@ -8,22 +8,22 @@
     "test": "npx tsx --test"
   },
   "dependencies": {
-    "@libs/markdown": "npm:@jsr/libs__markdown@^2.0.0",
-    "@libs/reactive": "npm:@jsr/libs__reactive@^5.0.0",
-    "@libs/typing": "npm:@jsr/libs__typing@^3.0.0",
-    "@libs/xml": "npm:@jsr/libs__xml@^6.0.0",
-    "@std/assert": "npm:@jsr/std__assert@^1.0.0",
-    "@std/async": "npm:@jsr/std__async@^1.0.0",
-    "@std/html": "npm:@jsr/std__html@^1.0.0",
+    "@libs/markdown": "npm:@jsr/libs__markdown@^2.0.2",
+    "@libs/reactive": "npm:@jsr/libs__reactive@^5.0.2",
+    "@libs/typing": "npm:@jsr/libs__typing@^3.1.2",
+    "@libs/xml": "npm:@jsr/libs__xml@^6.0.4",
+    "@std/assert": "npm:@jsr/std__assert@^1.0.9",
+    "@std/async": "npm:@jsr/std__async@^1.0.9",
+    "@std/html": "npm:@jsr/std__html@^1.0.3",
     "@std/io": "npm:@jsr/std__io@~0.225.0",
-    "@std/path": "npm:@jsr/std__path@^1.0.0",
+    "@std/path": "npm:@jsr/std__path@^1.0.8",
     "@std/regexp": "npm:@jsr/std__regexp@^1.0.0",
-    "jsdom": "^25.0.0"
+    "jsdom": "^25.0.1"
   },
   "devDependencies": {
-    "@dprint/formatter": "npm:@jsr/dprint__formatter@0.4.1",
-    "@libs/testing": "npm:@jsr/libs__testing@^4.0.0",
-    "@std/fmt": "npm:@jsr/std__fmt@^1.0.0",
+    "@dprint/formatter": "npm:@jsr/dprint__formatter@^0.4.1",
+    "@libs/testing": "npm:@jsr/libs__testing@^4.0.1",
+    "@std/fmt": "npm:@jsr/std__fmt@^1.0.3",
     "jsr": "^0.13.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"

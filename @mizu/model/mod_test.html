@@ -9,19 +9,19 @@
   </render>
   <script>
     // Model to value (set)
-    input = document.querySelector("input")
-    expect(context.value).toBe("foo")
-    expect(input.value).toBe("foo")
-    // Value to model (set)
-    input.value = "bar"
-    input.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toBe("bar"))
-    // Value to model (reset)
-    input.value = null
-    input.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toBe(""))
-    // Model to value (reset)
-    context.value = null
+  input = document.querySelector("input")
+  expect(context.value).toBe("foo")
+  expect(input.value).toBe("foo")
+  // Value to model (set)
+  input.value = "bar"
+  input.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toBe("bar"))
+  // Value to model (reset)
+  input.value = null
+  input.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toBe(""))
+  // Model to value (reset)
+  context.value = null
   </script>
   <render></render>
   <script>
@@ -38,19 +38,19 @@
   </render>
   <script>
     // Model to value (set)
-    input = document.querySelector("input")
-    expect(context.value).toBe(1)
-    expect(input.value).toBe("1")
-    // Value to model (set)
-    input.value = 2
-    input.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toBe(2))
-    // Value to model (reset)
-    input.value = null
-    input.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toBe(0))
-    // Model to value (reset)
-    context.value = null
+  input = document.querySelector("input")
+  expect(context.value).toBe(1)
+  expect(input.value).toBe("1")
+  // Value to model (set)
+  input.value = 2
+  input.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toBe(2))
+  // Value to model (reset)
+  input.value = null
+  input.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toBe(0))
+  // Model to value (reset)
+  context.value = null
   </script>
   <render></render>
   <script>
@@ -69,34 +69,34 @@
   </render>
   <script>
     // Model to value (set)
-    expect(context.value).toBe("foo")
-    expect(document.querySelector("input[value=foo]").checked).toBe(true)
-    expect(document.querySelector("input[value=bar]").checked).toBe(false)
-    expect(document.querySelector("input[value=baz]").checked).toBe(false)
-    // Value to model (set)
-    input = document.querySelector("input[value=bar]")
-    input.checked = true
-    input.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toBe("bar"))
-    expect(document.querySelector("input[value=foo]").checked).toBe(false)
-    expect(document.querySelector("input[value=bar]").checked).toBe(true)
-    expect(document.querySelector("input[value=baz]").checked).toBe(false)
-    // Value to model (unset)
-    input.checked = false
-    input.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toBeUndefined())
-    expect(document.querySelector("input[value=foo]").checked).toBe(false)
-    expect(document.querySelector("input[value=bar]").checked).toBe(false)
-    expect(document.querySelector("input[value=baz]").checked).toBe(false)
-    // Model to value (reset)
-    input.checked = true
-    context.value = null
+  expect(context.value).toBe("foo")
+  expect(document.querySelector("input[value=foo]").checked).toBe(true)
+  expect(document.querySelector("input[value=bar]").checked).toBe(false)
+  expect(document.querySelector("input[value=baz]").checked).toBe(false)
+  // Value to model (set)
+  input = document.querySelector("input[value=bar]")
+  input.checked = true
+  input.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toBe("bar"))
+  expect(document.querySelector("input[value=foo]").checked).toBe(false)
+  expect(document.querySelector("input[value=bar]").checked).toBe(true)
+  expect(document.querySelector("input[value=baz]").checked).toBe(false)
+  // Value to model (unset)
+  input.checked = false
+  input.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toBeUndefined())
+  expect(document.querySelector("input[value=foo]").checked).toBe(false)
+  expect(document.querySelector("input[value=bar]").checked).toBe(false)
+  expect(document.querySelector("input[value=baz]").checked).toBe(false)
+  // Model to value (reset)
+  input.checked = true
+  context.value = null
   </script>
   <render></render>
   <script>
     expect(document.querySelector("input[value=foo]").checked).toBe(false)
-    expect(document.querySelector("input[value=bar]").checked).toBe(false)
-    expect(document.querySelector("input[value=baz]").checked).toBe(false)
+  expect(document.querySelector("input[value=bar]").checked).toBe(false)
+  expect(document.querySelector("input[value=baz]").checked).toBe(false)
   </script>
 </test>
 
@@ -111,59 +111,59 @@
   </render>
   <script>
     // Model to value (set)
-    expect(context.value).toEqual(["foo"])
-    expect(document.querySelector("input[value=foo]").checked).toBe(true)
-    expect(document.querySelector("input[value=bar]").checked).toBe(false)
-    expect(document.querySelector("input[value=baz]").checked).toBe(false)
-    // Value to model (set)
-    input = document.querySelector("input[value=bar]")
-    input.checked = true
-    input.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["foo", "bar"]))
-    expect(document.querySelector("input[value=foo]").checked).toBe(true)
-    expect(document.querySelector("input[value=bar]").checked).toBe(true)
-    expect(document.querySelector("input[value=baz]").checked).toBe(false)
-    // Value to model (unset)
-    input.checked = false
-    input.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["foo"]))
-    expect(document.querySelector("input[value=foo]").checked).toBe(true)
-    expect(document.querySelector("input[value=bar]").checked).toBe(false)
-    expect(document.querySelector("input[value=baz]").checked).toBe(false)
-    // Value to model (unset multiple)
-    input = document.querySelector("input[value=foo]")
-    input.checked = false
-    input.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual([]))
-    expect(document.querySelector("input[value=foo]").checked).toBe(false)
-    expect(document.querySelector("input[value=bar]").checked).toBe(false)
-    expect(document.querySelector("input[value=baz]").checked).toBe(false)
-    // Model to value (reset)
-    input.checked = true
-    context.value = null
+  expect(context.value).toEqual(["foo"])
+  expect(document.querySelector("input[value=foo]").checked).toBe(true)
+  expect(document.querySelector("input[value=bar]").checked).toBe(false)
+  expect(document.querySelector("input[value=baz]").checked).toBe(false)
+  // Value to model (set)
+  input = document.querySelector("input[value=bar]")
+  input.checked = true
+  input.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["foo", "bar"]))
+  expect(document.querySelector("input[value=foo]").checked).toBe(true)
+  expect(document.querySelector("input[value=bar]").checked).toBe(true)
+  expect(document.querySelector("input[value=baz]").checked).toBe(false)
+  // Value to model (unset)
+  input.checked = false
+  input.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["foo"]))
+  expect(document.querySelector("input[value=foo]").checked).toBe(true)
+  expect(document.querySelector("input[value=bar]").checked).toBe(false)
+  expect(document.querySelector("input[value=baz]").checked).toBe(false)
+  // Value to model (unset multiple)
+  input = document.querySelector("input[value=foo]")
+  input.checked = false
+  input.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual([]))
+  expect(document.querySelector("input[value=foo]").checked).toBe(false)
+  expect(document.querySelector("input[value=bar]").checked).toBe(false)
+  expect(document.querySelector("input[value=baz]").checked).toBe(false)
+  // Model to value (reset)
+  input.checked = true
+  context.value = null
   </script>
   <render></render>
   <script>
     expect(document.querySelector("input[value=foo]").checked).toBe(false)
-    expect(document.querySelector("input[value=bar]").checked).toBe(false)
-    expect(document.querySelector("input[value=baz]").checked).toBe(false)
-    // Value to model (fix invalid value)
-    input = document.querySelector("input[value=foo]")
-    input.checked = true
-    input.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["foo"]))
-    expect(document.querySelector("input[value=foo]").checked).toBe(true)
-    expect(document.querySelector("input[value=bar]").checked).toBe(false)
-    expect(document.querySelector("input[value=baz]").checked).toBe(false)
-    // Model to value (set multiple)
-    context.value = ["foo", "baz"]
+  expect(document.querySelector("input[value=bar]").checked).toBe(false)
+  expect(document.querySelector("input[value=baz]").checked).toBe(false)
+  // Value to model (fix invalid value)
+  input = document.querySelector("input[value=foo]")
+  input.checked = true
+  input.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["foo"]))
+  expect(document.querySelector("input[value=foo]").checked).toBe(true)
+  expect(document.querySelector("input[value=bar]").checked).toBe(false)
+  expect(document.querySelector("input[value=baz]").checked).toBe(false)
+  // Model to value (set multiple)
+  context.value = ["foo", "baz"]
   </script>
   <render></render>
   <script>
     expect(context.value).toEqual(["foo", "baz"])
-    expect(document.querySelector("input[value=foo]").checked).toBe(true)
-    expect(document.querySelector("input[value=bar]").checked).toBe(false)
-    expect(document.querySelector("input[value=baz]").checked).toBe(true)
+  expect(document.querySelector("input[value=foo]").checked).toBe(true)
+  expect(document.querySelector("input[value=bar]").checked).toBe(false)
+  expect(document.querySelector("input[value=baz]").checked).toBe(true)
   </script>
 </test>
 
@@ -176,18 +176,18 @@
   </render>
   <script>
     // Model to value (set)
-    textarea = document.querySelector("textarea")
-    expect(textarea.value).toBe("foo")
-    // Value to model (set)
-    textarea.value = "bar"
-    textarea.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toBe("bar"))
-    // Value to model (unset)
-    textarea.value = ""
-    textarea.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toBe(""))
-    // Model to value (reset)
-    context.value = null
+  textarea = document.querySelector("textarea")
+  expect(textarea.value).toBe("foo")
+  // Value to model (set)
+  textarea.value = "bar"
+  textarea.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toBe("bar"))
+  // Value to model (unset)
+  textarea.value = ""
+  textarea.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toBe(""))
+  // Model to value (reset)
+  context.value = null
   </script>
   <render></render>
   <script>
@@ -208,28 +208,28 @@
   </render>
   <script>
     // Model to value (set)
-    select = document.querySelector("select")
-    expect(select.value).toBe("bar")
-    expect(document.querySelector("option[value=foo]").selected).toBe(false)
-    expect(document.querySelector("option[value=bar]").selected).toBe(true)
-    expect(document.querySelector("option[value=baz]").selected).toBe(false)
-    // Value to model (set)
-    select.value = "baz"
-    select.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toBe("baz"))
-    expect(document.querySelector("option[value=foo]").selected).toBe(false)
-    expect(document.querySelector("option[value=bar]").selected).toBe(false)
-    expect(document.querySelector("option[value=baz]").selected).toBe(true)
-    // Value to model (reset)
-    select.value = null
-    select.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toBeUndefined())
-    expect(document.querySelector("option[value=foo]").selected).toBe(false)
-    expect(document.querySelector("option[value=bar]").selected).toBe(false)
-    expect(document.querySelector("option[value=baz]").selected).toBe(false)
-    // Model to value (reset)
-    select.value = "foo"
-    context.value = null
+  select = document.querySelector("select")
+  expect(select.value).toBe("bar")
+  expect(document.querySelector("option[value=foo]").selected).toBe(false)
+  expect(document.querySelector("option[value=bar]").selected).toBe(true)
+  expect(document.querySelector("option[value=baz]").selected).toBe(false)
+  // Value to model (set)
+  select.value = "baz"
+  select.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toBe("baz"))
+  expect(document.querySelector("option[value=foo]").selected).toBe(false)
+  expect(document.querySelector("option[value=bar]").selected).toBe(false)
+  expect(document.querySelector("option[value=baz]").selected).toBe(true)
+  // Value to model (reset)
+  select.value = null
+  select.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toBeUndefined())
+  expect(document.querySelector("option[value=foo]").selected).toBe(false)
+  expect(document.querySelector("option[value=bar]").selected).toBe(false)
+  expect(document.querySelector("option[value=baz]").selected).toBe(false)
+  // Model to value (reset)
+  select.value = "foo"
+  context.value = null
   </script>
   <render></render>
   <script>
@@ -250,36 +250,36 @@
   </render>
   <script>
     // Model to value (set)
-    select = document.querySelector("select")
-    expect(select.value).toBe("bar")
-    expect(document.querySelector("option[value=foo]").selected).toBe(false)
-    expect(document.querySelector("option[value=bar]").selected).toBe(true)
-    expect(document.querySelector("option[value=baz]").selected).toBe(true)
-    // Value to model (set)
-    select.value = "foo"
-    select.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["foo"]))
-    expect(document.querySelector("option[value=foo]").selected).toBe(true)
-    expect(document.querySelector("option[value=bar]").selected).toBe(false)
-    expect(document.querySelector("option[value=baz]").selected).toBe(false)
-    // Value to model (set multiple)
-    option = document.querySelector("option[value=bar]")
-    option.selected = true
-    select.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["foo", "bar"]))
-    expect(document.querySelector("option[value=foo]").selected).toBe(true)
-    expect(document.querySelector("option[value=bar]").selected).toBe(true)
-    expect(document.querySelector("option[value=baz]").selected).toBe(false)
-    // Value to model (reset)
-    select.value = null
-    select.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual([]))
-    expect(document.querySelector("option[value=foo]").selected).toBe(false)
-    expect(document.querySelector("option[value=bar]").selected).toBe(false)
-    expect(document.querySelector("option[value=baz]").selected).toBe(false)
-    // Model to value (reset)
-    select.value = "foo"
-    context.value = null
+  select = document.querySelector("select")
+  expect(select.value).toBe("bar")
+  expect(document.querySelector("option[value=foo]").selected).toBe(false)
+  expect(document.querySelector("option[value=bar]").selected).toBe(true)
+  expect(document.querySelector("option[value=baz]").selected).toBe(true)
+  // Value to model (set)
+  select.value = "foo"
+  select.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["foo"]))
+  expect(document.querySelector("option[value=foo]").selected).toBe(true)
+  expect(document.querySelector("option[value=bar]").selected).toBe(false)
+  expect(document.querySelector("option[value=baz]").selected).toBe(false)
+  // Value to model (set multiple)
+  option = document.querySelector("option[value=bar]")
+  option.selected = true
+  select.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["foo", "bar"]))
+  expect(document.querySelector("option[value=foo]").selected).toBe(true)
+  expect(document.querySelector("option[value=bar]").selected).toBe(true)
+  expect(document.querySelector("option[value=baz]").selected).toBe(false)
+  // Value to model (reset)
+  select.value = null
+  select.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual([]))
+  expect(document.querySelector("option[value=foo]").selected).toBe(false)
+  expect(document.querySelector("option[value=bar]").selected).toBe(false)
+  expect(document.querySelector("option[value=baz]").selected).toBe(false)
+  // Model to value (reset)
+  select.value = "foo"
+  context.value = null
   </script>
   <render></render>
   <script>
@@ -296,12 +296,12 @@
   </render>
   <script>
     input = document.querySelector("input")
-    expect(input.value).toBe("foo")
-    input.value = "bar"
-    input.dispatchEvent(new Event("input"))
-    await expect(retry(() => expect(context.value).toBe("bar"))).rejects.toThrow()
-    input.dispatchEvent(new Event("change"))
-    await retry(() => expect(context.value).toBe("bar"))
+  expect(input.value).toBe("foo")
+  input.value = "bar"
+  input.dispatchEvent(new Event("input"))
+  await expect(retry(() => expect(context.value).toBe("bar"))).rejects.toThrow()
+  input.dispatchEvent(new Event("change"))
+  await retry(() => expect(context.value).toBe("bar"))
   </script>
 </test>
 
@@ -322,7 +322,7 @@
 <test name="[::value] with `.value` modifier initializes model with `value` attribute if needed">
   <script>
     context.foo = undefined
-    context.bar = undefined
+  context.bar = undefined
   </script>
   <render>
     <input ::.value[true]="foo" value="foo" />
@@ -330,7 +330,7 @@
   </render>
   <script>
     expect(context.foo).toBe("foo")
-    expect(context.bar).toBeUndefined()
+  expect(context.bar).toBeUndefined()
   </script>
   <expect>
     <input value="foo" />
@@ -348,28 +348,28 @@
   </render>
   <script>
     // Raw value
-    raw = document.querySelector("input[name=raw]")
-    raw.checked = true
-    raw.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual([""]))
-    // Casted value
-    casted = document.querySelector("input[name=casted]")
-    casted.checked = true
-    casted.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["", null]))
-    // Reverse mapping
-    context.value = [""]
+  raw = document.querySelector("input[name=raw]")
+  raw.checked = true
+  raw.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual([""]))
+  // Casted value
+  casted = document.querySelector("input[name=casted]")
+  casted.checked = true
+  casted.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["", null]))
+  // Reverse mapping
+  context.value = [""]
   </script>
   <render></render>
   <script>
     expect(document.querySelector("input[name=raw]").checked).toBe(true)
-    expect(document.querySelector("input[name=casted]").checked).toBe(false)
-    context.value = [null]
+  expect(document.querySelector("input[name=casted]").checked).toBe(false)
+  context.value = [null]
   </script>
   <render></render>
   <script>
     expect(document.querySelector("input[name=raw]").checked).toBe(false)
-    expect(document.querySelector("input[name=casted]").checked).toBe(true)
+  expect(document.querySelector("input[name=casted]").checked).toBe(true)
   </script>
 </test>
 
@@ -383,28 +383,28 @@
   </render>
   <script>
     // Raw value
-    raw = document.querySelector("input[name=raw]")
-    raw.checked = true
-    raw.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["0"]))
-    // Casted value
-    casted = document.querySelector("input[name=casted]")
-    casted.checked = true
-    casted.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["0", 0]))
-    // Reverse mapping
-    context.value = ["0"]
+  raw = document.querySelector("input[name=raw]")
+  raw.checked = true
+  raw.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["0"]))
+  // Casted value
+  casted = document.querySelector("input[name=casted]")
+  casted.checked = true
+  casted.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["0", 0]))
+  // Reverse mapping
+  context.value = ["0"]
   </script>
   <render></render>
   <script>
     expect(document.querySelector("input[name=raw]").checked).toBe(true)
-    expect(document.querySelector("input[name=casted]").checked).toBe(false)
-    context.value = [0]
+  expect(document.querySelector("input[name=casted]").checked).toBe(false)
+  context.value = [0]
   </script>
   <render></render>
   <script>
     expect(document.querySelector("input[name=raw]").checked).toBe(false)
-    expect(document.querySelector("input[name=casted]").checked).toBe(true)
+  expect(document.querySelector("input[name=casted]").checked).toBe(true)
   </script>
 </test>
 
@@ -418,28 +418,28 @@
   </render>
   <script>
     // Raw value
-    raw = document.querySelector("input[name=raw]")
-    raw.checked = true
-    raw.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["yes"]))
-    // Casted value
-    casted = document.querySelector("input[name=casted]")
-    casted.checked = true
-    casted.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["yes", true]))
-    // Reverse mapping
-    context.value = ["yes"]
+  raw = document.querySelector("input[name=raw]")
+  raw.checked = true
+  raw.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["yes"]))
+  // Casted value
+  casted = document.querySelector("input[name=casted]")
+  casted.checked = true
+  casted.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["yes", true]))
+  // Reverse mapping
+  context.value = ["yes"]
   </script>
   <render></render>
   <script>
     expect(document.querySelector("input[name=raw]").checked).toBe(true)
-    expect(document.querySelector("input[name=casted]").checked).toBe(false)
-    context.value = [true]
+  expect(document.querySelector("input[name=casted]").checked).toBe(false)
+  context.value = [true]
   </script>
   <render></render>
   <script>
     expect(document.querySelector("input[name=raw]").checked).toBe(false)
-    expect(document.querySelector("input[name=casted]").checked).toBe(true)
+  expect(document.querySelector("input[name=casted]").checked).toBe(true)
   </script>
   <script>
     context.value = []
@@ -450,28 +450,28 @@
   </render>
   <script>
     // Raw value
-    raw = document.querySelector("input[name=raw]")
-    raw.checked = true
-    raw.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["no"]))
-    // Casted value
-    casted = document.querySelector("input[name=casted]")
-    casted.checked = true
-    casted.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual(["no", false]))
-    // Reverse mapping
-    context.value = ["no"]
+  raw = document.querySelector("input[name=raw]")
+  raw.checked = true
+  raw.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["no"]))
+  // Casted value
+  casted = document.querySelector("input[name=casted]")
+  casted.checked = true
+  casted.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual(["no", false]))
+  // Reverse mapping
+  context.value = ["no"]
   </script>
   <render></render>
   <script>
     expect(document.querySelector("input[name=raw]").checked).toBe(true)
-    expect(document.querySelector("input[name=casted]").checked).toBe(false)
-    context.value = [false]
+  expect(document.querySelector("input[name=casted]").checked).toBe(false)
+  context.value = [false]
   </script>
   <render></render>
   <script>
     expect(document.querySelector("input[name=raw]").checked).toBe(false)
-    expect(document.querySelector("input[name=casted]").checked).toBe(true)
+  expect(document.querySelector("input[name=casted]").checked).toBe(true)
   </script>
 </test>
 
@@ -485,15 +485,15 @@
   </render>
   <script>
     // Raw value
-    raw = document.querySelector("input[name=raw]")
-    raw.value = "0"
-    raw.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value.raw).toBe(0))
-    // Casted value
-    casted = document.querySelector("input[name=casted]")
-    casted.value = "0"
-    casted.dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value.casted).toBe("0"))
+  raw = document.querySelector("input[name=raw]")
+  raw.value = "0"
+  raw.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value.raw).toBe(0))
+  // Casted value
+  casted = document.querySelector("input[name=casted]")
+  casted.value = "0"
+  casted.dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value.casted).toBe("0"))
   </script>
 </test>
 
@@ -509,8 +509,8 @@
   </render>
   <script>
     document.querySelectorAll("option").forEach((option) => option.selected = true)
-    document.querySelector("select").dispatchEvent(new Event("input"))
-    await retry(() => expect(context.value).toEqual([1, 2]))
+  document.querySelector("select").dispatchEvent(new Event("input"))
+  await retry(() => expect(context.value).toEqual([1, 2]))
   </script>
 </test>
 

@@ -20,15 +20,15 @@ const base = import.meta.resolve("../")
 const root = fromFileUrl(base)
 
 /** Project metadata. */
-const meta = {
-  ...pick(await config("@mizu/mizu"), ["name", "version"]),
+export const meta = {
+  ...pick(await config("@mizu/internal"), ["name", "version"]),
   ...pick(await config("."), ["homepage", "license", "author"]),
 }
 log.with({ root, base }).debug()
 log.with(meta).info()
 
 /** License banner. */
-const banner = [
+export const banner = [
   `${meta.name} — ${meta.version}`,
   `Copyright © ${new Date().getFullYear()} ${meta.author}`,
   `${meta.license} license — ${meta.homepage}`,
@@ -46,16 +46,17 @@ function config(name: string, { parse = true } = {} as { parse?: boolean }) {
 }
 
 /** Generate JS. */
-export function js(exported: string, options = {} as Pick<NonNullable<Arg<typeof bundle, 1>>, "format"> & { raw?: Record<PropertyKey, unknown> }) {
+export function js(exported: string, options = {} as Pick<NonNullable<Arg<typeof bundle, 1>>, "format" | "banner" | "minify" | "overrides" | "builder" | "lockfile"> & { raw?: Record<PropertyKey, unknown> }) {
   const packaged = exported.match(jsr)?.groups?.package ?? exported
   const url = import.meta.resolve(exported)
   log.with({ package: packaged, url }).debug("bundling javascript")
   if (options?.format === "iife") {
     options.raw ??= {}
+    options.raw.define ??= {}
     options.raw.target = "es2020"
-    options.raw.define = { "globalThis.MIZU_IIFE": "true" }
+    Object.assign(options.raw.define as Record<PropertyKey, string>, { ["globalThis.MIZU_IIFE"]: "true" })
   }
-  return bundle(new URL(url), { ...options, banner })
+  return bundle(new URL(url), { banner, ...options })
 }
 
 /** Render HTML. */

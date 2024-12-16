@@ -17,10 +17,13 @@ export class Client {
   static defaults = {
     window: globalThis.window,
     directives: defaults,
-    context: {},
+    // @ts-expect-error: custom builder
+    context: globalThis.MIZU_CUSTOM_DEFAULTS_CONTEXT ?? {},
+    // @ts-expect-error: custom builder
     // deno-lint-ignore no-console
-    warn: console.warn,
-    debug: undefined,
+    warn: globalThis.MIZU_CUSTOM_DEFAULTS_WARN ?? console.warn,
+    // @ts-expect-error: custom builder
+    debug: globalThis.MIZU_CUSTOM_DEFAULTS_DEBUG ?? false,
   } as unknown as Required<ClientOptions>
 
   /** {@linkcode Client} constructor. */

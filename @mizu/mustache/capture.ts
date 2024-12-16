@@ -1,3 +1,6 @@
+// Imports
+import type { Nullable } from "@libs/typing"
+
 /** Tokens. */
 const tokens = {
   "(": ")",
@@ -20,7 +23,7 @@ const tokens = {
  * @author Simon Lecoq (lowlighter)
  * @license MIT
  */
-export function capture(string: string, offset = 0) {
+export function capture(string: string, offset = 0): Nullable<{ a: number; b: number; match: string; captured: string; triple: boolean }> {
   const stack = []
   let a = NaN
   let d = 2

@@ -19,10 +19,10 @@
 <test name="[*markdown] with `.trim` modifier changes whitespaces handling">
   <script>
     context.value = [
-      "",
-      "        foo",
-      "",
-    ].join("\n")
+    "",
+    "        foo",
+    "",
+  ].join("\n")
   </script>
   <render>
     <span *markdown.trim="value"></span>

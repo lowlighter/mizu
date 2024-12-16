@@ -288,7 +288,7 @@ async function http(operation: HTMLElement, testing: Testing) {
   // Start server and update global location
   testing.http.server.listen(0, "0.0.0.0", () => {
     const { address: hostname, port } = testing.http.server?.address() as { address: string; port: number }
-    globalThis.location = Object.assign(new URL(`http://${hostname}:${port}`), {
+    globalThis.location = Object.assign(new URL(`http://${hostname.replace("0.0.0.0", "localhost")}:${port}`), {
       ancestorOrigins: testing.renderer.window.location.ancestorOrigins,
       assign: testing.renderer.window.location.assign,
       replace: testing.renderer.window.location.replace,
