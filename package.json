@@ -18,6 +18,7 @@
     "@std/io": "npm:@jsr/std__io@~0.225.0",
     "@std/path": "npm:@jsr/std__path@^1.0.8",
     "@std/regexp": "npm:@jsr/std__regexp@^1.0.0",
+    "@std/text": "npm:@jsr/std__text@^1.0.9",
     "jsdom": "^25.0.1"
   },
   "devDependencies": {
