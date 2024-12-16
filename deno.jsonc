@@ -244,7 +244,8 @@
       "www/.pages/**",
       "www/api/*.ts",
       "www/*.ts",
-      "**/deno.jsonc"
+      "**/deno.jsonc",
+      ".imports_map.json"
     ],
     "exclude": [
       "@mizu/**/*.html",
