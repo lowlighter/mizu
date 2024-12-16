@@ -58,10 +58,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
-      - name: Run deno task deploy:preview
-        run: |
-          DENO_DEPLOY_TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq -r .value)
-          deno task deploy:preview --token="GitHubOIDC $DENO_DEPLOY_TOKEN"
+      - name: Run deno task deploy:setup-github-actions
+        run: deno task deploy:setup-github-actions
+        id: setup_github_actions
+      - uses: denoland/deployctl@v1
+        with:
+          project: ${{ steps.setup_github_actions.outputs.project }}
+          entrypoint: ${{ steps.setup_github_actions.outputs.entrypoint }}
+          import-map: ${{ steps.setup_github_actions.outputs.import_map }}
+          include: ${{ steps.setup_github_actions.outputs.include }}
+          exclude: ${{ steps.setup_github_actions.outputs.exclude }}
 
   publish:
     name: Publish

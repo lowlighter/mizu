@@ -75,6 +75,10 @@
       "command": "rm -rf www/.pages && mkdir -p www/.pages"
     },
     // Deployment tasks
+    "deploy:setup-github-actions": {
+      "description": "",
+      "command": "deno run --allow-env --allow-read=deno.jsonc .github/tools/github_actions_deno_deploy.ts"
+    },
     "deploy:preview": {
       "description": "Deploy website (preview)",
       "command": "deno run --allow-sys --allow-env --allow-read --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy",
@@ -138,8 +142,10 @@
     "@std/text": "jsr:@std/text@^1.0.9",
     // Tooling dependencies
     "@tools/": "./.github/tools/",
+    "@actions/core": "npm:@actions/core@^1.11.1",
     "@astral/astral": "jsr:@astral/astral@~0.5",
     "@libs/run": "jsr:@libs/run@^3.0.2",
+    "@std/encoding": "jsr:@std/encoding@^1.0.5",
     "@std/fs": "jsr:@std/fs@^1.0.6",
     "@std/yaml": "jsr:@std/yaml@^1.0.5"
   },
