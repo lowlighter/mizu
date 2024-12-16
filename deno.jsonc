@@ -77,7 +77,7 @@
     // Deployment tasks
     "deploy:setup-github-actions": {
       "description": "",
-      "command": "cp -rL node_modules/@esbuild www/@esbuild && tree && deno run --allow-env --allow-read --allow-write=.imports_map.json,/home/runner/work/_temp .github/tools/github_actions_deno_deploy.ts",
+      "command": "deno run --allow-env --allow-read --allow-write=.imports_map.json,/home/runner/work/_temp .github/tools/github_actions_deno_deploy.ts",
       "dependencies": ["build"]
     },
     "deploy:preview": {
