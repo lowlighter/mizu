@@ -50,8 +50,8 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs:
-     - lint
-     - test
+      - lint
+      - test
     permissions:
       id-token: write
       contents: read
@@ -76,6 +76,7 @@ jobs:
     needs:
       - lint
       - test
+      - preview
     permissions:
       id-token: write
       contents: read
