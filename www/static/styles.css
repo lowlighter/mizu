@@ -69,7 +69,7 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 
 /* Logo and catchphrase. */
 .logo {
-  margin-top: 6rem;
+  margin-top: 3rem;
 }
 
 .catchphrase {
@@ -82,7 +82,7 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   background-clip: text;
   text-fill-color: transparent;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -783,6 +783,16 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 .playground.pending iframe {
   opacity: 0.25;
   cursor: wait;
+}
+
+.playground .mockup.browser .app-view {
+  grid-template-rows: 0.5fr 0.5fr;
+}
+
+@media (min-width: 768px) {
+  .playground .mockup.browser .app-view {
+    grid-template-rows: initial;
+  }
 }
 
 /** Carbon like examples. */

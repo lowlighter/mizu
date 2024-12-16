@@ -58,11 +58,11 @@
     },
     "build:readmes": {
       "description": "Build `README.md` from `mod.html`",
-      "command": "deno run --quiet --allow-read --allow-env --allow-write=@mizu,README.md --allow-run=deno --allow-sys=osRelease .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
+      "command": "deno run --quiet --allow-read --allow-env --allow-sys=osRelease --allow-write=@mizu,README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
     },
     "build:www": {
       "description": "Build website",
-      "command": "deno run --quiet --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp,www/.pages --allow-sys=osRelease --location=http://localhost:4649 www/build.ts",
+      "command": "deno run --quiet --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write=www/.pages --allow-run=$(deno task glob \"$DENO_DIR/**/@esbuild/**/esbuild\") --location=http://localhost:4649 www/build.ts",
       "dependencies": ["build:clean"]
     },
     "build:coverage": {
@@ -77,17 +77,12 @@
     // Deployment tasks
     "deploy:setup-github-actions": {
       "description": "",
-      "command": "deno run --allow-env --allow-read --allow-write=.imports_map.json,deno.lock,package.json,package-lock.json,/home/runner/work/_temp .github/tools/github_actions_deno_deploy.ts",
+      "command": "deno run --allow-read --allow-env --allow-write=.imports.json,deno.lock,package.json,package-lock.json,/home/runner/work/_temp .github/tools/github_actions_deno_deploy.ts",
       "dependencies": ["build"]
     },
     "deploy:preview": {
       "description": "Deploy website (preview)",
-      "command": "deno run --allow-sys --allow-env --allow-read --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy",
-      "dependencies": ["build"]
-    },
-    "deploy:prod": {
-      "description": "Deploy website (production)",
-      "command": "deno run --allow-sys --allow-env --allow-read --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy --prod",
+      "command": "deno run --allow-read --allow-env --allow-sys --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy",
       "dependencies": ["build"]
     },
     // Development tasks
@@ -98,9 +93,13 @@
     },
     "serve": {
       "description": "Serve website locally",
-      "command": "deno serve --allow-read --allow-env --allow-net --allow-run --allow-write=/tmp --allow-sys=osRelease --port=4649 --location=http://localhost:4649 www/serve.ts"
+      "command": "deno serve --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write=$DENO_DIR --allow-run=$(deno task glob \"$DENO_DIR/**/@esbuild/**/esbuild\") --port=4649 --location=http://localhost:4649 www/serve.ts"
     },
     // Miscellaneous tasks
+    "glob": {
+      "description": "Expand glob pattern and return a comma-separated list",
+      "command": "deno run --allow-read .github/tools/expand_glob.ts"
+    },
     "repo:fill-scopes": {
       "description": "Update repository issue templates",
       "command": " deno run --allow-read --allow-write=.github/ISSUE_TEMPLATE --allow-run=deno .github/tools/fill_github_scopes.ts"
@@ -111,7 +110,7 @@
     },
     "resolve:browser-path": {
       "description": "Resolve browser path for astral",
-      "command": "ASTRAL_QUIET_INSTALL=1 deno run --allow-env=ASTRAL_QUIET_INSTALL --allow-read --allow-net=googlechromelabs.github.io,storage.googleapis.com --allow-write=.cache .github/tools/browser_path.ts"
+      "command": "ASTRAL_QUIET_INSTALL=1 deno run --allow-read --allow-env=ASTRAL_QUIET_INSTALL --allow-net=googlechromelabs.github.io,storage.googleapis.com --allow-write=.cache .github/tools/browser_path.ts"
     }
   },
   "imports": {
@@ -185,7 +184,6 @@
     // https://github.com/lucacasonato/esbuild_deno_loader/issues/156
     // "@mizu/*"
   ],
-  "nodeModulesDir": "auto",
   "fmt": {
     "semiColons": false,
     "lineWidth": 280,
@@ -246,7 +244,7 @@
     "project": "eef27b1b-755a-4828-bf83-a073e41e5677",
     "entrypoint": "www/serve.ts",
     "include": [
-      ".imports_map.json",
+      ".imports.json",
       "@mizu/**",
       "www/.pages/**",
       "www/api/**",

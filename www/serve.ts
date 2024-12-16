@@ -23,7 +23,7 @@ const handler = {
         handler: apiBuild,
         method: "POST",
       },
-    ], (request) => serveDir(new Request(request.url.replace(/\.html$/, ""), request), { fsRoot: fromFileUrl(import.meta.resolve("./.pages")), cleanUrls: true }))
+    ], (request) => serveDir(new Request(request.url.replace(/\.html$/, ""), request), { quiet: true, fsRoot: fromFileUrl(import.meta.resolve("./.pages")), cleanUrls: true }))
     : route([
       {
         pattern: new URLPattern({ pathname: "/{index.html}?" }),
@@ -129,7 +129,3 @@ const handler = {
     ], (request) => serveDir(request, { quiet: true, fsRoot: fromFileUrl(import.meta.resolve("./static")) })),
 }
 export default handler
-
-if (import.meta.main) {
-  Deno.serve(handler.fetch)
-}

@@ -6,7 +6,7 @@
   </head>
   <body>
     <main *mizu *set="{ foo: '🌊 Yaa, mizu!' }">
-      <div *text="foo"></div>
+      <div *mustache>{{ foo }}</div>
     </main>
     <!-- Use the IIFE version to automatically start mizu -->
     <script src="https://mizu.sh/client.js" defer></script>
