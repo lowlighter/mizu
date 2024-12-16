@@ -128,6 +128,7 @@
     "jsdom": "npm:jsdom@^25.0.1",
     // Deno deploy dependencies
     "@esbuild/linux-x64": "npm:@esbuild/linux-x64@^0.24.0",
+    "@libs/bundle/ts": "jsr:@libs/bundle@^12.5.0/ts",
     "@libs/typing/func": "jsr:@libs/typing@^3.1.2/func",
     "@std/http/unstable-route": "jsr:@std/http@^1.0.12/unstable-route",
     "@std/html/unstable-is-valid-custom-element-name": "jsr:@std/html@^1.0.3/unstable-is-valid-custom-element-name",
