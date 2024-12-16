@@ -128,6 +128,7 @@
     "@std/regexp": "jsr:@std/regexp@^1.0.0",
     "jsdom": "npm:jsdom@^25.0.1",
     // Deno deploy dependencies
+    "@esbuild/linux-x64": "npm:@esbuild/linux-x64@^0.24.0",
     "@libs/bundle/ts": "jsr:@libs/bundle@^12.5.0/ts",
     "@libs/typing/func": "jsr:@libs/typing@^3.1.2/func",
     "@std/http/unstable-route": "jsr:@std/http@^1.0.12/unstable-route",
@@ -246,19 +247,23 @@
     "project": "eef27b1b-755a-4828-bf83-a073e41e5677",
     "entrypoint": "www/serve.ts",
     "include": [
+      ".imports_map.json",
       "@mizu/**",
       "www/.pages/**",
-      "www/api/*.ts",
+      "www/api/**",
       "www/*.ts",
       "**/deno.jsonc",
-      ".imports_map.json"
+      "node_modules/@esbuild/**"
     ],
     "exclude": [
       "@mizu/**/*.html",
       "@mizu/**/*_test.ts",
+      "@mizu/**/README.md",
+      "@mizu/**/coverage",
+      "@mizu/**/node_modules",
       "www/build.ts",
-      "node_modules",
-      "coverage"
+      "coverage",
+      "node_modules"
     ]
   }
 }
