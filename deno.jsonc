@@ -248,6 +248,7 @@
     "include": [
       "@mizu/**",
       "www/.pages/**",
+      "www/.pages/coverage/**",
       "www/api/*.ts",
       "www/*.ts",
       "**/deno.jsonc",
