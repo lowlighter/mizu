@@ -3,7 +3,7 @@ import { type Directive, type NonVoid, Phase } from "@mizu/internal/engine"
 export type * from "@mizu/internal/engine"
 
 /** Delta for {@linkcode Phase} to prevent collisions when {@linkcode Directive.multiple} is not enabled. */
-const PHASE_TESTING_DELTA = -0.5
+export const PHASE_TESTING_DELTA = -0.5
 
 /** `~test` typings. */
 export const typings = {
