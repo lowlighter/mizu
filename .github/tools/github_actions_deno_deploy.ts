@@ -4,6 +4,7 @@ import * as core from "@actions/core"
 import { encodeBase64 } from "@std/encoding"
 
 // Parse deno.jsonc and print deno deploy flags
+// deno-lint-ignore no-explicit-any
 const config = JSONC.parse(await Deno.readTextFile("./deno.jsonc")) as any
 core.setOutput("project", config.deploy.project)
 core.setOutput("entrypoint", config.deploy.entrypoint)
