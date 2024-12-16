@@ -54,7 +54,7 @@
     "build": {
       "description": "Build project",
       "command": "sleep 0",
-      "dependencies": ["build:readmes", "build:www"]
+      "dependencies": ["build:readmes", "build:www", "build:coverage"]
     },
     "build:readmes": {
       "description": "Build `README.md` from `mod.html`",
@@ -128,7 +128,6 @@
     "@std/regexp": "jsr:@std/regexp@^1.0.0",
     "jsdom": "npm:jsdom@^25.0.1",
     // Deno deploy dependencies
-    "@esbuild/linux-x64": "npm:@esbuild/linux-x64@^0.24.0",
     "@libs/bundle/ts": "jsr:@libs/bundle@^12.5.0/ts",
     "@libs/typing/func": "jsr:@libs/typing@^3.1.2/func",
     "@std/http/unstable-route": "jsr:@std/http@^1.0.12/unstable-route",
