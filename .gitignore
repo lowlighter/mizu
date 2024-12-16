@@ -1,5 +1,5 @@
 .cache
-.pages
 .vercel
 coverage
 node_modules
+www/.pages

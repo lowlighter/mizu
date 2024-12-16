@@ -1,5 +1,143 @@
-<section>
-  <p class="flash attention">
-    Custom builder will be available at a later date. Stay tuned!
-  </p>
+<section class="hero centered">
+  <img class="logo" src="/logo.png" alt="mizu.js" />
+  <div class="catchphrase">
+    Bottle your own <em>mizu.js</em> build!
+  </div>
 </section>
+<section>
+  <p class="centered">
+    This tool allows you to create a custom build of <em>mizu.js</em> for client-side rendering by cherry-picking the features you need.
+  </p>
+  <form class="builder">
+    <fieldset>
+      <legend>Mizu</legend>
+      <label>
+        Format
+        <small class="no-after">
+          Choose the format of your custom build.
+          <ul>
+            <li>
+              <code>iife</code>: <em>mizu.js</em> renderer automatically starts when the script is loaded.
+            </li>
+            <li>
+              <code>esm</code>: <em>mizu.js</em> renderer needs to be imported as a module and must be started manually.
+            </li>
+          </ul>
+        </small>
+        <select name="format">
+          <option value="iife">iffe</option>
+          <option value="esm">esm</option>
+        </select>
+      </label>
+      <label>
+        <input type="checkbox" name="console" value="warn" checked>
+        Log warnings to console<br>
+        <small>Enable to log warnings using <code>console.warn()</code>.</small>
+      </label>
+      <label>
+        <input type="checkbox" name="console" value="debug">
+        Log debug messages to console<br>
+        <small>Enable to log debug messages using <code>console.debug()</code>.</small>
+      </label>
+    </fieldset>
+    <fieldset class="directives">
+      <legend>Directives</legend>
+      <fieldset
+        *for="const [section, directives] of Object.entries({
+        'Rendering': ['mizu'],
+        'Contextual': ['set', 'ref'],
+        'Conditional': ['if', 'if/else', 'show'],
+        'Iterative': ['for', 'for/empty'],
+        'Content': ['text', 'html', 'mustache', 'code', 'markdown', 'toc', 'clean'],
+        'Custom elements': ['custom-element', 'is'],
+        'Events': ['event'],
+        'Binding': ['bind'],
+        'Modeling': ['model'],
+        'HTTP': ['http', 'http/event'],
+        'Processing': ['once', 'refresh', 'eval', 'skip'],
+        'Testing': ['test'],
+        'Unstable': ['unstable/noop'],
+      })"
+      >
+        <legend *text="section"></legend>
+        <label
+          *for="directives"
+          %http="`/about/directives/${$value}`"
+          %response.html="
+          this.querySelector('span').innerHTML = [...$content.querySelectorAll('mizu-directive [\\#name]')].map(code => code.outerHTML).join(' ');
+          this.querySelector('small').innerHTML = $content.querySelector('mizu-directive [\\#description]')?.innerHTML;
+          checked = (await fetch($response.url, { headers: { 'accept': 'application/json' } }).then(response => response.json())).preset.includes('client');
+        "
+        >
+          <input type="checkbox" name="directives" :value="$value" :checked="checked">
+          <span></span><br>
+          <small></small>
+        </label>
+      </fieldset>
+    </fieldset>
+    <fieldset class="miscellaneous">
+      <legend>Miscellaneous</legend>
+      <label>
+        <input type="checkbox" name="minify" checked>
+        Minify<br>
+        <small>Minify JS to reduce final bundle size.</small>
+      </label>
+    </fieldset>
+    <fieldset class="builder-build accent">
+      <legend>Bottle <em>mizu.js</em>!</legend>
+      <p>
+        Ready to bottle your custom mizu? Click the button below to get started!<br>
+        <small class="muted">
+          Creating a custom build requires a call to a serverless function that may fail because of a time-limit or rate-limit.
+        </small>
+      </p>
+      <footer>
+        <button type="submit" class="accent">🍶 Get your bottled mizu!</button>
+      </footer>
+    </fieldset>
+    <div class="flash danger builder-error hidden">
+      <p>An error occurred while creating your custom build, please try again later.</p>
+      <small></small>
+    </div>
+  </form>
+</section>
+
+<script>
+  const form = document.querySelector("form.builder")
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault()
+    // Prepare data
+    const raw = new FormData(form)
+    const data = { format: "", console: [], directives: [], minify: false }
+    for (const [key, value] of raw) {
+      switch (key) {
+        case "console":
+        case "directives":
+          data[key].push(value)
+          break
+        case "minify":
+          data[key] = value === "on"
+          break
+        default:
+          data[key] = value
+      }
+    }
+    // Generate build
+    try {
+      form.classList.add("pending")
+      document.querySelector(".builder-error").classList.add("hidden")
+      const response = await fetch("/api/build", { method: "POST", body: JSON.stringify(data) })
+      if (response.status !== 200) {
+        throw new Error(await response.text())
+      }
+      const url = URL.createObjectURL(new Blob([await response.blob()], { type: "application/javascript;charset=utf-8" }))
+      globalThis.open(url, "_blank")
+    } catch (error) {
+      document.querySelector(".builder-error").classList.remove("hidden")
+      document.querySelector(".builder-error small").innerText = error.message
+      setTimeout(() => document.querySelector(".builder-error").classList.add("hidden"), 15 * 1000)
+    } finally {
+      form.classList.remove("pending")
+    }
+  })
+</script>

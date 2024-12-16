@@ -315,9 +315,9 @@
 <test name="[*id] deduplicates content and references">
   <script>
     context.value = [
-      { id: 0, text: "foo" },
-      { id: 1, text: "bar" },
-    ]
+    { id: 0, text: "foo" },
+    { id: 1, text: "bar" },
+  ]
   </script>
   <render>
     <ul>
@@ -335,11 +335,11 @@
   </script>
   <script>
     context.value = [
-      { id: 0, text: "foo" },
-      { id: 1, text: "bar" },
-      { id: 1, text: "baz" },
-      { id: 2, text: "qux" },
-    ]
+    { id: 0, text: "foo" },
+    { id: 1, text: "bar" },
+    { id: 1, text: "baz" },
+    { id: 2, text: "qux" },
+  ]
   </script>
   <render></render>
   <expect comments="false">
@@ -351,6 +351,6 @@
   </expect>
   <script>
     expect(storage.elements[0]).toBe(document.querySelector("li:nth-child(1)"))
-    expect(storage.elements[1]).toBe(document.querySelector("li:nth-child(2)"))
+  expect(storage.elements[1]).toBe(document.querySelector("li:nth-child(2)"))
   </script>
 </test>

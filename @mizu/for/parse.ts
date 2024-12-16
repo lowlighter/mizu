@@ -23,7 +23,7 @@ import type { Optional } from "@libs/typing"
  */
 export class Expression {
   /** Parse expression. */
-  static parse(expression: string) {
+  static parse(expression: string): string[] {
     return new Expression(expression).#parse()
   }
 

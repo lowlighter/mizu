@@ -164,7 +164,7 @@
   </render>
   <script>
     expect(http.request).toBeInstanceOf(Request)
-    expect(http.response).toBeInstanceOf(Response)
+  expect(http.response).toBeInstanceOf(Response)
   </script>
 </test>
 
@@ -177,8 +177,8 @@
   </render>
   <script>
     expect(http.request).toBeInstanceOf(Request)
-    expect(http.request.received.headers.get("x-foo")).toBe("bar")
-    expect(http.request.received.body).toBe("foobar")
+  expect(http.request.received.headers.get("x-foo")).toBe("bar")
+  expect(http.request.received.body).toBe("foobar")
   </script>
 </test>
 
@@ -192,16 +192,16 @@
   </render>
   <script>
     expect(http.response).toBeInstanceOf(Response)
-    expect(http.response.status).toBe(Status.OK)
-    expect(http.response.headers.get("location")).toBeNull()
+  expect(http.response.status).toBe(Status.OK)
+  expect(http.response.headers.get("location")).toBeNull()
   </script>
   <render>
     <div %http.follow[false]="/bar" %response.void></div>
   </render>
   <script>
     expect(http.response).toBeInstanceOf(Response)
-    expect(http.response.status).toBe(Status.TemporaryRedirect)
-    expect(http.response.headers.get("location")).not.toBeNull()
+  expect(http.response.status).toBe(Status.TemporaryRedirect)
+  expect(http.response.headers.get("location")).not.toBeNull()
   </script>
 </test>
 
@@ -238,7 +238,7 @@
   </render>
   <script>
     expect(http.request).toBeInstanceOf(Request)
-    expect(http.request.method).toBe("GET")
+  expect(http.request.method).toBe("GET")
   </script>
 </test>
 
@@ -251,7 +251,7 @@
   </render>
   <script>
     expect(http.request).toBeInstanceOf(Request)
-    expect(http.request.method).toBe("HEAD")
+  expect(http.request.method).toBe("HEAD")
   </script>
 </test>
 
@@ -264,7 +264,7 @@
   </render>
   <script>
     expect(http.request).toBeInstanceOf(Request)
-    expect(http.request.method).toBe("POST")
+  expect(http.request.method).toBe("POST")
   </script>
 </test>
 
@@ -277,7 +277,7 @@
   </render>
   <script>
     expect(http.request).toBeInstanceOf(Request)
-    expect(http.request.method).toBe("PUT")
+  expect(http.request.method).toBe("PUT")
   </script>
 </test>
 
@@ -290,7 +290,7 @@
   </render>
   <script>
     expect(http.request).toBeInstanceOf(Request)
-    expect(http.request.method).toBe("PATCH")
+  expect(http.request.method).toBe("PATCH")
   </script>
 </test>
 
@@ -303,7 +303,7 @@
   </render>
   <script>
     expect(http.request).toBeInstanceOf(Request)
-    expect(http.request.method).toBe("DELETE")
+  expect(http.request.method).toBe("DELETE")
   </script>
 </test>
 
@@ -316,7 +316,7 @@
   </render>
   <script>
     expect(http.request).toBeInstanceOf(Request)
-    expect(http.request.method).toBe("OPTIONS")
+  expect(http.request.method).toBe("OPTIONS")
   </script>
 </test>
 
@@ -345,20 +345,20 @@
   </render>
   <script>
     expect(http.request).toBeInstanceOf(Request)
-    expect(new URL(http.request.url).pathname).toBe("/foo")
-    storage.request = http.request
+  expect(new URL(http.request.url).pathname).toBe("/foo")
+  storage.request = http.request
   </script>
   <render></render>
   <script>
     expect(http.request).toBe(storage.request)
-    context.url = "/bar"
+  context.url = "/bar"
   </script>
   <render></render>
   <script>
     expect(http.request).not.toBe(storage.request)
-    expect(http.request).toBeInstanceOf(Request)
-    expect(new URL(http.request.url).pathname).toBe("/bar")
-    storage.request = http.request
+  expect(http.request).toBeInstanceOf(Request)
+  expect(new URL(http.request.url).pathname).toBe("/bar")
+  storage.request = http.request
   </script>
   <render></render>
   <script>

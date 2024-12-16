@@ -1,8 +1,0 @@
-{
-  "cleanUrls": true,
-  "trailingSlash": true,
-  "framework": null,
-  "installCommand": "curl -fsSL https://deno.land/install.sh | sh && cp /vercel/.deno/bin/deno /usr/local/bin && deno --version",
-  "buildCommand": "deno task build",
-  "outputDirectory": ".pages"
-}

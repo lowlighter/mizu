@@ -3,7 +3,7 @@
  *
  * See {@link https://html.spec.whatwg.org/#attributes-3 | HTML attributes reference}.
  */
-export function boolean(tagname: string, attribute: string) {
+export function boolean(tagname: string, attribute: string): boolean {
   if (/^autofocus|inert|itemscope$/.test(attribute)) {
     return true
   }

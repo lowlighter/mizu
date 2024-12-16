@@ -16,4 +16,4 @@ await Mizu.generate([
   [new URL("/matcha.css", globalThis.location.href), "matcha.css"],
   [new URL("/highlight.js", globalThis.location.href), "highlight.js"],
   ["*.{svg,css,png,js}", ".", { directory: fromFileUrl(import.meta.resolve("./static")) }],
-], { output: join(Deno.cwd(), ".pages") })
+], { output: join(Deno.cwd(), "www/.pages") })

@@ -46,6 +46,23 @@ jobs:
         if: matrix.runtime == 'bun'
       - run: deno task test:${{ matrix.runtime }}
 
+  preview:
+    name: Deploy
+    runs-on: ubuntu-latest
+    #needs:
+    #  - lint
+    #  - test
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+      - name: Run deno task deploy:preview
+        run: |
+          DENO_DEPLOY_TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq -r .value)
+          deno task deploy:preview --token="GitHubOIDC $DENO_DEPLOY_TOKEN"
+
   publish:
     name: Publish
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

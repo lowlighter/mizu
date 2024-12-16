@@ -3,18 +3,18 @@
 <test name="[*refresh] rerenders element at specified intervals">
   <script>
     context.foo = () => null
-    context.interval = .100
+  context.interval = .100
   </script>
   <render>
     <p *refresh="(foo(), interval)"></p>
   </render>
   <script>
     context.foo = fn()
-    await delay(context.interval * 1000)
-    expect(context.foo).toHaveBeenCalled()
-    context.foo = fn()
-    await delay(context.interval * 1000)
-    expect(context.foo).toHaveBeenCalled()
+  await delay(context.interval * 1000)
+  expect(context.foo).toHaveBeenCalled()
+  context.foo = fn()
+  await delay(context.interval * 1000)
+  expect(context.foo).toHaveBeenCalled()
   </script>
   <script>
     context.interval = .105
@@ -22,11 +22,11 @@
   <render></render>
   <script>
     context.foo = fn()
-    await delay(context.interval * 1000)
-    expect(context.foo).toHaveBeenCalled()
-    context.foo = fn()
-    await delay(context.interval * 1000)
-    expect(context.foo).toHaveBeenCalled()
+  await delay(context.interval * 1000)
+  expect(context.foo).toHaveBeenCalled()
+  context.foo = fn()
+  await delay(context.interval * 1000)
+  expect(context.foo).toHaveBeenCalled()
   </script>
   <render></render>
   <script>
@@ -35,51 +35,51 @@
   <render></render>
   <script>
     context.foo = fn()
-    await delay(context.interval * 1000)
-    expect(context.foo).not.toHaveBeenCalled()
+  await delay(context.interval * 1000)
+  expect(context.foo).not.toHaveBeenCalled()
   </script>
   <script>
     context.interval = null
-    await rerender()
-    await delay(context.interval * 1000)
+  await rerender()
+  await delay(context.interval * 1000)
   </script>
 </test>
 
 <test name="[*refresh] does not reset upon normal rerenderings">
   <script>
     context.foo = () => null
-    context.interval = .100
+  context.interval = .100
   </script>
   <render>
     <p *refresh="(foo(), interval)"></p>
   </render>
   <script>
     context.foo = fn()
-    storage.loop = true
-    await Promise.race([
-      delay(context.interval * 1000),
-      new Promise(async () => {
-        while (storage.loop) {
-          await rerender()
-          await delay(.001)
-        }
-      }),
-    ])
-    storage.loop = false
-    expect(context.foo).toHaveBeenCalled()
+  storage.loop = true
+  await Promise.race([
+    delay(context.interval * 1000),
+    new Promise(async () => {
+      while (storage.loop) {
+        await rerender()
+        await delay(.001)
+      }
+    }),
+  ])
+  storage.loop = false
+  expect(context.foo).toHaveBeenCalled()
   </script>
   <script>
     context.interval = null
-    await rerender()
-    await delay(context.interval * 1000)
+  await rerender()
+  await delay(context.interval * 1000)
   </script>
 </test>
 
 <test name="[*refresh] handles commented elements">
   <script>
     context.value = true
-    context.foo = () => null
-    context.interval = .100
+  context.foo = () => null
+  context.interval = .100
   </script>
   <render>
     <p ~test[toggle].comment="!value" *refresh="(foo(), interval)"></p>
@@ -93,13 +93,13 @@
   </expect>
   <script>
     context.foo = fn()
-    await delay(context.interval * 1000)
-    expect(context.foo).not.toHaveBeenCalled()
+  await delay(context.interval * 1000)
+  expect(context.foo).not.toHaveBeenCalled()
   </script>
   <script>
     context.interval = null
-    await rerender()
-    await delay(context.interval * 1000)
+  await rerender()
+  await delay(context.interval * 1000)
   </script>
 </test>
 
@@ -121,8 +121,8 @@
   </expect>
   <script>
     context.interval = null
-    await rerender()
-    await delay(context.interval * 1000)
+  await rerender()
+  await delay(context.interval * 1000)
   </script>
 </test>
 
