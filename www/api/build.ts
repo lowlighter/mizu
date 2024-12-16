@@ -2,12 +2,12 @@
 import { STATUS_CODE as Status, STATUS_TEXT as StatusText } from "@std/http"
 import { banner as _banner, js, meta } from "@www/tools.ts"
 
-console.log((await Array.fromAsync(Deno.readDir("/src"))).map(({ name }) => name))
-console.log((await Array.fromAsync(Deno.readDir("/src/www"))).map(({ name }) => name))
-console.log((await Array.fromAsync(Deno.readDir("/src/www/@esbuild"))).map(({ name }) => name))
-
 /** API: Minify css */
 export default async function (request: Request) {
+  console.log((await Array.fromAsync(Deno.readDir("/src"))).map(({ name }) => name))
+  console.log((await Array.fromAsync(Deno.readDir("/src/www"))).map(({ name }) => name))
+  console.log((await Array.fromAsync(Deno.readDir("/src/www/@esbuild"))).map(({ name }) => name))
+
   const headers = new Headers()
   const allowed = [new URL(`https://${Deno.env.get("ALLOWED_HOST") || "localhost"}`).hostname]
   if (Deno.env.has("DENO_DEPLOYMENT_ID")) {
