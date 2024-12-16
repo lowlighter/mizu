@@ -130,6 +130,7 @@
     "@esbuild/linux-x64": "npm:@esbuild/linux-x64@^0.24.0",
     "@libs/typing/func": "jsr:@libs/typing@^3.1.2/func",
     "@std/http/unstable-route": "jsr:@std/http@^1.0.12/unstable-route",
+    "@std/html/unstable-is-valid-custom-element-name": "jsr:@std/html@^1.0.3/unstable-is-valid-custom-element-name",
     // Development dependencies
     "@dprint/formatter": "jsr:@dprint/formatter@^0.4.1",
     "@libs/testing": "jsr:@libs/testing@^4.0.1",
