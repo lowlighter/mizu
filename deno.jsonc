@@ -54,7 +54,7 @@
     "build": {
       "description": "Build project",
       "command": "sleep 0",
-      "dependencies": ["build:readmes", "build:www", "build:coverage"]
+      "dependencies": ["build:readmes", "build:www"]
     },
     "build:readmes": {
       "description": "Build `README.md` from `mod.html`",
@@ -77,7 +77,8 @@
     // Deployment tasks
     "deploy:setup-github-actions": {
       "description": "",
-      "command": "deno run --allow-env --allow-read --allow-write=.imports_map.json,/home/runner/work/_temp .github/tools/github_actions_deno_deploy.ts"
+      "command": "deno run --allow-env --allow-read --allow-write=.imports_map.json,/home/runner/work/_temp .github/tools/github_actions_deno_deploy.ts",
+      "dependencies": ["build"]
     },
     "deploy:preview": {
       "description": "Deploy website (preview)",
