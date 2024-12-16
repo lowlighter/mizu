@@ -117,6 +117,7 @@
       "command": "deno run --allow-read .github/tools/expand_glob.ts"
     }
   },
+  "nodeModulesDir": "auto",
   "imports": {
     // Dependencies
     "@libs/markdown": "jsr:@libs/markdown@^2.0.2",
