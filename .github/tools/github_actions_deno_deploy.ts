@@ -8,6 +8,7 @@ if (!Deno.env.get("CI")) {
 }
 
 // Remove lockfiles and package.json to avoid resolution conflicts
+// https://github.com/denoland/deno/issues/27380
 await Deno.remove("deno.lock", { recursive: true })
 await Deno.remove("package.json", { recursive: true })
 await Deno.remove("package-lock.json", { recursive: true })
