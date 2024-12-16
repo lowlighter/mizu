@@ -61,6 +61,7 @@ jobs:
       - name: Run deno task deploy:setup-github-actions
         run: deno task deploy:setup-github-actions
         id: setup_github_actions
+      - run: deno install
       - uses: denoland/deployctl@v1
         with:
           project: ${{ steps.setup_github_actions.outputs.project }}
