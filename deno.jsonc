@@ -128,7 +128,6 @@
     "jsdom": "npm:jsdom@^25.0.1",
     // Deno deploy dependencies
     "@esbuild/linux-x64": "npm:@esbuild/linux-x64@^0.24.0",
-    "@std/http/unstable-route": "jsr:@std/http@^1.0.12",
     // Development dependencies
     "@dprint/formatter": "jsr:@dprint/formatter@^0.4.1",
     "@libs/testing": "jsr:@libs/testing@^4.0.1",

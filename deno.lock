@@ -91,6 +91,7 @@
     "jsr:@std/yaml@^1.0.5": "1.0.5",
     "jsr:@zip-js/zip-js@^2.7.52": "2.7.54",
     "npm:@actions/core@^1.11.1": "1.11.1",
+    "npm:@esbuild/linux-x64@0.24": "0.24.0",
     "npm:@jsr/dprint__formatter@~0.4.1": "0.4.1",
     "npm:@jsr/libs__markdown@^2.0.2": "2.0.2",
     "npm:@jsr/libs__reactive@^5.0.2": "5.0.2",
@@ -4490,6 +4491,7 @@
       "jsr:@std/text@^1.0.9",
       "jsr:@std/yaml@^1.0.5",
       "npm:@actions/core@^1.11.1",
+      "npm:@esbuild/linux-x64@0.24",
       "npm:jsdom@^25.0.1"
     ],
     "packageJson": {
