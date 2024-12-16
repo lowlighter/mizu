@@ -2,6 +2,10 @@
 import { STATUS_CODE as Status, STATUS_TEXT as StatusText } from "@std/http"
 import { banner as _banner, js, meta } from "@www/tools.ts"
 
+console.log((await Array.fromAsync(Deno.readDir("/src"))).map(({ name }) => name))
+console.log((await Array.fromAsync(Deno.readDir("/src/www"))).map(({ name }) => name))
+console.log((await Array.fromAsync(Deno.readDir("/src/www/@esbuild"))).map(({ name }) => name))
+
 /** API: Minify css */
 export default async function (request: Request) {
   const headers = new Headers()
