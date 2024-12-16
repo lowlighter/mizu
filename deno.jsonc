@@ -252,7 +252,9 @@
       "www/api/**",
       "www/*.ts",
       "**/deno.jsonc",
-      "**/deno.lock"
+      "deno.lock",
+      "package.json",
+      "package-lock.json"
     ],
     "exclude": [
       "@mizu/**/*.html",
