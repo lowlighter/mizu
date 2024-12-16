@@ -4,7 +4,7 @@ import { retry } from "@std/async"
 import { Window } from "../vdom/mod.ts"
 import { Context, type Directive, Phase, Renderer } from "./renderer.ts"
 import _mizu from "@mizu/mizu"
-import _test from "@mizu/test"
+import _test, { PHASE_TESTING_DELTA } from "@mizu/test"
 const options = { directives: [_mizu] }
 
 test("`Renderer.constructor()` instantiates a new `Renderer`", async () => {
@@ -718,6 +718,14 @@ for (
     expect(renderer.parseAttribute(attribute, typings)).toMatchObject(expected)
   })
 }
+
+test("`Renderer.elementHasPhase()` tests if an element has a directive with specified phase", async () => {
+  await using window = new Window()
+  const renderer = await new Renderer(window, { ...options, directives: [_test] }).ready
+  const div = renderer.createElement("div", { attributes: { "~test": "" } })
+  expect(renderer.elementHasPhase(div, Phase.TESTING - PHASE_TESTING_DELTA)).toBe(true)
+  expect(renderer.elementHasPhase(div, Phase.META)).toBe(false)
+})
 
 test("`Renderer.isHtmlElement()` checks if the given node is an `HTMLElement`", async () => {
   await using window = new Window()

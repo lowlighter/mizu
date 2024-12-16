@@ -1089,6 +1089,21 @@ export class Renderer {
   }
 
   /**
+   * Checks whether an {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} has at least one {@linkcode Directive} that would be executed during specified {@linkcode Phase}.
+   *
+   * ```ts
+   * import { Window } from "@mizu/internal/vdom"
+   * const renderer = await new Renderer(new Window()).ready
+   * const element = renderer.createElement("div", { attributes: { "~foo": "" } })
+   *
+   * console.assert(!renderer.elementHasPhase(element, Phase.TESTING))
+   * ```
+   */
+  elementHasPhase(element: HTMLElement | Comment, phase: Phase): boolean {
+    return this.#directives.some((directive) => (directive.phase === phase) && this.getAttributes(element, directive.name, { first: true }))
+  }
+
+  /**
    * Type guard for {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement}.
    *
    * ```ts
