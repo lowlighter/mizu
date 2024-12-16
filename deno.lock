@@ -4479,7 +4479,6 @@
       "jsr:@std/assert@^1.0.9",
       "jsr:@std/async@^1.0.9",
       "jsr:@std/collections@^1.0.9",
-      "jsr:@std/encoding@^1.0.5",
       "jsr:@std/fmt@^1.0.3",
       "jsr:@std/fs@^1.0.6",
       "jsr:@std/html@^1.0.3",
