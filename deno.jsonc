@@ -51,18 +51,9 @@
       "command": "cd $INIT_CWD && bun test"
     },
     // Building tasks
-    "build": {
-      "description": "Build project",
-      "command": "sleep 0",
-      "dependencies": ["build:readmes", "build:www", "build:coverage"]
-    },
-    "build:readmes": {
-      "description": "Build `README.md` from `mod.html`",
-      "command": "deno run --quiet --allow-read --allow-env --allow-sys=osRelease --allow-write=@mizu,README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
-    },
     "build:www": {
       "description": "Build website",
-      "command": "deno run --quiet --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write=www/.pages --allow-run=$(deno task glob \"$DENO_DIR/**/@esbuild/**/esbuild\") --location=http://localhost:4649 www/build.ts",
+      "command": "deno run --quiet --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write=www/.pages --allow-run=$(deno task resolve:glob \"$DENO_DIR/**/@esbuild/**/esbuild\") --location=http://localhost:4649 www/build.ts",
       "dependencies": ["build:clean"]
     },
     "build:coverage": {
@@ -74,16 +65,16 @@
       "description": "Clean build artifacts",
       "command": "rm -rf www/.pages && mkdir -p www/.pages"
     },
-    // Deployment tasks
-    "deploy:setup-github-actions": {
-      "description": "",
+    // Continuous integration tasks
+    "ci:setup-deno-deploy": {
+      "description": "Setup deno deploy environment",
       "command": "deno run --allow-read --allow-env --allow-write=.imports.json,deno.lock,package.json,package-lock.json,/home/runner/work/_temp .github/tools/github_actions_deno_deploy.ts",
-      "dependencies": ["build"]
+      "dependencies": ["build:www", "build:coverage", "render:mermaid"]
     },
-    "deploy:preview": {
-      "description": "Deploy website (preview)",
-      "command": "deno run --allow-read --allow-env --allow-sys --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy",
-      "dependencies": ["build"]
+    "ci:autogenerate": {
+      "description": "Autogenerate files",
+      "command": "sleep 0",
+      "dependencies": ["repo:fill-scopes", "render:mermaid", "render:readmes"]
     },
     // Development tasks
     "qa": {
@@ -93,13 +84,14 @@
     },
     "serve": {
       "description": "Serve website locally",
-      "command": "deno serve --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write=$DENO_DIR --allow-run=$(deno task glob \"$DENO_DIR/**/@esbuild/**/esbuild\") --port=4649 --location=http://localhost:4649 www/serve.ts"
+      "command": "deno serve --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write=$DENO_DIR --allow-run=$(deno task resolve:glob \"$DENO_DIR/**/@esbuild/**/esbuild\") --port=4649 --location=http://localhost:4649 www/serve.ts"
+    },
+    "deploy": {
+      "description": "Deploy website on deno deploy",
+      "command": "deno run --allow-read --allow-env --allow-sys --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy",
+      "dependencies": ["build:www"]
     },
     // Miscellaneous tasks
-    "glob": {
-      "description": "Expand glob pattern and return a comma-separated list",
-      "command": "deno run --allow-read .github/tools/expand_glob.ts"
-    },
     "repo:fill-scopes": {
       "description": "Update repository issue templates",
       "command": " deno run --allow-read --allow-write=.github/ISSUE_TEMPLATE --allow-run=deno .github/tools/fill_github_scopes.ts"
@@ -108,9 +100,17 @@
       "description": "Render mermaid diagrams",
       "command": "deno run --allow-read --allow-net=127.0.0.1,localhost,cdn.jsdelivr.net --allow-write=www/static/rendering.svg --allow-run=$(deno task resolve:browser-path) .github/tools/generate_mermaid.ts www/misc/rendering.mermaid www/static/rendering.svg"
     },
+    "render:readmes": {
+      "description": "Render `README.md` from `mod.html`",
+      "command": "deno run --quiet --allow-read --allow-env --allow-sys=osRelease --allow-write=$(deno task resolve:glob \"@mizu/**/README.md\"),README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
+    },
     "resolve:browser-path": {
       "description": "Resolve browser path for astral",
       "command": "ASTRAL_QUIET_INSTALL=1 deno run --allow-read --allow-env=ASTRAL_QUIET_INSTALL --allow-net=googlechromelabs.github.io,storage.googleapis.com --allow-write=.cache .github/tools/browser_path.ts"
+    },
+    "resolve:glob": {
+      "description": "Resolve glob patterns",
+      "command": "deno run --allow-read .github/tools/expand_glob.ts"
     }
   },
   "imports": {
