@@ -5,7 +5,7 @@ import { banner as _banner, js, meta } from "@www/tools.ts"
 /** API: Minify css */
 export default async function (request: Request) {
   const headers = new Headers()
-  const allowed = [new URL(`https://${Deno.env.get("ALLOWED_HOST") || "localhost"}`).hostname]
+  const allowed = (Deno.env.get("ALLOWED_HOSTS") || "localhost").split(",").map((host) => new URL(`https://${host}`).hostname)
   if (Deno.env.has("DENO_DEPLOYMENT_ID")) {
     headers.set("x-deno-deployment-id", Deno.env.get("DENO_DEPLOYMENT_ID")!)
     allowed.push(new URL(`https://mizu-${Deno.env.get("DENO_DEPLOYMENT_ID")}.deno.dev`).hostname)
