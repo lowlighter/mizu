@@ -104,12 +104,18 @@
   <render>
     <template *custom-element="x-custom" filter-remove>
       <div ~test[content].text="$attrs.foo"></div>
+      <div ~test[content].text="$attrs.bar"></div>
+      <div ~test[content].text="'foo' in $attrs"></div>
+      <div ~test[content].text="'bar' in $attrs"></div>
     </template>
     <x-custom foo="bar"></x-custom>
   </render>
   <expect>
     <x-custom foo="bar">
       <div>bar</div>
+      <div>undefined</div>
+      <div>true</div>
+      <div>false</div>
     </x-custom>
   </expect>
 </test>

@@ -23,7 +23,10 @@ export const _custom_element = {
       return {
         state: {
           $slots: cache.get(element)!,
-          $attrs: Object.fromEntries(Array.from(element.attributes).map(({ name, value }) => [name, value])),
+          $attrs: new Proxy({}, {
+            has: (_, name: string) => element.hasAttribute(name),
+            get: (_, name: string) => element.getAttribute(name) ?? undefined,
+          }),
         },
       }
     }
