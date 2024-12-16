@@ -11,9 +11,11 @@
         "deno.enable": true
       },
       "extensions": [
+        "ms-azuretools.vscode-docker",
         "denoland.vscode-deno",
         "GitHub.vscode-github-actions",
-        "ms-azuretools.vscode-docker"
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
       ]
     },
     "remoteUser": "vscode"
