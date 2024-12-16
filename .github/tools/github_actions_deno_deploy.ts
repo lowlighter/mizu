@@ -11,11 +11,4 @@ core.setOutput("include", config.deploy.include.join(","))
 core.setOutput("exclude", config.deploy.exclude.join(","))
 core.setOutput("import_map", ".imports_map.json")
 
-const imports = config.imports
-for (const [key, value] of Object.entries(config.imports)) {
-  if ((key.startsWith("@")) && (!key.endsWith("/"))) {
-    imports[`${key}/`] = `${value}/`
-  }
-}
-
-await Deno.writeTextFile(".imports_map.json", JSON.stringify({ imports }, null, 2))
+await Deno.writeTextFile(".imports_map.json", JSON.stringify({ imports: config.imports }, null, 2))
