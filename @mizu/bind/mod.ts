@@ -1,5 +1,6 @@
 // Imports
 import { type Cache, type Directive, Phase } from "@mizu/internal/engine"
+import { toCamelCase } from "@std/text"
 import { boolean } from "./boolean.ts"
 export type * from "@mizu/internal/engine"
 
@@ -9,6 +10,7 @@ export const _bind = {
   prefix: ":",
   phase: Phase.ATTRIBUTE,
   multiple: true,
+  default: "$<attribute>",
   init(renderer) {
     if (!renderer.cache(this.name)) {
       renderer.cache<Cache<typeof _bind>>(this.name, new WeakMap())
@@ -35,7 +37,7 @@ export const _bind = {
 
     // Bind attributes
     for (const { name, value: expression, attribute } of parsed) {
-      const value = attribute.name === ":" ? expression : await renderer.evaluate(element, expression, options)
+      const value = attribute.name === ":" ? expression : await renderer.evaluate(element, expression || toCamelCase(name), options)
       switch (true) {
         // Class attributes
         case name === "class": {

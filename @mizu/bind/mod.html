@@ -19,6 +19,10 @@
     <i>(e.g. <code><span class="hljs-keyword">:</span>="{ foo: 'bar', bar: true }"</code>)</i>.
   </mizu-note>
   <mizu-note #note>
+    The directive value may be omitted to bind an attribute to an identifier with the same name (after <a href="https://developer.mozilla.org/docs/Glossary/Camel_case"><q>camelCase</q></a> conversion if the attribute contains hyphens <q>-</q>) in the current context.
+    <i>(e.g., <code><span class="hljs-keyword">:</span>data-foo</code> is equivalent to <code><span class="hljs-keyword">:</span>data-foo="dataFoo"</code>)</i>.
+  </mizu-note>
+  <mizu-note #note>
     Boolean attributes defined by the <a href="https://html.spec.whatwg.org/#attributes-3">HTML spec</a> are handled accordingly (removed when falsy).
   </mizu-note>
   <mizu-note #note>
