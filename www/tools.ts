@@ -46,7 +46,7 @@ function config(name: string, { parse = true } = {} as { parse?: boolean }) {
 }
 
 /** Generate JS. */
-export function js(exported: string, options = {} as Pick<NonNullable<Arg<typeof bundle, 1>>, "format" | "banner" | "minify" | "overrides" | "builder"> & { raw?: Record<PropertyKey, unknown> }) {
+export function js(exported: string, options = {} as Pick<NonNullable<Arg<typeof bundle, 1>>, "format" | "banner" | "minify" | "overrides" | "builder" | "lockfile"> & { raw?: Record<PropertyKey, unknown> }) {
   const packaged = exported.match(jsr)?.groups?.package ?? exported
   const url = import.meta.resolve(exported)
   log.with({ package: packaged, url }).debug("bundling javascript")
