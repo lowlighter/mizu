@@ -19,7 +19,7 @@ jobs:
           script: |
             const captured = (context.payload.issue.body.match(/### Scope\s*(?<scopes>.*?)\s*###/)?.groups?.scopes ?? "").trim()
             if (captured) {
-              const { data: allowed } = await github.issues.listLabelsForRepo({ ...context.repo })
+              const { data: allowed } = await github.issues.listLabelsForRepo({ ...context.repo, per_page: 100 })
               const scopes = captured.split("\n").filter(name => name.startsWith("scope: ") && allowed.some(label => label.name === name))
               console.log(`Issue #${context.issue.number} scopes: ${JSON.stringify(scopes)}`)
 
@@ -27,7 +27,7 @@ jobs:
               await github.issues.addLabels({ ...context.repo, issue_number: context.issue.number, labels: scopes })
 
               // Remove previous scope labels
-              const { data: labels } = await github.issues.listLabelsOnIssue({ ...context.repo, issue_number: context.issue.number }).catch(() => ({ data: [] }))
+              const { data: labels } = await github.issues.listLabelsOnIssue({ ...context.repo, issue_number: context.issue.number, per_page: 100 }).catch(() => ({ data: [] }))
               for (const { name } of labels.filter(label => label.name.startsWith("scope: ") && !scopes.includes(label.name))) {
                 console.log(`Removing previous label: ${name}`)
                 await github.issues.removeLabel({ ...context.repo, issue_number: context.issue.number, name })

@@ -83,6 +83,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
       - run: deno task ci:autogenerate
       - name: Run git push
         run: |
