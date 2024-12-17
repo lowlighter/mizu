@@ -1,5 +1,6 @@
 # Repository files
-repo:
+
+"scope:repo":
   - changed-files:
       - any-glob-to-any-file:
           - .devcontainer/**
