@@ -22,12 +22,14 @@ jobs:
               { section: "Environment", prefix: "env: " },
             ]) {
               const captured = (context.payload.issue.body.match(new RegExp(`### ${section}\\s*(?<labels>.*?)\\s*###`))?.groups?.labels ?? "").trim()
+              console.log(captured, captured.split(",").map(name => `${prefix}${name}`))
               if (!captured) {
                 continue
               }
 
               // Validate labels
               const { data: allowed } = await github.rest.issues.listLabelsForRepo({ ...context.repo, per_page: 100 }).catch(() => ({ data: [] }))
+              console.log(allowed.map(label => label.name))
               const labels = captured.split(",").map(name => `${prefix}${name}`).filter(name => allowed.some(label => label.name === name))
               console.log(`Issue #${context.issue.number} ${prefix}${JSON.stringify(labels)}`)
 

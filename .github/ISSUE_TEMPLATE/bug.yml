@@ -44,6 +44,22 @@ body:
         - www
     validations:
       required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Select the environment(s) where you encountered the issue.
+      multiple: true
+      options:
+        - chromium
+        - firefox
+        - safari
+        - node
+        - deno
+        - bun
+        - other
+    validations:
+      required: true
   - type: textarea
     id: content
     attributes:
@@ -65,22 +81,6 @@ body:
         Failure to do so may result in the issue being closed without
         investigation.
       render: html
-    validations:
-      required: true
-  - type: dropdown
-    id: environment
-    attributes:
-      label: Environment
-      description: Select the environment(s) where you encountered the issue.
-      multiple: true
-      options:
-        - Chromium
-        - Firefox
-        - Safari
-        - Node.js
-        - Deno
-        - Bun
-        - Other
     validations:
       required: true
   - type: dropdown
