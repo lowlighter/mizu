@@ -1,12 +1,14 @@
 {
   "name": "@mizu/code",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "exports": {
     ".": "./mod.ts"
   },
   "tasks": {
-    // Build dynamic imports and the list of mapped languages
-    "build": "deno run --allow-read --allow-net=api.github.com --allow-write=mapping.json,import/highlight.js build.ts"
+    "build": {
+      "description": "Build dynamic imports and the list of mapped languages",
+      "command": "deno run --allow-read --allow-net=api.github.com --allow-write=mapping.json,import/highlight.js build.ts"
+    }
   },
   "imports": {
     "highlight.js": "npm:highlight.js@11"

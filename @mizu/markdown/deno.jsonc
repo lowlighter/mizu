@@ -1,12 +1,15 @@
 {
   "name": "@mizu/markdown",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "exports": {
     ".": "./mod.ts"
   },
   "tasks": {
     // Build dynamic imports
-    "build": "deno run --allow-read --allow-net=api.github.com --allow-write=import/markdown/plugins build.ts"
+    "build": {
+      "description": "Build dynamic imports",
+      "command": "deno run --allow-read --allow-net=api.github.com --allow-write=import/markdown/plugins build.ts"
+    }
   },
   "imports": {
     "@libs/markdown": "jsr:@libs/markdown@1"
