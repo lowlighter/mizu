@@ -44,8 +44,8 @@ jobs:
         runtime:
           - name: deno
             version: 2.x
-          #- name: node
-          #  version: 22.x
+          - name: node
+            version: 22.x
           - name: bun
             #  https://github.com/oven-sh/setup-bun/issues/37
             # version: 1.x
@@ -145,9 +145,9 @@ jobs:
     name: Deploy
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    needs:
-      - preview
-      - publish
+    # needs:
+    #   - preview
+    #   - publish
     permissions:
       id-token: write
       pages: write

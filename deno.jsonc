@@ -75,21 +75,21 @@
     },
     "install:node": {
       "description": "Install project (node)",
-      "command": "npm install --production"
+      "command": "npm install"
     },
     "install:bun": {
       "description": "Install project (bun)",
-      "command": "bun install --production"
+      "command": "bun install"
     },
     // Continuous integration tasks
     "ci:setup-deno-deploy": {
       "description": "Setup deno deploy environment",
       "command": "deno task build:lockfile-deno && rm -rf package.json package-lock.json && deno run --allow-read --allow-env --allow-write=.imports.json,/home/runner/work/_temp .github/tools/github_actions_deno_deploy.ts",
-      "dependencies": ["build:www", "build:www-coverage", "render:mermaid"]
+      "dependencies": ["build:www", "render:mermaid"]
     },
     "ci:setup-github-pages": {
       "description": "Setup github pages environment",
-      "command": "sleep 0",
+      "command": "mv www/.pages _site",
       "dependencies": ["build:www", "build:www-coverage", "render:mermaid"]
     },
     "ci:autogenerate": {
