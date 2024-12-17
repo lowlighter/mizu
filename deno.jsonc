@@ -22,7 +22,7 @@
     },
     "lint:doc": {
       "description": "Lint documentation",
-      "command": "cd $INIT_CWD && deno doc --lint @mizu/**/*.ts"
+      "command": "cd $INIT_CWD && deno doc --lint $(deno task resolve:glob --break --separator=' ' '@mizu/**/*.ts' '**/*.ts')"
     },
     "lint:pkg": {
       "description": "Lint package",
@@ -33,11 +33,6 @@
       "command": "cd $INIT_CWD && deno fmt --check"
     },
     // Testing tasks
-    "test": {
-      "description": "Test code and print detailed coverage",
-      "command": "cd $INIT_CWD && deno coverage --detailed --include=$INIT_CWD",
-      "dependencies": ["test:deno", "test:node", "test:bun"]
-    },
     "test:deno": {
       "description": "Test code (deno)",
       "command": "cd $INIT_CWD && deno test --allow-read --allow-env --allow-net --parallel --doc --clean --coverage"
@@ -57,7 +52,7 @@
     },
     "build:www": {
       "description": "Build website",
-      "command": "deno run --quiet --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write=www/.pages --allow-run=$(deno task resolve:glob \"$DENO_DIR/**/@esbuild/**/esbuild\") --location=http://localhost:4649 www/build.ts",
+      "command": "deno run --quiet --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write=www/.pages --allow-run --location=http://localhost:4649 www/build.ts",
       "dependencies": ["build:clean"]
     },
     "build:coverage": {
@@ -83,7 +78,7 @@
     // Development tasks
     "qa": {
       "description": "Test and lint code",
-      "command": "sleep 0",
+      "command": "cd $INIT_CWD && deno coverage --detailed --include=$INIT_CWD",
       "dependencies": ["lint", "test:deno"]
     },
     "serve": {
@@ -139,6 +134,7 @@
     // Development dependencies
     "@dprint/formatter": "jsr:@dprint/formatter@^0.4.1",
     "@libs/testing": "jsr:@libs/testing@^4.0.1",
+    "@std/cli": "jsr:@std/cli@^1.0.8",
     "@std/fmt": "jsr:@std/fmt@^1.0.3",
     // Development server dependencies
     "@www/": "./www/",
