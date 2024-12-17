@@ -1,8 +1,8 @@
 # `:attribute="value"`
 
-| Version                               | Phase            | Multiple |
-| ------------------------------------- | ---------------- | -------- |
-| ![](https://jsr.io/badges/@mizu/bind) | 51 — `ATTRIBUTE` | Yes      |
+| Version                               | Phase            | Default        | Multiple |
+| ------------------------------------- | ---------------- | -------------- | -------- |
+| ![](https://jsr.io/badges/@mizu/bind) | 51 — `ATTRIBUTE` | `$<attribute>` | Yes      |
 
 Bind an element's [`attribute`](https://developer.mozilla.org/docs/Web/HTML/Attributes) value.
 
@@ -23,6 +23,10 @@ Bind an element's [`attribute`](https://developer.mozilla.org/docs/Web/HTML/Attr
 > Bind multiple attributes in a single directive using the shorthand `:="object"` _(e.g. `:="{ foo: 'bar', bar: true }"`)_.
 
 > [!NOTE]
+> The directive value may be omitted to bind an attribute to an identifier with the same name (after [« camelCase »](https://developer.mozilla.org/docs/Glossary/Camel_case) conversion if the attribute contains hyphens « - ») in the current context. _(e.g., `:data-foo` is
+> equivalent to `:data-foo="dataFoo"`)_.
+
+> [!NOTE]
 > Boolean attributes defined by the [HTML spec](https://html.spec.whatwg.org/#attributes-3) are handled accordingly (removed when falsy).
 
 > [!NOTE]
@@ -30,9 +34,9 @@ Bind an element's [`attribute`](https://developer.mozilla.org/docs/Web/HTML/Attr
 
 # `:class="value"`
 
-| Version                               | Phase            | Multiple |
-| ------------------------------------- | ---------------- | -------- |
-| ![](https://jsr.io/badges/@mizu/bind) | 51 — `ATTRIBUTE` | Yes      |
+| Version                               | Phase            | Default        | Multiple |
+| ------------------------------------- | ---------------- | -------------- | -------- |
+| ![](https://jsr.io/badges/@mizu/bind) | 51 — `ATTRIBUTE` | `$<attribute>` | Yes      |
 
 Bind an element's [`class`](https://developer.mozilla.org/docs/Web/HTML/Global_attributes/class) attribute.
 
@@ -59,9 +63,9 @@ Bind an element's [`class`](https://developer.mozilla.org/docs/Web/HTML/Global_a
 
 # `:style="value"`
 
-| Version                               | Phase            | Multiple |
-| ------------------------------------- | ---------------- | -------- |
-| ![](https://jsr.io/badges/@mizu/bind) | 51 — `ATTRIBUTE` | Yes      |
+| Version                               | Phase            | Default        | Multiple |
+| ------------------------------------- | ---------------- | -------------- | -------- |
+| ![](https://jsr.io/badges/@mizu/bind) | 51 — `ATTRIBUTE` | `$<attribute>` | Yes      |
 
 Bind an element's [`style`](https://developer.mozilla.org/docs/Web/HTML/Global_attributes/style) attribute.
 

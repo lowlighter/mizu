@@ -1,8 +1,8 @@
 # `::value="model"`
 
-| Version                                | Phase                        |
-| -------------------------------------- | ---------------------------- |
-| ![](https://jsr.io/badges/@mizu/model) | 52 — `ATTRIBUTE_MODEL_VALUE` |
+| Version                                | Phase                        | Default |
+| -------------------------------------- | ---------------------------- | ------- |
+| ![](https://jsr.io/badges/@mizu/model) | 52 — `ATTRIBUTE_MODEL_VALUE` | `value` |
 
 Bind an [`<input>`](https://developer.mozilla.org/docs/Web/HTML/Element/input), [`<select>`](https://developer.mozilla.org/docs/Web/HTML/Element/select) or [`<textarea>`](https://developer.mozilla.org/docs/Web/HTML/Element/textarea) element's
 [`value` attribute](https://developer.mozilla.org/docs/Web/HTML/Attributes) in a bi-directional manner.
@@ -55,3 +55,19 @@ Delay listener execution until the specified time frame has passed without any a
 ### `.keys[string]`
 
 Specify which keys must be pressed for the listener to trigger on a [`KeyboardEvent`](https://developer.mozilla.org/docs/Web/API/KeyboardEvent). See [`@event.keys` modifier](#event) for more information.
+
+### `.nullish[boolean]`
+
+Set the model value to `null` if the value is empty.
+
+### `.boolean[boolean]`
+
+Convert the model value using [`Boolean()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean). Additionally, any non-empty value matching the [YAML 1.1 definition of « falsy boolean » values](https://yaml.org/type/bool.html) are set to `false`.
+
+### `.number[boolean]`
+
+Convert the model value using [`Number()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number).
+
+### `.string[boolean]`
+
+Convert the model value using [`String()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String).
