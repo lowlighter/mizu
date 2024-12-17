@@ -8,7 +8,7 @@ if (import.meta.main) {
   const { _: globs, ...flags } = parseArgs(Deno.args, { boolean: ["break"], string: ["separator"] })
   const paths = []
   for (const glob of globs) {
-    for await (const { path } of expandGlob(glob)) {
+    for await (const { path } of expandGlob(`${glob}`)) {
       paths.push(path)
     }
     if ((paths.length) && (flags.break)) {

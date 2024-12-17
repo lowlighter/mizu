@@ -97,7 +97,7 @@
     // Miscellaneous tasks
     "repo:fill-scopes": {
       "description": "Update repository issue templates",
-      "command": " deno run --allow-read --allow-write=.github/ISSUE_TEMPLATE --allow-run=deno .github/tools/fill_github_scopes.ts"
+      "command": " deno run --allow-read --allow-write=.github/ISSUE_TEMPLATE,.github/labeler.yml --allow-run=deno .github/tools/fill_github_scopes.ts"
     },
     "render:mermaid": {
       "description": "Render mermaid diagrams",
