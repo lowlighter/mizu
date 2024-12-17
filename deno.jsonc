@@ -46,9 +46,13 @@
       "command": "cd $INIT_CWD && bun test"
     },
     // Building tasks
-    "build:lockfile": {
-      "description": "Build deno.lock and package-lock.json",
-      "command": "rm -rf deno.lock package.json package-lock.json && deno install && git checkout package.json && npm install"
+    "build:lockfile-deno": {
+      "description": "Build deno.lock",
+      "command": "rm -rf deno.lock package.json package-lock.json && deno install && git checkout package.json package-lock.json"
+    },
+    "build:lockfile-node": {
+      "description": "Build package-lock.json",
+      "command": "rm -rf deno.lock package-lock.json node_modules && npm install && git checkout deno.lock"
     },
     "build:www": {
       "description": "Build website",
@@ -67,13 +71,13 @@
     // Continuous integration tasks
     "ci:setup-deno-deploy": {
       "description": "Setup deno deploy environment",
-      "command": "deno task build:lockfile && rm -rf package.json package-lock.json && deno run --allow-read --allow-env --allow-write=.imports.json,/home/runner/work/_temp .github/tools/github_actions_deno_deploy.ts",
+      "command": "deno task build:lockfile-deno && rm -rf package.json package-lock.json && deno run --allow-read --allow-env --allow-write=.imports.json,/home/runner/work/_temp .github/tools/github_actions_deno_deploy.ts",
       "dependencies": ["build:www", "build:coverage", "render:mermaid"]
     },
     "ci:autogenerate": {
       "description": "Autogenerate files",
-      "command": "sleep 0",
-      "dependencies": ["build:lockfile", "repo:fill-scopes", "render:mermaid", "render:readmes"]
+      "command": "deno task build:lockfile && deno task build:lockfile-node",
+      "dependencies": ["repo:fill-scopes", "render:mermaid", "render:readmes"]
     },
     // Development tasks
     "qa": {
