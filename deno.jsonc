@@ -10,9 +10,9 @@
     "url": "git+https://github.com/lowlighter/mizu.git"
   },
   "tasks": {
-    // Linting tasks
+    // Lint tasks
     "lint": {
-      "description": "Lint code, documentation, package and formatting",
+      "description": "Lint everything",
       "command": "sleep 0",
       "dependencies": ["lint:code", "lint:doc", "lint:pkg", "lint:fmt"]
     },
@@ -32,7 +32,7 @@
       "description": "Check code formatting",
       "command": "cd $INIT_CWD && deno fmt --check"
     },
-    // Testing tasks
+    // Test tasks
     "test:deno": {
       "description": "Test code (deno)",
       "command": "cd $INIT_CWD && deno test --allow-read --allow-env --allow-net --parallel --doc --clean --coverage"
@@ -45,7 +45,7 @@
       "description": "Test code (bun)",
       "command": "cd $INIT_CWD && bun test"
     },
-    // Building tasks
+    // Build tasks
     "build:lockfile-deno": {
       "description": "Build deno.lock",
       "command": "rm -rf deno.lock package.json package-lock.json && deno install && git checkout package.json package-lock.json"
@@ -55,24 +55,37 @@
       "command": "rm -rf deno.lock package-lock.json node_modules && npm install && git checkout deno.lock"
     },
     "build:www": {
-      "description": "Build website",
+      "description": "Build static website",
       "command": "deno run --quiet --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write=www/.pages --allow-run --location=http://localhost:4649 www/build.ts",
-      "dependencies": ["build:clean"]
+      "dependencies": ["build:www-clean"]
     },
-    "build:coverage": {
-      "description": "Build coverage report",
+    "build:www-coverage": {
+      "description": "Build static website coverage section",
       "command": "deno test --allow-read --allow-env --allow-net --parallel --clean --coverage; rm -rf www/.pages/coverage && deno coverage --html && mv coverage/html www/.pages/coverage && deno run --quiet --allow-read --allow-net=img.shields.io --allow-write=www/.pages/coverage jsr:@libs/bundle/ts/cli/coverage --root=www/.pages/coverage",
-      "dependencies": ["build:clean"]
+      "dependencies": ["build:www-clean"]
     },
-    "build:clean": {
-      "description": "Clean build artifacts",
+    "build:www-clean": {
+      "description": "Clean static website artifacts",
       "command": "rm -rf www/.pages && mkdir -p www/.pages"
+    },
+    // Install tasks
+    "install:deno": {
+      "description": "Install project (deno)",
+      "command": "deno install --frozen"
+    },
+    "install:node": {
+      "description": "Install project (node)",
+      "command": "npm ci --production"
+    },
+    "install:bun": {
+      "description": "Install project (bun)",
+      "command": "bun install --frozen-lockfile --production"
     },
     // Continuous integration tasks
     "ci:setup-deno-deploy": {
       "description": "Setup deno deploy environment",
       "command": "deno task build:lockfile-deno && rm -rf package.json package-lock.json && deno run --allow-read --allow-env --allow-write=.imports.json,/home/runner/work/_temp .github/tools/github_actions_deno_deploy.ts",
-      "dependencies": ["build:www", "build:coverage", "render:mermaid"]
+      "dependencies": ["build:www", "build:www-coverage", "render:mermaid"]
     },
     "ci:autogenerate": {
       "description": "Autogenerate files",
@@ -81,22 +94,22 @@
     },
     // Development tasks
     "qa": {
-      "description": "Test and lint code",
+      "description": "Lint, test and print coverage (deno)",
       "command": "cd $INIT_CWD && deno coverage --detailed --include=$INIT_CWD",
       "dependencies": ["lint", "test:deno"]
     },
     "serve": {
-      "description": "Serve website locally",
+      "description": "Serve static website locally",
       "command": "deno serve --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write=$DENO_DIR --allow-run=$(deno task resolve:glob \"$DENO_DIR/**/@esbuild/**/esbuild\") --port=4649 --location=http://localhost:4649 www/serve.ts"
     },
     "deploy": {
-      "description": "Deploy website on deno deploy",
+      "description": "Deploy static website on deno deploy",
       "command": "deno run --allow-read --allow-env --allow-sys --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy",
       "dependencies": ["build:www"]
     },
     // Miscellaneous tasks
     "repo:fill-scopes": {
-      "description": "Update repository issue templates",
+      "description": "Fill scopes in repository files",
       "command": " deno run --allow-read --allow-write=.github/ISSUE_TEMPLATE,.github/labeler.yml --allow-run=deno .github/tools/fill_github_scopes.ts"
     },
     "render:mermaid": {
@@ -104,11 +117,11 @@
       "command": "deno run --allow-read --allow-net=127.0.0.1,localhost,cdn.jsdelivr.net --allow-write=www/static/rendering.svg --allow-run=$(deno task resolve:browser-path) .github/tools/generate_mermaid.ts www/misc/rendering.mermaid www/static/rendering.svg"
     },
     "render:readmes": {
-      "description": "Render `README.md` from `mod.html`",
+      "description": "Render packages README.md using their mod.html",
       "command": "deno run --quiet --allow-read --allow-env --allow-sys=osRelease --allow-write=$(deno task resolve:glob \"@mizu/**/README.md\"),README.md --allow-run=deno .github/tools/mod_html_to_readme_md.ts $INIT_CWD"
     },
     "resolve:browser-path": {
-      "description": "Resolve browser path for astral",
+      "description": "Resolve browser path (browser is installed if not present in cache)",
       "command": "ASTRAL_QUIET_INSTALL=1 deno run --allow-read --allow-env=ASTRAL_QUIET_INSTALL --allow-net=googlechromelabs.github.io,storage.googleapis.com --allow-write=.cache .github/tools/browser_path.ts"
     },
     "resolve:glob": {

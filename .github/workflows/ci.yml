@@ -19,50 +19,78 @@ jobs:
       - uses: denoland/setup-deno@v2
       - run: deno task lint
 
+  quick-test:
+    name: Quick test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+      - run: deno task install:deno
+      - run: deno task test:deno
+
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    needs:
+      - lint
+      - quick-test
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
         runtime:
-          - deno
-          - node
-          - bun
+          - name: deno
+            version: 2.x
+          - name: node
+            version: 22.x
+          - name: bun
+            #  https://github.com/oven-sh/setup-bun/issues/37
+            # version: 1.x
+            version: latest
+        os:
+          - ubuntu-latest
+          # - windows-latest
+          # - macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
-      - uses: actions/setup-node@v4
-        if: matrix.runtime == 'node'
         with:
-          node-version: 22.x
-      - run: npm ci
-        if: matrix.runtime == 'node'
-      - uses: oven-sh/setup-bun@v2
-        if: matrix.runtime == 'bun'
-      - run: bun install
-        if: matrix.runtime == 'bun'
-      - run: deno task test:${{ matrix.runtime }}
+          deno-version: ${{ matrix.runtime.version }}
+      - if: matrix.runtime.name == 'node'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.runtime.version }}
+      - if: matrix.runtime.name == 'bun'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ matrix.runtime.version }}
+      - run: deno task install:${{ matrix.runtime.name }}
+      - run: deno task test:${{ matrix.runtime.name }}
 
   preview:
-    name: Deploy
+    name: Preview
     runs-on: ubuntu-latest
     needs:
       - lint
-      - test
+      - quick-test
     permissions:
       id-token: write
       contents: read
+    environment:
+      name: preview
+      url: ${{ steps.preview.outputs.url }}
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
-      - name: Run deno task ci:setup-deno-deploy
-        run: deno task ci:setup-deno-deploy
+      - run: deno task ci:setup-deno-deploy
         id: setup_github_actions
-      - run: deno install
+      - run: deno task install:deno
       - uses: denoland/deployctl@v1
+        id: preview
+        # https://github.com/denoland/deployctl/issues/350
         with:
           project: ${{ steps.setup_github_actions.outputs.project }}
           entrypoint: ${{ steps.setup_github_actions.outputs.entrypoint }}
@@ -75,9 +103,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     needs:
-      - lint
       - test
-      - preview
     permissions:
       contents: write
     steps:
@@ -104,9 +130,6 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     needs:
-      - lint
-      - test
-      - preview
       - autogenerate
     permissions:
       id-token: write
@@ -115,3 +138,27 @@ jobs:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
       - run: deno publish
+
+  deploy:
+    name: Deploy
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    needs:
+      - preview
+      - publish
+    permissions:
+      id-token: write
+      pages: write
+    environment:
+      name: deployment
+      url: ${{ steps.deployment.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/configure-pages@v5
+      - uses: denoland/setup-deno@v2
+      - run: deno task install:deno
+      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/deploy-pages@v4
+        id: deployment
