@@ -52,8 +52,8 @@ jobs:
             version: latest
         os:
           - ubuntu-latest
-          # - windows-latest
-          # - macos-latest
+          - windows-latest
+          - macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
