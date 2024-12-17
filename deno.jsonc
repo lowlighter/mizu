@@ -76,7 +76,7 @@
     },
     "ci:autogenerate": {
       "description": "Autogenerate files",
-      "command": "deno task build:lockfile && deno task build:lockfile-node",
+      "command": "deno task build:lockfile-deno && deno task build:lockfile-node",
       "dependencies": ["repo:fill-scopes", "render:mermaid", "render:readmes"]
     },
     // Development tasks
