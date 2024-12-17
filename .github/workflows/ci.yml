@@ -57,6 +57,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
+      - if: matrix.runtime.name == 'deno'
+        uses: denoland/setup-deno@v2
         with:
           deno-version: ${{ matrix.runtime.version }}
       - if: matrix.runtime.name == 'node'
