@@ -13,35 +13,35 @@ body:
       description: Select the scope(s) of the issue.
       multiple: true
       options:
-        - "scope: bind"
-        - "scope: clean"
-        - "scope: code"
-        - "scope: custom-element"
-        - "scope: eval"
-        - "scope: event"
-        - "scope: for"
-        - "scope: html"
-        - "scope: http"
-        - "scope: if"
-        - "scope: internal"
-        - "scope: is"
-        - "scope: markdown"
-        - "scope: mizu"
-        - "scope: model"
-        - "scope: mustache"
-        - "scope: once"
-        - "scope: ref"
-        - "scope: refresh"
-        - "scope: render"
-        - "scope: repo"
-        - "scope: set"
-        - "scope: show"
-        - "scope: skip"
-        - "scope: test"
-        - "scope: text"
-        - "scope: toc"
-        - "scope: unstable"
-        - "scope: www"
+        - bind
+        - clean
+        - code
+        - custom-element
+        - eval
+        - event
+        - for
+        - html
+        - http
+        - if
+        - internal
+        - is
+        - markdown
+        - mizu
+        - model
+        - mustache
+        - once
+        - ref
+        - refresh
+        - render
+        - repo
+        - set
+        - show
+        - skip
+        - test
+        - text
+        - toc
+        - unstable
+        - www
     validations:
       required: true
   - type: textarea

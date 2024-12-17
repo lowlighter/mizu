@@ -17,19 +17,27 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            const captured = (context.payload.issue.body.match(/### Scope\s*(?<scopes>.*?)\s*###/)?.groups?.scopes ?? "").trim()
-            if (captured) {
-              const { data: allowed } = await github.issues.listLabelsForRepo({ ...context.repo, per_page: 100 })
-              const scopes = captured.split("\n").filter(name => name.startsWith("scope: ") && allowed.some(label => label.name === name))
-              console.log(`Issue #${context.issue.number} scopes: ${JSON.stringify(scopes)}`)
+            for (const { section, prefix } of [
+              { section: "Scope", prefix: "scope: " },
+              { section: "Environment", prefix: "env: " },
+            ]) {
+              const captured = (context.payload.issue.body.match(new RegExp(`### ${section}\\s*(?<labels>.*?)\\s*###`))?.groups?.labels ?? "").trim()
+              if (!captured) {
+                continue
+              }
 
-              // Add new scope labels
-              await github.issues.addLabels({ ...context.repo, issue_number: context.issue.number, labels: scopes })
+              // Validate labels
+              const { data: allowed } = await github.rest.issues.listLabelsForRepo({ ...context.repo, per_page: 100 }).catch(() => ({ data: [] }))
+              const labels = captured.split(",").map(name => `${prefix}${name}`).filter(name => allowed.some(label => label.name === name))
+              console.log(`Issue #${context.issue.number} ${prefix}${JSON.stringify(labels)}`)
 
-              // Remove previous scope labels
-              const { data: labels } = await github.issues.listLabelsOnIssue({ ...context.repo, issue_number: context.issue.number, per_page: 100 }).catch(() => ({ data: [] }))
-              for (const { name } of labels.filter(label => label.name.startsWith("scope: ") && !scopes.includes(label.name))) {
+              // Add new labels
+              await github.rest.issues.addLabels({ ...context.repo, issue_number: context.issue.number, labels }).catch(() => null)
+
+              // Remove previous labels
+              const { data: previous } = await github.rest.issues.listLabelsOnIssue({ ...context.repo, issue_number: context.issue.number, per_page: 100 }).catch(() => ({ data: [] }))
+              for (const { name } of previous.filter(label => label.name.startsWith(prefix) && !labels.includes(label.name))) {
                 console.log(`Removing previous label: ${name}`)
-                await github.issues.removeLabel({ ...context.repo, issue_number: context.issue.number, name })
+                await github.rest.issues.removeLabel({ ...context.repo, issue_number: context.issue.number, name })
               }
             }
