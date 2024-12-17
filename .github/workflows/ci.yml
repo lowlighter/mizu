@@ -158,7 +158,7 @@ jobs:
           ref: main
       - uses: actions/configure-pages@v5
       - uses: denoland/setup-deno@v2
-      - run: deno task install:deno
+      - run: deno task ci:setup-github-pages
       - uses: actions/upload-pages-artifact@v3
       - uses: actions/deploy-pages@v4
         id: deployment
