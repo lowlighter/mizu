@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-console
 // Imports
 import type { testing } from "@libs/testing"
 import type { Arg, Nullable, VirtualWindow } from "../engine/mod.ts"
@@ -44,10 +45,13 @@ export function test(path: string | ImportMeta, runner = _test) {
         context: new Context({
           fetch() {
             let url = arguments[0]
+            console.log("fetching...", url)
+            console.log(URL.canParse(url))
             if (!URL.canParse(url)) {
               const { address: hostname, port } = testing.http.server?.address() as { address: string; port: number }
               url = `http://${hostname.replace("0.0.0.0", "localhost")}:${port}${arguments[0]}`
             }
+            console.log("running fetch", url, ...Array.from(arguments).slice(1))
             return fetch(url, ...Array.from(arguments).slice(1))
           },
         }),
