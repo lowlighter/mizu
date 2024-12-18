@@ -155,15 +155,16 @@
         const local = Array.from(form.querySelectorAll(`input[data-group="${input.dataset.group}"]`)).reduce((checked, input) => checked && input.checked, true)
         form.querySelector(`input[data-group-toggle="${input.dataset.group}"]`).checked = local
       })
+      form.querySelectorAll('input[type="checkbox"]:is([data-group="rendering"],[data-group-toggle="rendering"])').forEach(input => input.checked = true)
       const global = Array.from(form.querySelectorAll(`input[data-group]`)).reduce((checked, input) => checked && input.checked, true)
-      form.querySelector(`input[data-group-toggle="*"]`).checked = global
+      form.querySelector(`input[type="checkbox"][data-group-toggle="*"]`).checked = global
     }
     // Add interactivity to group checkboxes
     form.querySelectorAll('legend input[type="checkbox"][data-group-toggle]').forEach((input) => {
       if (input.dataset.groupToggle === "*") {
         input.addEventListener("change", () => form.querySelectorAll('input[type="checkbox"][data-group]').forEach((input) => input.checked = event.target.checked))
       } else {
-        input.addEventListener("change", () => form.querySelectorAll(`input[data-group="${input.dataset.groupToggle}"]`).forEach((child) => child.checked = input.checked))
+        input.addEventListener("change", () => form.querySelectorAll(`input[type="checkbox"][data-group="${input.dataset.groupToggle}"]`).forEach((child) => child.checked = input.checked))
       }
     })
     form.querySelectorAll('input[type="checkbox"]:is([data-group],[data-group-toggle])').forEach((input) => input.addEventListener("change", () => refresh()))
