@@ -10,7 +10,9 @@ body:
     id: scope
     attributes:
       label: Scope
-      description: Select the scope(s) of the issue.
+      description: >-
+        Select the scope(s) of the issue. To propose a new directive, use the
+        `unstable` scope.
       multiple: true
       options:
         - bind
