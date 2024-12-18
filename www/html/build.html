@@ -155,7 +155,7 @@
         const local = Array.from(form.querySelectorAll(`input[data-group="${input.dataset.group}"]`)).reduce((checked, input) => checked && input.checked, true)
         form.querySelector(`input[data-group-toggle="${input.dataset.group}"]`).checked = local
       })
-      form.querySelectorAll('input[type="checkbox"]:is([data-group="rendering"],[data-group-toggle="rendering"])').forEach(input => input.checked = true)
+      form.querySelectorAll('input[type="checkbox"]:is([data-group="rendering"],[data-group-toggle="rendering"])').forEach((input) => input.checked = true)
       const global = Array.from(form.querySelectorAll(`input[data-group]`)).reduce((checked, input) => checked && input.checked, true)
       form.querySelector(`input[type="checkbox"][data-group-toggle="*"]`).checked = global
     }
