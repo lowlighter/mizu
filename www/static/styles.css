@@ -855,3 +855,8 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   color: var(--muted);
   border-color: var(--bd-muted);
 }
+
+.builder fieldset[data-group="rendering"] {
+  opacity: 0.5;
+  pointer-events: none;
+}

@@ -88,7 +88,15 @@ const handler = {
           if (requested === "application/json") {
             headers.set("content-type", "application/json; charset=utf-8")
             try {
-              const { [`_${toSnakeCase(url.searchParams.get("name") ?? name)}`]: directive } = await import(Deno.build.os === "windows" ? toFileUrl(join(path, "mod.ts")).href : join(path, "mod.ts"))
+              const {
+                // Match: _name_directive
+                [`_${toSnakeCase(url.searchParams.get("name") ?? name)}`]: _a,
+                // Match: _directive
+                [`_${toSnakeCase(url.searchParams.get("name") ?? name)}`.replace(`_${name.split("/")[0]}_`, "_")]: _b,
+                // Fallback to first export
+                ..._c
+              } = await import(Deno.build.os === "windows" ? toFileUrl(join(path, "mod.ts")).href : join(path, "mod.ts"))
+              const directive = _a ?? _b ?? [_c].flat()[0]
               const json = JSON.parse(JSON.stringify(directive))
               if (directive.name instanceof RegExp) {
                 json.name = `/${directive.name.source}/`

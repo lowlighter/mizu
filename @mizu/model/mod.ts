@@ -21,7 +21,7 @@ export const typings = {
 } as const
 
 /** `::value` directive. */
-export const _model_value = {
+export const _model = {
   name: /^::(?<value>)$/,
   prefix: "::",
   phase: Phase.ATTRIBUTE_MODEL_VALUE,
@@ -29,7 +29,7 @@ export const _model_value = {
   default: "value",
   init(renderer) {
     if (!renderer.cache(this.name)) {
-      renderer.cache<Cache<typeof _model_value>>(this.name, new WeakMap())
+      renderer.cache<Cache<typeof _model>>(this.name, new WeakMap())
     }
   },
   async execute(renderer, element, { attributes: [attribute], cache, ...options }) {
@@ -136,7 +136,7 @@ export const _model_value = {
 } as Directive<WeakMap<HTMLElement, WeakMap<HTMLElement, { model: Record<"read" | "sync", Nullable<callback>>; event: Nullable<string>; init: boolean }>>, typeof typings> & { default: string }
 
 /** Default exports. */
-export default [_model_value]
+export default [_model]
 
 /** Read input value. */
 function read(input: HTMLElement) {
@@ -158,7 +158,7 @@ function read(input: HTMLElement) {
 }
 
 /** Parse input value. */
-function parse(value: ReturnType<typeof read>, modifiers: Modifiers<typeof _model_value>) {
+function parse(value: ReturnType<typeof read>, modifiers: Modifiers<typeof _model>) {
   const parsed = [value].flat().map((value) => {
     if ((modifiers.nullish) && (!value)) {
       return null
