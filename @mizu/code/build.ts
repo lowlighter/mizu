@@ -3,7 +3,7 @@ import { Vendor } from "@tools/vendor_imports.ts"
 import { fromFileUrl } from "@std/path"
 import { _code } from "./mod.ts"
 
-const { hljs } = await import("./import/highlight.js/core.ts")
+const { default: hljs } = await import("highlight.js/lib/core")
 const mapping = {} as Record<PropertyKey, string>
 const vendor = await new Vendor({ directive: _code.name, meta: import.meta, name: "highlight.js" })
   .github({
@@ -11,10 +11,9 @@ const vendor = await new Vendor({ directive: _code.name, meta: import.meta, name
     branch: "main",
     path: "src/languages",
     globs: ["*.js"],
-    destination: "languages",
-    export: (name) => `export { default as syntax } from "highlight.js/lib/languages/${name}"\n`,
+    //export: (name) => `export { default as syntax } from "highlight.js/lib/languages/${name}"\n`,
     async callback(name, { log }) {
-      const { syntax } = await import(`./import/highlight.js/languages/${name}.ts`)
+      const { default: syntax } = await import(`highlight.js/lib/languages/${name}`)
       hljs.registerLanguage(name, syntax)
       mapping[name] = name
       for (const alias of (hljs.getLanguage(name)?.aliases ?? [])) {

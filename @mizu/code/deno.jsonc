@@ -7,7 +7,7 @@
   "tasks": {
     "build": {
       "description": "Build dynamic imports and the list of mapped languages",
-      "command": "deno run --allow-read --allow-net=api.github.com --allow-write=mapping.json,import/highlight.js build.ts"
+      "command": "deno run --allow-read --allow-net=api.github.com --allow-write=mapping.json build.ts"
     }
   },
   "imports": {

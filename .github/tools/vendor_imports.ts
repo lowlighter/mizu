@@ -33,12 +33,14 @@ export class Vendor {
 
   /** Vendor files from github repository. */
   async github(
-    { repository, branch, path, globs, destination, export: exporter, callback }: { repository: string; branch: string; path: string; globs?: string[]; destination: string; export?: (name: string) => string; callback?: (name: string, _: { log: Logger }) => Promisable<void> },
+    { repository, branch, path, globs, destination = "", export: exporter, callback }: { repository: string; branch: string; path: string; globs?: string[]; destination?: string; export?: (name: string) => string; callback?: (name: string, _: { log: Logger }) => Promisable<void> },
   ) {
-    destination = join(this.#directory, destination)
     // Clean directory
-    await emptyDir(destination)
-    this.log.with({ destination }).ok("cleaned")
+    if (exporter) {
+      destination = join(this.#directory, destination)
+      await emptyDir(destination)
+      this.log.with({ destination }).ok("cleaned")
+    }
     // Search files from repository
     let files = await this.#tree(repository, { branch, path })
     if (globs) {
