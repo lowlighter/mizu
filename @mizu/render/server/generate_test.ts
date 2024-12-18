@@ -2,7 +2,8 @@ import type { testing } from "@libs/testing"
 import { expect, fn, test } from "@libs/testing"
 import { join, resolve } from "@std/path"
 import { Server } from "./server.ts"
-const output = resolve("/fake/path")
+const root = resolve(import.meta.dirname!, "/")
+const output = resolve(root, "/fake/path")
 const encoder = new TextEncoder()
 const fs = { stat: fn(), mkdir: fn(), rm: fn(), read: fn(), readdir: fn(() => []), write: fn() } as testing
 
@@ -94,8 +95,8 @@ test("`Server.generate()` can retrieve content from local files", async () => {
         { directory: "/", render: { select: "p", context: { foo: "baz" } } },
       ],
     ])
-    expect(write).toHaveBeenCalledWith(resolve("/fake/path/a/b/foo.html"), encoder.encode(`<p ~test.text="foo">bar</p>`))
-    expect(write).toHaveBeenCalledWith(resolve("/fake/path/bar.html"), encoder.encode(`<p ~test.text="foo">baz</p>`))
+    expect(write).toHaveBeenCalledWith(resolve(root, "/fake/path/a/b/foo.html"), encoder.encode(`<p ~test.text="foo">bar</p>`))
+    expect(write).toHaveBeenCalledWith(resolve(root, "/fake/path/bar.html"), encoder.encode(`<p ~test.text="foo">baz</p>`))
   }
 }, { permissions: { read: true } })
 
