@@ -1,8 +1,8 @@
 # `::value="model"`
 
-| Version                                | Phase                        | Default |
-| -------------------------------------- | ---------------------------- | ------- |
-| ![](https://jsr.io/badges/@mizu/model) | 52 — `ATTRIBUTE_MODEL_VALUE` | `value` |
+| Version                                | Phase                   | Default           |
+| -------------------------------------- | ----------------------- | ----------------- |
+| ![](https://jsr.io/badges/@mizu/model) | undefined — `undefined` | `[object Object]` |
 
 Bind an [`<input>`](https://developer.mozilla.org/docs/Web/HTML/Element/input), [`<select>`](https://developer.mozilla.org/docs/Web/HTML/Element/select) or [`<textarea>`](https://developer.mozilla.org/docs/Web/HTML/Element/textarea) element's
 [`value` attribute](https://developer.mozilla.org/docs/Web/HTML/Attributes) in a bi-directional manner.
