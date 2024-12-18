@@ -41,6 +41,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
         runtime:
           - name: deno
             version: 2.x
@@ -50,14 +54,12 @@ jobs:
             # https://github.com/oven-sh/setup-bun/issues/37
             # version: 1.x
             version: latest
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
         exclude:
           # https://github.com/oven-sh/bun/issues/5835
-          - runtime: bun
-            os: windows-latest
+          - os: windows-latest
+            runtime:
+              name: bun
+              version: latest
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
