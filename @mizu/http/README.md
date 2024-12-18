@@ -127,9 +127,9 @@ Format the body with the specified type:
 - `text`: format body with [`toString()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/toString).
 - `form`: format body with [`URLSearchParams`](https://developer.mozilla.org/docs/Web/API/URLSearchParams).
 - `json`: format body with [`JSON.stringify()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
-- `xml`: format body with [`stringify()` from `@libs/xml`](https://jsr.io/@libs/xml). > [!IMPORTANT]
+- `xml`: format body with [`stringify()` from `@libs/xml/stringify`](https://jsr.io/@libs/xml). > [!IMPORTANT]
 
-> Using this value will dynamically import [`@libs/xml`](https://jsr.io/@libs/xml). This modifier should not be used with one of its aliases.
+> Using this value will dynamically import [`@libs/xml/stringify`](https://jsr.io/@libs/xml). This modifier should not be used with one of its aliases.
 
 ### `.header[boolean=true]`
 
@@ -203,9 +203,9 @@ Consume the [`response.body`](https://developer.mozilla.org/docs/Web/API/Respons
 - `text`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and set element's [`textContent`](https://developer.mozilla.org/docs/Web/API/Node/textContent) if no expression is provided.
 - `html`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text), parse it into a `<body>` element, and set element's [`innerHTML`](https://developer.mozilla.org/docs/Web/API/Element/innerHTML) if no expression is provided.
 - `json`: consume body using [`response.json()`](https://developer.mozilla.org/docs/Web/API/Response/json).
-- `xml`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and parse it with [`parse` from _@libs/xml_](https://jsr.io/@libs/xml). > [!IMPORTANT]
+- `xml`: consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/API/Response/text) and parse it with [`parse` from _@libs/xml/parse_](https://jsr.io/@libs/xml). > [!IMPORTANT]
 
-> Using this value will dynamically import [jsr.io/@libs/xml](https://jsr.io/@libs/xml). This modifier should not be used with one of its aliases.
+> Using this value will dynamically import [@libs/xml/parse](https://jsr.io/@libs/xml). This modifier should not be used with one of its aliases.
 
 ### `.void[boolean]`
 
