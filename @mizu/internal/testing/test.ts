@@ -80,7 +80,7 @@ export function test(path: string | ImportMeta, runner = _test) {
       } finally {
         await testing.http.server?.close()
       }
-    }, { permissions: { net: ["localhost", "0.0.0.0"] } })
+    }, { permissions: { net: ["localhost", "0.0.0.0", "127.0.0.1"] } })
   })
 }
 
