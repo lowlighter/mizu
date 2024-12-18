@@ -12,6 +12,7 @@
   },
   "imports": {
     "@libs/markdown": "jsr:@libs/markdown@1",
+    "@libs/markdown/plugins/____": "jsr:@libs/markdown@1/plugins/____",
     "@libs/markdown/plugins/anchors": "jsr:@libs/markdown@1/plugins/anchors",
     "@libs/markdown/plugins/directives": "jsr:@libs/markdown@1/plugins/directives",
     "@libs/markdown/plugins/emojis": "jsr:@libs/markdown@1/plugins/emojis",

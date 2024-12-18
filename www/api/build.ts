@@ -23,6 +23,7 @@ export default async function (request: Request) {
       lockfile: new URL(import.meta.resolve("../../deno.lock")),
       banner: _banner.replace(`${meta.name} — ${meta.version}\n`, `${meta.name} — ${meta.version} — Custom build (${new Date().toDateString()})\n`),
       minify: options.minify === true ? "terser" : false,
+      standalone: options.standalone,
       format: ["iife", "esm"].includes(options.format) ? options.format : throws("format: must be 'iife' or 'esm'"),
       raw: {
         define: {

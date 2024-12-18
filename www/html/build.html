@@ -32,12 +32,12 @@
       <label>
         <input type="checkbox" name="console" value="warn" checked>
         Log warnings to console<br>
-        <small>Enable to log warnings using <code>console.warn()</code>.</small>
+        <small class="ml-1.75">Enable to log warnings using <code>console.warn()</code>.</small>
       </label>
       <label>
         <input type="checkbox" name="console" value="debug">
         Log debug messages to console<br>
-        <small>Enable to log debug messages using <code>console.debug()</code>.</small>
+        <small class="ml-1.75">Enable to log debug messages using <code>console.debug()</code>.</small>
       </label>
     </fieldset>
     <fieldset class="directives">
@@ -86,10 +86,17 @@
     </fieldset>
     <fieldset class="miscellaneous">
       <legend>Miscellaneous</legend>
-      <label>
+      <label *warn="errorroro">
         <input type="checkbox" name="minify" checked>
         Minify<br>
-        <small>Minify JS to reduce final bundle size.</small>
+        <small class="ml-1.75">Minify JS to reduce final bundle size.</small>
+      </label>
+      <label>
+        <input type="checkbox" name="standalone">
+        Create a standalone build<br>
+        <small class="ml-1.75">
+          Include all dependencies in the final build rather than relying on dynamic <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/import"><code>import()</code></a> for large dependencies.
+        </small>
       </label>
     </fieldset>
     <fieldset class="builder-build accent">
@@ -118,7 +125,7 @@
       event.preventDefault()
       // Prepare data
       const raw = new FormData(form)
-      const data = { format: "", console: [], directives: [], minify: false }
+      const data = { format: "", console: [], directives: [], minify: false, standalone: false }
       for (const [key, value] of raw) {
         switch (key) {
           case "console":
@@ -126,6 +133,7 @@
             data[key].push(value)
             break
           case "minify":
+          case "standalone":
             data[key] = value === "on"
             break
           default:
