@@ -116,6 +116,10 @@
       "command": "deno run --allow-read --allow-env --allow-sys --allow-net=cdn.deno.land,dash.deno.com --no-prompt jsr:@deno/deployctl deploy",
       "dependencies": ["build:www"]
     },
+    "reinstall": {
+      "description": "Clean and reinstall dependencies (deno)",
+      "command": "rm -rf node_modules deno.lock package.json package-lock.json && deno install"
+    },
     // Miscellaneous tasks
     "repo:fill-scopes": {
       "description": "Fill scopes in repository files",

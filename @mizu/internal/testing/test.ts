@@ -46,7 +46,7 @@ export function test(path: string | ImportMeta, runner = _test) {
             let url = arguments[0]
             if (!URL.canParse(url)) {
               const { address: hostname, port } = testing.http.server?.address() as { address: string; port: number }
-              url = `http://${hostname}:${port}${arguments[0]}`
+              url = `http://${hostname.replace("0.0.0.0", "localhost")}:${port}${arguments[0]}`
             }
             return fetch(url, ...Array.from(arguments).slice(1))
           },
