@@ -144,7 +144,7 @@
       try {
         form.classList.add("pending")
         document.querySelector(".builder-error").classList.add("hidden")
-        const response = await fetch("/api/build", { method: "POST", body: JSON.stringify(data) })
+        const response = await fetch(location.hostname === "mizu.sh" ? "https://mizu.deno.dev/api/build" : "/api/build", { method: "POST", body: JSON.stringify(data) })
         if (response.status !== 200) {
           throw new Error(await response.text())
         }
