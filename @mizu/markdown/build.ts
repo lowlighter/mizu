@@ -9,8 +9,8 @@ import * as JSONC from "@std/jsonc"
 const config = fromFileUrl(import.meta.resolve("./deno.jsonc"))
 const { imports: { "@libs/markdown": dependency } } = JSONC.parse(await Deno.readTextFile(config)) as { imports: Record<string, string> }
 
-//
-const mapping = [] as string[]
+// Fetch markdown plugins
+const plugins = [] as string[]
 const vendor = await new Vendor({ directive: _markdown.name, meta: import.meta, name: "markdown" })
   .github({
     repository: "lowlighter/libs",
@@ -18,7 +18,7 @@ const vendor = await new Vendor({ directive: _markdown.name, meta: import.meta, 
     path: "markdown/plugins",
     globs: ["*.ts", "!(*_test.ts)", "!(mod.ts)"],
     callback(name) {
-      mapping.push(name)
+      plugins.push(name)
     },
   })
 
@@ -26,7 +26,7 @@ const vendor = await new Vendor({ directive: _markdown.name, meta: import.meta, 
 const imports = {
   "@libs/markdown": dependency,
   "@libs/markdown/plugins/____": `${dependency}/plugins`,
-  ...Object.fromEntries(mapping.map((name) => [`@libs/markdown/plugins/${name}`, `${dependency}/plugins/${name}`])),
+  ...Object.fromEntries(plugins.map((name) => [`@libs/markdown/plugins/${name}`, `${dependency}/plugins/${name}`])),
 }
 await Deno.writeTextFile(config, Deno.readTextFileSync(config).replace(/"imports": {[^}]+}/, `"imports": ${JSON.stringify(imports)}`))
 await command("deno", ["fmt", config], { stdout: null, stderr: null })

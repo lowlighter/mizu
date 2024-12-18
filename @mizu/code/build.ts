@@ -38,7 +38,7 @@ const imports = {
   "highlight.js": dependency,
   "highlight.js/lib/core": `${dependency}/lib/core`,
   "highlight.js/lib/languages/____": `${dependency}/lib/languages`,
-  ...Object.fromEntries(Object.entries(mapping).map(([name, language]) => [`highlight.js/lib/languages/${language}`, `${dependency}/lib/languages/${name}`])),
+  ...Object.fromEntries(Object.entries(mapping).map(([alias, language]) => [`highlight.js/lib/languages/${alias}`, `${dependency}/lib/languages/${language}`])),
 }
 await Deno.writeTextFile(config, Deno.readTextFileSync(config).replace(/"imports": {[^}]+}/, `"imports": ${JSON.stringify(imports)}`))
 await command("deno", ["fmt", config], { stdout: null, stderr: null })
