@@ -1,12 +1,14 @@
 // Imports
 import type { Arg } from "@libs/typing"
 import type { ClassMethodDef, DocNodeClass, DocNodeInterface, JsDoc, ParamDef, TsTypeDef } from "@deno/doc"
-import { fromFileUrl } from "@std/path"
+import { fromFileUrl, join } from "@std/path"
 import { pick } from "@std/collections"
 import * as JSONC from "@std/jsonc"
 import { bundle } from "@libs/bundle/ts"
 import { Logger } from "@libs/logger"
 import { doc } from "@deno/doc"
+import { expandGlob } from "@std/fs"
+import { escape } from "@std/regexp"
 import Mizu from "@mizu/render/server"
 const log = new Logger()
 
@@ -34,6 +36,27 @@ export const banner = [
   `${meta.license} license — ${meta.homepage}`,
 ].join("\n")
 
+/** Dynamic imports. */
+let dynamic = new Map<string, string>()
+for await (const { path } of expandGlob("**/deno.jsonc", { root: join(root, "@mizu"), includeDirs: false })) {
+  const { imports } = JSONC.parse(await Deno.readTextFile(path)) as { imports?: Record<string, string> }
+  if (imports) {
+    const templated = [] as string[]
+    for (let [key, value] of Object.entries(imports)) {
+      if (templated.some((template) => key.startsWith(template))) {
+        continue
+      }
+      if (key.endsWith("/____")) {
+        key = key.replace(/\/____$/, "/")
+        value = value.replace(/\/____$/, "/")
+        templated.push(key)
+      }
+      dynamic.set(key, value.replace(/^jsr:/, "https://esm.sh/jsr/").replace(/^npm:/, "https://esm.sh/"))
+    }
+  }
+}
+dynamic = new Map([...dynamic].sort((a, b) => b[0].length - a[0].length))
+
 /** Parse `deno.jsonc` of specified package. */
 function config(name: string, options: { parse: false }): URL
 function config(name: string, options?: { parse: true }): Promise<Record<PropertyKey, unknown>>
@@ -46,17 +69,29 @@ function config(name: string, { parse = true } = {} as { parse?: boolean }) {
 }
 
 /** Generate JS. */
-export function js(exported: string, options = {} as Pick<NonNullable<Arg<typeof bundle, 1>>, "format" | "banner" | "minify" | "overrides" | "builder" | "lockfile"> & { raw?: Record<PropertyKey, unknown> }) {
+export async function js(exported: string, options = {} as Pick<NonNullable<Arg<typeof bundle, 1>>, "format" | "banner" | "minify" | "overrides" | "builder" | "lockfile"> & { raw?: Record<PropertyKey, unknown>; standalone?: boolean }) {
   const packaged = exported.match(jsr)?.groups?.package ?? exported
   const url = import.meta.resolve(exported)
+  // Prepare options
   log.with({ package: packaged, url }).debug("bundling javascript")
-  if (options?.format === "iife") {
-    options.raw ??= {}
+  options.raw ??= {}
+  if (options.format === "iife") {
     options.raw.define ??= {}
     options.raw.target = "es2020"
     Object.assign(options.raw.define as Record<PropertyKey, string>, { ["globalThis.MIZU_IIFE"]: "true" })
   }
-  return bundle(new URL(url), { banner, ...options })
+  options.raw.external ??= []
+  if (!options.standalone) {
+    ;(options.raw.external as string[]).push(...dynamic.keys())
+  }
+  // Bundle and rewrite dynamic imports
+  let output = await bundle(new URL(url), { banner, ...options })
+  if (!options.standalone) {
+    for (const [imported, resolved] of dynamic) {
+      output = output.replaceAll(new RegExp(`(?<=await import\\(["\`])${escape(imported)}`, "g"), resolved)
+    }
+  }
+  return output
 }
 
 /** Render HTML. */
