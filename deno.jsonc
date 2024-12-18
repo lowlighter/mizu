@@ -109,7 +109,7 @@
     },
     "serve": {
       "description": "Serve static website locally",
-      "command": "deno serve --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write=$DENO_DIR --allow-run=$(deno task resolve:glob \"$DENO_DIR/**/@esbuild/**/esbuild\") --port=4649 --location=http://localhost:4649 www/serve.ts"
+      "command": "deno serve --allow-read --allow-env --allow-net --allow-sys=osRelease --allow-write --allow-run --port=4649 --location=http://localhost:4649 www/serve.ts"
     },
     "deploy": {
       "description": "Deploy static website on deno deploy",

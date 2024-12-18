@@ -8,7 +8,7 @@
   <p class="centered">
     This tool allows you to create a custom build of <em>mizu.js</em> for client-side rendering by cherry-picking the features you need.
   </p>
-  <form class="builder">
+  <form class="builder" autocomplete="off">
     <fieldset>
       <legend>Mizu</legend>
       <label>
@@ -41,7 +41,11 @@
       </label>
     </fieldset>
     <fieldset class="directives">
-      <legend>Directives</legend>
+      <legend>
+        <label *mustache>
+          <input type="checkbox" data-group-toggle="*"> Directives
+        </label>
+      </legend>
       <fieldset
         *for="const [section, directives] of Object.entries({
         'Rendering': ['mizu'],
@@ -58,8 +62,13 @@
         'Testing': ['test'],
         'Unstable': ['unstable/noop'],
       })"
+        :data-group="section.toLowerCase().replaceAll(/[^a-z0-9]/g, '-')"
       >
-        <legend *text="section"></legend>
+        <legend>
+          <label *mustache>
+            <input type="checkbox" :data-group-toggle="section.toLowerCase().replaceAll(/[^a-z0-9]/g, '-')"> {{ section }}
+          </label>
+        </legend>
         <label
           *for="directives"
           %http="`/about/directives/${$value}`"
@@ -69,7 +78,7 @@
           checked = (await fetch($response.url, { headers: { 'accept': 'application/json' } }).then(response => response.json())).preset.includes('client');
         "
         >
-          <input type="checkbox" name="directives" :value="$value" :checked="checked">
+          <input type="checkbox" name="directives" :data-group="section.toLowerCase().replaceAll(/[^a-z0-9]/g, '-')" :value="$value" :checked="checked">
           <span></span><br>
           <small></small>
         </label>
@@ -103,41 +112,61 @@
 </section>
 
 <script>
-  const form = document.querySelector("form.builder")
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault()
-    // Prepare data
-    const raw = new FormData(form)
-    const data = { format: "", console: [], directives: [], minify: false }
-    for (const [key, value] of raw) {
-      switch (key) {
-        case "console":
-        case "directives":
-          data[key].push(value)
-          break
-        case "minify":
-          data[key] = value === "on"
-          break
-        default:
-          data[key] = value
+  {
+    const form = document.querySelector("form.builder")
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault()
+      // Prepare data
+      const raw = new FormData(form)
+      const data = { format: "", console: [], directives: [], minify: false }
+      for (const [key, value] of raw) {
+        switch (key) {
+          case "console":
+          case "directives":
+            data[key].push(value)
+            break
+          case "minify":
+            data[key] = value === "on"
+            break
+          default:
+            data[key] = value
+        }
       }
-    }
-    // Generate build
-    try {
-      form.classList.add("pending")
-      document.querySelector(".builder-error").classList.add("hidden")
-      const response = await fetch("/api/build", { method: "POST", body: JSON.stringify(data) })
-      if (response.status !== 200) {
-        throw new Error(await response.text())
+      // Generate build
+      try {
+        form.classList.add("pending")
+        document.querySelector(".builder-error").classList.add("hidden")
+        const response = await fetch("/api/build", { method: "POST", body: JSON.stringify(data) })
+        if (response.status !== 200) {
+          throw new Error(await response.text())
+        }
+        const url = URL.createObjectURL(new Blob([await response.blob()], { type: "application/javascript;charset=utf-8" }))
+        globalThis.open(url, "_blank")
+      } catch (error) {
+        document.querySelector(".builder-error").classList.remove("hidden")
+        document.querySelector(".builder-error small").innerText = error.message
+        setTimeout(() => document.querySelector(".builder-error").classList.add("hidden"), 15 * 1000)
+      } finally {
+        form.classList.remove("pending")
       }
-      const url = URL.createObjectURL(new Blob([await response.blob()], { type: "application/javascript;charset=utf-8" }))
-      globalThis.open(url, "_blank")
-    } catch (error) {
-      document.querySelector(".builder-error").classList.remove("hidden")
-      document.querySelector(".builder-error small").innerText = error.message
-      setTimeout(() => document.querySelector(".builder-error").classList.add("hidden"), 15 * 1000)
-    } finally {
-      form.classList.remove("pending")
+    })
+    function refresh() {
+      form.querySelectorAll('input[type="checkbox"][data-group]').forEach((input) => {
+        const local = Array.from(form.querySelectorAll(`input[data-group="${input.dataset.group}"]`)).reduce((checked, input) => checked && input.checked, true)
+        form.querySelector(`input[data-group-toggle="${input.dataset.group}"]`).checked = local
+      })
+      const global = Array.from(form.querySelectorAll(`input[data-group]`)).reduce((checked, input) => checked && input.checked, true)
+      form.querySelector(`input[data-group-toggle="*"]`).checked = global
     }
-  })
+    // Add interactivity to group checkboxes
+    form.querySelectorAll('legend input[type="checkbox"][data-group-toggle]').forEach((input) => {
+      if (input.dataset.groupToggle === "*") {
+        input.addEventListener("change", () => form.querySelectorAll('input[type="checkbox"][data-group]').forEach((input) => input.checked = event.target.checked))
+      } else {
+        input.addEventListener("change", () => form.querySelectorAll(`input[data-group="${input.dataset.groupToggle}"]`).forEach((child) => child.checked = input.checked))
+      }
+    })
+    form.querySelectorAll('input[type="checkbox"]:is([data-group],[data-group-toggle])').forEach((input) => input.addEventListener("change", () => refresh()))
+    refresh()
+  }
 </script>
