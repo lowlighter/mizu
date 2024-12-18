@@ -1,8 +1,8 @@
 import type { testing } from "@libs/testing"
 import { expect, fn, test } from "@libs/testing"
-import { join } from "@std/path"
+import { join, resolve } from "@std/path"
 import { Server } from "./server.ts"
-const output = "/fake/path"
+const output = resolve("/fake/path")
 const encoder = new TextEncoder()
 const fs = { stat: fn(), mkdir: fn(), rm: fn(), read: fn(), readdir: fn(() => []), write: fn() } as testing
 
@@ -67,11 +67,11 @@ test("`Server.generate()` can retrieve content from local files", async () => {
   for (
     const { readdir, stat } of [
       {
-        readdir: (path: string) => ({ "/": ["a", "bar.html"], "/a": ["b"], "/a/b": ["foo.html"] })[path],
+        readdir: (path: string) => ({ "/": ["a", "bar.html"], "/a": ["b"], "/a/b": ["foo.html"] })[path.replaceAll("\\", "/")],
         stat: (path: string) => ({ isFile: path.includes("."), isDirectory: !path.includes(".") }),
       },
       {
-        readdir: (path: string) => ({ "/": [{ name: "a" }, { name: "bar.html" }], "/a": [{ name: "b" }], "/a/b": [{ name: "foo.html" }] })[path],
+        readdir: (path: string) => ({ "/": [{ name: "a" }, { name: "bar.html" }], "/a": [{ name: "b" }], "/a/b": [{ name: "foo.html" }] })[path.replaceAll("\\", "/")],
         stat: (path: string) => ({ isFile: () => path.includes("."), isDirectory: () => !path.includes(".") }),
       },
     ] as const
@@ -94,8 +94,8 @@ test("`Server.generate()` can retrieve content from local files", async () => {
         { directory: "/", render: { select: "p", context: { foo: "baz" } } },
       ],
     ])
-    expect(write).toHaveBeenCalledWith("/fake/path/a/b/foo.html", encoder.encode(`<p ~test.text="foo">bar</p>`))
-    expect(write).toHaveBeenCalledWith("/fake/path/bar.html", encoder.encode(`<p ~test.text="foo">baz</p>`))
+    expect(write).toHaveBeenCalledWith(resolve("/fake/path/a/b/foo.html"), encoder.encode(`<p ~test.text="foo">bar</p>`))
+    expect(write).toHaveBeenCalledWith(resolve("/fake/path/bar.html"), encoder.encode(`<p ~test.text="foo">baz</p>`))
   }
 }, { permissions: { read: true } })
 
