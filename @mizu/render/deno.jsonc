@@ -3,6 +3,8 @@
   "version": "0.8.0",
   "exports": {
     "./client": "./client/mod.ts",
-    "./server": "./server/mod.ts"
+    "./client/defaults": "./client/defaults.ts",
+    "./server": "./server/mod.ts",
+    "./server/defaults": "./server/defaults.ts"
   }
 }
