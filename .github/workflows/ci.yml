@@ -54,6 +54,10 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macos-latest
+        exclude:
+          # https://github.com/oven-sh/bun/issues/5835
+          - runtime: bun
+            os: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
