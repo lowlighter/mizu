@@ -24,9 +24,9 @@ export const _code = {
     // Load language syntax
     const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
     const language = (mapping as Record<PropertyKey, string>)[parsed.tag] ?? "plaintext"
-    const { hljs } = await import("./import/highlight.js/core.ts")
+    const { default: hljs } = await import("highlight.js/lib/core")
     if (!hljs.getLanguage(language)) {
-      const { syntax } = await import(`./import/highlight.js/languages/${language}.ts`)
+      const { default: syntax } = await import(`highlight.js/lib/languages/${language}`)
       hljs.registerLanguage(language, syntax)
     }
 

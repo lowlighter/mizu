@@ -33,7 +33,15 @@ export class Vendor {
 
   /** Vendor files from github repository. */
   async github(
-    { repository, branch, path, globs, destination = "", export: exporter, callback }: { repository: string; branch: string; path: string; globs?: string[]; destination?: string; export?: (name: string) => string; callback?: (name: string, _: { log: Logger }) => Promisable<void> },
+    { repository, branch, path, globs, destination = "", export: exporter, callback }: {
+      repository: string
+      branch: string
+      path: string
+      globs?: string[]
+      destination?: string
+      export?: (name: string) => string
+      callback?: (name: string, _: { log: Logger }) => Promisable<void>
+    },
   ) {
     // Clean directory
     if (exporter) {
