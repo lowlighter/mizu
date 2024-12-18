@@ -4,6 +4,7 @@ import { Logger } from "@libs/logger"
 import { parseArgs } from "@std/cli"
 import * as git from "@libs/git"
 import * as semver from "@std/semver"
+import { command } from "jsr:@libs/run@^3.0.2/command"
 const log = new Logger()
 
 /** Bump packages version and print changelogs. */
@@ -44,6 +45,9 @@ if (import.meta.main) {
   // Bump package versions
   for (const scope of [...scopes, "internal", "render"]) {
     log.with({ directive: scope }).debug("checking")
+    const sha = command("git", ["blame", "--line-porcelain", `@mizu/${scope}/deno.jsonc`], { sync: true, throw: true }).stdout.trim().slice(0, 40)
+    console.log(sha)
+    console.log(command("git", ["log", "--pretty=<<%H>> <<%at>> <<%an>> %s", `${sha}..`], { sync: true, throw: true }))
     const { version, changelog } = git.changelog(`@mizu/${scope}/deno.jsonc`, { write, scopes: [scope, "internal", ...(scope === "render" ? render.scopes : [])] })
     if (version.bump) {
       changelog.split("\n").map((line) => log.with({ directive: scope }).info(line))
