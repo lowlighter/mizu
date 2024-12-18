@@ -94,7 +94,7 @@
     },
     "ci:bump-versions": {
       "description": "Bump versions based on each package changes",
-      "command": "LOG_LEVEL=debug deno run --allow-read=@mizu --allow-write=$(deno task resolve:glob \"@mizu/**/deno.jsonc\") --allow-env --allow-run=git .github/tools/bump_versions.ts"
+      "command": "deno run --allow-read=@mizu --allow-write=$(deno task resolve:glob \"@mizu/**/deno.jsonc\") --allow-env --allow-run=git .github/tools/bump_versions.ts"
     },
     "ci:autogenerate": {
       "description": "Autogenerate files",
