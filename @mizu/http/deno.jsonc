@@ -6,6 +6,7 @@
     "./event": "./event/mod.ts"
   },
   "imports": {
-    "@libs/xml": "jsr:@libs/xml@6"
+    "@libs/xml/parse": "jsr:@libs/xml@6/parse",
+    "@libs/xml/stringify": "jsr:@libs/xml@6/stringify"
   }
 }

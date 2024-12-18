@@ -830,7 +830,7 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 }
 
 /** Builder */
-.builder .directives small {
+.builder .directives small, .builder input[type="checkbox"].padded small {
   margin-left: 1.75rem;
 }
 

@@ -5,13 +5,27 @@
     ".": "./mod.ts"
   },
   "tasks": {
-    // Build dynamic imports
     "build": {
-      "description": "Build dynamic imports",
-      "command": "deno run --allow-read --allow-net=api.github.com --allow-write=import/markdown/plugins build.ts"
+      "description": "Build dynamic imports and the list of mapped languages",
+      "command": "deno run --allow-read --allow-net=api.github.com --allow-write=deno.jsonc --allow-run=deno build.ts"
     }
   },
   "imports": {
-    "@libs/markdown": "jsr:@libs/markdown@1"
+    "@libs/markdown": "jsr:@libs/markdown@1",
+    "@libs/markdown/plugins/____": "jsr:@libs/markdown@1/plugins",
+    "@libs/markdown/plugins/anchors": "jsr:@libs/markdown@1/plugins/anchors",
+    "@libs/markdown/plugins/directives": "jsr:@libs/markdown@1/plugins/directives",
+    "@libs/markdown/plugins/emojis": "jsr:@libs/markdown@1/plugins/emojis",
+    "@libs/markdown/plugins/frontmatter": "jsr:@libs/markdown@1/plugins/frontmatter",
+    "@libs/markdown/plugins/gfm": "jsr:@libs/markdown@1/plugins/gfm",
+    "@libs/markdown/plugins/highlighting": "jsr:@libs/markdown@1/plugins/highlighting",
+    "@libs/markdown/plugins/linebreaks": "jsr:@libs/markdown@1/plugins/linebreaks",
+    "@libs/markdown/plugins/markers": "jsr:@libs/markdown@1/plugins/markers",
+    "@libs/markdown/plugins/math": "jsr:@libs/markdown@1/plugins/math",
+    "@libs/markdown/plugins/mermaid": "jsr:@libs/markdown@1/plugins/mermaid",
+    "@libs/markdown/plugins/ruby": "jsr:@libs/markdown@1/plugins/ruby",
+    "@libs/markdown/plugins/sanitize": "jsr:@libs/markdown@1/plugins/sanitize",
+    "@libs/markdown/plugins/uncomments": "jsr:@libs/markdown@1/plugins/uncomments",
+    "@libs/markdown/plugins/wikilinks": "jsr:@libs/markdown@1/plugins/wikilinks"
   }
 }
