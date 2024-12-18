@@ -119,9 +119,9 @@ jobs:
     name: Autogenerate
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    # needs:
-    #   - test
-    #   - codeql
+    needs:
+      - test
+      - codeql
     permissions:
       contents: write
     steps:
