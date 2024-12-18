@@ -37,7 +37,7 @@ vendor.log.ok("mapping.json generated")
 const imports = {
   "highlight.js": dependency,
   "highlight.js/lib/core": `${dependency}/lib/core`,
-  "highlight.js/lib/languages/____": `${dependency}/lib/languages/____`,
+  "highlight.js/lib/languages/____": `${dependency}/lib/languages`,
   ...Object.fromEntries(Object.entries(mapping).map(([name, language]) => [`highlight.js/lib/languages/${language}`, `${dependency}/lib/languages/${name}`])),
 }
 await Deno.writeTextFile(config, Deno.readTextFileSync(config).replace(/"imports": {[^}]+}/, `"imports": ${JSON.stringify(imports)}`))

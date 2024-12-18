@@ -13,7 +13,7 @@
   "imports": {
     "highlight.js": "npm:highlight.js@11",
     "highlight.js/lib/core": "npm:highlight.js@11/lib/core",
-    "highlight.js/lib/languages/____": "npm:highlight.js@11/lib/languages/____",
+    "highlight.js/lib/languages/____": "npm:highlight.js@11/lib/languages",
     "highlight.js/lib/languages/1c": "npm:highlight.js@11/lib/languages/1c",
     "highlight.js/lib/languages/abnf": "npm:highlight.js@11/lib/languages/abnf",
     "highlight.js/lib/languages/accesslog": "npm:highlight.js@11/lib/languages/accesslog",

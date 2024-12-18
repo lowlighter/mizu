@@ -48,7 +48,7 @@ for await (const { path } of expandGlob("**/deno.jsonc", { root: join(root, "@mi
       }
       if (key.endsWith("/____")) {
         key = key.replace(/\/____$/, "/")
-        value = value.replace(/\/____$/, "/")
+        value = `${value}/`
         templated.push(key)
       }
       dynamic.set(key, value.replace(/^jsr:/, "https://esm.sh/jsr/").replace(/^npm:/, "https://esm.sh/"))
