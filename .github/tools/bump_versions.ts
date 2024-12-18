@@ -1,12 +1,15 @@
 // Imports
 import type { Directive } from "@mizu/internal/engine"
 import { Logger } from "@libs/logger"
+import { parseArgs } from "@std/cli"
 import * as git from "@libs/git"
 import * as semver from "@std/semver"
 const log = new Logger()
 
 /** Bump packages version and print changelogs. */
 if (import.meta.main) {
+  const { write } = parseArgs(Deno.args, { boolean: ["write"] })
+
   // Compute scopes
   const scopes = [...await Array.fromAsync<{ name: string }>(Deno.readDir("@mizu"))]
     .filter(({ name }) => !["internal", "render", "coverage"].includes(name))
@@ -41,7 +44,7 @@ if (import.meta.main) {
   // Bump package versions
   for (const scope of [...scopes, "internal", "render"]) {
     log.with({ directive: scope }).debug("checking")
-    const { version, changelog } = git.changelog(`@mizu/${scope}/deno.jsonc`, { scopes: [scope, "internal", ...(scope === "render" ? render.scopes : [])] })
+    const { version, changelog } = git.changelog(`@mizu/${scope}/deno.jsonc`, { write, scopes: [scope, "internal", ...(scope === "render" ? render.scopes : [])] })
     if (version.bump) {
       changelog.split("\n").map((line) => log.with({ directive: scope }).info(line))
       log.with({ directive: scope }).ok(`${semver.format(version.current)} → ${semver.format(version.next)}`)

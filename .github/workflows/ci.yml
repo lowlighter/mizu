@@ -121,6 +121,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
+      - run: deno task ci:bump-versions
       - run: deno task ci:autogenerate
       - name: Run git push
         run: |
