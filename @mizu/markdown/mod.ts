@@ -20,10 +20,10 @@ export const _markdown = {
       return
     }
     const parsed = renderer.parseAttribute(attribute, typings, { modifiers: true })
-    const { Renderer } = await import("./import/markdown/renderer.ts")
+    const { Renderer } = await import("@libs/markdown")
     let markdown = Renderer
     if (parsed.tag) {
-      const plugins = await Promise.all(parsed.tag.split(",").map(async (name) => (await import(`./import/markdown/plugins/${name}.ts`)).default))
+      const plugins = await Promise.all(parsed.tag.split(",").map(async (name) => (await import(`@libs/markdown/plugins/${name}`)).default))
       markdown = await Renderer.with({ plugins }) as unknown as typeof markdown
     }
     let content = `${await renderer.evaluate(element, attribute.value || this.default, options)}`
