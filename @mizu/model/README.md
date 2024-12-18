@@ -25,6 +25,9 @@ Bind an [`<input>`](https://developer.mozilla.org/docs/Web/HTML/Element/input), 
 > [`<textarea>`](https://developer.mozilla.org/docs/Web/HTML/Element/textarea). For other elements, use the [`: attribute`](#bind) directive.
 
 > [!NOTE]
+> The `.nullish`, `.boolean`, `.number`, and `.string` modifiers are currently implemented as boolean modifiers, but future versions may change this behavior to offer more parsing features.
+
+> [!NOTE]
 > You can use the shorthand syntax `::="model"` instead of `:: value="model"`.
 
 ## Modifiers
