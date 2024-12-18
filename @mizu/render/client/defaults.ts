@@ -2,6 +2,7 @@
 import type { Directive } from "@mizu/internal/engine"
 import _mizu from "@mizu/mizu"
 import _bind from "@mizu/bind"
+import _code from "@mizu/code"
 import _custom_element from "@mizu/custom-element"
 import _eval from "@mizu/eval"
 import _event from "@mizu/event"
@@ -23,6 +24,7 @@ import _text from "@mizu/text"
 export default [
   _mizu,
   _bind,
+  _code,
   _custom_element,
   _eval,
   _event,
