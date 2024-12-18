@@ -175,7 +175,7 @@
     "@tools/": "./.github/tools/",
     "@actions/core": "npm:@actions/core@^1.11.1",
     "@astral/astral": "jsr:@astral/astral@~0.5",
-    "@libs/git": "jsr:@libs/git@^0.1.2",
+    "@libs/git": "jsr:@libs/git@^0.1.3",
     "@libs/run": "jsr:@libs/run@^3.0.2",
     "@std/cli": "jsr:@std/cli@^1.0.8",
     "@std/fs": "jsr:@std/fs@^1.0.6",
