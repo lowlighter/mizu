@@ -72,6 +72,21 @@ jobs:
       - run: deno task install:${{ matrix.runtime.name }}
       - run: deno task test:${{ matrix.runtime.name }}
 
+  codeql:
+    name: Code quality
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - quick-test
+    permissions:
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: typescript
+      - uses: github/codeql-action/analyze@v3
+
   preview:
     name: Preview
     runs-on: ubuntu-latest
@@ -106,6 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     # needs:
     #   - test
+    #   - codeql
     permissions:
       contents: write
     steps:
