@@ -57,6 +57,9 @@ body:
         - node
         - deno
         - bun
+        - linux
+        - macos
+        - windows
         - other
     validations:
       required: true
