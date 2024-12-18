@@ -4,13 +4,6 @@
   "exports": {
     ".": "./mod.ts"
   },
-  "tasks": {
-    // Build dynamic imports
-    "build": {
-      "description": "Build dynamic imports",
-      "command": "deno run --allow-read --allow-net=api.github.com --allow-write=import/markdown/plugins build.ts"
-    }
-  },
   "imports": {
     "@libs/markdown": "jsr:@libs/markdown@1"
   }
