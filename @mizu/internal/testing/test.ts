@@ -255,7 +255,6 @@ async function expect(operation: HTMLElement, testing: Testing) {
 async function http(operation: HTMLElement, testing: Testing) {
   const { promise, resolve } = Promise.withResolvers<void>()
   testing.http.server = createServer(async (incoming, outgoing) => {
-    // deno-lint-ignore no-console
     console.log("incoming...")
     // Parse incoming message into web standards objects
     const headers = new Headers(incoming.headers as HeadersInit)
