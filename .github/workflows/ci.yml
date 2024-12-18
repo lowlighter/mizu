@@ -19,8 +19,8 @@ jobs:
       - uses: denoland/setup-deno@v2
       - run: deno task lint
 
-  quick-test:
-    name: Quick test
+  test-1:
+    name: Test (1st pass)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,12 +30,12 @@ jobs:
       - run: deno task install:deno
       - run: deno task test:deno
 
-  test:
-    name: Test
+  test-2:
+    name: Test (2nd pass)
     runs-on: ${{ matrix.os }}
     needs:
       - lint
-      - quick-test
+      - test-1
     permissions:
       contents: read
     strategy:
@@ -78,12 +78,21 @@ jobs:
       - run: deno task install:${{ matrix.runtime.name }}
       - run: deno task test:${{ matrix.runtime.name }}
 
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs:
+      - test-1
+      - test-2
+    steps:
+      - run: sleep 0
+
   codeql:
     name: Code quality
     runs-on: ubuntu-latest
     needs:
       - lint
-      - quick-test
+      - test-1
     permissions:
       security-events: write
     steps:
@@ -98,7 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - lint
-      - quick-test
+      - test-1
     permissions:
       id-token: write
       contents: read
