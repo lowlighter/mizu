@@ -13,8 +13,12 @@ export default async function (request: Request) {
   if (request.method !== "POST") {
     return new Response(StatusText[Status.MethodNotAllowed], { status: Status.MethodNotAllowed, headers })
   }
-  if (!allowed.includes(new URL(`https://${request.headers.get("Host")}`).hostname)) {
-    return new Response("Custom builds may not be linked directly", { status: Status.Forbidden, headers })
+  if ((request.headers.has("Origin")) && (allowed.includes(new URL(request.headers.get("Origin")!).hostname))) {
+    headers.set("Access-Control-Allow-Origin", "*")
+    headers.set("Access-Control-Allow-Methods", "GET, POST")
+    headers.set("Access-Control-Allow-Headers", "Content-Type")
+  } else {
+    return new Response(`Visit "${request.headers.get("Origin") ?? "https://mizu.sh"}/build" to download a custom build`, { status: Status.Forbidden, headers })
   }
   try {
     const options = await request.json()
