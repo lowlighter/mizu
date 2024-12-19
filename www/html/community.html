@@ -1,5 +1,69 @@
+<section class="hero centered">
+  <img class="logo" src="/logo.png" alt="mizu.js" />
+  <div class="catchphrase">
+    Even more possibilities!
+  </div>
+</section>
 <section>
   <p class="flash attention">
     Community features will be available at a later date. Stay tuned!
+  </p>
+  <section %http="/html/_/matcha-banner.html" %response.html></section>
+  <div class="features">
+    <div>
+      <h2>
+        <i %http="https://lecoq.io/cdn/octicons/browser-16.svg" %response.swap></i>
+        Third-party custom elements
+      </h2>
+      <p>
+        Don't reinvent the wheel and reuse third-party custom elements for common UI components.
+      </p>
+      <small class="muted">
+        You can use <a href="/#custom-element"><code class="hljs-keyword">*custom-element</code></a> and <a href="/#http"><code>%http</code></a> directives to easily load third-party components.
+      </small>
+    </div>
+    <div>
+      <h2>
+        <i %http="https://lecoq.io/cdn/octicons/package-16.svg" %response.swap></i>
+        Third-party directives
+      </h2>
+      <p>
+        Augment your experience with third-party directives to quickly add functionality to your pages.
+      </p>
+    </div>
+    <div>
+      <h2>
+        <i %http="https://lecoq.io/cdn/octicons/ai-model-16.svg" %response.swap></i>
+        Community-driven
+      </h2>
+      <p>
+        <em>mizu.js</em> lets you reuse and share third-party integrations with the community.
+      </p>
+      <small class="muted">
+        These are not affiliated nor audited by <em>mizu.js</em> maintainers. Use them at your own risk.
+      </small>
+    </div>
+  </div>
+</section>
+<section>
+  <h1 id="instructions"><a href="#instructions">Third-party integrations</a></h1>
+  <div>
+    <p>
+      <em>mizu.js</em> allows you to import third-party custom elements and directives to quickly add new functionality.
+    </p>
+    <pre
+    >
+      <code *code[html]>
+        &lt;!-- Import custom element on the fly... --&gt;
+        &lt;template *custom-element="x-example" %http="https//mizu.sh/community/x-example" %response.html &gt;&lt;/template&gt;
+
+        &lt;!-- And use it in your page! --&gt;
+        &lt;x-example&gt;🌊 Yaa, mizu!&lt;/x-example&gt;
+      </code>
+    </pre
+    >
+  </div>
+  <p class="flash muted">
+    This section will be available at a later date. Stay tuned!
   </p>
 </section>
