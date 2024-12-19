@@ -46,7 +46,7 @@ export function test(path: string | ImportMeta, runner = _test) {
             let url = arguments[0]
             if (!URL.canParse(url)) {
               const { address: hostname, port } = testing.http.server?.address() as { address: string; port: number }
-              url = `http://${hostname.replace("0.0.0.0", "localhost")}:${port}${arguments[0]}`
+              url = `http://${hostname.replace("0.0.0.0", "127.0.0.1")}:${port}${arguments[0]}`
             }
             return fetch(url, ...Array.from(arguments).slice(1))
           },
@@ -80,7 +80,7 @@ export function test(path: string | ImportMeta, runner = _test) {
       } finally {
         await testing.http.server?.close()
       }
-    }, { permissions: { net: ["localhost", "0.0.0.0"] } })
+    }, { permissions: { net: ["localhost", "0.0.0.0", "127.0.0.1"] } })
   })
 }
 
@@ -288,7 +288,7 @@ async function http(operation: HTMLElement, testing: Testing) {
   // Start server and update global location
   testing.http.server.listen(0, "0.0.0.0", () => {
     const { address: hostname, port } = testing.http.server?.address() as { address: string; port: number }
-    globalThis.location = Object.assign(new URL(`http://${hostname.replace("0.0.0.0", "localhost")}:${port}`), {
+    globalThis.location = Object.assign(new URL(`http://${hostname.replace("0.0.0.0", "127.0.0.1")}:${port}`), {
       ancestorOrigins: testing.renderer.window.location.ancestorOrigins,
       assign: testing.renderer.window.location.assign,
       replace: testing.renderer.window.location.replace,

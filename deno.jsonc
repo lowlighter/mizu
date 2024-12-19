@@ -117,8 +117,16 @@
       "dependencies": ["build:www"]
     },
     "reinstall": {
+      "description": "Alias for task reinstall:deno",
+      "command": "sleep 0"
+    },
+    "reinstall:deno": {
       "description": "Clean and reinstall dependencies (deno)",
       "command": "rm -rf node_modules deno.lock package.json package-lock.json && deno install"
+    },
+    "reinstall:node": {
+      "description": "Clean and reinstall dependencies (node)",
+      "command": "rm -rf node_modules package-lock.json && npm install"
     },
     // Miscellaneous tasks
     "repo:fill-scopes": {

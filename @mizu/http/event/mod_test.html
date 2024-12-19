@@ -13,10 +13,11 @@
   </render>
   <script>
     rendered.querySelector("div").dispatchEvent(new Event("event"))
-  await delay(100)
-  expect(http.request).toBeInstanceOf(Request)
-  expect(context.event).toBeInstanceOf(Event)
-  expect(context.content).toBe("bar")
+  await retry(() => {
+    expect(http.request).toBeInstanceOf(Request)
+    expect(context.event).toBeInstanceOf(Event)
+    expect(context.content).toBe("bar")
+  })
   </script>
 </test>
 
@@ -33,13 +34,14 @@
   </render>
   <script>
     rendered.querySelector("div").dispatchEvent(new Event("event"))
-  await delay(100)
-  expect(http.request).toBeInstanceOf(Request)
-  expect(http.request.method).toBe("OPTIONS")
-  expect(http.request.headers.get("x-foo")).toBe("bar")
-  expect(http.request.received.body).toBe("foobar")
-  expect(context.event).toBeInstanceOf(Event)
-  expect(context.content).toBe("bar")
+  await retry(() => {
+    expect(http.request).toBeInstanceOf(Request)
+    expect(http.request.method).toBe("OPTIONS")
+    expect(http.request.headers.get("x-foo")).toBe("bar")
+    expect(http.request.received.body).toBe("foobar")
+    expect(context.event).toBeInstanceOf(Event)
+    expect(context.content).toBe("bar")
+  })
   </script>
 </test>
 
@@ -57,9 +59,10 @@
   <script>
     rendered.querySelector("p").dispatchEvent(new Event("a"))
   rendered.querySelector("p").dispatchEvent(new Event("b"))
-  await delay(100)
-  expect(context.a).toBe(1)
-  expect(context.b).toBe(1)
+  await retry(() => {
+    expect(context.a).toBe(1)
+    expect(context.b).toBe(1)
+  })
   </script>
 </test>
 
@@ -77,13 +80,15 @@
   </render>
   <script>
     rendered.querySelector("p").dispatchEvent(new Event("a"))
-  await delay(100)
-  expect(context.a).toBe("foo")
-  expect(context.b).toBeNull()
-  rendered.querySelector("p").dispatchEvent(new Event("b"))
-  await delay(100)
-  expect(context.a).toBe("foo")
-  expect(context.b).toBe("bar")
+  await retry(() => {
+    expect(context.a).toBe("foo")
+    expect(context.b).toBeNull()
+    rendered.querySelector("p").dispatchEvent(new Event("b"))
+  })
+  await retry(() => {
+    expect(context.a).toBe("foo")
+    expect(context.b).toBe("bar")
+  })
   </script>
 </test>
 
