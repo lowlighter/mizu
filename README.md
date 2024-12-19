@@ -1,4 +1,4 @@
-<p align="center"><a href="https://mizu.sh"><img src="https://mizu.sh/logo.png" width="400"></a></p>
+<p align="center"><a href="https://mizu.sh"><img src="https://mizu.sh/minu.png" width="400"></a></p>
 
 <p align="center">
   <a href="https://mizu.sh">

@@ -337,14 +337,8 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 
 /* Demo */
 .demo {
-  transition: opacity var(--tr-duration);
-  opacity: 1;
   background: transparent;
   margin: 2rem 0 2rem;
-}
-
-.demo.loading {
-  opacity: 0;
 }
 
 .demo .dock {
@@ -387,6 +381,16 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
 .demo .mockups {
   position: relative;
   height: 600px;
+}
+
+.demo .dock, .demo [data-demo-tab] {
+  transition: opacity var(--tr-duration);
+  opacity: 1;
+}
+
+.demo.loading .dock, .demo.loading [data-demo-tab] {
+  opacity: 0.25;
+  cursor: wait !important;
 }
 
 /* App mockups. */
