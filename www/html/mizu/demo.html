@@ -119,6 +119,15 @@
       <img :src="`https://lecoq.io/cdn/logos/${$value}.svg`" :alt="$value" />
     </div>
   </div>
+  <p class="muted centered">
+    Switch between browsers and runtimes using the icons above.<br>
+    Change the current example by clicking on the tabs in the mockups.
+  </p>
+  <div class="flash accent centered">
+    <p>
+      Try out our <a href="/playground"><b><u>online interactive playground</u></b></a> and start experimenting with <em>mizu.js</em> now!
+    </p>
+  </div>
 </div>
 <script>
   window.addEventListener("load", function () {
@@ -147,7 +156,3 @@
     document.querySelector(".demo").classList.remove("loading")
   })
 </script>
-<div class="flash accent">
-  <p>Want to see <em>mizu.js</em> in action?</p>
-  <p>Dive into our <a href="/playground"><b>interactive playground</b></a> and start experimenting!</p>
-</div>

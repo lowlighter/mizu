@@ -18,7 +18,7 @@
     <header %http="/html/_/header.html" %response.html></header>
     <template *for="['directive', 'example', 'import', 'modifier', 'note', 'restriction', 'tbd', 'variable', 'warn']" *custom-element="`mizu-${$value}`" %http="`/components/mizu-${$value}.html`" %response.html></template>
     <main>
-      <section *if="page === 'index'" *for="['logo', 'demo', 'features', 'faq', 'usage', 'concepts', 'directives', 'api', 'tbd']" %http="`/html/mizu/${$value}.html`" %response.html></section>
+      <section *if="page === 'index'" *for="['logo', 'demo', 'features', 'faq', 'directives', 'usage', 'concepts', 'api', 'tbd']" %http="`/html/mizu/${$value}.html`" %response.html></section>
       <div *else %http="`/html/${page}.html`" %response.html></div>
     </main>
     <aside *if="page === 'index'" data-expandable="☰ Quick navigation">
