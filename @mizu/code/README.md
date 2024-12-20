@@ -24,7 +24,7 @@ Set element's [`innerHTML`](https://developer.mozilla.org/docs/Web/API/Element/i
 
 ### `[string]`
 
-Any supported [language identifier or alias](https://highlightjs.readthedocs.io/latest/supported-languages.html).
+Any supported [language identifier or alias](https://highlightjs.readthedocs.io/en/latest/supported-languages.html).
 
 ### `.trim[boolean=true]`
 

@@ -36,7 +36,7 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    *
    * It is used as a hint for {@linkcode Renderer.parseAttribute()} to strip prefix from {@linkcode https://developer.mozilla.org/docs/Web/API/Attr/name | Attr.name} when parsing the directive.
    *
-   * If {@linkcode Directive.name} is a `RegExp`, this property shoud be specified.
+   * If {@linkcode Directive.name} is a `RegExp`, this property should be specified.
    *
    * ```ts
    * const foo = {
