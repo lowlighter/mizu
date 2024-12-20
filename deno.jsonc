@@ -1,7 +1,7 @@
 {
   "description": "Lightweight HTML templating library for any-side rendering",
   "keywords": ["html", "templating", "ssr", "csr", "ssg", "reactive"],
-  "license": "AGPLv3",
+  "license": "MIT",
   "author": "Simon Lecoq (@lowlighter)",
   "funding": "https://github.com/sponsors/lowlighter",
   "homepage": "https://github.com/lowlighter/mizu",
