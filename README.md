@@ -106,13 +106,9 @@ await Mizu.render(`<div *text="foo"></div>`, { context: { foo: "🌊 Yaa, mizu!"
 # 📜 License
 
 ```
-This project is dual-licensed.
+MIT License
 
-You may use this project under the terms of the MIT License for non-commercial
-projects OR as long as you are sponsoring this project through GitHub sponsors
-with a monthly minimum donation of 1 (one) dollar using the link below:
-
-    GitHub sponsors, Simon Lecoq: <https://github.com/sponsors/lowlighter>
-
-You may use this project free of charge under the terms of the GNU Affero v3.
+Copyright (c) 2024 Simon Lecoq
 ```
+
+[`💕 Support mizu.js develoment`](https://github.com/sponsors/lowlighter)
