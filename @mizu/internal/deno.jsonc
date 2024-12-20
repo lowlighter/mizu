@@ -1,6 +1,6 @@
 {
   "name": "@mizu/internal",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "exports": {
     "./engine": "./engine/mod.ts",
     "./testing": "./testing/mod.ts",
