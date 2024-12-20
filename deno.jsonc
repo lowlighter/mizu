@@ -118,7 +118,8 @@
     },
     "reinstall": {
       "description": "Alias for task reinstall:deno",
-      "command": "sleep 0"
+      "command": "sleep 0",
+      "dependencies": ["reinstall:deno"]
     },
     "reinstall:deno": {
       "description": "Clean and reinstall dependencies (deno)",
