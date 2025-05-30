@@ -128,7 +128,7 @@ jobs:
       - run: deno task ci:setup-deno-deploy
         id: setup_github_actions
       - run: deno task install:deno
-      - uses: denoland/deployctl@v1
+      - uses: lowlighter/deployctl@v1
         id: preview
         # https://github.com/denoland/deployctl/issues/350
         with:
