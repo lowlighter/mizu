@@ -53,6 +53,7 @@ jobs:
             version: 2.x
           - name: node
             version: 22.x
+            if: matrix.os != 'windows-latest'
           - name: bun
             # https://github.com/oven-sh/setup-bun/issues/37
             # version: 1.x

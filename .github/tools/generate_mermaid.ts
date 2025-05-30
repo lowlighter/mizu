@@ -84,7 +84,7 @@ if (import.meta.main) {
 
 /** Render a mermaid diagram. */
 async function mermaid(content: string, options?: { cache?: string }) {
-  await using browser = await launch({ cache: options?.cache, args: options?.cache ? [`--user-data-dir=${options.cache}`] : [] })
+  await using browser = await launch({ cache: options?.cache, args: options?.cache ? [`--user-data-dir=${options.cache}`, "--no-sandbox"] : ["--no-sandbox"] })
   await using page = await browser.newPage(undefined, { sandbox: true })
   page.setContent(`
     <!DOCTYPE html>
