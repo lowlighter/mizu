@@ -53,7 +53,6 @@ jobs:
             version: 2.x
           - name: node
             version: 22.x
-            if: matrix.os != 'windows-latest'
           - name: bun
             # https://github.com/oven-sh/setup-bun/issues/37
             # version: 1.x
@@ -64,6 +63,11 @@ jobs:
             runtime:
               name: bun
               version: latest
+          # https://github.com/denoland/deno/issues/25867
+          - os: windows-latest
+            runtime:
+              name: node
+              version: 22.x
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
