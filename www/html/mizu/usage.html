@@ -31,16 +31,13 @@
     <p>
       This setup requires you to import and start <em>mizu.js</em> manually, allowing customization of the rendering process, such as setting the initial context and loading additional directives.
     </p>
-    <pre
-      class="usage-snippet"
-    >
+    <pre class="usage-snippet">
 <code *clean.spaces>
       <span *code[html]>&lt;script type="module"&gt;</span><br>
       &nbsp;&nbsp;<span *code[ts]>import Mizu from "https://mizu.sh/client.mjs"</span><br>
       &nbsp;&nbsp;<span *code[ts]>await Mizu.render(document.body, { context: { foo: "🌊 Yaa, mizu!" } })</span><br>
       <span *code[html]>&lt;/script&gt;</span>
-    </code></pre
-    >
+    </code></pre>
   </section>
   <section %http="/html/_/matcha-banner.html" %response.html></section>
 </section>
