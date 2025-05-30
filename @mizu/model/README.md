@@ -15,7 +15,8 @@ Bind an [`<input>`](https://developer.mozilla.org/docs/Web/HTML/Element/input), 
 
 ## Notes
 
-> [!WARNING] [`<input type="checkbox">`](https://developer.mozilla.org/docs/Web/HTML/Element/input/checkbox) and [`<select multiple>`](https://developer.mozilla.org/docs/Web/HTML/Element/select#multiple) elements will bind to an array of values.
+> [!WARNING]
+> [`<input type="checkbox">`](https://developer.mozilla.org/docs/Web/HTML/Element/input/checkbox) and [`<select multiple>`](https://developer.mozilla.org/docs/Web/HTML/Element/select#multiple) elements will bind to an array of values.
 
 > [!WARNING]
 > Using a modeled value within [`@input` or `@change`](#event) expressions can cause precedence issues, as the model relies on these events to update. To avoid this, listen to the `::` event, which is always triggered after the model has been updated.
@@ -40,7 +41,8 @@ Change the [`Event`](https://developer.mozilla.org/docs/web/api/event) that trig
 ### `.name[boolean]`
 
 Automatically set the [input `name` attribute](https://developer.mozilla.org/docs/Web/HTML/Element/input#name) based on the attribute's value _(e.g., `<input ::.name= "foo">` becomes `<input name= "foo">`)_. The default is `true` for
-[`<input type="radio">`](https://developer.mozilla.org/docs/Web/HTML/Element/input/radio) and [`<input type="checkbox">`](https://developer.mozilla.org/docs/Web/HTML/Element/input/checkbox), and `false` for all other elements.
+[`<input type="radio">`](https://developer.mozilla.org/docs/Web/HTML/Element/input/radio) and [`<input
+        type="checkbox">`](https://developer.mozilla.org/docs/Web/HTML/Element/input/checkbox), and `false` for all other elements.
 
 ### `.value[boolean]`
 
