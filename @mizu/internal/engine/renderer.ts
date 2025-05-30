@@ -254,7 +254,7 @@ export class Renderer {
       const cache = (!this.#expressions.has(these) ? this.#expressions.set(these, {}) : this.#expressions).get(these)!
       cache[expression] = new AsyncFunction(
         this.#internal,
-        `with(${this.#internal}.state){with(${this.#internal}.context){${this.#internal}.result=${expression};if(${this.#internal}.args)${this.#internal}.result=${this.#internal}.result?.call?.(this,...${this.#internal}.args)}}return ${this.#internal}.result`,
+        `with(${this.#internal}.state){with(${this.#internal}.context){${this.#internal}.result=${expression};if(${this.#internal}.args&&typeof ${this.#internal}.result==='function')${this.#internal}.result=${this.#internal}.result?.call?.(this,...${this.#internal}.args)}}return ${this.#internal}.result`,
       )
     }
     const compiled = this.#expressions.get(these)![expression]
