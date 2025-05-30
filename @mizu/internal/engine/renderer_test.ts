@@ -140,6 +140,7 @@ test("`Renderer.evaluate()` evaluates expressions with callables", async () => {
   expect(foo).not.toBeCalled()
   await expect(renderer.evaluate(null, "foo", { context: new Context({ foo }), args: [true] })).resolves.toBe(true)
   expect(foo).toBeCalledWith(true)
+  await expect(renderer.evaluate(null, "foo", { context: new Context({ foo: false }), args: [true] })).resolves.toBe(false)
 })
 
 test("`Renderer.evaluate()` rejects if the `Renderer.internal` identifier is used", async () => {
