@@ -34,10 +34,10 @@ const renderer = await new Renderer(null as any, { directives: [] }).ready
 
  * Both of these examples are equivalent:
  * ```ts
- * console.assert(await evaluate("foo.default", null, { imports: { foo: "data:application/typescript,export default true" }}) === true)
+ * console.assert(await evaluate("foo.default", null, { imports: { foo: "data:application/javascript,export default true" }}) === true)
  * ```
  * ```ts
- * const foo = await import("data:application/typescript,export default true")
+ * const foo = await import("data:application/javascript,export default true")
  * console.assert(await evaluate("foo.default", { foo }))
  * ```
  *

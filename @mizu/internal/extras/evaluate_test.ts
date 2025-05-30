@@ -15,5 +15,5 @@ test("`evaluates()` evaluates expressions in function context", async () => {
 })
 
 test("`evaluates()` supports `imports` options", async () => {
-  await expect(evaluate("foo.default", null, { imports: { foo: "data:application/typescript,export default 'bar'" } })).resolves.toBe("bar")
+  await expect(evaluate("foo.default", null, { imports: { foo: "data:application/javascript,export default 'bar'" } })).resolves.toBe("bar")
 })
