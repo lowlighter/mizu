@@ -233,3 +233,5 @@ Consume body using [`response.text()`](https://developer.mozilla.org/docs/Web/AP
 although if `.consume[text]` is set, swapped content will be escaped.
 
 Any non-directive HTML attributes on the target will be applied to the swapped content elements.
+
+This modifier automatically triggers a re-render of the replaced element's parent.
