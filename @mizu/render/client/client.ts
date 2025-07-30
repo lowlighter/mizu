@@ -17,12 +17,9 @@ export class Client {
   static defaults = {
     window: globalThis.window,
     directives: defaults,
-    // x@ts-expect-error: custom builder
     context: globalThis.MIZU_CUSTOM_DEFAULTS_CONTEXT ?? {},
-    // x@ts-expect-error: custom builder
     // deno-lint-ignore no-console
     warn: globalThis.MIZU_CUSTOM_DEFAULTS_WARN ?? console.warn,
-    // x@ts-expect-error: custom builder
     debug: globalThis.MIZU_CUSTOM_DEFAULTS_DEBUG ?? false,
   } as unknown as Required<ClientOptions>
 
