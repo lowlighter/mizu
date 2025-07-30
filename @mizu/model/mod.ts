@@ -21,18 +21,23 @@ export const typings = {
 } as const
 
 /** `::value` directive. */
-export const _model = {
+export const _model: Directive<{
+  Name: RegExp
+  Cache: WeakMap<HTMLElement, WeakMap<HTMLElement, { model: Record<"read" | "sync", Nullable<callback>>; event: Nullable<string>; init: boolean }>>
+  Typings: typeof typings
+  Default: true
+}> = {
   name: /^::(?<value>)$/,
   prefix: "::",
   phase: Phase.ATTRIBUTE_MODEL_VALUE,
   typings,
   default: "value",
-  init(renderer) {
+  init(this: typeof _model, renderer) {
     if (!renderer.cache(this.name)) {
-      renderer.cache<Cache<typeof _model>>(this.name, new WeakMap())
+      renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
     }
   },
-  async execute(renderer, element, { attributes: [attribute], cache, ...options }) {
+  async execute(this: typeof _model, renderer, element, { attributes: [attribute], cache, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -133,7 +138,7 @@ export const _model = {
 
     await cached.model.sync()
   },
-} as Directive<WeakMap<HTMLElement, WeakMap<HTMLElement, { model: Record<"read" | "sync", Nullable<callback>>; event: Nullable<string>; init: boolean }>>, typeof typings> & { default: string }
+}
 
 /** Default exports. */
 export default [_model]

@@ -17,12 +17,15 @@ export const typings = {
 } as const
 
 /** `~test` directive. */
-export const _test = {
+export const _test: Directive<{
+  Name: RegExp
+  Typings: typeof typings
+}> = {
   name: /^~test/,
   phase: Phase.TESTING,
   typings,
   multiple: true,
-  async execute(renderer, element, { attributes, ...options }) {
+  async execute(this: typeof _test, renderer, element, { attributes, ...options }) {
     const returned = {} as NonVoid<Awaited<ReturnType<NonNullable<Directive["execute"]>>>>
     for (const attribute of attributes) {
       const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
@@ -71,7 +74,7 @@ export const _test = {
     }
     return returned
   },
-} as Directive<null, typeof typings> & { name: RegExp }
+}
 
 /** `~test` directives. */
 const _tests = Object.entries(Phase)

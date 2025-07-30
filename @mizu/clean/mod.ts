@@ -26,14 +26,17 @@ export const typings = {
 } as const
 
 /** `*clean` directive. */
-export const _clean = {
+export const _clean: Directive<{
+  Cache: { directives: WeakSet<HTMLElement>; templates: WeakSet<HTMLElement>; comments: WeakSet<HTMLElement> }
+  Typings: typeof typings
+}> = {
   name: "*clean",
   phase: Phase.CONTENT_CLEANING,
   typings,
-  init(renderer) {
-    renderer.cache<Cache<typeof _clean>>(this.name, { directives: new WeakSet(), templates: new WeakSet(), comments: new WeakSet() })
+  init(this: typeof _clean, renderer) {
+    renderer.cache<Cache<typeof this>>(this.name, { directives: new WeakSet(), templates: new WeakSet(), comments: new WeakSet() })
   },
-  execute(renderer, element, { attributes: [attribute], cache }) {
+  execute(this: typeof _clean, renderer, element, { attributes: [attribute], cache }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -81,7 +84,7 @@ export const _clean = {
       }
     })
   },
-  cleanup(renderer, _element, { cache }) {
+  cleanup(this: typeof _clean, renderer, _element, { cache }) {
     // Cleanup directives
     const element = _element as HTMLElement
     if (cache.directives.has(element)) {
@@ -117,7 +120,7 @@ export const _clean = {
       cache.templates.delete(element)
     }
   },
-} as Directive<{ directives: WeakSet<HTMLElement>; templates: WeakSet<HTMLElement>; comments: WeakSet<HTMLElement> }, typeof typings>
+}
 
 /** Default exports. */
 export default _clean

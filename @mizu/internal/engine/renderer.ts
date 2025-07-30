@@ -52,20 +52,20 @@ export class Renderer {
    * ```ts
    * import { Window } from "@mizu/internal/vdom"
    *
-   * const directive = {
+   * const directive: Directive<{ Cache: WeakSet<HTMLElement | Comment> }> = {
    *   name: "*foo",
    *   phase: Phase.TESTING,
-   *   init(renderer) {
+   *   init(this: typeof directive, renderer) {
    *     if (!renderer.cache(this.name)) {
-   *       renderer.cache<Cache<typeof directive>>(this.name, new WeakSet())
+   *       renderer.cache<Cache<typeof this>>(this.name, new WeakSet())
    *     }
    *   },
-   *   setup(renderer, element, { cache }) {
+   *   setup(this: typeof directive, renderer, element, { cache }) {
    *      console.assert(cache instanceof WeakSet)
    *      console.assert(renderer.cache(directive.name) instanceof WeakSet)
    *      cache.add(element)
    *   }
-   * } as Directive<WeakSet<HTMLElement | Comment>> & { name: string }
+   * }
    *
    * const renderer = await new Renderer(new Window(), { directives: [directive] }).ready
    * const element = renderer.createElement("div", { attributes: { "*foo": "" } })
@@ -82,13 +82,13 @@ export class Renderer {
    * ```ts
    * import { Window } from "@mizu/internal/vdom"
    *
-   * const directive = {
+   * const directive: Directive<{ Cache: WeakSet<HTMLElement | Comment> }> = {
    *   name: "*foo",
    *   phase: Phase.TESTING,
-   *   init(renderer) {
+   *   init(this: typeof directive, renderer) {
    *     renderer.cache(this.name, new WeakSet())
    *   },
-   * } as Directive<WeakSet<HTMLElement | Comment>> & { name: string }
+   * }
    *
    * const renderer = await new Renderer(new Window(), { directives: [directive] }).ready
    * console.assert(renderer.cache(directive.name) instanceof WeakSet)
@@ -144,16 +144,16 @@ export class Renderer {
    * import { Window } from "@mizu/internal/vdom"
    * const renderer = await new Renderer(new Window()).ready
    *
-   * const directive = {
+   * const directive: Directive = {
    *   name: "*foo",
    *   phase: Phase.TESTING
-   * } as Directive & { name: string }
+   * }
    *
    * await renderer.load([directive, import.meta.resolve("@mizu/test")])
    * console.assert(renderer.directives.includes(directive))
    * ```
    */
-  async load(directives: Arrayable<Arrayable<Partial<Directive> | string>>): Promise<this> {
+  async load(directives: Arrayable<Arrayable<Partial<Omit<Directive, "prefix"> & { prefix?: string }> | string>>): Promise<this> {
     const loaded = (await Promise.all<Arrayable<Directive>>(([directives].flat(Infinity) as Array<Directive | string>)
       .map(async (directive) => typeof directive === "string" ? (await import(directive)).default : directive)))
       .flat(Infinity) as Array<Directive>
@@ -823,7 +823,7 @@ export class Renderer {
    * ```
    */
   getAttributes(element: Optional<HTMLElement | Comment>, names: Arrayable<string> | RegExp, options: { first: true }): Nullable<Attr>
-  getAttributes(element: Optional<HTMLElement | Comment>, names: Arrayable<string> | RegExp, { first = false } = {}): Attr[] | Nullable<Attr> {
+  getAttributes(element: Optional<HTMLElement | Comment>, names: Arrayable<string> | RegExp, { first = false } = {}) {
     const attributes = []
     if (element && (this.isHtmlElement(element))) {
       if (!(names instanceof RegExp)) {

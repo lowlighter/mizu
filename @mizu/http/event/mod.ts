@@ -6,7 +6,11 @@ export type * from "@mizu/internal/engine"
 export type { _event, typings as _event_typings } from "@mizu/event"
 
 /** `%@event` directive. */
-export const _http_event = {
+export const _http_event: Directive<{
+  Name: RegExp
+  Cache: Cache<typeof _event>
+  Default: true
+}> = {
   name: /^%@(?<event>)/,
   prefix: "%@",
   phase: Phase.HTTP_INTERACTIVITY,
@@ -18,11 +22,11 @@ export const _http_event = {
       ..._response_typings.modifiers,
     },
   },
-  init(renderer) {
+  init(this: typeof _http_event, renderer) {
     renderer.cache(this.name, new WeakMap())
     renderer.cache(`#${this.name}`, new WeakMap())
   },
-  async execute(renderer, element) {
+  async execute(this: typeof _http_event, renderer, element) {
     if (renderer.isComment(element)) {
       return
     }
@@ -37,7 +41,7 @@ export const _http_event = {
     }
     await _event.execute.call(this, renderer, element, { ...arguments[2], _callback: cached.get(element)! })
   },
-} as Directive<Cache<typeof _event>>
+}
 
 /** Default exports. */
 export default [_header, _body, _http, _response, _http_event]

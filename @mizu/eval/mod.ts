@@ -3,19 +3,21 @@ import { type Cache, type Directive, Phase } from "@mizu/internal/engine"
 export type * from "@mizu/internal/engine"
 
 /** `*eval` directive. */
-export const _eval = {
+export const _eval: Directive<{
+  Cache: WeakMap<HTMLElement, Attr>
+}> = {
   name: "*eval",
   phase: Phase.CUSTOM_PROCESSING,
-  init(renderer) {
-    renderer.cache<Cache<typeof _eval>>(this.name, new WeakMap())
+  init(this: typeof _eval, renderer) {
+    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
   },
-  execute(renderer, element, { attributes: [attribute], cache }) {
+  execute(this: typeof _eval, renderer, element, { attributes: [attribute], cache }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
     cache.set(element, attribute)
   },
-  async cleanup(renderer, element, { cache, ...options }) {
+  async cleanup(this: typeof _eval, renderer, element, { cache, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -25,7 +27,7 @@ export const _eval = {
       await renderer.evaluate(element, attribute.value, { ...options, args: [] })
     }
   },
-} as Directive<WeakMap<HTMLElement, Attr>>
+}
 
 /** Default exports. */
 export default _eval

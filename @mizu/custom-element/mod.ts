@@ -11,14 +11,17 @@ export const typings = {
 } as const
 
 /** `*custom-element` directive. */
-export const _custom_element = {
+export const _custom_element: Directive<{
+  Cache: WeakMap<HTMLElement, Nullable<Record<PropertyKey, HTMLSlotElement>>>
+  Typings: typeof typings
+}> = {
   name: "*custom-element",
   phase: Phase.CUSTOM_ELEMENT,
   typings,
-  init(renderer) {
-    renderer.cache<Cache<typeof _custom_element>>(this.name, new WeakMap())
+  init(this: typeof _custom_element, renderer) {
+    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
   },
-  setup(renderer, element, { cache }) {
+  setup(this: typeof _custom_element, renderer, element, { cache }) {
     if ((renderer.isHtmlElement(element)) && (cache.get(element))) {
       return {
         state: {
@@ -31,7 +34,7 @@ export const _custom_element = {
       }
     }
   },
-  async execute(renderer, element, { cache, attributes: [attribute], ...options }) {
+  async execute(this: typeof _custom_element, renderer, element, { cache, attributes: [attribute], ...options }) {
     // Validate element and custom element name
     if (!renderer.isHtmlElement(element)) {
       return
@@ -98,14 +101,14 @@ export const _custom_element = {
     )
     return { final: true }
   },
-} as Directive<WeakMap<HTMLElement, Nullable<Record<PropertyKey, HTMLSlotElement>>>, typeof typings> & { name: string }
+}
 
 /** `#slot` directive. */
-export const _slot = {
+export const _slot: Directive<{ Name: RegExp }> = {
   name: /^#(?<slot>)/,
   prefix: "#",
   phase: Phase.META,
-} as Directive & { prefix: string }
+}
 
 /** Default exports. */
 export default [_custom_element, _slot]
