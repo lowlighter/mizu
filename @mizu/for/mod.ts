@@ -4,18 +4,20 @@ import { Expression } from "./parse.ts"
 export type * from "@mizu/internal/engine"
 
 /** `*for` directive. */
-export const _for = {
+export const _for: Directive<{
+  Cache: WeakMap<HTMLElement | Comment, Nullable<{ element: HTMLElement; items: Map<string, HTMLElement> }>>
+}> = {
   name: "*for",
   phase: Phase.EXPAND,
-  init(renderer) {
-    renderer.cache<Cache<typeof _for>>(this.name, new WeakMap())
+  init(this: typeof _for, renderer) {
+    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
   },
-  setup(renderer, element, { cache, state }) {
+  setup(this: typeof _for, renderer, element, { cache, state }) {
     if ((cache.get(element) === null) && (!state[renderer.internal("iterating")])) {
       return false
     }
   },
-  async execute(renderer, element, { cache, context, state, attributes: [attribute] }) {
+  async execute(this: typeof _for, renderer, element, { cache, context, state, attributes: [attribute] }) {
     // Compute iterations using the expression parser
     const iterations = [] as Record<PropertyKey, unknown>[]
     try {
@@ -90,7 +92,7 @@ export const _for = {
     }
     return { final: true }
   },
-} as Directive<WeakMap<HTMLElement | Comment, Nullable<{ element: HTMLElement; items: Map<string, HTMLElement> }>>>
+}
 
 /** `*id` directive. */
 export const _id = {

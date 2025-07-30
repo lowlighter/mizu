@@ -4,14 +4,16 @@ import { escape } from "@std/html"
 export type * from "@mizu/internal/engine"
 
 /** `%header` directive. */
-export const _header = {
+export const _header: Directive<{
+  Cache: WeakMap<HTMLElement, Headers>
+}> = {
   name: "%header",
   phase: Phase.HTTP_HEADER,
   multiple: true,
-  init(renderer) {
-    renderer.cache<Cache<typeof _header>>(this.name, new WeakMap())
+  init(this: typeof _header, renderer) {
+    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
   },
-  async execute(renderer, element, { attributes, cache, ...options }) {
+  async execute(this: typeof _header, renderer, element, { attributes, cache, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -37,7 +39,7 @@ export const _header = {
     }
     return { state: { $headers: headers } }
   },
-} as Directive<WeakMap<HTMLElement, Headers>>
+}
 
 /** `%body` typings. */
 export const _body_typings = {
@@ -52,15 +54,19 @@ export const _body_typings = {
 } as const
 
 /** `%body` directive. */
-export const _body = {
+export const _body: Directive<{
+  Cache: WeakMap<HTMLElement, BodyInit>
+  Typings: typeof _body_typings
+  Prefix: true
+}> = {
   name: "%body",
   prefix: "%",
   phase: Phase.HTTP_BODY,
   typings: _body_typings,
-  init(renderer) {
-    renderer.cache<Cache<typeof _body>>(this.name, new WeakMap())
+  init(this: typeof _body, renderer) {
+    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
   },
-  async execute(renderer, element, { attributes: [attribute], ...options }) {
+  async execute(this: typeof _body, renderer, element, { attributes: [attribute], ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -106,7 +112,7 @@ export const _body = {
     }
     return { state: { $headers: headers, $body: body } }
   },
-} as Directive<WeakMap<HTMLElement, BodyInit>, typeof _body_typings>
+}
 
 /** `%http` typings. */
 export const _http_typings = {
@@ -128,15 +134,18 @@ export const _http_typings = {
  *
  * @internal `_return_callback` Force the directive to return the request callback instead of executing it.
  */
-export const _http = {
+export const _http: Directive<{
+  Cache: WeakMap<Element, string>
+  Prefix: true
+}> = {
   name: "%http",
   prefix: "%",
   phase: Phase.HTTP_REQUEST,
   typings: _http_typings,
-  init(renderer) {
-    renderer.cache<Cache<typeof _http>>(this.name, new WeakMap())
+  init(this: typeof _http, renderer) {
+    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
   },
-  execute(renderer, element, { cache, attributes: [attribute], state, ...options }) {
+  execute(this: typeof _http, renderer, element, { cache, attributes: [attribute], state, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -178,7 +187,7 @@ export const _http = {
     }
     return callback(null).then(($response) => ({ state: { $response } }))
   },
-} as Directive<WeakMap<Element, string>> & { execute: NonNullable<Directive["execute"]> }
+}
 
 /** `%response` typings. */
 export const _response_typings = {
@@ -199,14 +208,18 @@ export const _response_typings = {
  * @internal `_expression.value` Force the directive to use specified value rather than the attribute value.
  * @internal `_expression.args` Force the directive to pass specified arguments during evaluation.
  */
-export const _response = {
+export const _response: Directive<{
+  Typings: typeof _response_typings
+  Default: true
+  Prefix: true
+}> = {
   name: "%response",
   prefix: "%",
   phase: Phase.HTTP_CONTENT,
   typings: _response_typings,
   multiple: true,
   default: "null",
-  async execute(renderer, element, { attributes, state, ...options }) {
+  async execute(this: typeof _response, renderer, element, { attributes, state, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -293,7 +306,7 @@ export const _response = {
       await renderer.evaluate(element, arguments[2]._expression?.value ?? (expression || this.default), { state: { ...state, $response, $content }, ...options, args: arguments[2]._expression?.args })
     }
   },
-} as Directive<null, typeof _response_typings> & { execute: NonNullable<Directive["execute"]> }
+}
 
 /** Default exports. */
 export default [_header, _body, _http, _response]

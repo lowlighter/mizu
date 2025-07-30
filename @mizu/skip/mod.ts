@@ -6,7 +6,7 @@ export type * from "@mizu/internal/engine"
 export const _skip = {
   name: "*skip",
   phase: Phase.PREPROCESSING,
-  setup(renderer, element) {
+  setup(this: typeof _skip, renderer, element) {
     if ((renderer.isHtmlElement(element)) && (element.hasAttribute(this.name))) {
       return false
     }

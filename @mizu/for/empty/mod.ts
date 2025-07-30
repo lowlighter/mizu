@@ -12,11 +12,14 @@ export const typings = {
 } as const
 
 /** `*empty` directive. */
-export const _empty = {
+export const _empty: Directive<{
+  Name: string
+  Typings: typeof typings
+}> = {
   name: "*empty",
   phase: Phase.TOGGLE,
   typings,
-  execute(renderer, element, { attributes: [attribute] }) {
+  execute(this: typeof _empty, renderer, element, { attributes: [attribute] }) {
     const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
     const cache = renderer.cache<Cache<typeof _for>>(_for.name)
     const seen = [] as HTMLElement[]
@@ -49,7 +52,7 @@ export const _empty = {
     renderer.warn(`[${this.name}] must be immediately preceded by a [${_for.name}] or [${_empty.name}] directive, ignoring`, element)
     return { state: { $generated: NaN } }
   },
-} as Directive<null, typeof typings> & { name: string }
+}
 
 /** Default exports. */
 export default [_for, _empty]

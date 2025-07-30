@@ -10,8 +10,22 @@ export type { DeepReadonly, Promisable }
  *
  * For more information, see the {@link https://mizu.sh/#concept-directive | mizu.sh documentation}.
  */
-// deno-lint-ignore no-explicit-any
-export interface Directive<Cache = any, Typings extends AttrTypings = any> {
+export interface Directive<
+  Definition extends {
+    Name?: string | RegExp
+    // deno-lint-ignore no-explicit-any
+    Cache?: any
+    Typings?: AttrTypings
+    Default?: boolean
+    Prefix?: boolean
+  } = {
+    Name: string | RegExp
+    Cache: null
+    Typings: unknown
+    Default: false
+    Prefix: false
+  },
+> {
   /**
    * Directive name.
    *
@@ -24,13 +38,13 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * In this case, {@linkcode Directive.prefix} should be specified.
    *
    * ```ts
-   * const foo = {
+   * const foo: Directive = {
    *   name: "*foo",
    *   phase: Phase.UNKNOWN,
-   * } as Directive & { name: string }
+   * }
    * ```
    */
-  readonly name: string | RegExp
+  readonly name: Definition["Name"] extends RegExp ? RegExp : Definition["Name"] extends string ? string : (string | RegExp)
   /**
    * Directive prefix.
    *
@@ -39,14 +53,14 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * If {@linkcode Directive.name} is a `RegExp`, this property should be specified.
    *
    * ```ts
-   * const foo = {
+   * const foo: Directive<{ Name: RegExp }> = {
    *   name: /^~(?<bar>)/,
    *   prefix: "~",
    *   phase: Phase.UNKNOWN,
-   * } as Directive & { name: RegExp, prefix: string }
+   * }
    * ```
    */
-  readonly prefix?: string
+  readonly prefix?: Definition["Name"] extends RegExp ? string : Definition["Prefix"] extends true ? string : never
   /**
    * Directive phase.
    *
@@ -60,10 +74,10 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * For more information, see the {@link https://mizu.sh/#concept-renderering-phase | mizu.sh documentation}.
    *
    * ```ts
-   * const foo = {
+   * const foo: Directive = {
    *   name: "*foo",
    *   phase: Phase.CONTENT,
-   * } as Directive & { name: string }
+   * }
    * ```
    */
   readonly phase: Phase
@@ -73,12 +87,12 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * If set to `false`, a warning will be issued to users attempting to apply it more than once.
    *
    * ```ts
-   * const foo = {
+   * const foo: Directive<{ Name: RegExp }> = {
    *   name: /^\/(?<value>)/,
    *   prefix: "/",
    *   phase: Phase.UNKNOWN,
    *   multiple: true
-   * } as Directive & { name: RegExp; prefix: string }
+   * }
    * ```
    */
   readonly multiple?: boolean
@@ -95,34 +109,34 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    *   }
    * }
    *
-   * const foo = {
+   * const foo: Directive<{ Typings: typeof typings}> = {
    *   name: "*foo",
    *   phase: Phase.UNKNOWN,
    *   typings,
-   *   async execute(renderer, element, { attributes: [ attribute ], ...options }) {
+   *   async execute(this: typeof foo, renderer, element, { attributes: [ attribute ], ...options }) {
    *     console.log(renderer.parseAttribute(attribute, this.typings, { modifiers: true }))
    *   }
-   * } as Directive<null, typeof typings> & { name: string }
+   * }
    * ```
    */
-  readonly typings?: Typings
+  readonly typings?: Definition["Typings"]
   /**
    * Default value.
    *
    * This value should be used by directive callbacks when the {@linkcode https://developer.mozilla.org/docs/Web/API/Attr/value | Attr.value} is empty.
    *
    * ```ts
-   * const foo = {
+   * const foo: Directive<{ Default: true }> = {
    *   name: "*foo",
    *   phase: Phase.UNKNOWN,
    *   default: "bar",
-   *   async execute(renderer, element, { attributes: [ attribute ], ...options }) {
+   *   async execute(this: typeof foo, renderer, element, { attributes: [ attribute ], ...options }) {
    *     console.log(attribute.value || this.default)
    *   }
-   * } as Directive & { name: string; default: string }
+   * }
    * ```
    */
-  readonly default?: string
+  readonly default?: Definition["Default"] extends true ? string : never
   /**
    * Directive initialization callback.
    *
@@ -132,13 +146,13 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * If a cache is instantiated, it is recommended to use the `Directive<Cache>` generic type to ensure type safety when accessing it in {@linkcode Directive.setup()}, {@linkcode Directive.execute()}, and {@linkcode Directive.cleanup()}.
    *
    * ```ts
-   * const foo = {
+   * const foo: Directive<{ Cache: WeakSet<HTMLElement | Comment> }> = {
    *   name: "*foo",
    *   phase: Phase.UNKNOWN,
    *   async init(renderer) {
    *     renderer.cache(this.name, new WeakSet())
    *   },
-   * } as Directive<WeakSet<HTMLElement | Comment>> & { name: string }
+   * }
    * ```
    */
   readonly init?: (renderer: Renderer) => Promisable<void>
@@ -155,18 +169,18 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * > This method is executed regardless of the directive's presence on the node.
    *
    * ```ts
-   * const foo = {
+   * const foo: Directive = {
    *   name: "*foo",
    *   phase: Phase.UNKNOWN,
-   *   async setup(renderer, element, { cache, context, state }) {
+   *   async setup(this: typeof foo, renderer, element, { cache, context, state }) {
    *     if ((!renderer.isHtmlElement(element)) || (element.hasAttribute("no-render"))) {
-   *       return false
+   *       return false as const
    *     }
    *   },
-   * } as Directive & { name: string }
+   * }
    * ```
    */
-  readonly setup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Cache; context: Context; state: DeepReadonly<State> }) => Promisable<void | Partial<{ state: State; execute: boolean } | false>>
+  readonly setup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Definition["Cache"]; context: Context; state: DeepReadonly<State> }) => Promisable<void | Partial<{ state: State; execute: boolean } | false>>
   /**
    * Directive execution callback.
    *
@@ -181,20 +195,20 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * If `final: true` is returned, the rendering process for this node is stopped (all {@linkcode Directive.cleanup()} will still be called).
    *
    * ```ts
-   * const foo = {
+   * const foo: Directive = {
    *   name: "*foo",
    *   phase: Phase.UNKNOWN,
-   *   async execute(renderer, element, { attributes: [ attribute ], ...options }) {
+   *   async execute(this: typeof foo, renderer, element, { attributes: [ attribute ], ...options }) {
    *     console.log(`${await renderer.evaluate(element, attribute.value || "''", options)}`)
    *     return { state: { $foo: true } }
    *   },
-   * } as Directive & { name: string }
+   * }
    * ```
    */
   readonly execute?: (
     renderer: Renderer,
     element: HTMLElement | Comment,
-    _: { cache: Cache; context: Context; state: DeepReadonly<State>; attributes: Readonly<Attr[]> },
+    _: { cache: Definition["Cache"]; context: Context; state: DeepReadonly<State>; attributes: Readonly<Attr[]> },
   ) => Promisable<void | Partial<{ element: HTMLElement | Comment; context: Context; state: State; final: boolean }>>
   /**
    * Directive cleanup callback.
@@ -205,21 +219,23 @@ export interface Directive<Cache = any, Typings extends AttrTypings = any> {
    * > This method is executed regardless of the directive's presence on the node, and regardless of whether a {@linkcode Directive.execute()} returned with `final: true`.
    *
    * ```ts
-   * const foo = {
+   * const foo: Directive = {
    *   name: "*foo",
    *   phase: Phase.UNKNOWN,
-   *   async cleanup(renderer, element, { cache, context, state }) {
+   *   async cleanup(this: typeof foo, renderer, element, { cache, context, state }) {
    *     console.log("Cleaning up")
    *   }
-   * } as Directive & { name: string }
+   * }
    * ```
    */
-  readonly cleanup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Cache; context: Context; state: DeepReadonly<State> }) => Promisable<void>
+  readonly cleanup?: (renderer: Renderer, element: HTMLElement | Comment, _: { cache: Definition["Cache"]; context: Context; state: DeepReadonly<State> }) => Promisable<void>
 }
 
 /** Extracts the cache type from a {@linkcode Directive}. */
-export type Cache<T> = T extends Directive<infer U> ? U : never
+export type Cache<T> = T extends Directive<infer U> ? U["Cache"] : never
+
+/** Extracts the typings definitions from a {@linkcode Directive}. */
+export type Typings<T> = T extends Directive<infer U> ? U["Typings"] : never
 
 /** Extracts the typings values from a {@linkcode Directive}. */
-// deno-lint-ignore no-explicit-any
-export type Modifiers<T> = T extends Directive<any, infer U> ? InferAttrTypings<U>["modifiers"] : never
+export type Modifiers<T> = T extends Directive<infer U> ? InferAttrTypings<U["Typings"]>["modifiers"] : never

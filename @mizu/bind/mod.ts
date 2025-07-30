@@ -5,23 +5,27 @@ import { boolean } from "./boolean.ts"
 export type * from "@mizu/internal/engine"
 
 /** `:bind` directive. */
-export const _bind = {
+export const _bind: Directive<{
+  Name: RegExp
+  Cache: WeakMap<HTMLElement, { class?: string; style?: string }>
+  Default: true
+}> = {
   name: /^:(?!:)(?<attribute>)/,
   prefix: ":",
   phase: Phase.ATTRIBUTE,
   multiple: true,
   default: "$<attribute>",
-  init(renderer) {
+  init(this: typeof _bind, renderer) {
     if (!renderer.cache(this.name)) {
-      renderer.cache<Cache<typeof _bind>>(this.name, new WeakMap())
+      renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
     }
   },
-  async execute(renderer, element, { attributes, cache, ...options }) {
+  async execute(this: typeof _bind, renderer, element, { attributes, cache, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
     const cached = cache.get(element) ?? cache.set(element, {}).get(element)!
-    const parsed = attributes.map((attribute) => renderer.parseAttribute(attribute, null, { prefix: this.prefix }))
+    const parsed = attributes.map((attribute) => renderer.parseAttribute(attribute, {}, { prefix: this.prefix }))
 
     // Handle shorthand attributes binding
     const shorthand = parsed.findIndex(({ name }) => !name.length)
@@ -90,7 +94,7 @@ export const _bind = {
       }
     }
   },
-} as Directive<WeakMap<HTMLElement, { class?: string; style?: string }>>
+}
 
 /** `:class` directive. */
 export const _bind_class = _bind as typeof _bind

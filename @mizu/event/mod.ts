@@ -25,19 +25,24 @@ export const typings = {
  * @internal `_event` Force the directive to use specified event name rather than the attribute name, provided that a single attribute was passed.
  * @internal `_callback` Force the directive to use specified callback rather than the attribute value.
  */
-export const _event = {
+export const _event: Directive<{
+  Name: RegExp
+  Cache: WeakMap<HTMLElement, WeakMap<Attr, Map<string, { target: EventTarget; listener: EventListener }>>>
+  Typings: typeof typings
+  Default: true
+}> = {
   name: /^@(?<event>)/,
   prefix: "@",
   phase: Phase.INTERACTIVITY,
   default: "null",
   typings,
   multiple: true,
-  init(renderer) {
+  init(this: typeof _event, renderer) {
     if (!renderer.cache(this.name)) {
-      renderer.cache<Cache<typeof _event>>(this.name, new WeakMap())
+      renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
     }
   },
-  async execute(renderer, element, { cache, attributes, context, state }) {
+  async execute(this: typeof _event, renderer, element, { cache, attributes, context, state }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -155,7 +160,7 @@ export const _event = {
       cache.get(element)?.get(attribute)?.set(event, { target, listener })
     }
   },
-} as Directive<WeakMap<HTMLElement, WeakMap<Attr, Map<string, { target: EventTarget; listener: EventListener }>>>, typeof typings> & { typings: typeof typings; execute: NonNullable<Directive["execute"]> }
+}
 
 /** Default exports. */
 export default _event

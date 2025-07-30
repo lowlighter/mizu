@@ -4,19 +4,21 @@ import { capture } from "./capture.ts"
 export type * from "@mizu/internal/engine"
 
 /** `*mustache` directive. */
-export const _mustache = {
+export const _mustache: Directive<{
+  Cache: WeakMap<Text, string>
+}> = {
   name: "*mustache",
   phase: Phase.CONTENT_INTERPOLATION,
   multiple: true,
-  init(renderer) {
-    renderer.cache<Cache<typeof _mustache>>(this.name, new WeakMap())
+  init(this: typeof _mustache, renderer) {
+    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
   },
-  setup(renderer, _, { state }) {
+  setup(this: typeof _mustache, renderer, _, { state }) {
     if (state[renderer.internal("mustaching")]) {
       return { execute: true }
     }
   },
-  async execute(renderer, element, { cache, ...options }) {
+  async execute(this: typeof _mustache, renderer, element, { cache, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -48,7 +50,7 @@ export const _mustache = {
     )
     return { state: { [renderer.internal("mustaching")]: true } }
   },
-} as Directive<WeakMap<Text, string>> & { default: NonNullable<Directive["default"]> }
+}
 
 /** Default exports. */
 export default _mustache

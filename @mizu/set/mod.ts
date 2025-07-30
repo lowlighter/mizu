@@ -3,13 +3,15 @@ import { type Cache, type Context, type Directive, type Nullable, Phase } from "
 export type * from "@mizu/internal/engine"
 
 /** `*set` directive. */
-export const _set = {
+export const _set: Directive<{
+  Cache: WeakMap<HTMLElement | Comment, Nullable<Context>>
+}> = {
   name: "*set",
   phase: Phase.CONTEXT,
-  init(renderer) {
-    renderer.cache<Cache<typeof _set>>(this.name, new WeakMap())
+  init(this: typeof _set, renderer) {
+    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
   },
-  async execute(renderer, element, { attributes: [attribute], cache, ...options }) {
+  async execute(this: typeof _set, renderer, element, { attributes: [attribute], cache, ...options }) {
     if (!cache.has(element)) {
       const context = await renderer.evaluate(element, attribute.value, options)
       if (typeof context !== "object") {
@@ -20,7 +22,7 @@ export const _set = {
     }
     return { context: cache.get(element) }
   },
-} as Directive<WeakMap<HTMLElement | Comment, Nullable<Context>>>
+}
 
 /** Default exports. */
 export default _set

@@ -10,12 +10,15 @@ export const typings = {
 } as const
 
 /** `*markdown` directive. */
-export const _markdown = {
+export const _markdown: Directive<{
+  Typings: typeof typings
+  Default: true
+}> = {
   name: "*markdown",
   phase: Phase.CONTENT,
   default: "this.textContent",
   typings,
-  async execute(renderer, element, { attributes: [attribute], ...options }) {
+  async execute(this: typeof _markdown, renderer, element, { attributes: [attribute], ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -33,7 +36,7 @@ export const _markdown = {
     }
     element.innerHTML = await markdown.render(content)
   },
-} as Directive<null, typeof typings> & { default: NonNullable<Directive["default"]> }
+}
 
 /** Default exports. */
 export default _markdown

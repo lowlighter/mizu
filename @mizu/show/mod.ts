@@ -3,11 +3,13 @@ import { type Directive, Phase } from "@mizu/internal/engine"
 export type * from "@mizu/internal/engine"
 
 /** `*show` directive. */
-export const _show = {
+export const _show: Directive<{
+  Default: true
+}> = {
   name: "*show",
   phase: Phase.DISPLAY,
   default: "true",
-  async execute(renderer, element, { attributes: [attribute], ...options }) {
+  async execute(this: typeof _show, renderer, element, { attributes: [attribute], ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -24,7 +26,7 @@ export const _show = {
       element.style.setProperty("display", "none", "important")
     }
   },
-} as Directive & { default: NonNullable<Directive["default"]> }
+}
 
 /** Default exports. */
 export default _show

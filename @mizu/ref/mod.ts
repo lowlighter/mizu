@@ -10,21 +10,23 @@ export const typings = {
 } as const
 
 /** `*ref` directive. */
-export const _ref = {
+export const _ref: Directive<{
+  Typings: typeof typings
+}> = {
   name: "*ref",
   phase: Phase.REFERENCE,
   typings,
-  setup(_, __, { state }) {
+  setup(this: typeof _ref, _, __, { state }) {
     if (!state.$refs) {
       return { state: { $refs: {} } }
     }
   },
-  async execute(renderer, element, { attributes: [attribute], state, ...options }) {
+  async execute(this: typeof _ref, renderer, element, { attributes: [attribute], state, ...options }) {
     const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
     const name = parsed.modifiers.raw ? attribute.value : await renderer.evaluate(element, attribute.value, { state, ...options })
     return { state: { $refs: { ...state.$refs as Record<PropertyKey, unknown>, [`${name}`]: element } } }
   },
-} as Directive<null, typeof typings>
+}
 
 /** Default exports. */
 export default _ref
