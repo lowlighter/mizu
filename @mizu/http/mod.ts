@@ -250,6 +250,7 @@ export const _response: Directive<{
 
       let $content = null
       let consume = true as Nullable<boolean>
+      const parent = element.parentElement
       // Apply swap modifier
       if (modifiers.swap) {
         $content = await $response.text()
@@ -304,6 +305,9 @@ export const _response: Directive<{
       }
 
       await renderer.evaluate(element, arguments[2]._expression?.value ?? (expression || this.default), { state: { ...state, $response, $content }, ...options, args: arguments[2]._expression?.args })
+      if (modifiers.swap) {
+        return { element: parent }
+      }
     }
   },
 }

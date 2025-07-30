@@ -354,3 +354,31 @@
   expect(storage.elements[1]).toBe(document.querySelector("li:nth-child(2)"))
   </script>
 </test>
+
+<test name="[*for] and [%response.swap] interaction">
+  <load directives="@mizu/test,@mizu/http,@mizu/for"></load>
+  <http-server>
+    <response path="/foo" status="OK"><foo ~test[content].text="foo"></foo></response>
+  </http-server>
+  <render>
+    <section>
+      <div *for="const foo of [1, 2, 3]">
+        <template %http="/foo" %response.swap></template>
+      </div>
+    </section>
+  </render>
+  <expect>
+    <section>
+      <!--[*for="const foo of [1, 2, 3]"]-->
+      <div>
+        <foo>1</foo>
+      </div>
+      <div>
+        <foo>2</foo>
+      </div>
+      <div>
+        <foo>3</foo>
+      </div>
+    </section>
+  </expect>
+</test>
