@@ -53,7 +53,7 @@ const renderer = await new Renderer(null as any, { directives: [] }).ready
 export async function evaluate<T = unknown>(
   expression: string,
   variables = null as Nullable<Record<PropertyKey, unknown>>,
-  { imports = {} as Record<string, string>, context = "expression" as "expression" | "function", permissions = null as Nullable<Deno.PermissionOptions> } = {},
+  { imports = {} as Record<string, string>, context = "expression" as "expression" | "function", permissions = null as Nullable<Deno.PermissionOptions>, sandbox = null as Nullable<string> } = {},
 ): Promise<T> {
   if (context === "function") {
     expression = `async () =>{${expression}}`
@@ -61,7 +61,7 @@ export async function evaluate<T = unknown>(
   variables ??= {}
   if (permissions !== null) {
     const { promise, resolve, reject } = Promise.withResolvers<T>()
-    const worker = new Worker(import.meta.resolve("./evaluate_sandbox.ts"), { type: "module", deno: { permissions } } as WorkerOptions)
+    const worker = new Worker(sandbox ?? import.meta.resolve("./sandbox.ts"), { type: "module", deno: { permissions } } as WorkerOptions)
     worker.onmessage = ({ data: { error, result } }) => error ? reject(error) : resolve(result)
     worker.postMessage({ expression, variables, imports, context })
     return await promise
