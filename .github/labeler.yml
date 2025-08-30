@@ -31,6 +31,9 @@
 "scope: event":
   - changed-files:
       - any-glob-to-any-file: "@mizu/event/**"
+"scope: extras":
+  - changed-files:
+      - any-glob-to-any-file: "@mizu/extras/**"
 "scope: for":
   - changed-files:
       - any-glob-to-any-file: "@mizu/for/**"

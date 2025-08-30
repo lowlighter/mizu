@@ -21,6 +21,7 @@ body:
         - custom-element
         - eval
         - event
+        - extras
         - for
         - html
         - http
