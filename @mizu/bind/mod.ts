@@ -5,22 +5,18 @@ import { boolean } from "./boolean.ts"
 export type * from "@mizu/internal/engine"
 
 /** `:bind` directive. */
-export const _bind: Directive<{
-  Name: RegExp
-  Cache: WeakMap<HTMLElement, { class?: string; style?: string }>
-  Default: true
-}> = {
+export const _bind = {
   name: /^:(?!:)(?<attribute>)/,
   prefix: ":",
   phase: Phase.ATTRIBUTE,
   multiple: true,
   default: "$<attribute>",
-  init(this: typeof _bind, renderer) {
+  init(renderer) {
     if (!renderer.cache(this.name)) {
       renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
     }
   },
-  async execute(this: typeof _bind, renderer, element, { attributes, cache, ...options }) {
+  async execute(renderer, element, { attributes, cache, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -94,7 +90,11 @@ export const _bind: Directive<{
       }
     }
   },
-}
+} as const satisfies Directive<{
+  Name: RegExp
+  Cache: WeakMap<HTMLElement, { class?: string; style?: string }>
+  Default: true
+}>
 
 /** `:class` directive. */
 export const _bind_class = _bind as typeof _bind

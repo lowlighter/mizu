@@ -1,5 +1,5 @@
 // Imports
-import { type Arg, type Arrayable, type Cache, type callback, type Directive, type Modifiers, type Nullable, Phase } from "@mizu/internal/engine"
+import { type Arg, type Arrayable, type Cache, type callback, type Directive, type InferAttrTypings, type Nullable, Phase } from "@mizu/internal/engine"
 import { equal } from "@std/assert"
 import { _event } from "@mizu/event"
 export type * from "@mizu/internal/engine"
@@ -21,23 +21,18 @@ export const typings = {
 } as const
 
 /** `::value` directive. */
-export const _model: Directive<{
-  Name: RegExp
-  Cache: WeakMap<HTMLElement, WeakMap<HTMLElement, { model: Record<"read" | "sync", Nullable<callback>>; event: Nullable<string>; init: boolean }>>
-  Typings: typeof typings
-  Default: true
-}> = {
+export const _model = {
   name: /^::(?<value>)$/,
   prefix: "::",
   phase: Phase.ATTRIBUTE_MODEL_VALUE,
   typings,
   default: "value",
-  init(this: typeof _model, renderer) {
+  init(renderer) {
     if (!renderer.cache(this.name)) {
-      renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
+      renderer.cache<Cache<typeof _model>>(this.name, new WeakMap())
     }
   },
-  async execute(this: typeof _model, renderer, element, { attributes: [attribute], cache, ...options }) {
+  async execute(renderer, element, { attributes: [attribute], cache, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -138,7 +133,12 @@ export const _model: Directive<{
 
     await cached.model.sync()
   },
-}
+} as const satisfies Directive<{
+  Name: RegExp
+  Cache: WeakMap<HTMLElement, WeakMap<HTMLElement, { model: Record<"read" | "sync", Nullable<callback>>; event: Nullable<string>; init: boolean }>>
+  Typings: typeof typings
+  Default: true
+}>
 
 /** Default exports. */
 export default [_model]
@@ -163,7 +163,7 @@ function read(input: HTMLElement) {
 }
 
 /** Parse input value. */
-function parse(value: ReturnType<typeof read>, modifiers: Modifiers<typeof _model>) {
+function parse(value: ReturnType<typeof read>, modifiers: InferAttrTypings<typeof typings>["modifiers"]) {
   const parsed = [value].flat().map((value) => {
     if ((modifiers.nullish) && (!value)) {
       return null

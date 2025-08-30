@@ -4,16 +4,14 @@ import { escape } from "@std/html"
 export type * from "@mizu/internal/engine"
 
 /** `%header` directive. */
-export const _header: Directive<{
-  Cache: WeakMap<HTMLElement, Headers>
-}> = {
+export const _header = {
   name: "%header",
   phase: Phase.HTTP_HEADER,
   multiple: true,
-  init(this: typeof _header, renderer) {
-    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
+  init(renderer) {
+    renderer.cache<Cache<typeof _header>>(this.name, new WeakMap())
   },
-  async execute(this: typeof _header, renderer, element, { attributes, cache, ...options }) {
+  async execute(renderer, element, { attributes, cache, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -39,7 +37,9 @@ export const _header: Directive<{
     }
     return { state: { $headers: headers } }
   },
-}
+} as const satisfies Directive<{
+  Cache: WeakMap<HTMLElement, Headers>
+}>
 
 /** `%body` typings. */
 export const _body_typings = {
@@ -54,19 +54,15 @@ export const _body_typings = {
 } as const
 
 /** `%body` directive. */
-export const _body: Directive<{
-  Cache: WeakMap<HTMLElement, BodyInit>
-  Typings: typeof _body_typings
-  Prefix: true
-}> = {
+export const _body = {
   name: "%body",
   prefix: "%",
   phase: Phase.HTTP_BODY,
   typings: _body_typings,
-  init(this: typeof _body, renderer) {
-    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
+  init(renderer) {
+    renderer.cache<Cache<typeof _body>>(this.name, new WeakMap())
   },
-  async execute(this: typeof _body, renderer, element, { attributes: [attribute], ...options }) {
+  async execute(renderer, element, { attributes: [attribute], ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -112,7 +108,11 @@ export const _body: Directive<{
     }
     return { state: { $headers: headers, $body: body } }
   },
-}
+} as const satisfies Directive<{
+  Cache: WeakMap<HTMLElement, BodyInit>
+  Typings: typeof _body_typings
+  Prefix: true
+}>
 
 /** `%http` typings. */
 export const _http_typings = {
@@ -134,18 +134,15 @@ export const _http_typings = {
  *
  * @internal `_return_callback` Force the directive to return the request callback instead of executing it.
  */
-export const _http: Directive<{
-  Cache: WeakMap<Element, string>
-  Prefix: true
-}> = {
+export const _http = {
   name: "%http",
   prefix: "%",
   phase: Phase.HTTP_REQUEST,
   typings: _http_typings,
-  init(this: typeof _http, renderer) {
+  init(renderer) {
     renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
   },
-  execute(this: typeof _http, renderer, element, { cache, attributes: [attribute], state, ...options }) {
+  execute(renderer, element, { cache, attributes: [attribute], state, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -187,7 +184,10 @@ export const _http: Directive<{
     }
     return callback(null).then(($response) => ({ state: { $response } }))
   },
-}
+} as const satisfies Directive<{
+  Cache: WeakMap<Element, string>
+  Prefix: true
+}>
 
 /** `%response` typings. */
 export const _response_typings = {
@@ -208,18 +208,14 @@ export const _response_typings = {
  * @internal `_expression.value` Force the directive to use specified value rather than the attribute value.
  * @internal `_expression.args` Force the directive to pass specified arguments during evaluation.
  */
-export const _response: Directive<{
-  Typings: typeof _response_typings
-  Default: true
-  Prefix: true
-}> = {
+export const _response = {
   name: "%response",
   prefix: "%",
   phase: Phase.HTTP_CONTENT,
   typings: _response_typings,
   multiple: true,
   default: "null",
-  async execute(this: typeof _response, renderer, element, { attributes, state, ...options }) {
+  async execute(renderer, element, { attributes, state, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -305,12 +301,16 @@ export const _response: Directive<{
       }
 
       await renderer.evaluate(element, arguments[2]._expression?.value ?? (expression || this.default), { state: { ...state, $response, $content }, ...options, args: arguments[2]._expression?.args })
-      if (modifiers.swap) {
+      if ((modifiers.swap) && parent) {
         return { element: parent }
       }
     }
   },
-}
+} as const satisfies Directive<{
+  Typings: typeof _response_typings
+  Default: true
+  Prefix: true
+}>
 
 /** Default exports. */
 export default [_header, _body, _http, _response]

@@ -9,10 +9,10 @@ export type * from "@mizu/internal/engine"
  * @internal `_directive.expression` Set the original expression for the directive if element is commented out.
  * @internal `_directive.directive` Set the original directive name for the directive if element is commented out.
  */
-export const _if: Directive = {
+export const _if = {
   name: "*if",
   phase: Phase.TOGGLE,
-  async execute(this: typeof _if, renderer, element, { attributes: [attribute], ...options }) {
+  async execute(renderer, element, { attributes: [attribute], ...options }) {
     const result = Boolean(await renderer.evaluate(element, arguments[2]._directive?.value ?? attribute.value, options))
     switch (true) {
       // Switch comment to element if truthy
@@ -27,7 +27,7 @@ export const _if: Directive = {
       }
     }
   },
-}
+} as const satisfies Directive
 
 /** Default exports. */
 export default _if

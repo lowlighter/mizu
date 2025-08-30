@@ -38,7 +38,7 @@ export default async function (request: Request) {
       },
       overrides: {
         imports: {
-          "./defaults.ts": Array.isArray(options.directives) && options.directives.every((name) => typeof name === "string")
+          "./defaults.ts": Array.isArray(options.directives) && options.directives.every((name: unknown) => typeof name === "string")
             ? `data:text/javascript;base64,${
               btoa(
                 `

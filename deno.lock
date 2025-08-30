@@ -4534,6 +4534,16 @@
       "integrity": "sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A=="
     }
   },
+  "redirects": {
+    "https://esm.sh/highlight.js@11/lib/core": "https://esm.sh/highlight.js@11.11.1/lib/core",
+    "https://esm.sh/jsr/@libs/xml@6/parse": "https://esm.sh/jsr/@libs/xml@6.0.8/parse",
+    "https://esm.sh/jsr/@libs/xml@6/stringify": "https://esm.sh/jsr/@libs/xml@6.0.8/stringify"
+  },
+  "remote": {
+    "https://esm.sh/highlight.js@11.11.1/lib/core": "8c8269fa2c82cb7197fd3561409007436f86ec38fe2f0f473f64e62a60eea89d",
+    "https://esm.sh/jsr/@libs/xml@6.0.8/parse": "76d270b7c9cc7ecf2aad2537a59e704c34d9b46f96950cf388db274542467026",
+    "https://esm.sh/jsr/@libs/xml@6.0.8/stringify": "5982a5dea0ffcaefa57a5dee8ba7289a78b5af9123bcf250efac381efbb9e016"
+  },
   "workspace": {
     "dependencies": [
       "jsr:@astral/astral@~0.5.3",
