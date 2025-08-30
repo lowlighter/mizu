@@ -57,7 +57,7 @@ export class Renderer {
    *   phase: Phase.TESTING,
    *   init(renderer) {
    *     if (!renderer.cache(this.name)) {
-   *       renderer.cache<Cache<typeof this>>(this.name, new WeakSet())
+   *       renderer.cache<Cache<typeof directive>>(this.name, new WeakSet())
    *     }
    *   },
    *   setup(renderer, element, { cache }) {
@@ -153,7 +153,8 @@ export class Renderer {
    * console.assert(renderer.directives.includes(directive))
    * ```
    */
-  async load(directives: Arrayable<Arrayable<Partial<Directive> | string>>): Promise<this> {
+  // deno-lint-ignore no-explicit-any
+  async load(directives: Arrayable<Arrayable<Partial<Directive<{ Name: string | RegExp; Cache: any; Typings: any; Default: any; Prefix: any }>> | string>>): Promise<this> {
     const loaded = (await Promise.all<Arrayable<Directive>>(([directives].flat(Infinity) as Array<Directive | string>)
       .map(async (directive) => typeof directive === "string" ? (await import(directive)).default : directive)))
       .flat(Infinity) as Array<Directive>

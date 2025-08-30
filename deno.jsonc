@@ -35,7 +35,7 @@
     // Test tasks
     "test:deno": {
       "description": "Test code (deno)",
-      "command": "cd $INIT_CWD && deno test --allow-read --allow-env --allow-net --parallel --doc --clean --coverage"
+      "command": "cd $INIT_CWD && deno test --allow-read --allow-env --allow-net --allow-sys=osRelease --parallel --doc --clean --coverage"
     },
     "test:node": {
       "description": "Test code (node)",
