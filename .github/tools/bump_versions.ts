@@ -42,9 +42,9 @@ if (import.meta.main) {
   render.scopes = [...new Set(render.scopes)]
 
   // Bump package versions
-  for (const scope of [...scopes, "internal", "render"]) {
+  for (const scope of [...scopes, "internal", "render", "extras"]) {
     log.with({ directive: scope }).debug("checking")
-    const { version, changelog } = git.changelog(`@mizu/${scope}/deno.jsonc`, { write: !dryrun, scopes: [scope, "internal", ...(scope === "render" ? render.scopes : [])] })
+    const { version, changelog } = git.changelog(`@mizu/${scope}/deno.jsonc`, { write: !dryrun, scopes: [scope, "internal", "extras", ...(scope === "render" ? render.scopes : [])] })
     if (version.bump) {
       changelog.split("\n").map((line) => log.with({ directive: scope }).info(line))
       log.with({ directive: scope }).ok(`${semver.format(version.current)} → ${semver.format(version.next)}`)
