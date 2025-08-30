@@ -4,7 +4,6 @@
   "exports": {
     "./engine": "./engine/mod.ts",
     "./testing": "./testing/mod.ts",
-    "./vdom": "./vdom/mod.ts",
-    "./extras/evaluate": "./extras/evaluate.ts"
+    "./vdom": "./vdom/mod.ts"
   }
 }
