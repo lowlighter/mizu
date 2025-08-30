@@ -3,9 +3,7 @@ import { type Directive, Phase } from "@mizu/internal/engine"
 export type * from "@mizu/internal/engine"
 
 /** `*html` directive. */
-export const _html: Directive<{
-  Default: true
-}> = {
+export const _html: Directive = {
   name: "*html",
   phase: Phase.CONTENT,
   async execute(this: typeof _html, renderer, element, { attributes: [attribute], ...options }) {

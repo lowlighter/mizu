@@ -5,23 +5,27 @@ import { _body, _header, _http, _response, _response_typings } from "@mizu/http"
 export type * from "@mizu/internal/engine"
 export type { _event, typings as _event_typings } from "@mizu/event"
 
+/** `%@event` typings. */
+const typings = {
+    modifiers: {
+      ..._event.typings.modifiers,
+      ..._response_typings.modifiers,
+    },
+  }
+
 /** `%@event` directive. */
 export const _http_event: Directive<{
   Name: RegExp
   Cache: Cache<typeof _event>
   Default: true
+  Typings: typeof typings
 }> = {
   name: /^%@(?<event>)/,
   prefix: "%@",
   phase: Phase.HTTP_INTERACTIVITY,
   default: "null",
   multiple: true,
-  typings: {
-    modifiers: {
-      ..._event.typings.modifiers,
-      ..._response_typings.modifiers,
-    },
-  },
+  typings,
   init(this: typeof _http_event, renderer) {
     renderer.cache(this.name, new WeakMap())
     renderer.cache(`#${this.name}`, new WeakMap())
