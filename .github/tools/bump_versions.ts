@@ -19,7 +19,7 @@ if (import.meta.main) {
   const render = { scopes: ["internal", "render"] }
   const mapping = new Map<Directive, Set<string>>()
   for (const scope of scopes) {
-    if (scope === "unstable") {
+    if ((scope === "unstable") || (scope === "extras")) {
       continue
     }
     const { default: exported } = await import(`@mizu/${scope}`)
