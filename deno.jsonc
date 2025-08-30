@@ -206,6 +206,7 @@
     "@mizu/custom-element",
     "@mizu/eval",
     "@mizu/event",
+    "@mizu/extras",
     "@mizu/for",
     "@mizu/html",
     "@mizu/http",

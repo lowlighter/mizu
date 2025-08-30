@@ -1,4 +1,4 @@
-import { Renderer } from "../engine/mod.ts"
+import { Renderer } from "@mizu/internal/engine"
 onmessage = async (event) => {
   try {
     const { expression, variables, imports, context } = event.data as { expression: string; variables: Record<PropertyKey, unknown> | null; imports: Record<string, string>; context: "expression" | "function" }

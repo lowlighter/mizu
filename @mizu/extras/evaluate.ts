@@ -1,6 +1,6 @@
 // Imports
-import type { Nullable, State } from "../engine/mod.ts"
-import { Renderer } from "../engine/mod.ts"
+import type { Nullable, State } from "@mizu/internal/engine"
+import { Renderer } from "@mizu/internal/engine"
 
 /** Default renderer instance. */
 // deno-lint-ignore no-explicit-any
