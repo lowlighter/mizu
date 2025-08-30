@@ -4,13 +4,11 @@ import { _if } from "@mizu/if"
 export type * from "@mizu/internal/engine"
 
 /** `*else` directive. */
-export const _else: Directive<{
-  Default: true
-}> = {
+export const _else = {
   name: "*else",
   phase: Phase.TOGGLE,
   default: "true",
-  execute(this: typeof _else, renderer, element, { attributes: [attribute] }) {
+  execute(renderer, element, { attributes: [attribute] }) {
     let previous = element.previousSibling as HTMLElement
     while (previous) {
       // Break on non-empty text nodes
@@ -34,7 +32,9 @@ export const _else: Directive<{
     }
     renderer.warn(`[${this.name}] must be immediately preceded by another [${_if.name}] or [${_else.name}], ignoring`, element)
   },
-}
+} as const satisfies Directive<{
+  Default: true
+}>
 
 /** Default exports. */
 export default [_if, _else]

@@ -3,17 +3,14 @@ import { type Cache, type Directive, Phase, type Renderer } from "@mizu/internal
 export type * from "@mizu/internal/engine"
 
 /** `*toc` directive. */
-export const _toc: Directive<{
-  Cache: WeakSet<HTMLUListElement>
-  Default: true
-}> = {
+export const _toc = {
   name: "*toc",
   phase: Phase.CONTENT,
   default: "'main'",
-  init(this: typeof _toc, renderer) {
-    renderer.cache<Cache<typeof this>>(this.name, new WeakSet())
+  init(renderer) {
+    renderer.cache<Cache<typeof _toc>>(this.name, new WeakSet())
   },
-  async execute(this: typeof _toc, renderer, element, { attributes: [attribute], cache, ...options }) {
+  async execute(renderer, element, { attributes: [attribute], cache, ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -33,7 +30,10 @@ export const _toc: Directive<{
     cache.add(ul)
     element.innerHTML = ul.outerHTML
   },
-}
+} as const satisfies Directive<{
+  Cache: WeakSet<HTMLUListElement>
+  Default: true
+}>
 
 /** Default exports. */
 export default _toc

@@ -7,7 +7,7 @@ export const _noop = {
   name: "*noop",
   phase: Phase.TESTING,
   multiple: true,
-} as Directive
+} as const satisfies Directive
 
 /** Default exports. */
 export default _noop

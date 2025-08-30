@@ -11,15 +11,12 @@ export const typings = {
 } as const
 
 /** `*code` directive. */
-export const _code: Directive<{
-  Typings: typeof typings
-  Default: true
-}> = {
+export const _code = {
   name: "*code",
   phase: Phase.CONTENT,
   typings,
   default: "this.textContent",
-  async execute(this: typeof _code, renderer, element, { attributes: [attribute], ...options }) {
+  async execute(renderer, element, { attributes: [attribute], ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -54,7 +51,10 @@ export const _code: Directive<{
       element.parentElement.innerHTML = element.parentElement.innerHTML.trim()
     }
   },
-}
+} as const satisfies Directive<{
+  Typings: typeof typings
+  Default: true
+}>
 
 /** Default exports. */
 export default _code

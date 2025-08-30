@@ -6,12 +6,14 @@ export type * from "@mizu/internal/engine"
 export const _skip = {
   name: "*skip",
   phase: Phase.PREPROCESSING,
-  setup(this: typeof _skip, renderer, element) {
+  setup(renderer, element) {
     if ((renderer.isHtmlElement(element)) && (element.hasAttribute(this.name))) {
       return false
     }
   },
-} as Directive & { name: string }
+} as const satisfies Directive<{
+  Name: string
+}>
 
 /** Default exports. */
 export default _skip

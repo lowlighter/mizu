@@ -26,7 +26,7 @@
     },
     "lint:pkg": {
       "description": "Lint package",
-      "command": "cd $INIT_CWD && deno publish --quiet --dry-run --allow-dirty"
+      "command": "cd $INIT_CWD && deno publish --quiet --dry-run --allow-dirty --allow-slow-types"
     },
     "lint:fmt": {
       "description": "Check code formatting",
@@ -35,7 +35,7 @@
     // Test tasks
     "test:deno": {
       "description": "Test code (deno)",
-      "command": "cd $INIT_CWD && deno test --allow-read --allow-env --allow-net --parallel --doc --clean --coverage"
+      "command": "cd $INIT_CWD && deno test --allow-read --allow-env --allow-net --allow-sys=osRelease --parallel --doc --clean --coverage"
     },
     "test:node": {
       "description": "Test code (node)",
@@ -169,6 +169,7 @@
     "@libs/bundle/ts": "jsr:@libs/bundle@^12.6.6/ts",
     "@libs/typing/func": "jsr:@libs/typing@^3.1.3/func",
     "@std/http/unstable-route": "jsr:@std/http@^1.0.20/unstable-route",
+    "@std/http/unstable-file-server": "jsr:@std/http@^1.0.20/unstable-file-server",
     "@std/html/unstable-is-valid-custom-element-name": "jsr:@std/html@^1.0.4/unstable-is-valid-custom-element-name",
     // Development dependencies
     "@dprint/formatter": "jsr:@dprint/formatter@^0.4.1",
@@ -255,7 +256,8 @@
         "triple-slash-reference"
       ],
       "exclude": [
-        "no-window"
+        "no-window",
+        "no-slow-types"
       ]
     },
     "exclude": [

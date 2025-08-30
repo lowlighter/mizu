@@ -104,7 +104,7 @@ export async function html(page: string) {
 /** Generate documentation for an exported class. */
 export async function docs(path: string, { kind, name: exported }: { kind: "class" | "interface"; name: string }) {
   const { package: packaged, name } = path.match(jsr)?.groups ?? {}
-  const nodes = await doc(import.meta.resolve(path))
+  const nodes = (await doc([import.meta.resolve(path)]))[import.meta.resolve(path)]
   if (kind === "interface") {
     return nodes.filter((node): node is DocNodeInterface => (node.kind === "interface") && (node.name === exported))
       .flatMap((node) => [

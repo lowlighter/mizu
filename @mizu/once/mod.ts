@@ -3,20 +3,18 @@ import { type Cache, type Directive, Phase } from "@mizu/internal/engine"
 export type * from "@mizu/internal/engine"
 
 /** `*once` directive. */
-export const _once: Directive<{
-  Cache: WeakSet<HTMLElement | Comment>
-}> = {
+export const _once = {
   name: "*once",
   phase: Phase.POSTPROCESSING,
-  init(this: typeof _once, renderer) {
-    renderer.cache<Cache<typeof this>>(this.name, new WeakSet())
+  init(renderer) {
+    renderer.cache<Cache<typeof _once>>(this.name, new WeakSet())
   },
-  setup(this: typeof _once, _, element, { cache }) {
+  setup(_, element, { cache }) {
     if (cache.has(element)) {
       return false
     }
   },
-  cleanup(this: typeof _once, renderer, element, { cache }) {
+  cleanup(renderer, element, { cache }) {
     let target = element
     if ((renderer.isComment(element)) && (renderer.cache("*").has(element))) {
       target = renderer.cache("*").get(element)!
@@ -27,7 +25,9 @@ export const _once: Directive<{
     }
     cache.add(element)
   },
-}
+} as const satisfies Directive<{
+  Cache: WeakSet<HTMLElement | Comment>
+}>
 
 /** Default exports. */
 export default _once

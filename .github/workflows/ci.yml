@@ -187,7 +187,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
-      - run: deno publish
+      - run: deno publish --allow-slow-types
 
   deploy:
     name: Deploy

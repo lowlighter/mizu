@@ -3,21 +3,19 @@ import { type Cache, type Directive, Phase } from "@mizu/internal/engine"
 export type * from "@mizu/internal/engine"
 
 /** `*refresh` directive. */
-export const _refresh: Directive<{
-  Cache: WeakMap<HTMLElement | Comment, { id: number; interval: number }>
-}> = {
+export const _refresh = {
   name: "*refresh",
   phase: Phase.POSTPROCESSING,
-  init(this: typeof _refresh, renderer) {
-    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
+  init(renderer) {
+    renderer.cache<Cache<typeof _refresh>>(this.name, new WeakMap())
   },
-  setup(this: typeof _refresh, _, __, { state }) {
+  setup(_, __, { state }) {
     if (!("$refresh" in state)) {
       Object.assign(state, { $refresh: false })
     }
     return { state }
   },
-  async execute(this: typeof _refresh, renderer, element, { attributes: [attribute], cache, ...options }) {
+  async execute(renderer, element, { attributes: [attribute], cache, ...options }) {
     const value = await renderer.evaluate(element, attribute.value, options) as string
 
     // Clear interval if value is null
@@ -39,7 +37,7 @@ export const _refresh: Directive<{
       cached.id = NaN
     }
   },
-  cleanup(this: typeof _refresh, renderer, element, { cache, ...options }) {
+  cleanup(renderer, element, { cache, ...options }) {
     // Cleanup interval from commented out elements
     if ((renderer.isComment(element)) && (cache.has(renderer.cache("*").get(element)!))) {
       element = renderer.cache("*").get(element)!
@@ -58,7 +56,9 @@ export const _refresh: Directive<{
       }
     }, cache.get(element)!.interval)
   },
-}
+} as const satisfies Directive<{
+  Cache: WeakMap<HTMLElement | Comment, { id: number; interval: number }>
+}>
 
 /** Default exports. */
 export default _refresh

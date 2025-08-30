@@ -3,10 +3,10 @@ import { type Directive, Phase } from "@mizu/internal/engine"
 export type * from "@mizu/internal/engine"
 
 /** `*is` directive. */
-export const _is: Directive = {
+export const _is = {
   name: "*is",
   phase: Phase.MORPHING,
-  async execute(this: typeof _is, renderer, element, { attributes: [attribute], ...options }) {
+  async execute(renderer, element, { attributes: [attribute], ...options }) {
     if (!renderer.isHtmlElement(element)) {
       return
     }
@@ -41,7 +41,7 @@ export const _is: Directive = {
 
     return { element: morphed }
   },
-}
+} as const satisfies Directive
 
 /** Default exports. */
 export default _is
