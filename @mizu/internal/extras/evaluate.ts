@@ -41,14 +41,31 @@ const renderer = await new Renderer(null as any, { directives: [] }).ready
  * console.assert(await evaluate("foo.default", { foo }))
  * ```
  *
+ * The `permissions` option can be used to specify the permissions for the evaluation.
+ * If specified, the evaluation will be performed in a separate worker with the given permissions.
+ * This option is only supported in Deno, and requires the `--unstable-worker-options` flag to be enabled.
+ * Note that some results may not be transferable between workers, in which case an error will be thrown.
+ * See {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm#supported_types | structured clone algorithm} for more details.
+ *
  * > [!NOTE]
  * > The root {@linkcode Renderer.internal} prefix is used internally to manage evaluation state, and thus cannot be used as a variable name.
  */
-export async function evaluate<T = unknown>(expression: string, variables = null as Nullable<Record<PropertyKey, unknown>>, { imports = {} as Record<string, string>, context = "expression" as "expression" | "function" } = {}): Promise<T> {
+export async function evaluate<T = unknown>(
+  expression: string,
+  variables = null as Nullable<Record<PropertyKey, unknown>>,
+  { imports = {} as Record<string, string>, context = "expression" as "expression" | "function", permissions = null as Nullable<Deno.PermissionOptions> } = {},
+): Promise<T> {
   if (context === "function") {
     expression = `async () =>{${expression}}`
   }
   variables ??= {}
+  if (permissions !== null) {
+    const { promise, resolve, reject } = Promise.withResolvers<T>()
+    const worker = new Worker(import.meta.resolve("./evaluate_sandbox.ts"), { type: "module", deno: { permissions } } as unknown)
+    worker.onmessage = ({ data: { error, result } }) => error ? reject(error) : resolve(result)
+    worker.postMessage({ expression, variables, imports, context })
+    return await promise
+  }
   return await renderer.evaluate(null, expression, {
     state: { ...Object.fromEntries(await Promise.all(Object.entries(imports).map(async ([name, value]) => [name, await import(value)]))), ...variables } as State,
     args: context === "function" ? [] : undefined,

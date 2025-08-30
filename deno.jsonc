@@ -195,6 +195,9 @@
     "@std/tar": "jsr:@std/tar@^0.1.7",
     "@std/yaml": "jsr:@std/yaml@^1.0.9"
   },
+  "unstable": [
+    "worker-options"
+  ],
   "workspace": [
     "@mizu/bind",
     "@mizu/clean",
