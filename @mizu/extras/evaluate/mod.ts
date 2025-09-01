@@ -61,7 +61,7 @@ export async function evaluate<T = unknown>(
   variables ??= {}
   if (permissions !== null) {
     const { promise, resolve, reject } = Promise.withResolvers<T>()
-    const worker = new Worker(sandbox ?? import.meta.resolve("./sandbox.ts"), { type: "module", deno: { permissions } } as WorkerOptions)
+    const worker = new Worker(sandbox ?? import.meta.resolve("./sandbox.ts"), { name: "mizu-sandbox", type: "module", deno: { permissions } } as WorkerOptions)
     worker.onmessage = ({ data: { error, result } }) => error ? reject(error) : resolve(result)
     worker.postMessage({ expression, variables, imports, context })
     return await promise

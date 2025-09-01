@@ -1,6 +1,6 @@
 {
   "name": "@mizu/extras",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "exports": {
     "./evaluate": "./evaluate/mod.ts",
     "./evaluate/sandbox": "./evaluate/sandbox.ts"
