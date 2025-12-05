@@ -1,5 +1,5 @@
 // Imports
-import { type Cache, type callback, type Directive, Phase } from "@mizu/internal/engine"
+import { type Cache, type Callback, type Directive, Phase } from "@mizu/internal/engine"
 import { _event } from "@mizu/event"
 import { _body, _header, _http, _response, _response_typings } from "@mizu/http"
 export type * from "@mizu/internal/engine"
@@ -29,10 +29,10 @@ export const _http_event = {
     if (renderer.isComment(element)) {
       return
     }
-    const cached = renderer.cache<WeakMap<HTMLElement, callback>>(`#${this.name}`)!
+    const cached = renderer.cache<WeakMap<HTMLElement, Callback>>(`#${this.name}`)!
     if (!cached.has(element)) {
-      const callback = async ($event: Event, { attribute, expression }: { attribute: Attr; expression: callback }) => {
-        const http = await _http.execute.call(this, renderer, element, { ...arguments[2], attributes: renderer.getAttributes(element, _http.name), _return_callback: true }) as Awaited<callback>
+      const callback = async ($event: Event, { attribute, expression }: { attribute: Attr; expression: Callback }) => {
+        const http = await _http.execute.call(this, renderer, element, { ...arguments[2], attributes: renderer.getAttributes(element, _http.name), _return_callback: true }) as Awaited<Callback>
         const $response = await http($event)
         await _response.execute.call(this, renderer, element, { ...arguments[2], attributes: [attribute], state: { ...arguments[2].state, $event, $response }, _expression: { value: expression, args: [$event] } })
       }

@@ -14,7 +14,7 @@
     <p *show="false">foo</p>
   </render>
   <expect>
-    <p style="display: none">foo</p>
+    <p style="display: none !important">foo</p>
   </expect>
 </test>
 
@@ -22,13 +22,13 @@
   <render>
     <style filter-remove>
       [\*show] {
-        display: none;
+        display: none !important;
       }
     </style>
     <p *show>foo</p>
   </render>
   <expect>
-    <p style="display: initial">foo</p>
+    <p style="display: initial !important">foo</p>
   </expect>
 </test>
 
@@ -40,7 +40,7 @@
     <p *show="value">foo</p>
   </render>
   <expect>
-    <p style="display: none">foo</p>
+    <p style="display: none !important">foo</p>
   </expect>
   <script>
     context.value = true
@@ -54,7 +54,7 @@
   </script>
   <render></render>
   <expect>
-    <p style="display: none">foo</p>
+    <p style="display: none !important">foo</p>
   </expect>
 </test>
 

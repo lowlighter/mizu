@@ -1,5 +1,5 @@
 // Imports
-import type { callback } from "@libs/typing"
+import type { Callback } from "@libs/typing"
 import { dirname, fromFileUrl, join, toFileUrl } from "@std/path"
 import { route } from "@std/http/unstable-route"
 import { accepts } from "@std/http"
@@ -103,7 +103,7 @@ const handler = {
               }
               if (directive.typings) {
                 for (const [name, value] of Object.entries(directive.typings.modifiers ?? {})) {
-                  json.typings.modifiers[name].type = ((value as { type: callback }).type ?? String).name.toLowerCase()
+                  json.typings.modifiers[name].type = ((value as { type: Callback }).type ?? String).name.toLowerCase()
                   if (json.typings.modifiers[name].type === "date") {
                     json.typings.modifiers[name].type = "duration"
                   }

@@ -1,5 +1,5 @@
 // Imports
-import { type Cache, type callback, type Directive, Phase } from "@mizu/internal/engine"
+import { type Cache, type Callback, type Directive, Phase } from "@mizu/internal/engine"
 import { keyboard } from "./keyboard.ts"
 export type * from "@mizu/internal/engine"
 
@@ -93,12 +93,12 @@ export const _event = {
           _callback(event, { attribute, expression })
           return
         }
-        if (typeof (expression as string | callback) === "function") {
-          ;(expression as unknown as callback)(event)
+        if (typeof (expression as string | Callback) === "function") {
+          ;(expression as unknown as Callback)(event)
           return
         }
         renderer.evaluate(element, `${expression || _event.default}`, { context, state: { ...state, $event: event }, args: [event] })
-      } as callback
+      } as Callback
       // Apply keyboard modifiers to callback
       if (modifiers.keys) {
         const check = keyboard(modifiers.keys)

@@ -1,5 +1,5 @@
 // Imports
-import { type Arg, type Arrayable, type Cache, type callback, type Directive, type InferAttrTypings, type Nullable, Phase } from "@mizu/internal/engine"
+import { type Arg, type Arrayable, type Cache, type Callback, type Directive, type InferAttrTypings, type Nullable, Phase } from "@mizu/internal/engine"
 import { equal } from "@std/assert"
 import { _event } from "@mizu/event"
 export type * from "@mizu/internal/engine"
@@ -135,7 +135,7 @@ export const _model = {
   },
 } as const satisfies Directive<{
   Name: RegExp
-  Cache: WeakMap<HTMLElement, WeakMap<HTMLElement, { model: Record<"read" | "sync", Nullable<callback>>; event: Nullable<string>; init: boolean }>>
+  Cache: WeakMap<HTMLElement, WeakMap<HTMLElement, { model: Record<"read" | "sync", Nullable<Callback>>; event: Nullable<string>; init: boolean }>>
   Typings: typeof typings
   Default: true
 }>

@@ -1,5 +1,5 @@
 // Imports
-import type { Arg, Arrayable, callback, NonVoid, Nullable, Optional } from "@libs/typing/types"
+import type { Arg, Arrayable, Callback, NonVoid, Nullable, Optional } from "@libs/typing/types"
 import type { Cache, Directive } from "./directive.ts"
 import { escape } from "@std/regexp"
 import { AsyncFunction } from "@libs/typing/func"
@@ -7,7 +7,7 @@ import { Context } from "@libs/reactive"
 import { Phase } from "./phase.ts"
 import { delay } from "@std/async"
 export { Context, Phase }
-export type { Arg, Arrayable, Cache, callback, Directive, NonVoid, Nullable, Optional }
+export type { Arg, Arrayable, Cache, Callback, Directive, NonVoid, Nullable, Optional }
 export type * from "./directive.ts"
 
 /**
@@ -443,7 +443,7 @@ export class Renderer {
   }
 
   /** Watched {@linkcode Context}s. */
-  readonly #watched = new WeakMap<Context, WeakMap<HTMLElement | Comment, { properties: Set<string>; _get: Nullable<callback>; _set: Nullable<callback>; _call: Nullable<callback> }>>()
+  readonly #watched = new WeakMap<Context, WeakMap<HTMLElement | Comment, { properties: Set<string>; _get: Nullable<Callback>; _set: Nullable<Callback>; _call: Nullable<Callback> }>>()
 
   /** Start watching a {@linkcode Context} for properties read operations. */
   #watch(context: Context, element: HTMLElement | Comment) {
