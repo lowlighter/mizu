@@ -1,6 +1,6 @@
 {
   "name": "@mizu/for",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "exports": {
     ".": "./mod.ts",
     "./empty": "./empty/mod.ts"
