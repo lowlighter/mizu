@@ -456,7 +456,7 @@ export class Renderer {
     const watched = this.#watched.get(context)!.get(element)!
     if (!watched._get) {
       watched._get = ({ detail: { path, property } }: CustomEvent) => {
-        watched.properties.add([...path, property].join("."))
+        watched.properties.add([...path, property].map(String).join("."))
       }
     }
     context.addEventListener("get", watched._get as EventListener)
@@ -480,7 +480,7 @@ export class Renderer {
     watched._get = null
     if (!watched._set) {
       watched._set = ({ detail: { path, property } }: CustomEvent) => {
-        const key = [...path, property].join(".")
+        const key = [...path, property].map(String).join(".")
         if (watched.properties.has(key)) {
           this.debug(`"${key}" has been modified, queuing reactive render request`, element)
           this.#queueReactiveRender(element, { context, state })
