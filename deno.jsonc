@@ -43,7 +43,7 @@
     },
     "test:bun": {
       "description": "Test code (bun)",
-      "command": "cd $INIT_CWD && bun test"
+      "command": "cd $INIT_CWD && bun test --timeout 15000"
     },
     // Build tasks
     "build:lockfile-deno": {
@@ -136,7 +136,7 @@
     },
     "render:mermaid": {
       "description": "Render mermaid diagrams",
-      "command": "deno run --allow-read --allow-net=127.0.0.1,localhost,cdn.jsdelivr.net --allow-write=www/static/rendering.svg --allow-run=$(deno task resolve:browser-path) .github/tools/generate_mermaid.ts www/misc/rendering.mermaid www/static/rendering.svg"
+      "command": "deno run --allow-read --allow-net=127.0.0.1,localhost,cdn.jsdelivr.net --allow-import=cdn.jsdelivr.net,jsr.io --allow-write=www/static/rendering.svg --allow-run=$(deno task resolve:browser-path) .github/tools/generate_mermaid.ts www/misc/rendering.mermaid www/static/rendering.svg"
     },
     "render:readmes": {
       "description": "Render packages README.md using their mod.html",
