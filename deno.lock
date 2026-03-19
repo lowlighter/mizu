@@ -259,7 +259,11 @@
       ]
     },
     "@libs/reactive@5.0.5": {
-      "integrity": "7e1e68d353f84f64db60856f7fa0b0025864a371728617e517e389a3a62b9754"
+      "integrity": "7e1e68d353f84f64db60856f7fa0b0025864a371728617e517e389a3a62b9754",
+      "dependencies": [
+        "jsr:@libs/typing",
+        "jsr:@std/collections"
+      ]
     },
     "@libs/run@3.3.2": {
       "integrity": "e8a517155ba81ac3e78ac68cccdeb4ce57c55ba9f7c48cf043155acbd4e73a98",
@@ -272,6 +276,7 @@
     "@libs/testing@5.2.3": {
       "integrity": "23c598df874b005246a01b19edb5c4aae83a17415f302c53b85dbde4bea6d213",
       "dependencies": [
+        "jsr:@libs/typing",
         "jsr:@lowlighter/std-expect",
         "jsr:@std/assert@^1.0.19",
         "jsr:@std/fmt@^1.0.9",
