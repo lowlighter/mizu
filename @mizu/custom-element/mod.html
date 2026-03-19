@@ -29,6 +29,9 @@
     <span #type>Record&lt;PropertyKey, string&gt;</span>
     A record of <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes">HTML attributes</a> specified on the custom element.
   </mizu-variable>
+  <mizu-modifier #modifier name="flat">
+    Apply <a href="#once"><code class="hljs-keyword">*once</code>.flat</a> directive on the custom element occurences.
+  </mizu-modifier>
 </mizu-directive>
 
 <mizu-directive id="slot" directory="custom-element">
@@ -47,7 +50,4 @@
   <mizu-note #note>
     Elements targeting the same slot are appended in the order they are defined.
   </mizu-note>
-  <mizu-modifier #modifier name="flat">
-    Apply <a href="#once"><code class="hljs-keyword">*once</code>.flat</a> directive on the custom element occurences.
-  </mizu-modifier>
 </mizu-directive>
