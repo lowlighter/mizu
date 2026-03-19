@@ -15,4 +15,10 @@
     Load additional Markdown plugins by specifying a comma-separated list (e.g., <code>*markdown[emojis,highlighting,sanitize]</code>). See the full list of supported plugins at <a href="https://jsr.io/@libs/markdown/doc/plugins/~#Variables"><var>@libs/markdown/plugins</var></a>.
     Unsupported plugins will be silently ignored.
   </mizu-modifier>
+  <mizu-modifier #modifier name="trim">
+    Trim the leading spaces before rendering content.
+  </mizu-modifier>
+  <mizu-modifier #modifier name="inline">
+    Unwrap rendered content when it results in a single <code>&lt;p&gt;</code> tag.
+  </mizu-modifier>
 </mizu-directive>
