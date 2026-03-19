@@ -20,9 +20,6 @@
   <mizu-note #note>
     Custom elements registered this way do not use <a href="https://developer.mozilla.org/docs/Web/API/Web_components/Using_shadow_DOM">Shadow DOM</a>, their content is rendered directly.
   </mizu-note>
-  <mizu-modifier #modifier name="flat">
-    Replace occurrences of this custom element with its content. Note that <code>$slots</code> and <code>$attrs</code> variables are not accessible when using this modifier.
-  </mizu-modifier>
   <mizu-variable #variable name="$slots">
     <span #type>Record&lt;PropertyKey, HTMLSlotElement&gt;</span>
     A record of <a href="#slot"><code class="hljs-keyword">#<span class="hljs-meta">slot</span></code></a> elements by <a href="https://developer.mozilla.org/docs/Web/HTML/Element/slot"><code>&lt;slot&gt;</code></a> name. The unnamed slot is accessible using <code
