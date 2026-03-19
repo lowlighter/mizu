@@ -189,7 +189,7 @@
   </expect>
 </test>
 
-<test name="[*custom-element + *once.flat] behaves as expected (1)">
+<test name="[*custom-element + *once.flat] behaves as expected (1 - `$attrs` is accessible on first render)">
   <load directives="@mizu/test,@mizu/custom-element,@mizu/once,@mizu/clean"></load>
   <render>
     <template *custom-element="x-foo" filter-remove>
@@ -214,7 +214,7 @@
   </expect>
 </test>
 
-<test name="[*custom-element + *once.flat] behaves as expected (2)">
+<test name="[*custom-element + *once.flat] behaves as expected (2 - nested `*once.flat` on custom elements are properly handled)">
   <load directives="@mizu/test,@mizu/custom-element,@mizu/once,@mizu/clean"></load>
   <render>
     <template *custom-element="x-foo" filter-remove>
@@ -237,6 +237,37 @@
       <span>
         <b><span>foo</span></b>
       </span>
+    </b>
+  </expect>
+</test>
+
+<test name="[*custom-element + *once.flat] behaves as expected (3 - `.flat` modifier applies `*once.flat` on inserted element)">
+  <load directives="@mizu/test,@mizu/custom-element,@mizu/once,@mizu/clean"></load>
+  <script>
+    context.value = "foo"
+  </script>
+  <render>
+    <template *custom-element.flat="x-foo" filter-remove>
+      <b>
+        <slot></slot>
+      </b>
+    </template>
+    <x-foo>
+      <span ~test.text="value"></span>
+    </x-foo>
+  </render>
+  <expect>
+    <b>
+      <span>foo</span>
+    </b>
+  </expect>
+  <script>
+    context.value = "bar"
+  </script>
+  <render></render>
+  <expect>
+    <b>
+      <span>foo</span>
     </b>
   </expect>
 </test>
