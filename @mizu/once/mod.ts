@@ -33,7 +33,7 @@ export const _once = {
     }
     const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
     if ((renderer.isHtmlElement(element)) && (parsed.modifiers.flat)) {
-      renderer.replaceElementWithChildNodes(element, element)
+      renderer.replaceElementWithChildNodes(element, element).forEach((element) => cache.add(element))
     }
     cache.add(element)
   },

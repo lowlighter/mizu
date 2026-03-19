@@ -603,16 +603,18 @@ export class Renderer {
    * console.assert(parent.innerHTML === "<span>foo</span><span>bar</span>")
    * ```
    */
-  replaceElementWithChildNodes(a: HTMLElement, b: HTMLElement) {
-    let position = a as HTMLElement
+  replaceElementWithChildNodes(a: HTMLElement, b: HTMLElement): Array<HTMLElement | Comment> {
+    let position = a as HTMLElement | Comment
     if (b.tagName === "TEMPLATE") {
       b = this.createElement("div", { innerHTML: b.innerHTML.trim() })
     }
-    for (const child of Array.from(b.cloneNode(true).childNodes) as HTMLElement[]) {
+    const children = Array.from(b.cloneNode(true).childNodes) as Array<HTMLElement | Comment>
+    for (const child of children) {
       a.parentNode?.insertBefore(child, position.nextSibling)
       position = child
     }
     a.remove()
+    return children
   }
 
   /**
