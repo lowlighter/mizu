@@ -3,18 +3,10 @@ import { type Cache, type Directive, type Nullable, Phase } from "@mizu/internal
 import { isValidCustomElementName } from "@std/html/unstable-is-valid-custom-element-name"
 export type * from "@mizu/internal/engine"
 
-/** `*custom-element` typings. */
-export const typings = {
-  modifiers: {
-    flat: { type: Boolean },
-  },
-} as const
-
 /** `*custom-element` directive. */
 export const _custom_element = {
   name: "*custom-element",
   phase: Phase.CUSTOM_ELEMENT,
-  typings,
   init(renderer) {
     renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
   },
@@ -24,8 +16,8 @@ export const _custom_element = {
         state: {
           $slots: cache.get(element)!,
           $attrs: new Proxy({}, {
-            has: (_, name: string) => element.hasAttribute(name),
-            get: (_, name: string) => element.getAttribute(name) ?? undefined,
+            has: (_, name: string) => element.hasAttribute(String(name)),
+            get: (_, name: string) => element.getAttribute(String(name)) ?? undefined,
           }),
         },
       }
@@ -57,7 +49,6 @@ export const _custom_element = {
     cache.set(element, null)
 
     // Register custom element
-    const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
     renderer.window.customElements.define(
       tagname,
       class extends renderer.window.HTMLElement {
@@ -90,9 +81,6 @@ export const _custom_element = {
             this.querySelectorAll<HTMLSlotElement>(`slot${name ? `[name="${name}"]` : ":not([name])"}`).forEach((slot) => renderer.replaceElementWithChildNodes(slot, content))
           })
           this.querySelectorAll<HTMLSlotElement>("slot").forEach((slot) => renderer.replaceElementWithChildNodes(slot, slot))
-          if (parsed.modifiers.flat) {
-            renderer.replaceElementWithChildNodes(this, this)
-          }
         }
       },
     )
@@ -100,7 +88,6 @@ export const _custom_element = {
   },
 } as const satisfies Directive<{
   Cache: WeakMap<HTMLElement, Nullable<Record<PropertyKey, HTMLSlotElement>>>
-  Typings: typeof typings
 }>
 
 /** `#slot` directive. */

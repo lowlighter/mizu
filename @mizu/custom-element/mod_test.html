@@ -120,33 +120,6 @@
   </expect>
 </test>
 
-<test name="[*custom-element] with `.flat` modifier renders as their content">
-  <render>
-    <div>
-      <template *custom-element.flat[true]="x-flat" filter-remove>
-        <div>
-          <slot></slot>
-        </div>
-      </template>
-      <template *custom-element.flat[false]="x-not-flat" filter-remove>
-        <div>
-          <slot></slot>
-        </div>
-      </template>
-      <x-flat>foo</x-flat>
-      <x-not-flat>bar</x-not-flat>
-    </div>
-  </render>
-  <expect>
-    <div>
-      <div>foo</div>
-      <x-not-flat>
-        <div>bar</div>
-      </x-not-flat>
-    </div>
-  </expect>
-</test>
-
 <test name="[*custom-element] skips commented elements">
   <render>
     <template ~test.comment *custom-element="x-custom"></template>
@@ -213,5 +186,57 @@
         <span #bar>b</span>
       </b>
     </x-foo>
+  </expect>
+</test>
+
+<test name="[*custom-element + *once.flat] behaves as expected (1)">
+  <load directives="@mizu/test,@mizu/custom-element,@mizu/once,@mizu/clean"></load>
+  <render>
+    <template *custom-element="x-foo" filter-remove>
+      <b>
+        <slot name="bar"></slot>
+      </b>
+    </template>
+    <x-foo *once.flat baz="a">
+      <span #bar ~test.text="$attrs.baz" *clean.directives></span>
+    </x-foo>
+  </render>
+  <expect>
+    <b>
+      <span #bar>a</span>
+    </b>
+  </expect>
+  <render></render>
+  <expect>
+    <b>
+      <span #bar>a</span>
+    </b>
+  </expect>
+</test>
+
+<test name="[*custom-element + *once.flat] behaves as expected (2)">
+  <load directives="@mizu/test,@mizu/custom-element,@mizu/once,@mizu/clean"></load>
+  <render>
+    <template *custom-element="x-foo" filter-remove>
+      <b>
+        <slot></slot>
+      </b>
+    </template>
+    <x-foo *once.flat>
+      <span>
+        <x-foo *once.flat>
+          <span>
+            foo
+          </span>
+        </x-foo>
+      </span>
+    </x-foo>
+  </render>
+  <expect>
+    <b>
+      <span>
+        <b><span>foo</span></b>
+      </span>
+    </b>
   </expect>
 </test>
