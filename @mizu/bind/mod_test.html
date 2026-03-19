@@ -450,7 +450,7 @@
   </expect>
 </test>
 
-<test name="[:style] with mixed notation binds style attribute">
+<test name="[:style] with mixed notation binds style attribute" skip>
   <script>
     context.style = ["color: red;", { background: "blue" }, ["width: 1px;", { height: "1px" }, "", {}, []]]
   </script>

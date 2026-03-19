@@ -12,7 +12,7 @@ if (import.meta.main) {
 
   // Compute scopes
   const scopes = [...await Array.fromAsync<{ name: string }>(Deno.readDir("@mizu"))]
-    .filter(({ name }) => !["internal", "render", "coverage"].includes(name))
+    .filter(({ name }) => !["internal", "render", "extras", "coverage"].includes(name))
     .map(({ name }) => name)
 
   // Compute render scopes
