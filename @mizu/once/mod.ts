@@ -2,10 +2,18 @@
 import { type Cache, type Directive, Phase } from "@mizu/internal/engine"
 export type * from "@mizu/internal/engine"
 
+/** `*once` typings. */
+export const typings = {
+  modifiers: {
+    flat: { type: Boolean },
+  },
+} as const
+
 /** `*once` directive. */
 export const _once = {
   name: "*once",
   phase: Phase.POSTPROCESSING,
+  typings,
   init(renderer) {
     renderer.cache<Cache<typeof _once>>(this.name, new WeakSet())
   },
@@ -23,10 +31,15 @@ export const _once = {
     if (!attribute) {
       return
     }
+    const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
+    if ((renderer.isHtmlElement(element)) && (parsed.modifiers.flat)) {
+      renderer.replaceElementWithChildNodes(element, element)
+    }
     cache.add(element)
   },
 } as const satisfies Directive<{
   Cache: WeakSet<HTMLElement | Comment>
+  Typings: typeof typings
 }>
 
 /** Default exports. */
