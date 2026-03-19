@@ -605,6 +605,9 @@ export class Renderer {
    */
   replaceElementWithChildNodes(a: HTMLElement, b: HTMLElement) {
     let position = a as HTMLElement
+    if (b.tagName === "TEMPLATE") {
+      b = this.createElement("div", { innerHTML: b.innerHTML.trim() })
+    }
     for (const child of Array.from(b.cloneNode(true).childNodes) as HTMLElement[]) {
       a.parentNode?.insertBefore(child, position.nextSibling)
       position = child
