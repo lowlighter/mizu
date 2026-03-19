@@ -11,3 +11,9 @@ Render an element once and skip subsequent updates.
   <!--...-->
 </div>
 ```
+
+## Modifiers
+
+### `.flat[boolean]`
+
+Replace this element by its content.

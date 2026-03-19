@@ -40,7 +40,7 @@ A record of [HTML attributes](https://developer.mozilla.org/docs/Web/HTML/Attrib
 
 ### `.flat[boolean]`
 
-Replace occurrences of this custom element with its content. Note that `$slots` and `$attrs` variables are not accessible when using this modifier.
+Apply [`*once`.flat](#once) directive on the custom element occurences.
 
 # `#slot`
 
