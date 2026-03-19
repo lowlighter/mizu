@@ -23,3 +23,11 @@ Set element's [`innerHTML`](https://developer.mozilla.org/docs/Web/API/Element/i
 
 Load additional Markdown plugins by specifying a comma-separated list (e.g., `*markdown[emojis,highlighting,sanitize]`). See the full list of supported plugins at [`@libs/markdown/plugins`](https://jsr.io/@libs/markdown/doc/plugins/~#Variables). Unsupported plugins will be
 silently ignored.
+
+### `.trim[boolean=true]`
+
+Trim the leading spaces before rendering content.
+
+### `.inline[boolean]`
+
+Unwrap rendered content when it results in a single `<p>` tag.
