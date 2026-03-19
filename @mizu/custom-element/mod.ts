@@ -8,7 +8,7 @@ export const _custom_element = {
   name: "*custom-element",
   phase: Phase.CUSTOM_ELEMENT,
   init(renderer) {
-    renderer.cache<Cache<typeof this>>(this.name, new WeakMap())
+    renderer.cache(this.name, new WeakMap())
   },
   setup(renderer, element, { cache }) {
     if ((renderer.isHtmlElement(element)) && (cache.get(element))) {
