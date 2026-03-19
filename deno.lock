@@ -19,6 +19,7 @@
     "jsr:@libs/run@^3.3.2": "3.3.2",
     "jsr:@libs/testing@^5.2.3": "5.2.3",
     "jsr:@libs/typing@^4.0.1": "4.0.1",
+    "jsr:@libs/xml@6": "6.0.8",
     "jsr:@libs/xml@^7.0.4": "7.0.4",
     "jsr:@lowlighter/std-expect@1.0.18-rc.1": "1.0.18-rc.1",
     "jsr:@luca/esbuild-deno-loader@~0.11.1": "0.11.1",
@@ -290,6 +291,9 @@
     },
     "@libs/typing@4.0.1": {
       "integrity": "65e2be46334a0c97d47415c44a48a60151a9278beb74f09dd13ccefba54a9ce9"
+    },
+    "@libs/xml@6.0.8": {
+      "integrity": "7aac7438ddd460fede488d6420e4973438919b54b8e882e851ed9a234716baa3"
     },
     "@libs/xml@7.0.4": {
       "integrity": "eed219cf6258a0b28b60c094c89563a1cd63a023ac515517d6b74a99873d6c02"

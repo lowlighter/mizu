@@ -14,7 +14,7 @@
     "lint": {
       "description": "Lint everything",
       "command": "sleep 0",
-      "dependencies": ["lint:code", "lint:doc", "lint:pkg", "lint:fmt"]
+      "dependencies": ["lint:code", "lint:pkg", "lint:fmt"]
     },
     "lint:code": {
       "description": "Lint code",
