@@ -6,6 +6,7 @@ export type * from "@mizu/internal/engine"
 export const typings = {
   modifiers: {
     trim: { type: Boolean, enforce: true },
+    inline: { type: Boolean },
   },
 } as const
 
@@ -32,6 +33,10 @@ export const _markdown = {
       content = content.replaceAll(new RegExp(`^[ \\t]{${trim}}`, "gm"), "")
     }
     element.innerHTML = await markdown.render(content)
+    if ((parsed.modifiers.inline) && (element.children.length === 1) && (element.children[0].tagName === "P")) {
+      const child = element.children[0] as HTMLParagraphElement
+      renderer.replaceElementWithChildNodes(child, child)
+    }
   },
 } as const satisfies Directive<{
   Typings: typeof typings

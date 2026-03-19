@@ -46,6 +46,17 @@
   </expect>
 </test>
 
+<test name="[*markdown] with `.inline` modifier unwraps content from single paragraphs">
+  <render>
+    <div *markdown.inline[true]="'**foo**'"></div>
+    <div *markdown.inline[false]="'**foo**'"></div>
+  </render>
+  <expect>
+    <div><strong>foo</strong></div>
+    <div><p><strong>foo</strong></p></div>
+  </expect>
+</test>
+
 <test name="[*markdown] with `[tag]` loads specified plugins">
   <render>
     <div *markdown[gfm]>:ocean:</div>
