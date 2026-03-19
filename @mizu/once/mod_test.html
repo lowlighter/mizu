@@ -40,3 +40,26 @@
     <!--[~test.comment="!value"]-->
   </expect>
 </test>
+
+<test name="[*once] with `.flat` modifier replaces the element with its children" only>
+  <render>
+    <div>
+      <template *once.flat>
+        <a></a>
+        <!-- b -->
+        <c></c>
+        d
+        <e></e>
+      </template>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <a></a>
+      <!-- b -->
+      <c></c>
+      d
+      <e></e>
+    </div>
+  </expect>
+</test>
