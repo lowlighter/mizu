@@ -454,6 +454,26 @@ test("`Renderer.render() // R` reacts to properties changes even when a previous
   expect(b.textContent).toBe("baz")
 })
 
+test("`Renderer.render() // R` does not attribute properties reads of concurrently queued elements to each other", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: 0, bar: 0, fn: { a: fn(), b: fn() } })
+  const renderer = new Renderer(window, { ...options, directives: [_test] })
+  const a = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.a()", "~test.text": "foo" } })
+  const b = renderer.createElement("div", { attributes: { "~test[testing].eval": "fn.b()", "~test.text": "bar" } })
+  renderer.document.body.appendChild(a)
+  renderer.document.body.appendChild(b)
+  await renderer.render(renderer.document.body, { context, reactive: true })
+  context.target.foo = 1
+  context.target.bar = 1
+  await renderer.flushReactiveRenderQueue()
+  expect(context.target.fn.a).toBeCalledTimes(2)
+  expect(context.target.fn.b).toBeCalledTimes(2)
+  context.target.bar = 2
+  await renderer.flushReactiveRenderQueue()
+  expect(context.target.fn.a).toBeCalledTimes(2)
+  expect(context.target.fn.b).toBeCalledTimes(3)
+})
+
 test("`Renderer.render() // R` stops reacting for elements that were replaced", async () => {
   await using window = new Window()
   const context = new Context({ foo: "bar", comment: false })
