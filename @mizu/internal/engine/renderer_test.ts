@@ -595,6 +595,16 @@ for (
   })
 }
 
+test("`Renderer.getAttributes()` and `Renderer.parseAttribute()` handle attribute names that cannot be parsed", async () => {
+  await using window = new Window()
+  const renderer = await new Renderer(window, options).ready
+  const div = renderer.createElement("div", { innerHTML: `<div {foo="bar"></div>` }).querySelector("div")!
+  expect(div.attributes).toHaveLength(1)
+  expect(renderer.getAttributes(div, "*foo")).toHaveLength(0)
+  expect(renderer.getAttributes(div, "{foo")).toHaveLength(1)
+  expect(renderer.parseAttribute(div.attributes[0])).toMatchObject({ name: "{foo", value: "bar" })
+})
+
 test("`Renderer.parseAttributes()` parses attributes with `prefix` option", async () => {
   await using window = new Window()
   const renderer = await new Renderer(window, options).ready
