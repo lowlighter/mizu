@@ -780,7 +780,7 @@ export class Renderer {
       }
       case this.window.Node.ELEMENT_NODE: {
         element = element as HTMLElement
-        const attribute = Array.from(element.attributes).find((attribute) => attribute.name === name)
+        const attribute = element.getAttributeNode(name)
         if (!attribute) {
           element.attributes.setNamedItem(this.createAttribute(name, value))
           break
@@ -1018,15 +1018,14 @@ export class Renderer {
       }
       this.#parsed.set(attribute, cached)
     }
-    const parsed = structuredClone(this.#parsed.get(attribute)) as InferAttrTypings<T>
-    // Update values that might have changed since the last parsing or options
-    parsed.value = this.#parseAttributeValue(attribute.parentElement, parsed.name, "value", attribute.value, typings as AttrAny) as typeof parsed.value
-    parsed.attribute = attribute
+    // Cached values are copied (as callers may mutate them) and values that might have changed since the last parsing are updated
+    const cached = this.#parsed.get(attribute)!
+    const parsed = { name: cached.name, tag: cached.tag, attribute, value: this.#parseAttributeValue(attribute.parentElement, cached.name, "value", attribute.value, typings as AttrAny) } as InferAttrTypings<T>
+    if (modifiers) {
+      parsed.modifiers = { ...cached.modifiers } as typeof parsed.modifiers
+    }
     if (prefix && (parsed.name.startsWith(prefix))) {
       parsed.name = parsed.name.slice(prefix.length)
-    }
-    if (!modifiers) {
-      delete (parsed as Record<PropertyKey, unknown>).modifiers
     }
     return parsed
   }
