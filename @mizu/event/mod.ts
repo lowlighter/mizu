@@ -1,5 +1,5 @@
 // Imports
-import { type Cache, type Callback, type Directive, Phase } from "@mizu/internal/engine"
+import { type Cache, type Callback, type Context, type Directive, Phase } from "@mizu/internal/engine"
 import { keyboard } from "./keyboard.ts"
 export type * from "@mizu/internal/engine"
 
@@ -70,15 +70,17 @@ export const _event = {
         cache.get(element)!.set(attribute, new Map())
       }
       if (cache.get(element)!.get(attribute)!.has(event)) {
+        // Listener is kept, but the latest context, state and expression are used when it is triggered
+        Object.assign(cache.get(element)!.get(attribute)!.get(event)!, { context, state, expression })
         continue
       }
 
       // Create callback
       const _callback = arguments[2]._callback
       let callback = function (event: Event) {
-        // Ignore and remove expired listeners
-        if (!element.hasAttribute(attribute.name)) {
-          const registered = cache.get(element)?.get(attribute)?.get(event.type)
+        const registered = cache.get(element)?.get(attribute)?.get(event.type)
+        // Ignore and remove expired listeners (attribute removed, or element disconnected while the listener is attached to another target)
+        if ((!element.hasAttribute(attribute.name)) || ((registered) && (registered.target !== element) && (!element.isConnected))) {
           if (registered) {
             registered.target.removeEventListener(event.type, registered.listener)
           }
@@ -89,15 +91,16 @@ export const _event = {
           return
         }
         // Execute callback
+        const { context: _context, state: _state, expression: _expression } = registered ?? { context, state, expression }
         if (_callback) {
-          _callback(event, { attribute, expression })
+          _callback(event, { attribute, expression: _expression })
           return
         }
-        if (typeof (expression as string | Callback) === "function") {
-          ;(expression as unknown as Callback)(event)
+        if (typeof (_expression as string | Callback) === "function") {
+          ;(_expression as unknown as Callback)(event)
           return
         }
-        renderer.evaluate(element, `${expression || _event.default}`, { context, state: { ...state, $event: event }, args: [event] })
+        renderer.evaluate(element, `${_expression || _event.default}`, { context: _context, state: { ..._state, $event: event }, args: [event] })
       } as Callback
       // Apply keyboard modifiers to callback
       if (modifiers.keys) {
@@ -152,12 +155,12 @@ export const _event = {
       // Attach listener
       const target = { window: renderer.window, document: renderer.document }[modifiers.attach as string] ?? element
       target.addEventListener(event, listener, { passive: modifiers.passive, once: modifiers.once, capture: modifiers.capture })
-      cache.get(element)?.get(attribute)?.set(event, { target, listener })
+      cache.get(element)?.get(attribute)?.set(event, { target, listener, context, state, expression })
     }
   },
 } as const satisfies Directive<{
   Name: RegExp
-  Cache: WeakMap<HTMLElement, WeakMap<Attr, Map<string, { target: EventTarget; listener: EventListener }>>>
+  Cache: WeakMap<HTMLElement, WeakMap<Attr, Map<string, { target: EventTarget; listener: EventListener; context: Context; state: Record<PropertyKey, unknown>; expression: string }>>>
   Typings: typeof typings
   Default: true
 }>
