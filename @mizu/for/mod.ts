@@ -1,5 +1,5 @@
 // Imports
-import { type Arg, type Cache, type Directive, type Nullable, Phase } from "@mizu/internal/engine"
+import { type Arg, type Cache, type Context, type Directive, type Nullable, Phase } from "@mizu/internal/engine"
 import { Expression } from "./parse.ts"
 export type * from "@mizu/internal/engine"
 
@@ -44,21 +44,33 @@ export const _for = {
     let comment = element as unknown as Comment
     if (!renderer.isComment(element)) {
       comment = renderer.comment(element, { directive: this.name as string, expression: attribute.value })
-      cache.set(comment, { element, items: new Map() })
+      cache.set(comment, { element, items: new Map(), contexts: new Map(), scratch: null })
     }
     const cached = cache.get(comment)!
     element = cached.element
     const identifiable = renderer.getAttributes(element, _id.name, { first: true })?.value
 
     // Generate items
+    // Iteration contexts are reused across renders (a context never forgets its children, so creating one per item per render would grow the context tree indefinitely)
     let position = comment as Comment | HTMLElement
     const generated = new Set<string>()
     const pending = []
     for (let i = 0; i < iterations.length; i++) {
-      const iteration = context.with(iterations[i])
       const meta = { $i: i, $I: i + 1, $iterations: iterations.length, $first: i === 0, $last: i === iterations.length - 1 }
-      const id = identifiable ? `${await renderer.evaluate(null, identifiable, { context: iteration, state: { ...state, ...meta } })}` : `${i}`
+      let id = `${i}`
+      if (identifiable) {
+        cached.scratch ??= context.with({ ...iterations[i] })
+        Object.assign(cached.scratch.target, iterations[i])
+        id = `${await renderer.evaluate(null, identifiable, { context: cached.scratch, state: { ...state, ...meta } })}`
+      }
       generated.add(id)
+      let iteration = cached.contexts.get(id)
+      if (!iteration) {
+        iteration = context.with(iterations[i])
+        cached.contexts.set(id, iteration)
+      } else {
+        Object.assign(iteration.target, iterations[i])
+      }
       // Create item if non-existent
       if (!cached.items.has(id)) {
         const item = element.cloneNode(true) as HTMLElement
@@ -85,13 +97,14 @@ export const _for = {
     for (const [id, item] of cached.items) {
       if (!generated.has(id)) {
         cached.items.delete(id)
+        cached.contexts.delete(id)
         item.remove()
       }
     }
     return { final: true }
   },
 } as const satisfies Directive<{
-  Cache: WeakMap<HTMLElement | Comment, Nullable<{ element: HTMLElement; items: Map<string, HTMLElement> }>>
+  Cache: WeakMap<HTMLElement | Comment, Nullable<{ element: HTMLElement; items: Map<string, HTMLElement>; contexts: Map<string, Context>; scratch: Nullable<Context> }>>
 }>
 
 /** `*id` directive. */
