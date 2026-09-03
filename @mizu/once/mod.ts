@@ -22,7 +22,7 @@ export const _once = {
       return false
     }
   },
-  cleanup(renderer, element, { cache }) {
+  async cleanup(renderer, element, { cache, context, state }) {
     let target = element
     if ((renderer.isComment(element)) && (renderer.cache("*").has(element))) {
       target = renderer.cache("*").get(element)!
@@ -31,9 +31,16 @@ export const _once = {
     if (!attribute) {
       return
     }
-    const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
-    if ((renderer.isHtmlElement(element)) && (parsed.modifiers.flat)) {
-      renderer.replaceElementWithChildNodes(element, element).forEach((element) => cache.add(element))
+    if ((renderer.isHtmlElement(element)) && (renderer.parseAttribute(attribute, this.typings, { modifiers: true }).modifiers.flat)) {
+      // Child nodes are moved (not cloned) so that already rendered content keeps its identity (event listeners, caches, etc.)
+      // Since the content of <template> elements is not traversed by the renderer, it is rendered here before being cached
+      const template = element.tagName === "TEMPLATE"
+      for (const child of renderer.replaceElementWithChildNodes(element, element)) {
+        if (template && (renderer.isHtmlElement(child))) {
+          await renderer.render(child, { context, state: { ...state } })
+        }
+        cache.add(child)
+      }
     }
     cache.add(element)
   },
