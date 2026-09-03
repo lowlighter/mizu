@@ -454,6 +454,73 @@ test("`Renderer.render() // R` reacts to properties changes even when a previous
   expect(b.textContent).toBe("baz")
 })
 
+test("`Renderer.render() // R` stops reacting for elements that were replaced", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar", comment: false })
+  let queued = fn()
+  const renderer = new Renderer(window, { ...options, directives: [_test], debug: (message: string) => message.endsWith("queuing reactive render request") && queued() })
+  const element = renderer.createElement("div", { innerHTML: `<div ~test[postprocessing].comment="comment" ~test[preprocessing].eval="foo"></div>` })
+  renderer.document.body.appendChild(element)
+  await renderer.render(element, { context, reactive: true })
+  for (let i = 0; i < 5; i++) {
+    context.target.comment = !context.target.comment
+    await renderer.flushReactiveRenderQueue()
+  }
+  expect(element.childNodes[0].nodeType).toBe(renderer.window.Node.COMMENT_NODE)
+  queued = fn()
+  context.target.foo = "baz"
+  await renderer.flushReactiveRenderQueue()
+  expect(queued).toBeCalledTimes(1)
+})
+
+test("`Renderer.render() // R` stops reacting for elements that were disconnected", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar" })
+  let queued = fn()
+  const renderer = new Renderer(window, { ...options, directives: [_test], debug: (message: string) => message.endsWith("queuing reactive render request") && queued() })
+  const element = renderer.createElement("div", { attributes: { "~test.text": "foo" } })
+  renderer.document.body.appendChild(element)
+  await renderer.render(element, { context, reactive: true })
+  element.remove()
+  context.target.foo = "baz"
+  await renderer.flushReactiveRenderQueue()
+  expect(queued).toBeCalledTimes(1)
+  queued = fn()
+  context.target.foo = "qux"
+  await renderer.flushReactiveRenderQueue()
+  expect(queued).not.toBeCalled()
+})
+
+test("`Renderer.render() // R` reacts to properties changes using the latest state", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar", bar: 0 })
+  let n = 0
+  const directive = {
+    name: "*foo",
+    phase: Phase.TESTING,
+    setup: (renderer, element) => {
+      if ((renderer.isHtmlElement(element)) && (element.hasAttribute("*foo"))) {
+        return { state: { $n: ++n } }
+      }
+    },
+  } as Directive
+  const renderer = new Renderer(window, { ...options, directives: [_test, directive] })
+  const element = renderer.createElement("div", { attributes: { "*foo": "", "~test[content].eval": "bar" }, innerHTML: `<span ~test[content].text="$n + ':' + foo"></span>` })
+  renderer.document.body.appendChild(element)
+  await renderer.render(element, { context, reactive: true })
+  const span = element.querySelector("span")!
+  expect(span.textContent).toBe("1:bar")
+  context.target.foo = "baz"
+  await renderer.flushReactiveRenderQueue()
+  expect(span.textContent).toBe("1:baz")
+  context.target.bar = 1
+  await renderer.flushReactiveRenderQueue()
+  expect(span.textContent).toBe("2:baz")
+  context.target.foo = "qux"
+  await renderer.flushReactiveRenderQueue()
+  expect(span.textContent).toBe("2:qux")
+})
+
 test("`Renderer.flushReactiveRenderQueue()` flushes queued reactive render requests", async () => {
   await using window = new Window()
   const context = new Context({ foo: "bar" })

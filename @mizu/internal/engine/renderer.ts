@@ -394,21 +394,20 @@ export class Renderer {
         const changes = await directive.execute?.(this, element, { cache: this.cache(directive.name), context, state, attributes })
         if (changes?.element) {
           if (reactive && (this.#watched.get(context)?.has(element))) {
-            this.#unwatch(context, element)
             this.#watch(context, changes.element)
             this.#watched.get(context)!.get(element)!.properties.forEach((property) => this.#watched.get(context)!.get(changes.element!)!.properties.add(property))
-            this.#watched.get(context)!.delete(element)
+            this.#forget(context, element)
           }
           element = changes.element
         }
         if (changes?.final) {
           return
         }
-        if (changes?.context) {
+        if (changes?.context && (changes.context !== context)) {
           if (reactive && (this.#watched.get(context)?.has(element))) {
-            this.#unwatch(context, element)
             this.#watch(changes.context, element)
             this.#watched.get(context)!.get(element)!.properties.forEach((property) => this.#watched.get(changes.context!)!.get(element)!.properties.add(property))
+            this.#forget(context, element)
           }
           context = changes.context
         }
@@ -443,7 +442,7 @@ export class Renderer {
   }
 
   /** Watched {@linkcode Context}s. */
-  readonly #watched = new WeakMap<Context, WeakMap<HTMLElement | Comment, { properties: Set<string>; _get: Nullable<Callback>; _set: Nullable<Callback>; _call: Nullable<Callback> }>>()
+  readonly #watched = new WeakMap<Context, WeakMap<HTMLElement | Comment, { properties: Set<string>; state: State; _get: Nullable<Callback>; _set: Nullable<Callback>; _call: Nullable<Callback> }>>()
 
   /** Start watching a {@linkcode Context} for properties read operations. */
   #watch(context: Context, element: HTMLElement | Comment) {
@@ -451,7 +450,7 @@ export class Renderer {
       this.#watched.set(context, new WeakMap())
     }
     if (!this.#watched.get(context)!.has(element)) {
-      this.#watched.get(context)!.set(element, { properties: new Set(), _get: null, _set: null, _call: null })
+      this.#watched.get(context)!.set(element, { properties: new Set(), state: {}, _get: null, _set: null, _call: null })
     }
     const watched = this.#watched.get(context)!.get(element)!
     if (!watched._get) {
@@ -470,6 +469,21 @@ export class Renderer {
     }
   }
 
+  /** Stop watching and reacting to a {@linkcode Context} for the specified element (e.g. because it was replaced or disconnected). */
+  #forget(context: Context, element: HTMLElement | Comment) {
+    const watched = this.#watched.get(context)?.get(element)
+    if (!watched) {
+      return
+    }
+    if (watched._get) {
+      context.removeEventListener("get", watched._get as EventListener)
+    }
+    if (watched._set) {
+      context.removeEventListener("set", watched._set as EventListener)
+    }
+    this.#watched.get(context)!.delete(element)
+  }
+
   /** Start reacting to any {@linkcode Context} properties changes. */
   #react(element: HTMLElement | Comment, { context, state }: { context: Context; state: State }) {
     if (!this.#watched.get(context)?.get(element)?.properties.size) {
@@ -478,12 +492,14 @@ export class Renderer {
     this.#unwatch(context, element)
     const watched = this.#watched.get(context)!.get(element)!
     watched._get = null
+    // State is refreshed on each render so that reactive render requests always use the latest one
+    watched.state = state
     if (!watched._set) {
       watched._set = ({ detail: { path, property } }: CustomEvent) => {
         const key = [...path, property].map(String).join(".")
         if (watched.properties.has(key)) {
           this.debug(`"${key}" has been modified, queuing reactive render request`, element)
-          this.#queueReactiveRender(element, { context, state })
+          this.#queueReactiveRender(element, { context, state: watched.state })
         }
       }
       context.addEventListener("set", watched._set as EventListener)
@@ -557,9 +573,12 @@ export class Renderer {
         const queued = Array.from(this.#queued.entries())
         // Errors are already reported by the rendering process, and must not prevent other requests from being processed
         await Promise.allSettled(
-          queued.map(([element, { entrypoint, ...options }]) => {
-            if (entrypoint && (element.isConnected)) {
-              return this.#render(element, { reactive: true, ...options })
+          queued.map(([element, { entrypoint, context, ...options }]) => {
+            if (!element.isConnected) {
+              return this.#forget(context, element)
+            }
+            if (entrypoint) {
+              return this.#render(element, { reactive: true, context, ...options })
             }
           }),
         )
