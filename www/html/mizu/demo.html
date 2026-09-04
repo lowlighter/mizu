@@ -130,29 +130,29 @@
   </div>
 </div>
 <script>
-  window.addEventListener("load", function () {
-    const data = { runtime: "", tab: "" }
-    for (const key of Object.keys(data)) {
-      document.querySelectorAll(`[data-demo-${key}]`).forEach((element) => {
-        element.addEventListener("click", () => {
-          if ((key === "runtime") && (data.runtime !== element.getAttribute(`data-demo-${key}`))) {
-            const selector = element.getAttribute(`data-demo-${key}`) === "browsers" ? ".mockup.browser [data-demo-tab]" : `.mockup.runtime [data-demo-tab][data-demo-for-runtime="${element.getAttribute(`data-demo-${key}`)}"]`
-            document.querySelector(selector)?.click()
+window.addEventListener("load", function () {
+  const data = { runtime: "", tab: "" }
+  for (const key of Object.keys(data)) {
+    document.querySelectorAll(`[data-demo-${key}]`).forEach((element) => {
+      element.addEventListener("click", () => {
+        if ((key === "runtime") && (data.runtime !== element.getAttribute(`data-demo-${key}`))) {
+          const selector = element.getAttribute(`data-demo-${key}`) === "browsers" ? ".mockup.browser [data-demo-tab]" : `.mockup.runtime [data-demo-tab][data-demo-for-runtime="${element.getAttribute(`data-demo-${key}`)}"]`
+          document.querySelector(selector)?.click()
+        }
+        data[key] = element.getAttribute(`data-demo-${key}`)
+        document.querySelectorAll(`[data-demo-for-${key}]`).forEach((element) => {
+          if (Object.keys(data).every((key) => (element.getAttribute(`data-demo-for-${key}`) === data[key]) || (!element.hasAttribute(`data-demo-for-${key}`)))) {
+            element.style.removeProperty("display")
+          } else {
+            element.style.setProperty("display", "none", "important")
           }
-          data[key] = element.getAttribute(`data-demo-${key}`)
-          document.querySelectorAll(`[data-demo-for-${key}]`).forEach((element) => {
-            if (Object.keys(data).every((key) => (element.getAttribute(`data-demo-for-${key}`) === data[key]) || (!element.hasAttribute(`data-demo-for-${key}`)))) {
-              element.style.removeProperty("display")
-            } else {
-              element.style.setProperty("display", "none", "important")
-            }
-          })
-          document.querySelectorAll(".dock > *").forEach((element) => element.classList.toggle("active", element.getAttribute("data-demo-runtime") === data.runtime))
-          document.querySelectorAll(".tab[data-demo-tab]").forEach((element) => element.classList.toggle("active", element.getAttribute("data-demo-tab") === data.tab))
         })
+        document.querySelectorAll(".dock > *").forEach((element) => element.classList.toggle("active", element.getAttribute("data-demo-runtime") === data.runtime))
+        document.querySelectorAll(".tab[data-demo-tab]").forEach((element) => element.classList.toggle("active", element.getAttribute("data-demo-tab") === data.tab))
       })
-    }
-    document.querySelector(`[data-demo-runtime]`).click()
-    document.querySelector(".demo").classList.remove("loading")
-  })
+    })
+  }
+  document.querySelector(`[data-demo-runtime]`).click()
+  document.querySelector(".demo").classList.remove("loading")
+})
 </script>

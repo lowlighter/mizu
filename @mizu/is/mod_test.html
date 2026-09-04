@@ -20,7 +20,7 @@
 
 <test name="[*is] is reactive">
   <script>
-    context.is = "section"
+  context.is = "section"
   </script>
   <render>
     <div *is="is">foo</div>
@@ -29,7 +29,7 @@
     <section>foo</section>
   </expect>
   <script>
-    context.is = "p"
+  context.is = "p"
   </script>
   <render></render>
   <expect>
@@ -39,7 +39,7 @@
 
 <test name="[*is] does not changes element reference unless needed">
   <script>
-    storage.element = null
+  storage.element = null
   storage.child = null
   context.is = "div"
   </script>
@@ -49,7 +49,7 @@
     </div>
   </render>
   <script>
-    storage.element = document.querySelector("div")
+  storage.element = document.querySelector("div")
   storage.child = document.querySelector("a")
   </script>
   <render></render>
@@ -59,14 +59,14 @@
     </div>
   </expect>
   <script>
-    expect(storage.element).toBe(document.querySelector("div"))
+  expect(storage.element).toBe(document.querySelector("div"))
   expect(storage.child).toBe(document.querySelector("a"))
   </script>
 </test>
 
 <test name="[*is] handles commented elements">
   <script>
-    context.value = false
+  context.value = false
   </script>
   <render>
     <p *is="'div'" ~test[toggle].comment="!value"></p>
@@ -75,7 +75,7 @@
     <!--[~test[toggle].comment="!value"]-->
   </expect>
   <script>
-    context.value = true
+  context.value = true
   </script>
   <render></render>
   <expect>
