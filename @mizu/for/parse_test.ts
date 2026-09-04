@@ -57,6 +57,16 @@ for (
     [`const {a, b:c} of []`, ["a", "c"]],
     [`const {a, b:c = 1} of []`, ["a", "c"]],
     [`const {a, [b]:c = 1} of []`, ["a", "c"]],
+    [`const {a:b, c:{d:e}} of []`, ["b", "e"]],
+    [`const { a: b, c: { d: e } } of []`, ["b", "e"]],
+    [`const {a:{b:c = 1} = {}} of []`, ["c"]],
+    [`const {[a]:{b} = {}, c} of []`, ["b", "c"]],
+    [`const {"a":b, 'c':d, 0:e, 1.5:f} of []`, ["b", "d", "e", "f"]],
+    [`const {a, b, c,} of []`, ["a", "b", "c"]],
+    [`const {\n  a: b,\n  c: { d: e },\n} of []`, ["b", "e"]],
+    [`const [a, b, c,] of []`, ["a", "b", "c"]],
+    [`const [a, , b] of []`, ["a", "b"]],
+    [`const [{a:b} = {}, [c] = []] of []`, ["b", "c"]],
 
     // Complex syntax
     [`const {a = ([{a:1}, [{a:(true)}]]), b} of []`, ["a", "b"]],
