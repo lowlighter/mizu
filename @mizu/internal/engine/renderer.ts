@@ -372,7 +372,7 @@ export class Renderer {
         }
       }
 
-      // 3. Retrieve source element and its attributes (retrieved once, as directives eligibility is checked against each of them)
+      // 3. Retrieve source element and its attributes
       const source = this.cache("*").get(element) ?? element
       const snapshot = this.isHtmlElement(source) ? Array.from(source.attributes) : []
 
