@@ -424,7 +424,11 @@ export class Renderer {
       if (reactive) {
         this.#unwatch(context, element)
       }
-      for (const child of Array.from(element.childNodes) as Array<HTMLElement | Comment>) {
+      const children = [] as Array<HTMLElement | Comment>
+      for (let child = element.firstChild; child; child = child.nextSibling) {
+        children.push(child as HTMLElement | Comment)
+      }
+      for (const child of children) {
         await this.#render(child, { context, state, reactive })
       }
       if (reactive) {
