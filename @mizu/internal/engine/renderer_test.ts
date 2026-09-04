@@ -143,6 +143,17 @@ test("`Renderer.evaluate()` evaluates expressions with callables", async () => {
   await expect(renderer.evaluate(null, "foo", { context: new Context({ foo: false }), args: [true] })).resolves.toBe(false)
 })
 
+test("`Renderer.evaluate()` evaluates the same expression with different `this` bindings", async () => {
+  await using window = new Window()
+  const renderer = await new Renderer(window, options).ready
+  const a = renderer.createElement("a")
+  const b = renderer.createElement("b")
+  await expect(renderer.evaluate(a, "this")).resolves.toBe(a)
+  await expect(renderer.evaluate(b, "this")).resolves.toBe(b)
+  await expect(renderer.evaluate(a, "this.tagName")).resolves.toBe("A")
+  await expect(renderer.evaluate(b, "this.tagName")).resolves.toBe("B")
+})
+
 test("`Renderer.evaluate()` rejects if the `Renderer.internal` identifier is used", async () => {
   await using window = new Window()
   const renderer = await new Renderer(window, options).ready
