@@ -63,3 +63,60 @@
     </div>
   </expect>
 </test>
+
+<test name="[*once] with `.flat` modifier preserves the identity of inserted nodes">
+  <load directives="@mizu/once,@mizu/test,@mizu/event"></load>
+  <script>
+  context.value = 0
+  </script>
+  <render>
+    <div>
+      <p *once.flat>
+        <button @click="value++"></button>
+      </p>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <button></button>
+    </div>
+  </expect>
+  <script>
+  storage.button = rendered.querySelector("button")
+  storage.button.dispatchEvent(new Event("click"))
+  expect(context.value).toBe(1)
+  </script>
+  <render></render>
+  <script>
+  expect(rendered.querySelector("button")).toBe(storage.button)
+  storage.button.dispatchEvent(new Event("click"))
+  expect(context.value).toBe(2)
+  </script>
+</test>
+
+<test name="[*once] with `.flat` modifier renders the content of `<template>` elements">
+  <script>
+  context.value = "foo"
+  </script>
+  <render>
+    <div>
+      <template *once.flat>
+        <span ~test.text="value"></span>
+      </template>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <span>foo</span>
+    </div>
+  </expect>
+  <script>
+  context.value = "bar"
+  </script>
+  <render></render>
+  <expect>
+    <div>
+      <span>foo</span>
+    </div>
+  </expect>
+</test>

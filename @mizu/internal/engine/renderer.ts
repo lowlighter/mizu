@@ -619,6 +619,9 @@ export class Renderer {
    *
    * Note that the `HTMLElement` is entirely replaced, meaning that is is actually removed from the DOM.
    *
+   * If both arguments are the same element, its child nodes are moved rather than cloned, which preserves their identity (and thus any attached event listeners or cache entries).
+   * If the second argument is a {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLTemplateElement | HTMLTemplateElement}, its {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLTemplateElement/content | HTMLTemplateElement.content} is used.
+   *
    * ```ts
    * import { Window } from "@mizu/internal/vdom"
    * const renderer = await new Renderer(new Window()).ready
@@ -631,16 +634,12 @@ export class Renderer {
    * ```
    */
   replaceElementWithChildNodes(a: HTMLElement, b: HTMLElement): Array<HTMLElement | Comment> {
-    let position = a as HTMLElement | Comment
+    let source = b as HTMLElement | DocumentFragment
     if (b.tagName === "TEMPLATE") {
-      b = this.createElement("div", { innerHTML: b.innerHTML.trim() })
+      source = (b as HTMLTemplateElement).content
     }
-    const children = Array.from(b.cloneNode(true).childNodes) as Array<HTMLElement | Comment>
-    for (const child of children) {
-      a.parentNode?.insertBefore(child, position.nextSibling)
-      position = child
-    }
-    a.remove()
+    const children = Array.from((a === b ? source : source.cloneNode(true)).childNodes) as Array<HTMLElement | Comment>
+    a.replaceWith(...children)
     return children
   }
 
