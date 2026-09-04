@@ -2,14 +2,14 @@
 
 <test name="[*refresh] rerenders element at specified intervals">
   <script>
-    context.foo = () => null
+  context.foo = () => null
   context.interval = .100
   </script>
   <render>
     <p *refresh="(foo(), interval)"></p>
   </render>
   <script>
-    context.foo = fn()
+  context.foo = fn()
   await delay(context.interval * 1000)
   expect(context.foo).toHaveBeenCalled()
   context.foo = fn()
@@ -17,11 +17,11 @@
   expect(context.foo).toHaveBeenCalled()
   </script>
   <script>
-    context.interval = .105
+  context.interval = .105
   </script>
   <render></render>
   <script>
-    context.foo = fn()
+  context.foo = fn()
   await delay(context.interval * 1000)
   expect(context.foo).toHaveBeenCalled()
   context.foo = fn()
@@ -30,16 +30,16 @@
   </script>
   <render></render>
   <script>
-    context.interval = null
+  context.interval = null
   </script>
   <render></render>
   <script>
-    context.foo = fn()
+  context.foo = fn()
   await delay(context.interval * 1000)
   expect(context.foo).not.toHaveBeenCalled()
   </script>
   <script>
-    context.interval = null
+  context.interval = null
   await rerender()
   await delay(context.interval * 1000)
   </script>
@@ -47,14 +47,14 @@
 
 <test name="[*refresh] does not reset upon normal rerenderings">
   <script>
-    context.foo = () => null
+  context.foo = () => null
   context.interval = .100
   </script>
   <render>
     <p *refresh="(foo(), interval)"></p>
   </render>
   <script>
-    context.foo = fn()
+  context.foo = fn()
   storage.loop = true
   await Promise.race([
     delay(context.interval * 1000),
@@ -69,7 +69,7 @@
   expect(context.foo).toHaveBeenCalled()
   </script>
   <script>
-    context.interval = null
+  context.interval = null
   await rerender()
   await delay(context.interval * 1000)
   </script>
@@ -77,7 +77,7 @@
 
 <test name="[*refresh] handles commented elements">
   <script>
-    context.value = true
+  context.value = true
   context.foo = () => null
   context.interval = .100
   </script>
@@ -85,19 +85,19 @@
     <p ~test[toggle].comment="!value" *refresh="(foo(), interval)"></p>
   </render>
   <script>
-    context.value = false
+  context.value = false
   </script>
   <render></render>
   <expect>
     <!--[~test[toggle].comment="!value"]-->
   </expect>
   <script>
-    context.foo = fn()
+  context.foo = fn()
   await delay(context.interval * 1000)
   expect(context.foo).not.toHaveBeenCalled()
   </script>
   <script>
-    context.interval = null
+  context.interval = null
   await rerender()
   await delay(context.interval * 1000)
   </script>
@@ -105,7 +105,7 @@
 
 <test name="[*refresh] exposes `$refresh` variable">
   <script>
-    context.interval = .100
+  context.interval = .100
   </script>
   <render>
     <p *refresh="interval" ~test.text="$refresh"></p>
@@ -114,13 +114,13 @@
     <p>false</p>
   </expect>
   <script>
-    await delay(context.interval * 1000)
+  await delay(context.interval * 1000)
   </script>
   <expect>
     <p>true</p>
   </expect>
   <script>
-    context.interval = null
+  context.interval = null
   await rerender()
   await delay(context.interval * 1000)
   </script>
