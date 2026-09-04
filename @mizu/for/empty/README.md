@@ -9,7 +9,9 @@ Conditionally render an element after a [`*for`](#for) directive.
 ```html
 <article *for="const article of articles"></article>
 <p *empty.not *text="`${$generated} results`"></p>
-<p *empty><!-- No results.--></p>
+<p *empty>
+  <!-- No results.-->
+</p>
 ```
 
 ## Notes

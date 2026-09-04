@@ -9,7 +9,9 @@ Conditionally render an element placed after another [`*if`](#if) or [`*else`](#
 ```html
 <div *if="false"></div>
 <div *else="false"></div>
-<div *else><!--...--></div>
+<div *else>
+  <!--...-->
+</div>
 ```
 
 ## Notes

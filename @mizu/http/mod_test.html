@@ -163,7 +163,7 @@
     <div %http="/foo" %response.void></div>
   </render>
   <script>
-    expect(http.request).toBeInstanceOf(Request)
+  expect(http.request).toBeInstanceOf(Request)
   expect(http.response).toBeInstanceOf(Response)
   </script>
 </test>
@@ -176,7 +176,7 @@
     <div %http.post="/foo" %header[x-foo]="'bar'" %body.text="'foobar'" %response.void></div>
   </render>
   <script>
-    expect(http.request).toBeInstanceOf(Request)
+  expect(http.request).toBeInstanceOf(Request)
   expect(http.request.received.headers.get("x-foo")).toBe("bar")
   expect(http.request.received.body).toBe("foobar")
   </script>
@@ -191,7 +191,7 @@
     <div %http.follow="/bar" %response.void></div>
   </render>
   <script>
-    expect(http.response).toBeInstanceOf(Response)
+  expect(http.response).toBeInstanceOf(Response)
   expect(http.response.status).toBe(Status.OK)
   expect(http.response.headers.get("location")).toBeNull()
   </script>
@@ -199,7 +199,7 @@
     <div %http.follow[false]="/bar" %response.void></div>
   </render>
   <script>
-    expect(http.response).toBeInstanceOf(Response)
+  expect(http.response).toBeInstanceOf(Response)
   expect(http.response.status).toBe(Status.TemporaryRedirect)
   expect(http.response.headers.get("location")).not.toBeNull()
   </script>
@@ -213,19 +213,19 @@
     <div></div>
   </render>
   <script>
-    storage.history = window.history.length
+  storage.history = window.history.length
   </script>
   <render>
     <div %http.history[false]="/bar" %response.void></div>
   </render>
   <script>
-    expect(window.history.length).toBe(storage.history)
+  expect(window.history.length).toBe(storage.history)
   </script>
   <render>
     <div %http.history[true]="/bar" %response.void></div>
   </render>
   <script>
-    expect(window.history.length).toBe(storage.history + 1)
+  expect(window.history.length).toBe(storage.history + 1)
   </script>
 </test>
 
@@ -237,7 +237,7 @@
     <div %http.get="/foo" %response.void></div>
   </render>
   <script>
-    expect(http.request).toBeInstanceOf(Request)
+  expect(http.request).toBeInstanceOf(Request)
   expect(http.request.method).toBe("GET")
   </script>
 </test>
@@ -250,7 +250,7 @@
     <div %http.head="/foo" %response.void></div>
   </render>
   <script>
-    expect(http.request).toBeInstanceOf(Request)
+  expect(http.request).toBeInstanceOf(Request)
   expect(http.request.method).toBe("HEAD")
   </script>
 </test>
@@ -263,7 +263,7 @@
     <div %http.post="/foo" %response.void></div>
   </render>
   <script>
-    expect(http.request).toBeInstanceOf(Request)
+  expect(http.request).toBeInstanceOf(Request)
   expect(http.request.method).toBe("POST")
   </script>
 </test>
@@ -276,7 +276,7 @@
     <div %http.put="/foo" %response.void></div>
   </render>
   <script>
-    expect(http.request).toBeInstanceOf(Request)
+  expect(http.request).toBeInstanceOf(Request)
   expect(http.request.method).toBe("PUT")
   </script>
 </test>
@@ -289,7 +289,7 @@
     <div %http.patch="/foo" %response.void></div>
   </render>
   <script>
-    expect(http.request).toBeInstanceOf(Request)
+  expect(http.request).toBeInstanceOf(Request)
   expect(http.request.method).toBe("PATCH")
   </script>
 </test>
@@ -302,7 +302,7 @@
     <div %http.delete="/foo" %response.void></div>
   </render>
   <script>
-    expect(http.request).toBeInstanceOf(Request)
+  expect(http.request).toBeInstanceOf(Request)
   expect(http.request.method).toBe("DELETE")
   </script>
 </test>
@@ -315,7 +315,7 @@
     <div %http.method[options]="/foo" %response.void></div>
   </render>
   <script>
-    expect(http.request).toBeInstanceOf(Request)
+  expect(http.request).toBeInstanceOf(Request)
   expect(http.request.method).toBe("OPTIONS")
   </script>
 </test>
@@ -328,7 +328,7 @@
     <div %http="/foo"></div>
   </render>
   <script>
-    expect(http.request).not.toBeInstanceOf(Request)
+  expect(http.request).not.toBeInstanceOf(Request)
   </script>
 </test>
 
@@ -338,31 +338,31 @@
     <response path="/bar" status="OK"></response>
   </http-server>
   <script>
-    context.url = "/foo"
+  context.url = "/foo"
   </script>
   <render>
     <div %http="url" %response.void></div>
   </render>
   <script>
-    expect(http.request).toBeInstanceOf(Request)
+  expect(http.request).toBeInstanceOf(Request)
   expect(new URL(http.request.url).pathname).toBe("/foo")
   storage.request = http.request
   </script>
   <render></render>
   <script>
-    expect(http.request).toBe(storage.request)
+  expect(http.request).toBe(storage.request)
   context.url = "/bar"
   </script>
   <render></render>
   <script>
-    expect(http.request).not.toBe(storage.request)
+  expect(http.request).not.toBe(storage.request)
   expect(http.request).toBeInstanceOf(Request)
   expect(new URL(http.request.url).pathname).toBe("/bar")
   storage.request = http.request
   </script>
   <render></render>
   <script>
-    expect(http.request).toBe(storage.request)
+  expect(http.request).toBe(storage.request)
   </script>
 </test>
 
@@ -383,13 +383,13 @@
     <response path="/foo" status="OK"></response>
   </http-server>
   <script>
-    context.value = 0
+  context.value = 0
   </script>
   <render>
     <div %http="/foo" %response.void="value++"></div>
   </render>
   <script>
-    expect(context.value).toBe(1)
+  expect(context.value).toBe(1)
   </script>
 </test>
 
@@ -452,7 +452,9 @@
 
 <test name="[%response] with `.text` modifier set `textContent` and escapes html when empty">
   <http-server>
-    <response path="/foo" status="OK"><foo>bar</foo></response>
+    <response path="/foo" status="OK">
+      <foo>bar</foo>
+    </response>
   </http-server>
   <render>
     <div %http="/foo" %response.text></div>
@@ -467,13 +469,13 @@
     <response path="/foo" status="OK">foobar</response>
   </http-server>
   <script>
-    context.result = null
+  context.result = null
   </script>
   <render>
     <div %http="/foo" %response.text="result = $content"></div>
   </render>
   <script>
-    expect(context.result).toBe("foobar")
+  expect(context.result).toBe("foobar")
   </script>
   <expect>
     <div></div>
@@ -482,28 +484,34 @@
 
 <test name="[%response] with `.html` modifier set `innerHTML` when empty">
   <http-server>
-    <response path="/foo" status="OK"><foo>bar</foo></response>
+    <response path="/foo" status="OK">
+      <foo>bar</foo>
+    </response>
   </http-server>
   <render>
     <div %http="/foo" %response.html></div>
   </render>
   <expect>
-    <div><foo>bar</foo></div>
+    <div>
+      <foo>bar</foo>
+    </div>
   </expect>
 </test>
 
 <test name="[%response] with `.html` modifier executes expression">
   <http-server>
-    <response path="/foo" status="OK"><foo>bar</foo></response>
+    <response path="/foo" status="OK">
+      <foo>bar</foo>
+    </response>
   </http-server>
   <script>
-    context.result = null
+  context.result = null
   </script>
   <render>
     <div %http="/foo" %response.html="result = $content.innerHTML"></div>
   </render>
   <script>
-    expect(context.result).toBe("<foo>bar</foo>")
+  expect(context.result.trim()).toBe("<foo>bar</foo>")
   </script>
   <expect>
     <div></div>
@@ -515,13 +523,13 @@
     <response path="/foo" status="OK">{"foo":{"bar":"baz"}}</response>
   </http-server>
   <script>
-    context.result = null
+  context.result = null
   </script>
   <render>
     <div %http="/foo" %response.json="result = $content"></div>
   </render>
   <script>
-    expect(context.result).toEqual({ foo: { bar: "baz" } })
+  expect(context.result).toEqual({ foo: { bar: "baz" } })
   </script>
   <expect>
     <div></div>
@@ -533,13 +541,13 @@
     <response path="/foo" status="OK" escaped>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;foo&gt;&lt;bar&gt;baz&lt;/bar&gt;&lt;/foo&gt;</response>
   </http-server>
   <script>
-    context.result = null
+  context.result = null
   </script>
   <render>
     <div %http="/foo" %response.xml="result = $content"></div>
   </render>
   <script>
-    expect(context.result).toEqual({ "@version": "1.0", "@encoding": "UTF-8", foo: { bar: "baz" } })
+  expect(context.result).toEqual({ "@version": "1.0", "@encoding": "UTF-8", foo: { bar: "baz" } })
   </script>
   <expect>
     <div></div>
@@ -551,13 +559,13 @@
     <response path="/foo" status="OK">{"foo":{"bar":"baz"}}</response>
   </http-server>
   <script>
-    context.result = null
+  context.result = null
   </script>
   <render>
     <div %http="/foo" %response.consume[json]="result = $content"></div>
   </render>
   <script>
-    expect(context.result).toEqual({ foo: { bar: "baz" } })
+  expect(context.result).toEqual({ foo: { bar: "baz" } })
   </script>
   <expect>
     <div></div>
@@ -566,7 +574,9 @@
 
 <test name="[%response] with `.swap` modifier set `outerHTML`">
   <http-server>
-    <response path="/foo" status="OK"><foo>bar</foo></response>
+    <response path="/foo" status="OK">
+      <foo>bar</foo>
+    </response>
   </http-server>
   <render>
     <section>
@@ -582,7 +592,9 @@
 
 <test name="[%response] with `.swap.text` modifiers set `outerHTML` and escapes html">
   <http-server>
-    <response path="/foo" status="OK"><foo>bar</foo></response>
+    <response path="/foo" status="OK">
+      <foo>bar</foo>
+    </response>
   </http-server>
   <render>
     <section>

@@ -21,9 +21,9 @@
 <test name="[*show] is truthy when empty">
   <render>
     <style filter-remove>
-      [\*show] {
-        display: none !important;
-      }
+    [\*show] {
+      display: none !important;
+    }
     </style>
     <p *show>foo</p>
   </render>
@@ -34,7 +34,7 @@
 
 <test name="[*show] is reactive">
   <script>
-    context.value = false
+  context.value = false
   </script>
   <render>
     <p *show="value">foo</p>
@@ -43,14 +43,14 @@
     <p style="display: none !important">foo</p>
   </expect>
   <script>
-    context.value = true
+  context.value = true
   </script>
   <render></render>
   <expect>
     <p>foo</p>
   </expect>
   <script>
-    context.value = false
+  context.value = false
   </script>
   <render></render>
   <expect>
