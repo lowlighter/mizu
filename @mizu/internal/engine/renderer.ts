@@ -493,7 +493,6 @@ export class Renderer {
     this.#unwatch(context, element)
     const watched = this.#watched.get(context)!.get(element)!
     watched._get = null
-    // State is refreshed on each render so that reactive render requests always use the latest one
     watched.state = state
     if (!watched._set) {
       watched._set = ({ detail: { path, property } }: CustomEvent) => {
