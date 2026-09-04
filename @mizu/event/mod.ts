@@ -125,7 +125,7 @@ export const _event = {
       }
       // Apply debounce modifier to callback
       if (modifiers.debounce) {
-        let timeout = NaN
+        let timeout = undefined as ReturnType<typeof setTimeout> | undefined
         callback = ((callback) =>
           function () {
             const args = arguments
