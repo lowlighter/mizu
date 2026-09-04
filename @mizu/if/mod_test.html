@@ -20,7 +20,7 @@
 
 <test name="[*if] is reactive">
   <script>
-    context.value = false
+  context.value = false
   </script>
   <render>
     <p *if="value">foo</p>
@@ -29,14 +29,14 @@
     <!--[*if="value"]-->
   </expect>
   <script>
-    context.value = true
+  context.value = true
   </script>
   <render></render>
   <expect>
     <p>foo</p>
   </expect>
   <script>
-    context.value = false
+  context.value = false
   </script>
   <render></render>
   <expect>

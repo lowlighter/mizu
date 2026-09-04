@@ -2,7 +2,7 @@
 
 <test name="[*empty] renders elements when previous iterative directive yielded no iterations">
   <script>
-    context.value = [0, 1, 2]
+  context.value = [0, 1, 2]
   </script>
   <render>
     <ul>
@@ -18,7 +18,7 @@
     </ul>
   </expect>
   <script>
-    context.value = []
+  context.value = []
   </script>
   <render></render>
   <expect comments="false">
@@ -27,7 +27,7 @@
     </ul>
   </expect>
   <script>
-    context.value = [0]
+  context.value = [0]
   </script>
   <render></render>
   <expect comments="false">
@@ -39,7 +39,7 @@
 
 <test name="[*empty] with `.not` modifier inverts logic">
   <script>
-    context.value = [0, 1, 2]
+  context.value = [0, 1, 2]
   </script>
   <render>
     <ul>
@@ -56,14 +56,14 @@
     </ul>
   </expect>
   <script>
-    context.value = []
+  context.value = []
   </script>
   <render></render>
   <expect comments="false">
     <ul></ul>
   </expect>
   <script>
-    context.value = [0]
+  context.value = [0]
   </script>
   <render></render>
   <expect comments="false">
@@ -76,7 +76,7 @@
 
 <test name="[*empty] supports consecutive directives">
   <script>
-    context.value = [0, 1, 2]
+  context.value = [0, 1, 2]
   </script>
   <render>
     <ul>
@@ -94,7 +94,7 @@
     </ul>
   </expect>
   <script>
-    context.value = []
+  context.value = []
   </script>
   <render></render>
   <expect comments="false">
@@ -103,7 +103,7 @@
     </ul>
   </expect>
   <script>
-    context.value = [0]
+  context.value = [0]
   </script>
   <render></render>
   <expect comments="false">
@@ -120,14 +120,14 @@
     <b *empty ~test[content].text="$generated"></b>
   </render>
   <script>
-    expect(Number(document.querySelector("b").textContent)).toBe(0)
+  expect(Number(document.querySelector("b").textContent)).toBe(0)
   </script>
   <render>
     <p *for="const i of [0, 1, 2]"></p>
     <b *empty.not ~test[content].text="$generated"></b>
   </render>
   <script>
-    expect(Number(document.querySelector("b").textContent)).toBe(3)
+  expect(Number(document.querySelector("b").textContent)).toBe(3)
   </script>
 </test>
 

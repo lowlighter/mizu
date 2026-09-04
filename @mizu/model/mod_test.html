@@ -2,13 +2,13 @@
 
 <test name="[::value] supports generic inputs">
   <script>
-    context.value = "foo"
+  context.value = "foo"
   </script>
   <render>
     <input ::="value" />
   </render>
   <script>
-    // Model to value (set)
+  // Model to value (set)
   input = document.querySelector("input")
   expect(context.value).toBe("foo")
   expect(input.value).toBe("foo")
@@ -25,19 +25,19 @@
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input").value).toBe("")
+  expect(document.querySelector("input").value).toBe("")
   </script>
 </test>
 
 <test name="[::value] supports number inputs">
   <script>
-    context.value = 1
+  context.value = 1
   </script>
   <render>
     <input type="number" ::="value" />
   </render>
   <script>
-    // Model to value (set)
+  // Model to value (set)
   input = document.querySelector("input")
   expect(context.value).toBe(1)
   expect(input.value).toBe("1")
@@ -54,13 +54,13 @@
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input").value).toBe("")
+  expect(document.querySelector("input").value).toBe("")
   </script>
 </test>
 
 <test name="[::value] supports radio inputs">
   <script>
-    context.value = "foo"
+  context.value = "foo"
   </script>
   <render>
     <input type="radio" ::="value" name="value" value="foo" />
@@ -68,7 +68,7 @@
     <input type="radio" ::="value" name="value" value="baz" />
   </render>
   <script>
-    // Model to value (set)
+  // Model to value (set)
   expect(context.value).toBe("foo")
   expect(document.querySelector("input[value=foo]").checked).toBe(true)
   expect(document.querySelector("input[value=bar]").checked).toBe(false)
@@ -94,7 +94,7 @@
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input[value=foo]").checked).toBe(false)
+  expect(document.querySelector("input[value=foo]").checked).toBe(false)
   expect(document.querySelector("input[value=bar]").checked).toBe(false)
   expect(document.querySelector("input[value=baz]").checked).toBe(false)
   </script>
@@ -102,7 +102,7 @@
 
 <test name="[::value] supports checkbox inputs">
   <script>
-    context.value = ["foo"]
+  context.value = ["foo"]
   </script>
   <render>
     <input type="checkbox" ::="value" value="foo" />
@@ -110,7 +110,7 @@
     <input type="checkbox" ::="value" value="baz" />
   </render>
   <script>
-    // Model to value (set)
+  // Model to value (set)
   expect(context.value).toEqual(["foo"])
   expect(document.querySelector("input[value=foo]").checked).toBe(true)
   expect(document.querySelector("input[value=bar]").checked).toBe(false)
@@ -144,7 +144,7 @@
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input[value=foo]").checked).toBe(false)
+  expect(document.querySelector("input[value=foo]").checked).toBe(false)
   expect(document.querySelector("input[value=bar]").checked).toBe(false)
   expect(document.querySelector("input[value=baz]").checked).toBe(false)
   // Value to model (fix invalid value)
@@ -160,7 +160,7 @@
   </script>
   <render></render>
   <script>
-    expect(context.value).toEqual(["foo", "baz"])
+  expect(context.value).toEqual(["foo", "baz"])
   expect(document.querySelector("input[value=foo]").checked).toBe(true)
   expect(document.querySelector("input[value=bar]").checked).toBe(false)
   expect(document.querySelector("input[value=baz]").checked).toBe(true)
@@ -169,13 +169,13 @@
 
 <test name="[::value] supports textarea inputs">
   <script>
-    context.value = "foo"
+  context.value = "foo"
   </script>
   <render>
     <textarea ::="value"></textarea>
   </render>
   <script>
-    // Model to value (set)
+  // Model to value (set)
   textarea = document.querySelector("textarea")
   expect(textarea.value).toBe("foo")
   // Value to model (set)
@@ -191,13 +191,13 @@
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("textarea").value).toBe("")
+  expect(document.querySelector("textarea").value).toBe("")
   </script>
 </test>
 
 <test name="[::value] supports select inputs">
   <script>
-    context.value = "bar"
+  context.value = "bar"
   </script>
   <render>
     <select ::="value">
@@ -207,7 +207,7 @@
     </select>
   </render>
   <script>
-    // Model to value (set)
+  // Model to value (set)
   select = document.querySelector("select")
   expect(select.value).toBe("bar")
   expect(document.querySelector("option[value=foo]").selected).toBe(false)
@@ -233,13 +233,13 @@
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("select").value).toBe("")
+  expect(document.querySelector("select").value).toBe("")
   </script>
 </test>
 
 <test name="[::value] supports multiple select inputs">
   <script>
-    context.value = ["bar", "baz"]
+  context.value = ["bar", "baz"]
   </script>
   <render>
     <select ::="value" multiple>
@@ -249,7 +249,7 @@
     </select>
   </render>
   <script>
-    // Model to value (set)
+  // Model to value (set)
   select = document.querySelector("select")
   expect(select.value).toBe("bar")
   expect(document.querySelector("option[value=foo]").selected).toBe(false)
@@ -283,19 +283,19 @@
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("select").value).toBe("")
+  expect(document.querySelector("select").value).toBe("")
   </script>
 </test>
 
 <test name="[::value] with `.event` modifier sets the event name to which model sync is attached">
   <script>
-    context.value = "foo"
+  context.value = "foo"
   </script>
   <render>
     <input ::.event[change]="value" />
   </render>
   <script>
-    input = document.querySelector("input")
+  input = document.querySelector("input")
   expect(input.value).toBe("foo")
   input.value = "bar"
   input.dispatchEvent(new Event("input"))
@@ -307,7 +307,7 @@
 
 <test name="[::value] with `.name` modifier sets `name` attribute if needed">
   <script>
-    context.value = "foo"
+  context.value = "foo"
   </script>
   <render>
     <input ::.name[true]="value" />
@@ -321,7 +321,7 @@
 
 <test name="[::value] with `.value` modifier initializes model with `value` attribute if needed">
   <script>
-    context.foo = undefined
+  context.foo = undefined
   context.bar = undefined
   </script>
   <render>
@@ -329,7 +329,7 @@
     <input ::.value[false]="bar" value="bar" />
   </render>
   <script>
-    expect(context.foo).toBe("foo")
+  expect(context.foo).toBe("foo")
   expect(context.bar).toBeUndefined()
   </script>
   <expect>
@@ -340,14 +340,14 @@
 
 <test name="[::value] with `.nullish` modifier casts to `null` if empty">
   <script>
-    context.value = []
+  context.value = []
   </script>
   <render>
     <input type="checkbox" name="raw" ::="value" value="" />
     <input type="checkbox" name="casted" ::.nullish="value" value="" />
   </render>
   <script>
-    // Raw value
+  // Raw value
   raw = document.querySelector("input[name=raw]")
   raw.checked = true
   raw.dispatchEvent(new Event("input"))
@@ -362,27 +362,27 @@
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input[name=raw]").checked).toBe(true)
+  expect(document.querySelector("input[name=raw]").checked).toBe(true)
   expect(document.querySelector("input[name=casted]").checked).toBe(false)
   context.value = [null]
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input[name=raw]").checked).toBe(false)
+  expect(document.querySelector("input[name=raw]").checked).toBe(false)
   expect(document.querySelector("input[name=casted]").checked).toBe(true)
   </script>
 </test>
 
 <test name="[::value] with `.number` modifier casts to `Number()`">
   <script>
-    context.value = []
+  context.value = []
   </script>
   <render>
     <input type="checkbox" name="raw" ::="value" value="0" />
     <input type="checkbox" name="casted" ::.number="value" value="0" />
   </render>
   <script>
-    // Raw value
+  // Raw value
   raw = document.querySelector("input[name=raw]")
   raw.checked = true
   raw.dispatchEvent(new Event("input"))
@@ -397,27 +397,27 @@
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input[name=raw]").checked).toBe(true)
+  expect(document.querySelector("input[name=raw]").checked).toBe(true)
   expect(document.querySelector("input[name=casted]").checked).toBe(false)
   context.value = [0]
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input[name=raw]").checked).toBe(false)
+  expect(document.querySelector("input[name=raw]").checked).toBe(false)
   expect(document.querySelector("input[name=casted]").checked).toBe(true)
   </script>
 </test>
 
 <test name="[::value] with `.boolean` modifier casts to YAML-like `Boolean()`">
   <script>
-    context.value = []
+  context.value = []
   </script>
   <render>
     <input type="checkbox" name="raw" ::="value" value="yes" />
     <input type="checkbox" name="casted" ::.boolean="value" value="yes" />
   </render>
   <script>
-    // Raw value
+  // Raw value
   raw = document.querySelector("input[name=raw]")
   raw.checked = true
   raw.dispatchEvent(new Event("input"))
@@ -432,24 +432,24 @@
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input[name=raw]").checked).toBe(true)
+  expect(document.querySelector("input[name=raw]").checked).toBe(true)
   expect(document.querySelector("input[name=casted]").checked).toBe(false)
   context.value = [true]
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input[name=raw]").checked).toBe(false)
+  expect(document.querySelector("input[name=raw]").checked).toBe(false)
   expect(document.querySelector("input[name=casted]").checked).toBe(true)
   </script>
   <script>
-    context.value = []
+  context.value = []
   </script>
   <render>
     <input type="checkbox" name="raw" ::="value" value="no" />
     <input type="checkbox" name="casted" ::.boolean="value" value="no" />
   </render>
   <script>
-    // Raw value
+  // Raw value
   raw = document.querySelector("input[name=raw]")
   raw.checked = true
   raw.dispatchEvent(new Event("input"))
@@ -464,27 +464,27 @@
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input[name=raw]").checked).toBe(true)
+  expect(document.querySelector("input[name=raw]").checked).toBe(true)
   expect(document.querySelector("input[name=casted]").checked).toBe(false)
   context.value = [false]
   </script>
   <render></render>
   <script>
-    expect(document.querySelector("input[name=raw]").checked).toBe(false)
+  expect(document.querySelector("input[name=raw]").checked).toBe(false)
   expect(document.querySelector("input[name=casted]").checked).toBe(true)
   </script>
 </test>
 
 <test name="[::value] with `.string` modifier casts to `String()`">
   <script>
-    context.value = { raw: null, casted: null }
+  context.value = { raw: null, casted: null }
   </script>
   <render>
     <input type="number" name="raw" ::="value.raw" />
     <input type="number" name="casted" ::.string="value.casted" />
   </render>
   <script>
-    // Raw value
+  // Raw value
   raw = document.querySelector("input[name=raw]")
   raw.value = "0"
   raw.dispatchEvent(new Event("input"))
@@ -499,7 +499,7 @@
 
 <test name="[::value] with type modifier supports `&lt;select multiple&gt;`">
   <script>
-    context.value = []
+  context.value = []
   </script>
   <render>
     <select ::.number="value" multiple>
@@ -508,7 +508,7 @@
     </select>
   </render>
   <script>
-    document.querySelectorAll("option").forEach((option) => option.selected = true)
+  document.querySelectorAll("option").forEach((option) => option.selected = true)
   document.querySelector("select").dispatchEvent(new Event("input"))
   await retry(() => expect(context.value).toEqual([1, 2]))
   </script>
@@ -516,7 +516,7 @@
 
 <test name="[::value] skips commented elements">
   <script>
-    context.value = true
+  context.value = true
   </script>
   <render>
     <input ~test.comment ::="value" />
@@ -528,14 +528,14 @@
 
 <test name="[::value] supports empty value shorthand">
   <script>
-    context.value = "foo"
+  context.value = "foo"
   </script>
   <render>
     <input ::>
     <input ::.name>
   </render>
   <script>
-    input = document.querySelector("input")
+  input = document.querySelector("input")
   input.dispatchEvent(new Event("input"))
   expect(input.value).toBe("foo")
   </script>
