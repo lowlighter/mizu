@@ -1,6 +1,6 @@
 import type { testing } from "@libs/testing"
 import { expect, fn, test, TestingError } from "@libs/testing"
-import { retry } from "@std/async"
+import { delay, retry } from "@std/async"
 import { Window } from "../vdom/mod.ts"
 import { Context, type Directive, Phase, Renderer } from "./renderer.ts"
 import _mizu from "@mizu/mizu"
@@ -447,6 +447,24 @@ test("`Renderer.render() // R` reacts to properties changes and continue to trac
   })
 })
 
+test("`Renderer.render() // R` reacts to properties changes even when a previous reactive render failed", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar" })
+  const renderer = new Renderer(window, { ...options, directives: [_test], warn: false })
+  const a = renderer.createElement("div", { attributes: { "~test[testing].throw": "foo === 'boom'", "~test.text": "foo" } })
+  const b = renderer.createElement("div", { attributes: { "~test.text": "foo" } })
+  renderer.document.body.appendChild(a)
+  renderer.document.body.appendChild(b)
+  await renderer.render(renderer.document.body, { context, reactive: true })
+  context.target.foo = "boom"
+  await renderer.flushReactiveRenderQueue()
+  expect(b.textContent).toBe("boom")
+  context.target.foo = "baz"
+  await renderer.flushReactiveRenderQueue()
+  expect(a.textContent).toBe("baz")
+  expect(b.textContent).toBe("baz")
+})
+
 test("`Renderer.flushReactiveRenderQueue()` flushes queued reactive render requests", async () => {
   await using window = new Window()
   const context = new Context({ foo: "bar" })
@@ -461,6 +479,59 @@ test("`Renderer.flushReactiveRenderQueue()` flushes queued reactive render reque
   context.target.foo = "baz"
   await renderer.flushReactiveRenderQueue()
   expect(element.textContent).toBe("baz")
+})
+
+test("`Renderer.flushReactiveRenderQueue()` can be called repeatedly, within and after the throttling window", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar" })
+  const renderer = new Renderer(window, { ...options, directives: [_test] })
+  const element = renderer.createElement("div", { attributes: { "~test.text": "foo" } })
+  renderer.document.body.appendChild(element)
+  await renderer.render(element, { context, reactive: true })
+  await renderer.flushReactiveRenderQueue()
+  expect(element.textContent).toBe("bar")
+  context.target.foo = "baz"
+  await renderer.flushReactiveRenderQueue()
+  expect(element.textContent).toBe("baz")
+  await delay(100)
+  context.target.foo = "qux"
+  await renderer.flushReactiveRenderQueue()
+  expect(element.textContent).toBe("qux")
+})
+
+test("`Renderer.render() // R` reacts to properties changes received during the throttling window", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar" })
+  const renderer = new Renderer(window, { ...options, directives: [_test] })
+  const element = renderer.createElement("div", { attributes: { "~test.text": "foo" } })
+  renderer.document.body.appendChild(element)
+  await renderer.render(element, { context, reactive: true })
+  context.target.foo = "baz"
+  await retry(() => {
+    expect(element.textContent).toBe("baz")
+  })
+  context.target.foo = "qux"
+  await retry(() => {
+    expect(element.textContent).toBe("qux")
+  })
+})
+
+test("`Renderer.render() // R` reacts to properties changes received while rendering", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar", bar: "" })
+  const renderer = new Renderer(window, { ...options, directives: [_test] })
+  const a = renderer.createElement("div", { attributes: { "~test[testing].eval": "bar = foo", "~test.text": "foo" } })
+  const b = renderer.createElement("div", { attributes: { "~test.text": "bar" } })
+  renderer.document.body.appendChild(a)
+  renderer.document.body.appendChild(b)
+  await renderer.render(renderer.document.body, { context, reactive: true })
+  expect(a.textContent).toBe("bar")
+  expect(b.textContent).toBe("bar")
+  context.target.foo = "baz"
+  await retry(() => {
+    expect(a.textContent).toBe("baz")
+    expect(b.textContent).toBe("baz")
+  })
 })
 
 test("`Renderer.createElement()` creates a `new HTMLElement()`", async () => {
