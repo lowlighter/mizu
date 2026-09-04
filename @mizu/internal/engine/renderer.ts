@@ -1017,7 +1017,7 @@ export class Renderer {
       }
       this.#parsed.set(attribute, cached)
     }
-    // Cached values are copied (as callers may mutate them) and values that might have changed since the last parsing are updated
+    // Copy cached values and the ones that might have changed since last parsing
     const cached = this.#parsed.get(attribute)!
     const parsed = { name: cached.name, tag: cached.tag, attribute, value: this.#parseAttributeValue(attribute.parentElement, cached.name, "value", attribute.value, typings as AttrAny) } as InferAttrTypings<T>
     if (modifiers) {
