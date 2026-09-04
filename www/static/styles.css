@@ -192,7 +192,8 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   }
 }
 
-.api .toc-hidden, .api .toc-hidden [class*="hljs-"] {
+.api .toc-hidden,
+.api .toc-hidden [class*="hljs-"] {
   color: var(--muted) !important;
   font-weight: normal !important;
 }
@@ -239,7 +240,8 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   }
 }
 
-.directive h4, .directive h5 {
+.directive h4,
+.directive h5 {
   font-size: 1.25rem;
   margin: 1rem 0 1rem !important;
   border-bottom: 1px solid var(--bd-muted);
@@ -383,12 +385,14 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   height: 600px;
 }
 
-.demo .dock, .demo [data-demo-tab] {
+.demo .dock,
+.demo [data-demo-tab] {
   transition: opacity var(--tr-duration);
   opacity: 1;
 }
 
-.demo.loading .dock, .demo.loading [data-demo-tab] {
+.demo.loading .dock,
+.demo.loading [data-demo-tab] {
   opacity: 0.25;
   cursor: wait !important;
 }
@@ -559,7 +563,8 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   position: relative;
 }
 
-.mockup.browser .tabs .tab.active .before, .mockup.browser .tabs .tab.active .after {
+.mockup.browser .tabs .tab.active .before,
+.mockup.browser .tabs .tab.active .after {
   position: absolute;
   bottom: 0;
   left: -1rem;
@@ -573,7 +578,8 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   right: -1rem;
 }
 
-.mockup.browser .tabs .tab.active .before::before, .mockup.browser .tabs .tab.active .after::before {
+.mockup.browser .tabs .tab.active .before::before,
+.mockup.browser .tabs .tab.active .after::before {
   content: "";
   position: absolute;
   width: 100%;
@@ -829,13 +835,15 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   margin: 0;
 }
 
-.carbon-like pre, .carbon-like .editor {
+.carbon-like pre,
+.carbon-like .editor {
   padding-top: 0;
   background: none;
 }
 
 /** Builder */
-.builder .directives small, .builder input[type="checkbox"].padded small {
+.builder .directives small,
+.builder input[type="checkbox"].padded small {
   margin-left: 1.75rem;
 }
 
@@ -851,7 +859,9 @@ main :is(h1, h2, h3, h4, h5, h6, .hx)[id]::before {
   background-color: var(--bg-muted);
 }
 
-.builder.pending label, .builder.pending label *, .builder.pending button {
+.builder.pending label,
+.builder.pending label *,
+.builder.pending button {
   color: var(--muted) !important;
   pointer-events: none;
 }
