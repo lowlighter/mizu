@@ -135,3 +135,127 @@
     <p *warn="[*else] must be immediately preceded by another [*if] or [*else], ignoring">bar</p>
   </expect>
 </test>
+
+<test name="[*else] supports templates">
+  <script>
+  context.value = true
+  </script>
+  <render>
+    <template *if="value">
+      <p>foo</p>
+      <p>bar</p>
+    </template>
+    <template *else>
+      <p>baz</p>
+      <p>qux</p>
+    </template>
+  </render>
+  <expect>
+    <!--[*if="value"]-->
+    <p>foo</p>
+    <p>bar</p>
+    <!--[/*if]-->
+    <!--[*else=""]-->
+  </expect>
+  <script>
+  context.value = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+    <!--[*else=""]-->
+    <p>baz</p>
+    <p>qux</p>
+    <!--[/*else]-->
+  </expect>
+  <script>
+  context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+    <p>foo</p>
+    <p>bar</p>
+    <!--[/*if]-->
+    <!--[*else=""]-->
+  </expect>
+</test>
+
+<test name="[*else] supports nested templates">
+  <script>
+  context.a = true
+  context.b = true
+  </script>
+  <render>
+    <template *if="a">
+      <template *if="b">
+        <p>foo</p>
+      </template>
+      <template *else>
+        <p>bar</p>
+      </template>
+    </template>
+    <template *else>
+      <p>baz</p>
+    </template>
+  </render>
+  <expect>
+    <!--[*if="a"]-->
+    <!--[*if="b"]-->
+    <p>foo</p>
+    <!--[/*if]-->
+    <!--[*else=""]-->
+    <!--[/*if]-->
+    <!--[*else=""]-->
+  </expect>
+  <script>
+  context.b = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="a"]-->
+    <!--[*if="b"]-->
+    <!--[*else=""]-->
+    <p>bar</p>
+    <!--[/*else]-->
+    <!--[/*if]-->
+    <!--[*else=""]-->
+  </expect>
+  <script>
+  context.a = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="a"]-->
+    <!--[*else=""]-->
+    <p>baz</p>
+    <!--[/*else]-->
+  </expect>
+  <script>
+  context.a = true
+  context.b = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="a"]-->
+    <!--[*if="b"]-->
+    <p>foo</p>
+    <!--[/*if]-->
+    <!--[*else=""]-->
+    <!--[/*if]-->
+    <!--[*else=""]-->
+  </expect>
+  <script>
+  context.b = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="a"]-->
+    <!--[*if="b"]-->
+    <!--[*else=""]-->
+    <p>bar</p>
+    <!--[/*else]-->
+    <!--[/*if]-->
+    <!--[*else=""]-->
+  </expect>
+</test>
