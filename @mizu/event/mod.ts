@@ -80,7 +80,7 @@ export const _event = {
       let callback = function (event: Event) {
         const registered = cache.get(element)?.get(attribute)?.get(event.type)
         // Ignore and remove expired listeners (attribute removed, or element disconnected while the listener is attached to another target)
-        if ((!element.hasAttribute(attribute.name)) || ((registered) && (registered.target !== element) && (!element.isConnected))) {
+        if ((!element.hasAttribute(attribute.name)) || (registered && (registered.target !== element) && (!element.isConnected))) {
           if (registered) {
             registered.target.removeEventListener(event.type, registered.listener)
           }
