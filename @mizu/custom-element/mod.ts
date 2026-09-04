@@ -1,6 +1,7 @@
 // Imports
 import { type Directive, type Nullable, Phase } from "@mizu/internal/engine"
 import { isValidCustomElementName } from "@std/html/unstable-is-valid-custom-element-name"
+import { _once } from "@mizu/once"
 export type * from "@mizu/internal/engine"
 
 /** `*custom-element` typings. */
@@ -58,12 +59,17 @@ export const _custom_element = {
 
     // Register custom element
     const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
+    let flat = parsed.modifiers.flat
+    if (flat && (!renderer.cache(_once.name))) {
+      renderer.warn(`[${this.name}] .flat modifier requires [${_once.name}] directive to be loaded, ignoring`, element)
+      flat = false
+    }
     renderer.window.customElements.define(
       tagname,
       class extends renderer.window.HTMLElement {
         connectedCallback(this: HTMLElement) {
-          // Skip element if it has an expansion directive
-          if (renderer.elementHasPhase(this, Phase.EXPAND)) {
+          // Skip element if it was already processed or if it has an expansion directive
+          if ((cache.has(this)) || (renderer.elementHasPhase(this, Phase.EXPAND))) {
             return
           }
 
@@ -90,8 +96,8 @@ export const _custom_element = {
             this.querySelectorAll<HTMLSlotElement>(`slot${name ? `[name="${name}"]` : ":not([name])"}`).forEach((slot) => renderer.replaceElementWithChildNodes(slot, content))
           })
           this.querySelectorAll<HTMLSlotElement>("slot").forEach((slot) => renderer.replaceElementWithChildNodes(slot, slot))
-          if (parsed.modifiers.flat) {
-            renderer.setAttribute(this, "*once.flat")
+          if (flat && (!renderer.getAttributes(this, _once.name, { first: true }))) {
+            renderer.setAttribute(this, `${_once.name}.flat`)
           }
         }
       },

@@ -271,3 +271,67 @@
     </b>
   </expect>
 </test>
+
+<test name="[*custom-element] with `.flat` modifier is stable across re-renders of `*for` occurences">
+  <load directives="@mizu/test,@mizu/custom-element,@mizu/once,@mizu/for"></load>
+  <render>
+    <template *custom-element.flat="x-foo" filter-remove>
+      <b>
+        <slot></slot>
+      </b>
+    </template>
+    <x-foo *for="['a', 'b']">
+      <span ~test.text="$value"></span>
+    </x-foo>
+  </render>
+  <expect comments="false">
+    <b>
+      <span>a</span>
+    </b>
+    <b>
+      <span>b</span>
+    </b>
+  </expect>
+  <render></render>
+  <expect comments="false">
+    <b>
+      <span>a</span>
+    </b>
+    <b>
+      <span>b</span>
+    </b>
+  </expect>
+</test>
+
+<test name="[*custom-element] with `.flat` modifier leaves occurences with an explicit `*once` attribute untouched">
+  <load directives="@mizu/test,@mizu/custom-element,@mizu/once"></load>
+  <render>
+    <template *custom-element.flat="x-foo" filter-remove>
+      <b>
+        <slot></slot>
+      </b>
+    </template>
+    <x-foo *once.flat[false]>
+      <span>foo</span>
+    </x-foo>
+  </render>
+  <expect>
+    <x-foo>
+      <b>
+        <span>foo</span>
+      </b>
+    </x-foo>
+  </expect>
+</test>
+
+<test name="[*custom-element] (error) `.flat` modifier requires [*once] directive to be loaded">
+  <load directives="@mizu/test,@mizu/custom-element"></load>
+  <render>
+    <template *custom-element.flat="x-foo"></template>
+    <x-foo></x-foo>
+  </render>
+  <expect>
+    <template *warn="[*custom-element] .flat modifier requires [*once] directive to be loaded, ignoring"></template>
+    <x-foo></x-foo>
+  </expect>
+</test>
