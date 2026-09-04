@@ -553,7 +553,7 @@ export class Renderer {
         controller.abort()
         this.debug("processing queued reactive render requests")
         const queued = Array.from(this.#queued.entries())
-        // Discard requests from disconnected elements, and requests covered by a queued ancestor (their queued state is restored when the ancestor is rendered)
+        // Discard requests from disconnected elements, and requests covered by a queued ancestor
         for (const [element, request] of queued) {
           if (!element.isConnected) {
             this.#forget(request.context, element)
