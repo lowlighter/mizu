@@ -68,7 +68,7 @@ export const _custom_element = {
       tagname,
       class extends renderer.window.HTMLElement {
         connectedCallback(this: HTMLElement) {
-          // Skip element if it was already processed (e.g. it was moved back into the document) or if it has an expansion directive
+          // Skip element if it was already processed or if it has an expansion directive
           if ((cache.has(this)) || (renderer.elementHasPhase(this, Phase.EXPAND))) {
             return
           }
@@ -96,7 +96,6 @@ export const _custom_element = {
             this.querySelectorAll<HTMLSlotElement>(`slot${name ? `[name="${name}"]` : ":not([name])"}`).forEach((slot) => renderer.replaceElementWithChildNodes(slot, content))
           })
           this.querySelectorAll<HTMLSlotElement>("slot").forEach((slot) => renderer.replaceElementWithChildNodes(slot, slot))
-          // Occurences with an explicit `*once` attribute are left untouched
           if (flat && (!renderer.getAttributes(this, _once.name, { first: true }))) {
             renderer.setAttribute(this, `${_once.name}.flat`)
           }
