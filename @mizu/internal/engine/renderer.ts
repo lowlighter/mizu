@@ -510,25 +510,12 @@ export class Renderer {
   /**
    * Queue a {@linkcode Renderer.render()} request emitted by a reactive change.
    *
-   * This method automatically discards render requests that would be already covered by a parent element,
-   * and removes any queued render request that could be covered by the current element.
+   * Render requests covered by a queued ancestor are discarded when the queue is processed.
    *
    * The actual rendering call is throttled to prevent over-rendering.
    */
   #queueReactiveRender(element: HTMLElement | Comment, options: { context: Context; state: State }) {
     this.#queued.set(element, { ...options, entrypoint: true })
-    this.#queued.forEach((_, element) => {
-      let ancestor = element.parentElement
-      while (ancestor) {
-        if (this.#queued.has(ancestor)) {
-          break
-        }
-        ancestor = ancestor.parentElement
-      }
-      if (ancestor) {
-        this.#queued.get(element)!.entrypoint = false
-      }
-    })
     this.#reactiveRender()
   }
 
@@ -567,16 +554,29 @@ export class Renderer {
         controller.abort()
         this.debug("processing queued reactive render requests")
         const queued = Array.from(this.#queued.entries())
-        await Promise.allSettled(
-          queued.map(([element, { entrypoint, context, ...options }]) => {
-            if (!element.isConnected) {
-              return this.#forget(context, element)
+        // Discard requests from disconnected elements, and requests covered by a queued ancestor
+        for (const [element, request] of queued) {
+          if (!element.isConnected) {
+            this.#forget(request.context, element)
+            request.entrypoint = false
+            continue
+          }
+          let ancestor = element.parentElement
+          while (ancestor && (!this.#queued.has(ancestor))) {
+            ancestor = ancestor.parentElement
+          }
+          request.entrypoint = ancestor === null
+        }
+        // Requests are rendered sequentially, as concurrent renders would attribute their properties reads to each other
+        for (const [element, { entrypoint, ...options }] of queued) {
+          if (entrypoint) {
+            try {
+              await this.#render(element, { reactive: true, ...options })
+            } catch {
+              // Errors are already reported by the rendering process, and must not prevent other requests from being processed
             }
-            if (entrypoint) {
-              return this.#render(element, { reactive: true, context, ...options })
-            }
-          }),
-        )
+          }
+        }
         queued.forEach(([element, request]) => {
           if (this.#queued.get(element) === request) {
             this.#queued.delete(element)
