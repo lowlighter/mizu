@@ -154,6 +154,7 @@
     <!--[*if="value"]-->
     <p>foo</p>
     <p>bar</p>
+    <!--[/*if]-->
     <!--[*else=""]-->
   </expect>
   <script>
@@ -165,6 +166,7 @@
     <!--[*else=""]-->
     <p>baz</p>
     <p>qux</p>
+    <!--[/*else]-->
   </expect>
   <script>
   context.value = true
@@ -174,6 +176,7 @@
     <!--[*if="value"]-->
     <p>foo</p>
     <p>bar</p>
+    <!--[/*if]-->
     <!--[*else=""]-->
   </expect>
 </test>

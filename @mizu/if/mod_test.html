@@ -55,6 +55,7 @@
     <!--[*if="true"]-->
     <p>foo</p>
     <p>bar</p>
+    <!--[/*if]-->
   </expect>
 </test>
 
@@ -91,6 +92,7 @@
     <!--[*if="value"]-->
     <p>foo</p>
     <p>bar</p>
+    <!--[/*if]-->
   </expect>
   <script>
   context.value = false
@@ -107,6 +109,7 @@
     <!--[*if="value"]-->
     <p>foo</p>
     <p>bar</p>
+    <!--[/*if]-->
   </expect>
 </test>
 
@@ -125,6 +128,7 @@
     <!--[*if="a"]-->
     <!--[*if="b"]-->
     <p>bar</p>
+    <!--[/*if]-->
   </expect>
   <script>
   context.b = true
@@ -134,6 +138,7 @@
     <!--[*if="a"]-->
     <p>foo</p>
     <p>bar</p>
+    <!--[/*if]-->
   </expect>
   <script>
   context.a = false
@@ -151,5 +156,43 @@
     <!--[*if="a"]-->
     <!--[*if="b"]-->
     <p>bar</p>
+    <!--[/*if]-->
+  </expect>
+</test>
+
+<test name="[*if] renders template content containing iterative directives">
+  <load directives="@mizu/if,@mizu/for,@mizu/test"></load>
+  <script>
+  context.value = true
+  </script>
+  <render>
+    <ul>
+      <template *if="value">
+        <li *for="const v of [1, 2]" ~test[content].text="v"></li>
+      </template>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>1</li>
+      <li>2</li>
+    </ul>
+  </expect>
+  <script>
+  context.value = false
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul></ul>
+  </expect>
+  <script>
+  context.value = true
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li>1</li>
+      <li>2</li>
+    </ul>
   </expect>
 </test>
