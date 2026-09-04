@@ -223,7 +223,7 @@ export class Renderer {
    *
    * This is used to store compiled expressions for faster evaluation.
    */
-  readonly #expressions = new WeakMap<HTMLElement | Comment | Renderer, Record<PropertyKey, ReturnType<typeof AsyncFunction>>>()
+  readonly #expressions = new Map<string, ReturnType<typeof AsyncFunction>>()
 
   /**
    * Evaluate an expression with given {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement} (or {@linkcode https://developer.mozilla.org/docs/Web/API/Comment | Comment}), {@linkcode Context}, {@linkcode State} and arguments.
@@ -250,15 +250,16 @@ export class Renderer {
     if (this.#internal in context.target) {
       throw new TypeError(`"${this.#internal}" is a reserved variable name`)
     }
-    const these = that ?? this
-    if (!this.#expressions.get(these)?.[expression]) {
-      const cache = (!this.#expressions.has(these) ? this.#expressions.set(these, {}) : this.#expressions).get(these)!
-      cache[expression] = new AsyncFunction(
-        this.#internal,
-        `with(${this.#internal}.state){with(${this.#internal}.context){${this.#internal}.result=${expression};if(${this.#internal}.args&&typeof ${this.#internal}.result==='function')${this.#internal}.result=${this.#internal}.result?.call?.(this,...${this.#internal}.args)}}return ${this.#internal}.result`,
+    if (!this.#expressions.has(expression)) {
+      this.#expressions.set(
+        expression,
+        new AsyncFunction(
+          this.#internal,
+          `with(${this.#internal}.state){with(${this.#internal}.context){${this.#internal}.result=${expression};if(${this.#internal}.args&&typeof ${this.#internal}.result==='function')${this.#internal}.result=${this.#internal}.result?.call?.(this,...${this.#internal}.args)}}return ${this.#internal}.result`,
+        ),
       )
     }
-    const compiled = this.#expressions.get(these)![expression]
+    const compiled = this.#expressions.get(expression)!
     const internal = { this: that, context: context.target, state, args, result: undefined }
     return await compiled.call(that, internal)
   }
