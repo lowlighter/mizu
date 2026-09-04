@@ -8,25 +8,25 @@
     "test": "npx tsx --test"
   },
   "dependencies": {
-    "@libs/markdown": "npm:@jsr/libs__markdown@^2.1.1",
-    "@libs/reactive": "npm:@jsr/libs__reactive@^5.0.5",
-    "@libs/typing": "npm:@jsr/libs__typing@^4.0.1",
-    "@libs/xml": "npm:@jsr/libs__xml@^7.0.4",
+    "@libs/markdown": "npm:@jsr/libs__markdown@^2.2.0",
+    "@libs/reactive": "npm:@jsr/libs__reactive@^5.0.6",
+    "@libs/typing": "npm:@jsr/libs__typing@^4.1.0",
+    "@libs/xml": "npm:@jsr/libs__xml@^8.0.0",
     "@std/assert": "npm:@jsr/std__assert@^1.0.19",
-    "@std/async": "npm:@jsr/std__async@^1.2.0",
-    "@std/html": "npm:@jsr/std__html@^1.0.5",
+    "@std/async": "npm:@jsr/std__async@^1.5.0",
+    "@std/html": "npm:@jsr/std__html@^1.0.7",
     "@std/io": "npm:@jsr/std__io@~0.225.3",
-    "@std/path": "npm:@jsr/std__path@^1.1.4",
-    "@std/regexp": "npm:@jsr/std__regexp@^1.0.1",
-    "@std/text": "npm:@jsr/std__text@^1.0.17",
-    "jsdom": "^29.0.0"
+    "@std/path": "npm:@jsr/std__path@^1.1.6",
+    "@std/regexp": "npm:@jsr/std__regexp@^1.0.2",
+    "@std/text": "npm:@jsr/std__text@^1.0.19",
+    "jsdom": "^30.0.1"
   },
   "devDependencies": {
     "@dprint/formatter": "npm:@jsr/dprint__formatter@^0.5.1",
     "@libs/testing": "npm:@jsr/libs__testing@^5.2.3",
-    "@std/fmt": "npm:@jsr/std__fmt@^1.0.9",
+    "@std/fmt": "npm:@jsr/std__fmt@^1.0.10",
     "jsr": "^0.14.3",
-    "tsx": "^4.21.0",
+    "tsx": "^4.23.13",
     "typescript": "^5.9.3"
   }
 }
