@@ -20,4 +20,4 @@ Conditionally render an element placed after another [`*if`](#if) or [`*else`](#
 > Must be placed immediately after an element with an [`*if`](#if) or [`*else`](#else) directive.
 
 > [!NOTE]
-> There is currently no special handling for [`<template>`](https://developer.mozilla.org/docs/Web/HTML/Element/template) elements, but future versions may introduce specific behavior for these elements.
+> When used on a [`<template>`](https://developer.mozilla.org/docs/Web/HTML/Element/template) element, its content is rendered in place of the template which allows to conditionally render several elements at once.

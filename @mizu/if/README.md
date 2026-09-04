@@ -15,4 +15,4 @@ Conditionally render an element.
 ## Notes
 
 > [!NOTE]
-> There is currently no special handling for [`<template>`](https://developer.mozilla.org/docs/Web/HTML/Element/template) elements, but future versions may introduce specific behavior for these elements.
+> When used on a [`<template>`](https://developer.mozilla.org/docs/Web/HTML/Element/template) element, its content is rendered in place of the template which allows to conditionally render several elements at once.
