@@ -267,6 +267,18 @@ export class Renderer {
   /** Explicit rendering attribute name. */
   static readonly #explicit = "*mizu"
 
+  /** Operator for directives evaluated a single time and removed after processing. */
+  static readonly #once = "!"
+
+  /** Resolve the directive name of an attribute (the once operator replaces the generic prefix and precedes the other prefixes). */
+  #normalize(name: string): string {
+    if (!name.startsWith(Renderer.#once)) {
+      return name
+    }
+    name = name.slice(Renderer.#once.length)
+    return /^[\p{L}\p{N}_]/u.test(name) ? `*${name}` : name
+  }
+
   /**
    * Render {@linkcode https://developer.mozilla.org/docs/Web/API/Element | Element} and its subtree with specified {@linkcode Context} and {@linkcode State} against {@linkcode Renderer.directives}.
    *
@@ -394,9 +406,18 @@ export class Renderer {
         if ((attributes.length > 1) && (!directive.multiple)) {
           this.warn(`Using multiple [${directive.name}] directives might result in unexpected behaviour`, element)
         }
-        // 4.3 Execute directive
+        // 4.3 Execute directive (attributes with the once operator are not tracked and are removed after processing)
         phases.set(directive.phase, directive.name)
+        const once = attributes.filter((attribute) => attribute.name.startsWith(Renderer.#once))
+        const untracked = reactive && (once.length > 0) && (once.length === attributes.length)
+        if (untracked) {
+          this.#unwatch(context, element)
+        }
         const changes = await directive.execute?.(this, element, { cache: this.cache(directive.name), context, state, attributes })
+        if (untracked) {
+          this.#watch(context, element)
+        }
+        once.forEach((attribute) => attribute.ownerElement?.removeAttributeNode(attribute))
         if (changes?.element) {
           if (reactive && (this.#watched.get(context)?.has(element))) {
             this.#watch(context, changes.element)
@@ -862,7 +883,8 @@ export class Renderer {
   #name(attribute: Attr): string {
     let name = this.#names.get(attribute)
     if (name === undefined) {
-      const { a: _a, b: _b, name: _name = `${_a}${_b}` } = attribute.name.match(this.#extractor.attribute)?.groups ?? { name: attribute.name }
+      const normalized = this.#normalize(attribute.name)
+      const { a: _a, b: _b, name: _name = `${_a}${_b}` } = normalized.match(this.#extractor.attribute)?.groups ?? { name: normalized }
       name = _name
       this.#names.set(attribute, name)
     }
@@ -1070,8 +1092,9 @@ export class Renderer {
   parseAttribute<T extends AttrTypings>(attribute: Attr, typings?: Nullable<T>, { modifiers = false, prefix = "" } = {} as RendererParseAttributeOptions) {
     // Parse attribute name
     if (!this.#parsed.has(attribute)) {
-      const { a: _a, b: _b, name = `${_a}${_b}`, tag = "", modifiers: _modifiers = "" } = attribute.name.match(this.#extractor.attribute)?.groups ?? { name: attribute.name }
-      const cached = { name, tag, modifiers: {} as Record<PropertyKey, unknown> }
+      const normalized = this.#normalize(attribute.name)
+      const { a: _a, b: _b, name = `${_a}${_b}`, tag = "", modifiers: _modifiers = "" } = normalized.match(this.#extractor.attribute)?.groups ?? { name: normalized }
+      const cached = { name, tag, once: attribute.name.startsWith(Renderer.#once), modifiers: {} as Record<PropertyKey, unknown> }
       if (modifiers && (typings?.modifiers)) {
         const modifiers = Object.fromEntries(
           _modifiers.split(".").map((modifier) => {
@@ -1090,7 +1113,7 @@ export class Renderer {
     }
     // Copy cached values and the ones that might have changed since last parsing
     const cached = this.#parsed.get(attribute)!
-    const parsed = { name: cached.name, tag: cached.tag, attribute, value: this.#parseAttributeValue(attribute.parentElement, cached.name, "value", attribute.value, typings as AttrAny) } as InferAttrTypings<T>
+    const parsed = { name: cached.name, tag: cached.tag, once: cached.once, attribute, value: this.#parseAttributeValue(attribute.parentElement, cached.name, "value", attribute.value, typings as AttrAny) } as InferAttrTypings<T>
     if (modifiers) {
       parsed.modifiers = { ...cached.modifiers } as typeof parsed.modifiers
     }
@@ -1102,7 +1125,7 @@ export class Renderer {
 
   /** Internal cache used to store parsed already parsed {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr/name | Attr.name}. */
   // deno-lint-ignore ban-types
-  readonly #parsed = new WeakMap<Attr, Pick<InferAttrTypings<{}>, "name" | "tag" | "modifiers">>()
+  readonly #parsed = new WeakMap<Attr, Pick<InferAttrTypings<{}>, "name" | "tag" | "once" | "modifiers">>()
 
   /** Used by {@linkcode Renderer.parseAttribute()} to parse a single {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr/value | Attr.value} according to specified {@linkcode AttrAny} typing. */
   #parseAttributeValue<T extends AttrAny>(element: Nullable<HTMLElement>, name: string, key: string, value: Optional<string>, typings: T): Optional<boolean | number | string> {
@@ -1389,6 +1412,8 @@ export type InferAttrTypings<T extends AttrTypings> = {
   value: InferAttrAny<T>
   /** Parsed {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} tag. */
   tag: string
+  /** Whether the {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} uses the once operator (evaluated a single time and removed after processing). */
+  once: boolean
   /** Parsed {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} modifiers. */
   modifiers: { [P in keyof T["modifiers"]]: T["modifiers"][P] extends { enforce: true } ? InferAttrAny<T["modifiers"][P]> : Optional<InferAttrAny<T["modifiers"][P]>> }
 }

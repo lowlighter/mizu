@@ -429,3 +429,24 @@
   expect(context.hits).toEqual([1])
   </script>
 </test>
+
+<test name="[@event] with once operator keeps the listener after the attribute is removed">
+  <script>
+  context.value = 0
+  </script>
+  <render>
+    <p !@event="value++"></p>
+  </render>
+  <expect>
+    <p></p>
+  </expect>
+  <script>
+  rendered.querySelector("p").dispatchEvent(new Event("event"))
+  expect(context.value).toBe(1)
+  </script>
+  <render></render>
+  <script>
+  rendered.querySelector("p").dispatchEvent(new Event("event"))
+  expect(context.value).toBe(2)
+  </script>
+</test>
