@@ -372,14 +372,15 @@ export class Renderer {
         }
       }
 
-      // 3. Retrieve source element
+      // 3. Retrieve source element and its attributes
       const source = this.cache("*").get(element) ?? element
+      const snapshot = this.isHtmlElement(source) ? Array.from(source.attributes) : []
 
       // 4. Execute directives
       const phases = new Map<Phase, Directive["name"]>()
       for (const directive of this.#directives) {
         // 4.1 Check eligibility
-        const attributes = this.getAttributes(source, directive.name)
+        const attributes = this.#matchAttributes(snapshot, directive.name, false) as Attr[]
         if ((forced.get(directive) === false) || ((!forced.has(directive)) && (!attributes.length))) {
           continue
         }
@@ -889,20 +890,22 @@ export class Renderer {
    */
   getAttributes(element: Optional<HTMLElement | Comment>, names: Arrayable<string> | RegExp, options: { first: true }): Nullable<Attr>
   getAttributes(element: Optional<HTMLElement | Comment>, names: Arrayable<string> | RegExp, { first = false } = {}): Nullable<Attr> | Attr[] {
-    const attributes = []
-    if (element && (this.isHtmlElement(element))) {
-      const matches = (names instanceof RegExp) ? (name: string) => names.test(name) : (Array.isArray(names)) ? (name: string) => names.includes(name) : (name: string) => names === name
-      for (let i = 0; i < element.attributes.length; i++) {
-        const attribute = element.attributes[i]
-        if (matches(this.#name(attribute))) {
-          attributes.push(attribute)
-          if (first) {
-            break
-          }
+    return this.#matchAttributes((element && (this.isHtmlElement(element))) ? Array.from(element.attributes) : [], names, first)
+  }
+
+  /** Used by {@linkcode Renderer.getAttributes()}, {@linkcode Renderer.elementHasPhase()} and the rendering process to filter {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} by name. */
+  #matchAttributes(attributes: Attr[], names: Arrayable<string> | RegExp, first: boolean): Nullable<Attr> | Attr[] {
+    const matches = (names instanceof RegExp) ? (name: string) => names.test(name) : (Array.isArray(names)) ? (name: string) => names.includes(name) : (name: string) => names === name
+    const matched = []
+    for (const attribute of attributes) {
+      if (matches(this.#name(attribute))) {
+        matched.push(attribute)
+        if (first) {
+          break
         }
       }
     }
-    return first ? attributes[0] ?? null : attributes
+    return first ? matched[0] ?? null : matched
   }
 
   /**
@@ -1162,7 +1165,8 @@ export class Renderer {
    * ```
    */
   elementHasPhase(element: HTMLElement | Comment, phase: Phase): boolean {
-    return this.#directives.some((directive) => (directive.phase === phase) && this.getAttributes(element, directive.name, { first: true }))
+    const attributes = this.isHtmlElement(element) ? Array.from(element.attributes) : []
+    return this.#directives.some((directive) => (directive.phase === phase) && (this.#matchAttributes(attributes, directive.name, true) !== null))
   }
 
   /**
