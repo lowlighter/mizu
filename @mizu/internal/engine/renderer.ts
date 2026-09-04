@@ -360,7 +360,10 @@ export class Renderer {
       // 2. Setup directives
       const forced = new WeakMap<Directive, boolean>()
       for (const directive of this.#directives) {
-        const changes = await directive.setup?.(this, element, { cache: this.cache(directive.name), context, state })
+        if (!directive.setup) {
+          continue
+        }
+        const changes = await directive.setup(this, element, { cache: this.cache(directive.name), context, state })
         if (changes === false) {
           return
         }
@@ -437,7 +440,10 @@ export class Renderer {
     } finally {
       // 6. Cleanup directives
       for (const directive of this.#directives) {
-        await directive.cleanup?.(this, element, { cache: this.cache(directive.name), context, state })
+        if (!directive.cleanup) {
+          continue
+        }
+        await directive.cleanup(this, element, { cache: this.cache(directive.name), context, state })
       }
       // R2. Unwatch context and start reacting
       if (reactive) {
