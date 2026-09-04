@@ -2,7 +2,7 @@
 
 <test name="[:attribute] binds generic attributes">
   <script>
-    context.value = "foo"
+  context.value = "foo"
   </script>
   <render>
     <p :data-value="value"></p>
@@ -11,7 +11,7 @@
     <p data-value="foo"></p>
   </expect>
   <script>
-    context.value = "bar"
+  context.value = "bar"
   </script>
   <render></render>
   <expect>
@@ -21,7 +21,7 @@
 
 <test name="[:attribute] binds html boolean attributes according to specification">
   <script>
-    context.value = true
+  context.value = true
   </script>
   <render>
     <p :disabled="value"></p>
@@ -82,7 +82,7 @@
     <p autofocus inert itemscope></p>
   </expect>
   <script>
-    context.value = false
+  context.value = false
   </script>
   <render></render>
   <expect>
@@ -144,7 +144,7 @@
 
 <test name="[:attribute] supports empty value shorthand">
   <script>
-    context.dataValue = "foo"
+  context.dataValue = "foo"
   </script>
   <render>
     <p :data-value></p>
@@ -165,7 +165,7 @@
 
 <test name="[:class] with string notation binds class attribute">
   <script>
-    context.classlist = "foo bar"
+  context.classlist = "foo bar"
   </script>
   <render>
     <p :class="classlist"></p>
@@ -177,7 +177,7 @@
 
 <test name="[:class] with string notation ignores extra spacing">
   <script>
-    context.classlist = " foo  bar "
+  context.classlist = " foo  bar "
   </script>
   <render>
     <p :class="classlist"></p>
@@ -189,7 +189,7 @@
 
 <test name="[:class] with string notation preserves original class attribute">
   <script>
-    context.classlist = "bar"
+  context.classlist = "bar"
   </script>
   <render>
     <p class="foo" :class="classlist"></p>
@@ -201,7 +201,7 @@
 
 <test name="[:class] with string notation is reactive">
   <script>
-    context.classlist = "bar baz"
+  context.classlist = "bar baz"
   </script>
   <render>
     <p class="foo" :class="classlist"></p>
@@ -210,7 +210,7 @@
     <p class="foo bar baz"></p>
   </expect>
   <script>
-    context.classlist = "baz"
+  context.classlist = "baz"
   </script>
   <render></render>
   <expect>
@@ -220,7 +220,7 @@
 
 <test name="[:class] with object notation binds class attribute">
   <script>
-    context.classlist = { foo: true, bar: true, baz: false }
+  context.classlist = { foo: true, bar: true, baz: false }
   </script>
   <render>
     <p :class="classlist"></p>
@@ -232,7 +232,7 @@
 
 <test name="[:class] with object notation ignores nullish objects">
   <script>
-    context.classlist = null
+  context.classlist = null
   </script>
   <render>
     <p :class="classlist"></p>
@@ -244,7 +244,7 @@
 
 <test name="[:class] with object notation preserves original class attribute">
   <script>
-    context.classlist = { bar: true }
+  context.classlist = { bar: true }
   </script>
   <render>
     <p class="foo" :class="classlist"></p>
@@ -256,7 +256,7 @@
 
 <test name="[:class] with object notation is reactive">
   <script>
-    context.classlist = { bar: true, baz: true }
+  context.classlist = { bar: true, baz: true }
   </script>
   <render>
     <p class="foo" :class="classlist"></p>
@@ -265,7 +265,7 @@
     <p class="foo bar baz"></p>
   </expect>
   <script>
-    context.classlist = { baz: true }
+  context.classlist = { baz: true }
   </script>
   <render></render>
   <expect>
@@ -275,7 +275,7 @@
 
 <test name="[:class] with mixed notation binds class attribute">
   <script>
-    context.classlist = ["bar", { baz: true }, ["qux", { quux: true }, "", {}, []]]
+  context.classlist = ["bar", { baz: true }, ["qux", { quux: true }, "", {}, []]]
   </script>
   <render>
     <p class="foo" :class="classlist"></p>
@@ -284,7 +284,7 @@
     <p class="foo bar baz qux quux"></p>
   </expect>
   <script>
-    context.classlist = null
+  context.classlist = null
   </script>
   <render></render>
   <expect>
@@ -294,7 +294,7 @@
 
 <test name="[:class] with mixed notation merges states gracefully">
   <script>
-    context.classlist = ["bar", { foo: false, bar: false, baz: false }, { baz: true }]
+  context.classlist = ["bar", { foo: false, bar: false, baz: false }, { baz: true }]
   </script>
   <render>
     <p class="foo" :class="classlist"></p>
@@ -306,7 +306,7 @@
 
 <test name="[:style] with string notation binds style attribute">
   <script>
-    context.style = "color: red;"
+  context.style = "color: red;"
   </script>
   <render>
     <p :style="style"></p>
@@ -318,7 +318,7 @@
 
 <test name="[:style] with string notation preserves original style attribute">
   <script>
-    context.style = "color: red;"
+  context.style = "color: red;"
   </script>
   <render>
     <p style="display: block" :style="style"></p>
@@ -330,7 +330,7 @@
 
 <test name="[:style] with string notation is reactive">
   <script>
-    context.style = "color: red;"
+  context.style = "color: red;"
   </script>
   <render>
     <p style="display: block" :style="style"></p>
@@ -339,7 +339,7 @@
     <p style="display: block; color: red"></p>
   </expect>
   <script>
-    context.style = "color: blue;"
+  context.style = "color: blue;"
   </script>
   <render></render>
   <expect>
@@ -349,7 +349,7 @@
 
 <test name="[:style] with object notation binds style attribute">
   <script>
-    context.style = { color: "red", background: "blue" }
+  context.style = { color: "red", background: "blue" }
   </script>
   <render>
     <p :style="style"></p>
@@ -361,7 +361,7 @@
 
 <test name="[:style] with object notation ignores nullish objects">
   <script>
-    context.style = null
+  context.style = null
   </script>
   <render>
     <p :style="style"></p>
@@ -373,7 +373,7 @@
 
 <test name="[:style] with object notation supports properties with important priority">
   <script>
-    context.style = { color: "red !important", background: "blue" }
+  context.style = { color: "red !important", background: "blue" }
   </script>
   <render>
     <p :style="style"></p>
@@ -385,7 +385,7 @@
 
 <test name="[:style] with object notation supports properties with hyphens">
   <script>
-    context.style = { "--color": "red", "background-color": "blue" }
+  context.style = { "--color": "red", "background-color": "blue" }
   </script>
   <render>
     <p :style="style"></p>
@@ -397,7 +397,7 @@
 
 <test name="[:style] with object notation transforms camel-cased properties">
   <script>
-    context.style = { borderColor: "red", borderTopLeftRadius: "1px" }
+  context.style = { borderColor: "red", borderTopLeftRadius: "1px" }
   </script>
   <render>
     <p :style="style"></p>
@@ -409,7 +409,7 @@
 
 <test name="[:style] with object notation transforms number values to pixel unit when applicable">
   <script>
-    context.style = { top: -1, left: 1, bottom: -1.5, right: 1.5, color: 1 }
+  context.style = { top: -1, left: 1, bottom: -1.5, right: 1.5, color: 1 }
   </script>
   <render>
     <p :style="style"></p>
@@ -421,7 +421,7 @@
 
 <test name="[:style] with object notation preserves original style attribute">
   <script>
-    context.style = { color: "red" }
+  context.style = { color: "red" }
   </script>
   <render>
     <p style="display: block" :style="style"></p>
@@ -433,7 +433,7 @@
 
 <test name="[:style] with object notation is reactive">
   <script>
-    context.style = { color: "red", background: "blue" }
+  context.style = { color: "red", background: "blue" }
   </script>
   <render>
     <p style="display: block" :style="style"></p>
@@ -442,7 +442,7 @@
     <p style="display: block; color: red; background: blue"></p>
   </expect>
   <script>
-    context.style = { background: "blue" }
+  context.style = { background: "blue" }
   </script>
   <render></render>
   <expect>
@@ -452,7 +452,7 @@
 
 <test name="[:style] with mixed notation binds style attribute" skip>
   <script>
-    context.style = ["color: red;", { background: "blue" }, ["width: 1px;", { height: "1px" }, "", {}, []]]
+  context.style = ["color: red;", { background: "blue" }, ["width: 1px;", { height: "1px" }, "", {}, []]]
   </script>
   <render>
     <p style="display: block" :style="style"></p>
@@ -461,7 +461,7 @@
     <p style="display: block; color: red; background: blue; width: 1px; height: 1px"></p>
   </expect>
   <script>
-    context.style = null
+  context.style = null
   </script>
   <render></render>
   <expect>
@@ -471,7 +471,7 @@
 
 <test name="[:style] with mixed notation merges styles gracefully">
   <script>
-    context.style = ["display: inline-block; color: red;", { color: "blue", background: "blue" }, { background: "red" }]
+  context.style = ["display: inline-block; color: red;", { color: "blue", background: "blue" }, { background: "red" }]
   </script>
   <render>
     <p style="display: block" :style="style"></p>
@@ -483,7 +483,7 @@
 
 <test name="[:] with object notation binds attributes">
   <script>
-    context.value = { "data-foo": "bar", class: "foo", style: "color: red;" }
+  context.value = { "data-foo": "bar", class: "foo", style: "color: red;" }
   </script>
   <render>
     <p :="value"></p>
