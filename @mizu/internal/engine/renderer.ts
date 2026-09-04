@@ -222,7 +222,6 @@ export class Renderer {
    * Internal expressions cache.
    *
    * This is used to store compiled expressions for faster evaluation.
-   * Compiled expressions only depend on their source (the `this` value is bound at call time), so they are shared across elements.
    */
   readonly #expressions = new Map<string, ReturnType<typeof AsyncFunction>>()
 
