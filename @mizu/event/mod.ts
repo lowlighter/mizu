@@ -61,7 +61,7 @@ export const _event = {
     }
 
     // Attach listeners
-    for (const { name: event, value: expression, modifiers, attribute } of parsed) {
+    for (const { name: event, value: expression, modifiers, attribute, once } of parsed) {
       // Ensure listener is not duplicated
       if (!cache.has(element)) {
         cache.set(element, new WeakMap())
@@ -79,7 +79,7 @@ export const _event = {
       let callback = function (event: Event) {
         const registered = cache.get(element)?.get(attribute)?.get(event.type)
         // Ignore and remove expired listeners
-        if ((!element.hasAttribute(attribute.name)) || (registered && (registered.target !== element) && (!element.isConnected))) {
+        if (((!once) && (!element.hasAttribute(attribute.name))) || (registered && (registered.target !== element) && (!element.isConnected))) {
           if (registered) {
             registered.target.removeEventListener(event.type, registered.listener)
           }

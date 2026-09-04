@@ -56,6 +56,22 @@
       </ul>
     </section>
     <section>
+      <h3 id="concept-directive-once"><a href="#concept-directive-once">Once operator</a></h3>
+      <p>
+        Directives prefixed with <code class="hljs-keyword">!</code> are evaluated a single time, without reactivity, and their attribute is removed from the element once processed.
+      </p>
+      <p>
+        The operator replaces the <code class="hljs-keyword">*</code> of generic directives and precedes the other prefixes:
+      </p>
+      <ul>
+        <li><code class="hljs-keyword">!text</code> renders the content of <code class="hljs-keyword">*text</code> once and leaves a clean element.</li>
+        <li><code class="hljs-keyword">!@click</code> attaches the listener of <code class="hljs-keyword">@click</code> once, and the listener is kept after the attribute is removed.</li>
+      </ul>
+      <p>
+        Directives that rely on the presence of another directive on a sibling <i>(such as <code class="hljs-keyword">*else</code> or <code class="hljs-keyword">*empty</code>)</i> cannot follow a directive using this operator.
+      </p>
+    </section>
+    <section>
       <h3 id="concept-directive-tag"><a href="#concept-directive-tag">Tag</a></h3>
       <p>
         Typically, this serves as the directive's argument. At most one tag can be specified per directive.
