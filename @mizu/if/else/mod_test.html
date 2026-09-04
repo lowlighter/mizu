@@ -51,7 +51,7 @@
 
 <test name="[*else] is reactive">
   <script>
-    context.value = 0
+  context.value = 0
   </script>
   <render>
     <p *if="value === 0">foo</p>
@@ -64,7 +64,7 @@
     <!--[*else=""]-->
   </expect>
   <script>
-    context.value = 1
+  context.value = 1
   </script>
   <render></render>
   <expect>
@@ -73,7 +73,7 @@
     <!--[*else=""]-->
   </expect>
   <script>
-    context.value = 2
+  context.value = 2
   </script>
   <render></render>
   <expect>
@@ -82,7 +82,7 @@
     <p>baz</p>
   </expect>
   <script>
-    context.value = 1
+  context.value = 1
   </script>
   <render></render>
   <expect>
@@ -91,7 +91,7 @@
     <!--[*else=""]-->
   </expect>
   <script>
-    context.value = 0
+  context.value = 0
   </script>
   <render>
     <p *if="value === 0">foo</p>

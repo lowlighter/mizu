@@ -2,7 +2,7 @@
 
 <test name="`&lt;load/&gt;` loads specified directives into `Renderer`">
   <script>
-    expect(testing.directives).toContain("@mizu/mizu")
+  expect(testing.directives).toContain("@mizu/mizu")
   </script>
   <render>
     <p ~test.text="'foo'"></p>
@@ -37,32 +37,32 @@
     <p ~test.throw></p>
   </render>
   <script>
-    expect(testing.error).toBeInstanceOf(Error)
+  expect(testing.error).toBeInstanceOf(Error)
   </script>
   <render>
     <p ~test.throw></p>
   </render>
   <script>
-    expect(testing.error).toBe(null)
+  expect(testing.error).toBe(null)
   </script>
 </test>
 
 <test name="`&lt;script/&gt;` evaluates specified script">
   <script>
-    storage.foo = "bar"
+  storage.foo = "bar"
   </script>
   <script>
-    expect(storage.foo).toBe("bar")
+  expect(storage.foo).toBe("bar")
   </script>
   <script>
-    expect(HTMLElement).toBeDefined()
+  expect(HTMLElement).toBeDefined()
   </script>
 </test>
 
 <test name="`&lt;script/&gt;` evaluates specified script">
   <load directives="@mizu/test"></load>
   <script>
-    context.foo = "bar"
+  context.foo = "bar"
   </script>
   <render>
     <p ~test.text="foo"></p>
@@ -71,7 +71,7 @@
     <p>bar</p>
   </expect>
   <script>
-    context.foo = "baz"
+  context.foo = "baz"
   await rerender()
   </script>
   <expect>
@@ -142,7 +142,7 @@
     <response status="Teapot"></response>
   </http-server>
   <script>
-    await expect(fetch("/")).resolves.toRespondWithStatus(Status.Teapot)
+  await expect(fetch("/")).resolves.toRespondWithStatus(Status.Teapot)
   expect(http.request).toBeInstanceOf(Request)
   expect(http.response).toBeInstanceOf(Response)
   </script>
@@ -153,7 +153,7 @@
     <response path="/"></response>
   </http-server>
   <script>
-    await expect(fetch("/")).resolves.toRespondWithStatus("2XX")
+  await expect(fetch("/")).resolves.toRespondWithStatus("2XX")
   await expect(testing.renderer.evaluate(null, `fetch("/")`, { context: testing.context })).resolves.toRespondWithStatus("2XX")
   </script>
 </test>
@@ -161,7 +161,7 @@
 <test name="`&lt;http-server/&gt;` returns `Status.NotFound` on non-existent routes">
   <http-server></http-server>
   <script>
-    await expect(fetch("/")).resolves.toRespondWithStatus(Status.NotFound)
+  await expect(fetch("/")).resolves.toRespondWithStatus(Status.NotFound)
   </script>
 </test>
 
@@ -171,7 +171,7 @@
     <response path="/redirect" redirect="/redirected"></response>
   </http-server>
   <script>
-    await expect(fetch("/redirect", { redirect: "follow" })).resolves.toRespondWithStatus(Status.OK)
+  await expect(fetch("/redirect", { redirect: "follow" })).resolves.toRespondWithStatus(Status.OK)
   await expect(fetch("/redirect", { redirect: "manual" })).resolves.toRespondWithStatus(Status.TemporaryRedirect)
   </script>
 </test>
@@ -181,7 +181,7 @@
     <response path="/api"></response>
   </http-server>
   <script>
-    await expect(fetch("/api", { method: "POST", body: "foobar", headers: { "x-foo": "bar" } })).resolves.toRespondWithStatus("2XX")
+  await expect(fetch("/api", { method: "POST", body: "foobar", headers: { "x-foo": "bar" } })).resolves.toRespondWithStatus("2XX")
   expect(http.request.method).toBe("POST")
   expect(http.request.received.body).toBe("foobar")
   expect(http.request.received.headers.get("x-foo")).toBe("bar")
@@ -194,7 +194,7 @@
     <response path="/escaped" escaped>&lt;foo&gt;</response>
   </http-server>
   <script>
-    response = await fetch("/text")
+  response = await fetch("/text")
   await expect(response.text()).resolves.toBe("foo")
   response = await fetch("/escaped")
   await expect(response.text()).resolves.toBe("<foo>")

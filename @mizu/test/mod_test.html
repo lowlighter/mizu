@@ -23,7 +23,7 @@
     <!--[~test.comment=""] [~test.text="'bar'"]-->
   </expect>
   <script>
-    context.value = true
+  context.value = true
   </script>
   <render>
     <p ~test.comment="value"></p>
@@ -32,7 +32,7 @@
     <!--[~test.comment="value"]-->
   </expect>
   <script>
-    context.value = false
+  context.value = false
   </script>
   <render></render>
   <expect>
@@ -59,13 +59,13 @@
 
 <test name="[~test] with `event` modifier listens to specified event">
   <script>
-    context.callback = fn()
+  context.callback = fn()
   </script>
   <render>
     <div ~test.event[foo]="callback"></div>
   </render>
   <script>
-    document.querySelector("div").dispatchEvent(new Event("bar"))
+  document.querySelector("div").dispatchEvent(new Event("bar"))
   expect(context.callback).not.toHaveBeenCalled()
   document.querySelector("div").dispatchEvent(new Event("foo"))
   expect(context.callback).toHaveBeenCalled()
@@ -77,21 +77,21 @@
     <p ~test.throw></p>
   </render>
   <script>
-    expect(testing.error).toBeInstanceOf(Error)
+  expect(testing.error).toBeInstanceOf(Error)
   </script>
   <script>
-    context.value = false
+  context.value = false
   </script>
   <render throw>
     <p ~test.throw="value"></p>
   </render>
   <script>
-    expect(testing.error).toBe(null)
+  expect(testing.error).toBe(null)
   context.value = true
   </script>
   <render throw></render>
   <script>
-    expect(testing.error).toBeInstanceOf(Error)
+  expect(testing.error).toBeInstanceOf(Error)
   </script>
 </test>
 

@@ -11,13 +11,13 @@
 
 <test name="[*eval] evaluates raw scripts with context">
   <script>
-    context.foo = 1
+  context.foo = 1
   </script>
   <render>
     <div *eval="foo++"></div>
   </render>
   <script>
-    expect(context.foo).toBe(2)
+  expect(context.foo).toBe(2)
   </script>
 </test>
 
