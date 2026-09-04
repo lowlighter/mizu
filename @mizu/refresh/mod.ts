@@ -1,5 +1,5 @@
 // Imports
-import { type Cache, type Directive, Phase } from "@mizu/internal/engine"
+import { type Cache, type Directive, type Optional, Phase } from "@mizu/internal/engine"
 export type * from "@mizu/internal/engine"
 
 /** `*refresh` directive. */
@@ -31,10 +31,10 @@ export const _refresh = {
       renderer.warn(`[${this.name}] expects a finite positive number but got ${value}, ignoring`, element)
       return
     }
-    const cached = cache.get(element) ?? cache.set(element, { interval, id: NaN }).get(element)!
-    if (((cached.interval !== interval) && (!Number.isNaN(cached.id))) || (options.state[renderer.internal("refreshing")])) {
+    const cached = cache.get(element) ?? cache.set(element, { interval, id: undefined }).get(element)!
+    if (((cached.interval !== interval) && (cached.id !== undefined)) || (options.state[renderer.internal("refreshing")])) {
       clearTimeout(cached.id)
-      cached.id = NaN
+      cached.id = undefined
     }
   },
   cleanup(renderer, element, { cache, ...options }) {
@@ -47,17 +47,18 @@ export const _refresh = {
     }
 
     // Setup interval if needed
-    if (!Number.isNaN(cache.get(element)?.id)) {
+    const cached = cache.get(element)
+    if ((!cached) || (cached.id !== undefined)) {
       return
     }
-    cache.get(element)!.id = setTimeout(() => {
+    cached.id = setTimeout(() => {
       if (element.isConnected) {
         renderer.render(element as HTMLElement, { ...options, state: { ...options.state, $refresh: true, [renderer.internal("refreshing")]: true } })
       }
-    }, cache.get(element)!.interval)
+    }, cached.interval)
   },
 } as const satisfies Directive<{
-  Cache: WeakMap<HTMLElement | Comment, { id: number; interval: number }>
+  Cache: WeakMap<HTMLElement | Comment, { id: Optional<ReturnType<typeof setTimeout>>; interval: number }>
 }>
 
 /** Default exports. */
