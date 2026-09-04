@@ -44,14 +44,13 @@ export const _for = {
     let comment = element as unknown as Comment
     if (!renderer.isComment(element)) {
       comment = renderer.comment(element, { directive: this.name as string, expression: attribute.value })
-      cache.set(comment, { element, items: new Map(), contexts: new Map(), scratch: null })
+      cache.set(comment, { element, items: new Map(), contexts: new Map(), iteration: null })
     }
     const cached = cache.get(comment)!
     element = cached.element
     const identifiable = renderer.getAttributes(element, _id.name, { first: true })?.value
 
     // Generate items
-    // Iteration contexts are reused across renders (a context never forgets its children, so creating one per item per render would grow the context tree indefinitely)
     let position = comment as Comment | HTMLElement
     const generated = new Set<string>()
     const pending = []
@@ -59,9 +58,9 @@ export const _for = {
       const meta = { $i: i, $I: i + 1, $iterations: iterations.length, $first: i === 0, $last: i === iterations.length - 1 }
       let id = `${i}`
       if (identifiable) {
-        cached.scratch ??= context.with({ ...iterations[i] })
-        Object.assign(cached.scratch.target, iterations[i])
-        id = `${await renderer.evaluate(null, identifiable, { context: cached.scratch, state: { ...state, ...meta } })}`
+        cached.iteration ??= context.with({ ...iterations[i] })
+        Object.assign(cached.iteration.target, iterations[i])
+        id = `${await renderer.evaluate(null, identifiable, { context: cached.iteration, state: { ...state, ...meta } })}`
       }
       generated.add(id)
       let iteration = cached.contexts.get(id)
@@ -104,7 +103,7 @@ export const _for = {
     return { final: true }
   },
 } as const satisfies Directive<{
-  Cache: WeakMap<HTMLElement | Comment, Nullable<{ element: HTMLElement; items: Map<string, HTMLElement>; contexts: Map<string, Context>; scratch: Nullable<Context> }>>
+  Cache: WeakMap<HTMLElement | Comment, Nullable<{ element: HTMLElement; items: Map<string, HTMLElement>; contexts: Map<string, Context>; iteration: Nullable<Context> }>>
 }>
 
 /** `*id` directive. */
