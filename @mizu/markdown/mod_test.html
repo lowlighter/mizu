@@ -2,7 +2,7 @@
 
 <test name="[*markdown] renders markdown and sets html content">
   <script>
-    context.value = `**foo**`
+  context.value = `**foo**`
   </script>
   <render>
     <div *markdown="value"></div>
@@ -18,7 +18,7 @@
 
 <test name="[*markdown] with `.trim` modifier changes whitespaces handling">
   <script>
-    context.value = [
+  context.value = [
     "",
     "        foo",
     "",
@@ -53,7 +53,9 @@
   </render>
   <expect>
     <div><strong>foo</strong></div>
-    <div><p><strong>foo</strong></p></div>
+    <div>
+      <p><strong>foo</strong></p>
+    </div>
   </expect>
 </test>
 
@@ -63,8 +65,12 @@
     <div *markdown[gfm,emojis]>:ocean:</div>
   </render>
   <expect>
-    <div><p>:ocean:</p></div>
-    <div><p>🌊</p></div>
+    <div>
+      <p>:ocean:</p>
+    </div>
+    <div>
+      <p>🌊</p>
+    </div>
   </expect>
 </test>
 
