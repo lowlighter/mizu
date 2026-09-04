@@ -52,7 +52,9 @@ Specify target [`<slot>`](https://developer.mozilla.org/docs/Web/HTML/Element/sl
 
 ```html
 <my-element>
-  <li #items><!--...---></li>
+  <li #items>
+    <!--...--->
+  </li>
 </my-element>
 ```
 
