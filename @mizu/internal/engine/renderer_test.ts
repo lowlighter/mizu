@@ -609,6 +609,33 @@ test("`Renderer.replaceElementWithChildNodes()` replaces an `HTMLElement` with a
   expect(span.innerHTML).toBe(div.innerHTML)
 })
 
+test("`Renderer.replaceElementWithChildNodes()` moves `HTMLElement.childNodes` when an `HTMLElement` is replaced with itself", async () => {
+  await using window = new Window()
+  const renderer = await new Renderer(window, options).ready
+  renderer.document.body.innerHTML = "<span><div><p>foo</p><!--bar--></div></span>"
+  const span = renderer.document.querySelector("span")!
+  const div = span.querySelector("div")!
+  const p = div.querySelector("p")!
+  const children = renderer.replaceElementWithChildNodes(div, div)
+  expect(children).toHaveLength(2)
+  expect(children[0]).toBe(p)
+  expect(span.innerHTML).toBe("<p>foo</p><!--bar-->")
+  expect(span.querySelector("p")).toBe(p)
+})
+
+test("`Renderer.replaceElementWithChildNodes()` uses `HTMLTemplateElement.content` when replacing with a `<template>`", async () => {
+  await using window = new Window()
+  const renderer = await new Renderer(window, options).ready
+  renderer.document.body.innerHTML = "<span><slot></slot><template><p>foo</p></template></span>"
+  const span = renderer.document.querySelector("span")!
+  const slot = span.querySelector("slot")!
+  const template = span.querySelector("template")!
+  renderer.replaceElementWithChildNodes(slot, template)
+  expect(span.innerHTML).toBe("<p>foo</p><template><p>foo</p></template>")
+  renderer.replaceElementWithChildNodes(template, template)
+  expect(span.innerHTML).toBe("<p>foo</p><p>foo</p>")
+})
+
 test("`Renderer.comment()` replaces an `HTMLElement` by a `new Comment()`", async () => {
   await using window = new Window()
   const renderer = await new Renderer(window, options).ready
