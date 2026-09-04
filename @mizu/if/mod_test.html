@@ -43,3 +43,156 @@
     <!--[*if="value"]-->
   </expect>
 </test>
+
+<test name="[*if] renders template content on truthy expressions">
+  <render>
+    <template *if="true">
+      <p>foo</p>
+      <p>bar</p>
+    </template>
+  </render>
+  <expect>
+    <!--[*if="true"]-->
+    <p>foo</p>
+    <p>bar</p>
+    <!--[/*if]-->
+  </expect>
+</test>
+
+<test name="[*if] removes template content on falsy expressions">
+  <render>
+    <template *if="false">
+      <p>foo</p>
+      <p>bar</p>
+    </template>
+  </render>
+  <expect>
+    <!--[*if="false"]-->
+  </expect>
+</test>
+
+<test name="[*if] is reactive with templates">
+  <script>
+  context.value = false
+  </script>
+  <render>
+    <template *if="value">
+      <p>foo</p>
+      <p>bar</p>
+    </template>
+  </render>
+  <expect>
+    <!--[*if="value"]-->
+  </expect>
+  <script>
+  context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+    <p>foo</p>
+    <p>bar</p>
+    <!--[/*if]-->
+  </expect>
+  <script>
+  context.value = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+  </expect>
+  <script>
+  context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+    <p>foo</p>
+    <p>bar</p>
+    <!--[/*if]-->
+  </expect>
+</test>
+
+<test name="[*if] renders template content containing conditional directives">
+  <script>
+  context.a = true
+  context.b = false
+  </script>
+  <render>
+    <template *if="a">
+      <p *if="b">foo</p>
+      <p>bar</p>
+    </template>
+  </render>
+  <expect>
+    <!--[*if="a"]-->
+    <!--[*if="b"]-->
+    <p>bar</p>
+    <!--[/*if]-->
+  </expect>
+  <script>
+  context.b = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="a"]-->
+    <p>foo</p>
+    <p>bar</p>
+    <!--[/*if]-->
+  </expect>
+  <script>
+  context.a = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="a"]-->
+  </expect>
+  <script>
+  context.a = true
+  context.b = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="a"]-->
+    <!--[*if="b"]-->
+    <p>bar</p>
+    <!--[/*if]-->
+  </expect>
+</test>
+
+<test name="[*if] renders template content containing iterative directives">
+  <load directives="@mizu/if,@mizu/for,@mizu/test"></load>
+  <script>
+  context.value = true
+  </script>
+  <render>
+    <ul>
+      <template *if="value">
+        <li *for="const v of [1, 2]" ~test[content].text="v"></li>
+      </template>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>1</li>
+      <li>2</li>
+    </ul>
+  </expect>
+  <script>
+  context.value = false
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul></ul>
+  </expect>
+  <script>
+  context.value = true
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li>1</li>
+      <li>2</li>
+    </ul>
+  </expect>
+</test>
