@@ -157,3 +157,32 @@
     <p *warn="[*empty] must be immediately preceded by a [*for] or [*empty] directive, ignoring"></p>
   </expect>
 </test>
+
+<test name="[*empty] supports templates">
+  <render>
+    <ul>
+      <template *for="const v of []">
+        <li ~test[content].text="v"></li>
+      </template>
+      <li *empty>empty</li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>empty</li>
+    </ul>
+  </expect>
+  <render>
+    <ul>
+      <template *for="const v of [1]">
+        <li ~test[content].text="v"></li>
+      </template>
+      <li *empty>empty</li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>1</li>
+    </ul>
+  </expect>
+</test>
