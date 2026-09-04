@@ -70,7 +70,6 @@ export const _event = {
         cache.get(element)!.set(attribute, new Map())
       }
       if (cache.get(element)!.get(attribute)!.has(event)) {
-        // Listener is kept, but the latest context, state and expression are used when it is triggered
         Object.assign(cache.get(element)!.get(attribute)!.get(event)!, { context, state, expression })
         continue
       }
