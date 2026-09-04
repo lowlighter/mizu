@@ -120,63 +120,63 @@
 </section>
 
 <script>
-  {
-    const form = document.querySelector("form.builder")
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault()
-      // Prepare data
-      const raw = new FormData(form)
-      const data = { format: "", console: [], directives: [], minify: false, standalone: false }
-      for (const [key, value] of raw) {
-        switch (key) {
-          case "console":
-          case "directives":
-            data[key].push(value)
-            break
-          case "minify":
-          case "standalone":
-            data[key] = value === "on"
-            break
-          default:
-            data[key] = value
-        }
+{
+  const form = document.querySelector("form.builder")
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault()
+    // Prepare data
+    const raw = new FormData(form)
+    const data = { format: "", console: [], directives: [], minify: false, standalone: false }
+    for (const [key, value] of raw) {
+      switch (key) {
+        case "console":
+        case "directives":
+          data[key].push(value)
+          break
+        case "minify":
+        case "standalone":
+          data[key] = value === "on"
+          break
+        default:
+          data[key] = value
       }
-      // Generate build
-      try {
-        form.classList.add("pending")
-        document.querySelector(".builder-error").classList.add("hidden")
-        const response = await fetch(location.hostname === "mizu.sh" ? "https://mizu.deno.dev/api/build" : "/api/build", { method: "POST", body: JSON.stringify(data) })
-        if (response.status !== 200) {
-          throw new Error(await response.text())
-        }
-        const url = URL.createObjectURL(new Blob([await response.blob()], { type: "application/javascript;charset=utf-8" }))
-        globalThis.open(url, "_blank")
-      } catch (error) {
-        document.querySelector(".builder-error").classList.remove("hidden")
-        document.querySelector(".builder-error small").innerText = error.message
-        setTimeout(() => document.querySelector(".builder-error").classList.add("hidden"), 15 * 1000)
-      } finally {
-        form.classList.remove("pending")
-      }
-    })
-    function refresh() {
-      form.querySelectorAll('input[type="checkbox"][data-group]').forEach((input) => {
-        const local = Array.from(form.querySelectorAll(`input[data-group="${input.dataset.group}"]`)).reduce((checked, input) => checked && input.checked, true)
-        form.querySelector(`input[data-group-toggle="${input.dataset.group}"]`).checked = local
-      })
-      form.querySelectorAll('input[type="checkbox"]:is([data-group="rendering"],[data-group-toggle="rendering"])').forEach((input) => input.checked = true)
-      const global = Array.from(form.querySelectorAll(`input[data-group]`)).reduce((checked, input) => checked && input.checked, true)
-      form.querySelector(`input[type="checkbox"][data-group-toggle="*"]`).checked = global
     }
-    // Add interactivity to group checkboxes
-    form.querySelectorAll('legend input[type="checkbox"][data-group-toggle]').forEach((input) => {
-      if (input.dataset.groupToggle === "*") {
-        input.addEventListener("change", () => form.querySelectorAll('input[type="checkbox"][data-group]').forEach((input) => input.checked = event.target.checked))
-      } else {
-        input.addEventListener("change", () => form.querySelectorAll(`input[type="checkbox"][data-group="${input.dataset.groupToggle}"]`).forEach((child) => child.checked = input.checked))
+    // Generate build
+    try {
+      form.classList.add("pending")
+      document.querySelector(".builder-error").classList.add("hidden")
+      const response = await fetch(location.hostname === "mizu.sh" ? "https://mizu.deno.dev/api/build" : "/api/build", { method: "POST", body: JSON.stringify(data) })
+      if (response.status !== 200) {
+        throw new Error(await response.text())
       }
+      const url = URL.createObjectURL(new Blob([await response.blob()], { type: "application/javascript;charset=utf-8" }))
+      globalThis.open(url, "_blank")
+    } catch (error) {
+      document.querySelector(".builder-error").classList.remove("hidden")
+      document.querySelector(".builder-error small").innerText = error.message
+      setTimeout(() => document.querySelector(".builder-error").classList.add("hidden"), 15 * 1000)
+    } finally {
+      form.classList.remove("pending")
+    }
+  })
+  function refresh() {
+    form.querySelectorAll('input[type="checkbox"][data-group]').forEach((input) => {
+      const local = Array.from(form.querySelectorAll(`input[data-group="${input.dataset.group}"]`)).reduce((checked, input) => checked && input.checked, true)
+      form.querySelector(`input[data-group-toggle="${input.dataset.group}"]`).checked = local
     })
-    form.querySelectorAll('input[type="checkbox"]:is([data-group],[data-group-toggle])').forEach((input) => input.addEventListener("change", () => refresh()))
-    refresh()
+    form.querySelectorAll('input[type="checkbox"]:is([data-group="rendering"],[data-group-toggle="rendering"])').forEach((input) => input.checked = true)
+    const global = Array.from(form.querySelectorAll(`input[data-group]`)).reduce((checked, input) => checked && input.checked, true)
+    form.querySelector(`input[type="checkbox"][data-group-toggle="*"]`).checked = global
   }
+  // Add interactivity to group checkboxes
+  form.querySelectorAll('legend input[type="checkbox"][data-group-toggle]').forEach((input) => {
+    if (input.dataset.groupToggle === "*") {
+      input.addEventListener("change", () => form.querySelectorAll('input[type="checkbox"][data-group]').forEach((input) => input.checked = event.target.checked))
+    } else {
+      input.addEventListener("change", () => form.querySelectorAll(`input[type="checkbox"][data-group="${input.dataset.groupToggle}"]`).forEach((child) => child.checked = input.checked))
+    }
+  })
+  form.querySelectorAll('input[type="checkbox"]:is([data-group],[data-group-toggle])').forEach((input) => input.addEventListener("change", () => refresh()))
+  refresh()
+}
 </script>

@@ -2,7 +2,7 @@
 
 <test name="[*mustache] templates `{{ }}` delimiters">
   <script>
-    context.foo = "bar"
+  context.foo = "bar"
   </script>
   <render>
     <p *mustache>
@@ -15,7 +15,7 @@
     </p>
   </expect>
   <script>
-    context.foo = "baz"
+  context.foo = "baz"
   </script>
   <render></render>
   <expect>
@@ -27,7 +27,7 @@
 
 <test name="[*mustache] templates `{{{ }}}` delimiters">
   <script>
-    context.foo = "bar"
+  context.foo = "bar"
   </script>
   <render>
     <p *mustache>
@@ -40,7 +40,7 @@
     </p>
   </expect>
   <script>
-    context.foo = "baz"
+  context.foo = "baz"
   </script>
   <render></render>
   <expect>
@@ -52,7 +52,7 @@
 
 <test name="[*mustache] templates children delimiters">
   <script>
-    context.foo = "bar"
+  context.foo = "bar"
   </script>
   <render>
     <p *mustache>
@@ -65,7 +65,7 @@
     </p>
   </expect>
   <script>
-    context.foo = "baz"
+  context.foo = "baz"
   </script>
   <render></render>
   <expect>

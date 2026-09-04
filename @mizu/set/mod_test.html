@@ -2,7 +2,7 @@
 
 <test name="[*set] sets context for element">
   <script>
-    context.foo = "foo"
+  context.foo = "foo"
   </script>
   <render>
     <p *set="{foo:'bar'}" ~test[content].text="foo"></p>
@@ -53,7 +53,7 @@
 
 <test name="[*set] handles commented elements">
   <script>
-    context.value = false
+  context.value = false
   </script>
   <render>
     <p *set="{foo:value}" ~test[toggle].comment="!foo" ~test[content].text="foo"></p>
@@ -62,7 +62,7 @@
     <!--[~test[toggle].comment="!foo"] [~test[content].text="foo"]-->
   </expect>
   <script>
-    context.value = true
+  context.value = true
   </script>
   <render></render>
   <expect>

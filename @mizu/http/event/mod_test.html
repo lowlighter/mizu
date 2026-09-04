@@ -5,14 +5,14 @@
     <response path="/foo" status="OK">bar</response>
   </http-server>
   <script>
-    context.event = null
+  context.event = null
   context.content = null
   </script>
   <render>
     <div %http="/foo" %@event.text="event = $event, content = $content"></div>
   </render>
   <script>
-    rendered.querySelector("div").dispatchEvent(new Event("event"))
+  rendered.querySelector("div").dispatchEvent(new Event("event"))
   await retry(() => {
     expect(http.request).toBeInstanceOf(Request)
     expect(context.event).toBeInstanceOf(Event)
@@ -26,14 +26,14 @@
     <response path="/foo" status="OK">bar</response>
   </http-server>
   <script>
-    context.event = null
+  context.event = null
   context.content = null
   </script>
   <render>
     <div %http.method[post]="/foo" %header[x-foo]="'bar'" %body.text="'foobar'" %@event.text="event = $event, content = $content"></div>
   </render>
   <script>
-    rendered.querySelector("div").dispatchEvent(new Event("event"))
+  rendered.querySelector("div").dispatchEvent(new Event("event"))
   await retry(() => {
     expect(http.request).toBeInstanceOf(Request)
     expect(http.request.method).toBe("POST")
@@ -50,14 +50,14 @@
     <response path="/foo" status="OK">bar</response>
   </http-server>
   <script>
-    context.a = 0
+  context.a = 0
   context.b = 0
   </script>
   <render>
     <p %http.method[options]="/foo" %@a.void="a++" %@b.void="b++"></p>
   </render>
   <script>
-    rendered.querySelector("p").dispatchEvent(new Event("a"))
+  rendered.querySelector("p").dispatchEvent(new Event("a"))
   rendered.querySelector("p").dispatchEvent(new Event("b"))
   await retry(() => {
     expect(context.a).toBe(1)
@@ -72,14 +72,14 @@
     <response path="/b" status="OK">bar</response>
   </http-server>
   <script>
-    context.a = null
+  context.a = null
   context.b = null
   </script>
   <render>
     <p %http="`/${$event?.type}`" %@.text="{a:() => a = $content, b:() => b = $content}"></p>
   </render>
   <script>
-    rendered.querySelector("p").dispatchEvent(new Event("a"))
+  rendered.querySelector("p").dispatchEvent(new Event("a"))
   await retry(() => {
     expect(context.a).toBe("foo")
     expect(context.b).toBeNull()
