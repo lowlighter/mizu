@@ -799,6 +799,20 @@ export class Renderer {
     duration: /^(?<delay>(?:\d+)|(?:\d*\.\d+))(?<unit>(?:ms|s|m)?)$/,
   } as const
 
+  /** Internal cache used to store the extracted name of already processed {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr | Attr}. */
+  readonly #names = new WeakMap<Attr, string>()
+
+  /** Extract the name (without tag and modifiers) of an {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr | Attr}, which is memoized as {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr/name | Attr.name} is immutable. */
+  #name(attribute: Attr): string {
+    let name = this.#names.get(attribute)
+    if (name === undefined) {
+      const { a: _a, b: _b, name: _name = `${_a}${_b}` } = attribute.name.match(this.#extractor.attribute)?.groups ?? { name: attribute.name }
+      name = _name
+      this.#names.set(attribute, name)
+    }
+    return name
+  }
+
   /**
    * Retrieve all matching {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} from an {@linkcode https://developer.mozilla.org/docs/Web/API/HTMLElement | HTMLElement}.
    *
@@ -832,12 +846,10 @@ export class Renderer {
   getAttributes(element: Optional<HTMLElement | Comment>, names: Arrayable<string> | RegExp, { first = false } = {}): Nullable<Attr> | Attr[] {
     const attributes = []
     if (element && (this.isHtmlElement(element))) {
-      if (!(names instanceof RegExp)) {
-        names = [names].flat()
-      }
-      for (const attribute of Array.from(element.attributes)) {
-        const { a: _a, b: _b, name: name = `${_a}${_b}` } = attribute.name.match(this.#extractor.attribute)!.groups!
-        if (((names as string[]).includes?.(name)) || ((names as RegExp).test?.(name))) {
+      const matches = (names instanceof RegExp) ? (name: string) => names.test(name) : (Array.isArray(names)) ? (name: string) => names.includes(name) : (name: string) => names === name
+      for (let i = 0; i < element.attributes.length; i++) {
+        const attribute = element.attributes[i]
+        if (matches(this.#name(attribute))) {
           attributes.push(attribute)
           if (first) {
             break
@@ -1000,7 +1012,7 @@ export class Renderer {
   parseAttribute<T extends AttrTypings>(attribute: Attr, typings?: Nullable<T>, { modifiers = false, prefix = "" } = {} as RendererParseAttributeOptions) {
     // Parse attribute name
     if (!this.#parsed.has(attribute)) {
-      const { a: _a, b: _b, name = `${_a}${_b}`, tag = "", modifiers: _modifiers = "" } = attribute.name.match(this.#extractor.attribute)!.groups!
+      const { a: _a, b: _b, name = `${_a}${_b}`, tag = "", modifiers: _modifiers = "" } = attribute.name.match(this.#extractor.attribute)?.groups ?? { name: attribute.name }
       const cached = { name, tag, modifiers: {} as Record<PropertyKey, unknown> }
       if (modifiers && (typings?.modifiers)) {
         const modifiers = Object.fromEntries(
