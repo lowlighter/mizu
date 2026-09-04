@@ -531,12 +531,7 @@ export class Renderer {
     this.#reactiveRender()
   }
 
-  /**
-   * Throttled {@linkcode Renderer.render()} call.
-   *
-   * Requests received while a batch is being processed, or during the throttling window that follows it, are processed in a trailing batch.
-   * A flush request bypasses both the throttling window and the grace period.
-   */
+  /** Throttled {@linkcode Renderer.render()} call. */
   #reactiveRender = ((throttle = 50, grace = 25) => {
     let t = NaN
     let active = false
@@ -571,7 +566,6 @@ export class Renderer {
         controller.abort()
         this.debug("processing queued reactive render requests")
         const queued = Array.from(this.#queued.entries())
-        // Errors are already reported by the rendering process, and must not prevent other requests from being processed
         await Promise.allSettled(
           queued.map(([element, { entrypoint, context, ...options }]) => {
             if (!element.isConnected) {
@@ -582,7 +576,6 @@ export class Renderer {
             }
           }),
         )
-        // Only processed requests are removed, as new ones may have been queued during rendering
         queued.forEach(([element, request]) => {
           if (this.#queued.get(element) === request) {
             this.#queued.delete(element)

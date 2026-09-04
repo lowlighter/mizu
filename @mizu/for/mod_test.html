@@ -45,7 +45,7 @@
 
 <test name="[*for] is reactive">
   <script>
-    context.value = ["foo", "bar"]
+  context.value = ["foo", "bar"]
   </script>
   <render>
     <ul>
@@ -59,7 +59,7 @@
     </ul>
   </expect>
   <script>
-    context.value = ["bar", "baz"]
+  context.value = ["bar", "baz"]
   </script>
   <render></render>
   <expect comments="false">
@@ -105,7 +105,7 @@
 
 <test name="[*for] supports iterable objects shorthand with exposed `$key` and `$value` variables">
   <script>
-    context.value = ["foo", "bar", "baz"]
+  context.value = ["foo", "bar", "baz"]
   </script>
   <render>
     <ul>
@@ -120,7 +120,7 @@
     </ul>
   </expect>
   <script>
-    context.value = { foo: true, bar: false, baz: null }
+  context.value = { foo: true, bar: false, baz: null }
   </script>
   <render></render>
   <expect comments="false">
@@ -131,7 +131,7 @@
     </ul>
   </expect>
   <script>
-    context.value = "foo"
+  context.value = "foo"
   </script>
   <render></render>
   <expect comments="false">
@@ -160,7 +160,7 @@
 
 <test name="[*for] exposes `$id` variable">
   <script>
-    context.value = ["foo", "bar", "baz"]
+  context.value = ["foo", "bar", "baz"]
   </script>
   <render>
     <ul>
@@ -265,7 +265,7 @@
 
 <test name="[*for] handles commented elements">
   <script>
-    context.value = false
+  context.value = false
   </script>
   <render>
     <p *for="2" *id="$i" ~test[toggle].comment="!value" ~test[content].text="$i"></p>
@@ -276,7 +276,7 @@
     <!--[~test[toggle].comment="!value"] [~test[content].text="$i"]-->
   </expect>
   <script>
-    context.value = true
+  context.value = true
   </script>
   <render></render>
   <expect>
@@ -314,7 +314,7 @@
 
 <test name="[*id] deduplicates content and references">
   <script>
-    context.value = [
+  context.value = [
     { id: 0, text: "foo" },
     { id: 1, text: "bar" },
   ]
@@ -331,10 +331,10 @@
     </ul>
   </expect>
   <script>
-    storage.elements = Array.from(document.querySelectorAll("li"))
+  storage.elements = Array.from(document.querySelectorAll("li"))
   </script>
   <script>
-    context.value = [
+  context.value = [
     { id: 0, text: "foo" },
     { id: 1, text: "bar" },
     { id: 1, text: "baz" },
@@ -350,7 +350,7 @@
     </ul>
   </expect>
   <script>
-    expect(storage.elements[0]).toBe(document.querySelector("li:nth-child(1)"))
+  expect(storage.elements[0]).toBe(document.querySelector("li:nth-child(1)"))
   expect(storage.elements[1]).toBe(document.querySelector("li:nth-child(2)"))
   </script>
 </test>
@@ -358,7 +358,9 @@
 <test name="[*for] and [%response.swap] interaction">
   <load directives="@mizu/test,@mizu/http,@mizu/for"></load>
   <http-server>
-    <response path="/foo" status="OK"><foo ~test[content].text="foo"></foo></response>
+    <response path="/foo" status="OK">
+      <foo ~test[content].text="foo"></foo>
+    </response>
   </http-server>
   <render>
     <section>
