@@ -75,11 +75,17 @@ export class Expression {
   #array() {
     this.#consume("[")
     while (!this.#peek("]")) {
-      this.#consume(",", { optional: true })
+      while (this.#consume(",", { optional: true })) {
+        // Skip holes and trailing commas
+      }
+      if (this.#peek("]")) {
+        break
+      }
       if (this.#spreading()) {
         break
       }
       if (this.#nested()) {
+        this.#value()
         continue
       }
       this.#identifiers.push(this.#identifier())
@@ -93,14 +99,23 @@ export class Expression {
     this.#consume("{")
     while (!this.#peek("}")) {
       this.#consume(",", { optional: true })
+      if (this.#peek("}")) {
+        break
+      }
       if (this.#spreading()) {
         break
       }
-      // Handle computed properties
-      if (this.#peek("[")) {
-        this.#group()
+      // Handle computed, string and numeric properties
+      if (this.#peek(/^[[\d"']/)) {
+        if (this.#peek("[")) {
+          this.#group()
+        } else {
+          this.#consume(/^("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\d[\p{L}\p{N}$_.]*)/u)
+        }
         this.#consume(":")
-        if (!this.#nested()) {
+        if (this.#nested()) {
+          this.#value()
+        } else {
           this.#identifiers.push(this.#identifier())
         }
       } // Handle regular properties
@@ -109,6 +124,7 @@ export class Expression {
         if (this.#peek(":")) {
           this.#consume(":")
           if (this.#nested()) {
+            this.#value()
             continue
           }
           identifier = this.#identifier()
