@@ -641,6 +641,20 @@ test("`Renderer.parseAttributes()` parses attributes with `prefix` option", asyn
   expect(renderer.parseAttribute(attribute, {}, { prefix: "*" }).name).toBe("foo")
 })
 
+test("`Renderer.parseAttributes()` returns copies of cached values and includes modifiers only when requested", async () => {
+  await using window = new Window()
+  const renderer = await new Renderer(window, options).ready
+  const div = renderer.createElement("div", { innerHTML: `<div *foo.a="bar"></div>` }).querySelector("div")!
+  const attribute = div.attributes[0]
+  const typings = { modifiers: { a: { type: Boolean } } } as const
+  const parsed = renderer.parseAttribute(attribute, typings, { modifiers: true })
+  expect(parsed).toMatchObject({ name: "*foo", value: "bar", modifiers: { a: true }, attribute })
+  ;(parsed as testing).name = "*baz"
+  ;(parsed as testing).modifiers.a = false
+  expect(renderer.parseAttribute(attribute, typings, { modifiers: true })).toMatchObject({ name: "*foo", modifiers: { a: true } })
+  expect(renderer.parseAttribute(attribute, typings)).not.toHaveProperty("modifiers")
+})
+
 for (
   const [name, tested, expected, typings] of [
     ['with `"true"` values as `true`', `*foo="true"`, { value: true }, { type: Boolean }],
