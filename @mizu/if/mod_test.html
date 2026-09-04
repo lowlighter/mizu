@@ -43,3 +43,113 @@
     <!--[*if="value"]-->
   </expect>
 </test>
+
+<test name="[*if] renders template content on truthy expressions">
+  <render>
+    <template *if="true">
+      <p>foo</p>
+      <p>bar</p>
+    </template>
+  </render>
+  <expect>
+    <!--[*if="true"]-->
+    <p>foo</p>
+    <p>bar</p>
+  </expect>
+</test>
+
+<test name="[*if] removes template content on falsy expressions">
+  <render>
+    <template *if="false">
+      <p>foo</p>
+      <p>bar</p>
+    </template>
+  </render>
+  <expect>
+    <!--[*if="false"]-->
+  </expect>
+</test>
+
+<test name="[*if] is reactive with templates">
+  <script>
+  context.value = false
+  </script>
+  <render>
+    <template *if="value">
+      <p>foo</p>
+      <p>bar</p>
+    </template>
+  </render>
+  <expect>
+    <!--[*if="value"]-->
+  </expect>
+  <script>
+  context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+    <p>foo</p>
+    <p>bar</p>
+  </expect>
+  <script>
+  context.value = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+  </expect>
+  <script>
+  context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+    <p>foo</p>
+    <p>bar</p>
+  </expect>
+</test>
+
+<test name="[*if] renders template content containing conditional directives">
+  <script>
+  context.a = true
+  context.b = false
+  </script>
+  <render>
+    <template *if="a">
+      <p *if="b">foo</p>
+      <p>bar</p>
+    </template>
+  </render>
+  <expect>
+    <!--[*if="a"]-->
+    <!--[*if="b"]-->
+    <p>bar</p>
+  </expect>
+  <script>
+  context.b = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="a"]-->
+    <p>foo</p>
+    <p>bar</p>
+  </expect>
+  <script>
+  context.a = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="a"]-->
+  </expect>
+  <script>
+  context.a = true
+  context.b = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="a"]-->
+    <!--[*if="b"]-->
+    <p>bar</p>
+  </expect>
+</test>

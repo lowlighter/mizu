@@ -135,3 +135,45 @@
     <p *warn="[*else] must be immediately preceded by another [*if] or [*else], ignoring">bar</p>
   </expect>
 </test>
+
+<test name="[*else] supports templates">
+  <script>
+  context.value = true
+  </script>
+  <render>
+    <template *if="value">
+      <p>foo</p>
+      <p>bar</p>
+    </template>
+    <template *else>
+      <p>baz</p>
+      <p>qux</p>
+    </template>
+  </render>
+  <expect>
+    <!--[*if="value"]-->
+    <p>foo</p>
+    <p>bar</p>
+    <!--[*else=""]-->
+  </expect>
+  <script>
+  context.value = false
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+    <!--[*else=""]-->
+    <p>baz</p>
+    <p>qux</p>
+  </expect>
+  <script>
+  context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+    <p>foo</p>
+    <p>bar</p>
+    <!--[*else=""]-->
+  </expect>
+</test>
