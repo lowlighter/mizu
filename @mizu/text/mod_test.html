@@ -11,7 +11,7 @@
 
 <test name="[*text] escapes html content">
   <script>
-    context.value = `<b>foo</b>`
+  context.value = `<b>foo</b>`
   </script>
   <render>
     <p *text="value"></p>
@@ -23,7 +23,9 @@
 
 <test name="[*text] defaults to `Element.innerHTML` and escapes it">
   <render>
-    <div *text><p>foo</p></div>
+    <div *text>
+      <p>foo</p>
+    </div>
   </render>
   <expect>
     <div>&lt;p&gt;foo&lt;/p&gt;</div>

@@ -38,8 +38,8 @@ This setup requires you to import and start _**mizu.js**_ manually, allowing cus
 
 ```html
 <script type="module">
-  import Mizu from "https://mizu.sh/client.mjs"
-  await Mizu.render(document.body, { context: { foo: "🌊 Yaa, mizu!" } })
+import Mizu from "https://mizu.sh/client.mjs"
+await Mizu.render(document.body, { context: { foo: "🌊 Yaa, mizu!" } })
 </script>
 ```
 
