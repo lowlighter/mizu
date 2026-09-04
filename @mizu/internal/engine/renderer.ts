@@ -21,7 +21,7 @@ export class Renderer {
     this.#warn = warn
     this.#debug = debug
     this.#directives = [] as Directive[]
-    this.#flush = { request: Promise.withResolvers<true>(), response: Promise.withResolvers<void>() }
+    this.#flush = { requested: false, request: Promise.withResolvers<true>(), response: Promise.withResolvers<void>() }
     this.ready = this.load(directives)
   }
 
@@ -518,35 +518,60 @@ export class Renderer {
 
   /** Throttled {@linkcode Renderer.render()} call. */
   #reactiveRender = ((throttle = 50, grace = 25) => {
-    const controller = new AbortController()
     let t = NaN
     let active = false
-    let flushed = false
+    let scheduled = null as Nullable<ReturnType<typeof setTimeout>>
     return async () => {
-      if (active || (!this.#queued.size) || (Date.now() - t <= throttle)) {
+      if (active) {
         return
       }
+      if (!this.#flush.requested) {
+        if (!this.#queued.size) {
+          return
+        }
+        const elapsed = Date.now() - t
+        if (elapsed <= throttle) {
+          scheduled ??= setTimeout(() => {
+            scheduled = null
+            this.#reactiveRender()
+          }, throttle - elapsed)
+          return
+        }
+      }
+      if (scheduled !== null) {
+        clearTimeout(scheduled)
+        scheduled = null
+      }
+      const controller = new AbortController()
+      const flush = this.#flush
+      let flushed = false
       try {
         active = true
-        flushed = await Promise.race([delay(grace, { signal: controller.signal }), this.#flush.request.promise]) as boolean
-        if (flushed) {
-          controller.abort()
-        }
+        flushed = await Promise.race([delay(grace, { signal: controller.signal }).then(() => false), flush.request.promise])
+        controller.abort()
         this.debug("processing queued reactive render requests")
-        await Promise.all(
-          Array.from(this.#queued.entries()).map(([element, { entrypoint, ...options }]) => {
+        const queued = Array.from(this.#queued.entries())
+        await Promise.allSettled(
+          queued.map(([element, { entrypoint, ...options }]) => {
             if (entrypoint && (element.isConnected)) {
               return this.#render(element, { reactive: true, ...options })
             }
           }),
         )
+        queued.forEach(([element, request]) => {
+          if (this.#queued.get(element) === request) {
+            this.#queued.delete(element)
+          }
+        })
       } finally {
         t = Date.now()
-        this.#queued.clear()
         active = false
         if (flushed) {
-          flushed = false
-          this.#flush.response.resolve()
+          this.#flush = { requested: false, request: Promise.withResolvers<true>(), response: Promise.withResolvers<void>() }
+          flush.response.resolve()
+        }
+        if ((this.#queued.size) || (this.#flush.requested)) {
+          this.#reactiveRender()
         }
       }
     }
@@ -557,9 +582,11 @@ export class Renderer {
 
   /** Flush the reactive render queue. */
   async flushReactiveRenderQueue(): Promise<void> {
-    this.#flush.request.resolve(true)
-    await this.#flush.response.promise
-    this.#flush = { request: Promise.withResolvers<true>(), response: Promise.withResolvers<void>() }
+    const flush = this.#flush
+    flush.requested = true
+    flush.request.resolve(true)
+    this.#reactiveRender()
+    await flush.response.promise
   }
 
   /** Queued reactive render requests. */
