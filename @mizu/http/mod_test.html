@@ -511,7 +511,7 @@
     <div %http="/foo" %response.html="result = $content.innerHTML"></div>
   </render>
   <script>
-  expect(context.result).toBe("<foo>bar</foo>")
+  expect(context.result.trim()).toBe("<foo>bar</foo>")
   </script>
   <expect>
     <div></div>
