@@ -391,3 +391,41 @@
     <p *warn="[/^@(?&lt;event&gt;)/] empty shorthand expects an object but got boolean, ignoring"></p>
   </expect>
 </test>
+
+<test name="[@event] listeners use the latest context and state after re-renders">
+  <load directives="@mizu/event,@mizu/test,@mizu/for"></load>
+  <script>
+  context.items = ["a", "b"]
+  context.hits = []
+  </script>
+  <render>
+    <p *for="const item of items" *id="item" @click="hits.push(item + $i)"></p>
+  </render>
+  <script>
+  context.items = ["b", "a"]
+  </script>
+  <render></render>
+  <script>
+  rendered.querySelector("p").dispatchEvent(new Event("click"))
+  expect(context.hits).toEqual(["b0"])
+  </script>
+</test>
+
+<test name="[@event] removes listeners attached to other targets when the element is disconnected">
+  <load directives="@mizu/event,@mizu/test,@mizu/for"></load>
+  <script>
+  context.items = [1, 2, 3]
+  context.hits = []
+  </script>
+  <render>
+    <p *for="const item of items" @click.attach[window]="hits.push(item)"></p>
+  </render>
+  <script>
+  context.items = [1]
+  </script>
+  <render></render>
+  <script>
+  window.dispatchEvent(new Event("click"))
+  expect(context.hits).toEqual([1])
+  </script>
+</test>
