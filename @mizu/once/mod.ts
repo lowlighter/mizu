@@ -32,8 +32,6 @@ export const _once = {
       return
     }
     if ((renderer.isHtmlElement(element)) && (renderer.parseAttribute(attribute, this.typings, { modifiers: true }).modifiers.flat)) {
-      // Child nodes are moved (not cloned) so that already rendered content keeps its identity (event listeners, caches, etc.)
-      // Since the content of <template> elements is not traversed by the renderer, it is rendered here before being cached
       const template = element.tagName === "TEMPLATE"
       for (const child of renderer.replaceElementWithChildNodes(element, element)) {
         if (template && (renderer.isHtmlElement(child))) {
