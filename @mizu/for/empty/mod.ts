@@ -34,8 +34,8 @@ export const _empty = {
 
       // Execute directive on first for loop found
       if ((renderer.isComment(previous)) && (cache?.has(previous))) {
-        const items = [...cache.get(previous)!.items.values()]
-        const $generated = items.length
+        const items = [...cache.get(previous)!.items.values()].flatMap(({ nodes }) => nodes)
+        const $generated = cache.get(previous)!.items.size
         if (seen.some((item) => !items.includes(item))) {
           break
         }
