@@ -384,3 +384,87 @@
     </section>
   </expect>
 </test>
+
+<test name="[*for] supports templates">
+  <render>
+    <ul>
+      <template *for="const v of ['foo', 'bar']">
+        <li ~test[content].text="v"></li>
+        <li ~test[content].text="`${v}!`"></li>
+      </template>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>foo</li>
+      <li>foo!</li>
+      <li>bar</li>
+      <li>bar!</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] is reactive with templates">
+  <script>
+  context.value = ["foo", "bar"]
+  </script>
+  <render>
+    <ul>
+      <template *for="const v of value" *id="v">
+        <li ~test[content].text="v"></li>
+        <li ~test[content].text="`${v}!`"></li>
+      </template>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>foo</li>
+      <li>foo!</li>
+      <li>bar</li>
+      <li>bar!</li>
+    </ul>
+  </expect>
+  <script>
+  context.value = ["bar", "baz"]
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li>bar</li>
+      <li>bar!</li>
+      <li>baz</li>
+      <li>baz!</li>
+    </ul>
+  </expect>
+</test>
+
+<test name="[*for] supports templates containing conditional directives">
+  <load directives="@mizu/for,@mizu/if,@mizu/test"></load>
+  <script>
+  context.value = [true, false, true]
+  </script>
+  <render>
+    <ul>
+      <template *for="const v of value">
+        <template *if="v">
+          <li ~test[content].text="$i"></li>
+        </template>
+      </template>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>0</li>
+      <li>2</li>
+    </ul>
+  </expect>
+  <script>
+  context.value = [false, true]
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li>1</li>
+    </ul>
+  </expect>
+</test>
