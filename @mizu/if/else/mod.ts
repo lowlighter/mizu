@@ -8,7 +8,7 @@ export const _else = {
   name: "*else",
   phase: Phase.TOGGLE,
   default: "true",
-  execute(renderer, element, { attributes: [attribute] }) {
+  execute(renderer, element, { attributes: [attribute], context }) {
     const cache = renderer.cache<Cache>(_if.name)
     let previous = element.previousSibling as Nullable<HTMLElement | Comment>
     while (previous) {
@@ -17,10 +17,11 @@ export const _else = {
         break
       }
 
-      // Force directive to `false` when a previous operand is truthy
+      // Force directive to `false` when a previous operand is truthy (the element reacts along with its operands)
       const closing = cache?.templates.get(cache.generated.get(previous)!)?.end === previous
       const opened = Boolean(cache?.templates.get(previous as Comment)?.end.parentNode)
       if (closing || opened || ((renderer.isHtmlElement(previous)) && (renderer.getAttributes(previous, [_if.name, _else.name] as string[], { first: true })))) {
+        renderer.depend(element, closing ? cache.generated.get(previous)! : previous, { context })
         return _if.execute(renderer, element, { ...arguments[2], _directive: { directive: this.name, expression: attribute.value, value: "false" } })
       }
 
@@ -30,8 +31,14 @@ export const _else = {
       }
 
       // Execute directive with given expression when first operand is found and is falsy (meaning all previous operand were falsy too)
-      if ((renderer.isComment(previous)) && (renderer.getAttributes(renderer.cache("*").get(previous), _if.name, { first: true }))) {
-        return _if.execute(renderer, element, { ...arguments[2], _directive: { directive: this.name, expression: attribute.value, value: attribute.value || this.default } })
+      if (renderer.isComment(previous)) {
+        const original = renderer.cache("*").get(previous)
+        if (renderer.getAttributes(original, [_if.name, _else.name] as string[], { first: true })) {
+          renderer.depend(element, previous, { context })
+        }
+        if (renderer.getAttributes(original, _if.name, { first: true })) {
+          return _if.execute(renderer, element, { ...arguments[2], _directive: { directive: this.name, expression: attribute.value, value: attribute.value || this.default } })
+        }
       }
       previous = previous.previousSibling as Nullable<HTMLElement | Comment>
     }

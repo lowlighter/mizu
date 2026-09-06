@@ -518,6 +518,21 @@ export class Renderer {
   }
 
   /**
+   * Make an element react to the same {@linkcode Context} properties as another one.
+   *
+   * This is intended for directives whose result depends on the rendering of another element (such as `*else` or `*empty`), so that both are re-rendered together.
+   * It has no effect outside of reactive rendering.
+   */
+  depend(element: HTMLElement | Comment, dependency: HTMLElement | Comment, { context }: { context: Context }): void {
+    const watched = this.#watched.get(context)
+    const properties = watched?.get(dependency)?.properties
+    if ((!properties?.size) || (!watched?.has(element))) {
+      return
+    }
+    properties.forEach((property) => watched.get(element)!.properties.add(property))
+  }
+
+  /**
    * Queue a {@linkcode Renderer.render()} request emitted by a reactive change.
    *
    * Render requests covered by a queued ancestor are discarded when the queue is processed.
@@ -577,14 +592,13 @@ export class Renderer {
           }
           request.entrypoint = ancestor === null
         }
-        // Requests are rendered sequentially, as concurrent renders would attribute their properties reads to each other
-        for (const [element, { entrypoint, ...options }] of queued) {
-          if (entrypoint) {
-            try {
-              await this.#render(element, { reactive: true, ...options })
-            } catch {
-              // Errors are already reported by the rendering process, and must not prevent other requests from being processed
-            }
+        // Requests are rendered sequentially and in document order, as concurrent renders would attribute their properties reads to each other, and elements may depend on the rendering of previous ones
+        const entrypoints = queued.filter(([_, { entrypoint }]) => entrypoint).sort(([a], [b]) => (a.compareDocumentPosition(b) & this.window.Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1)
+        for (const [element, { context, state }] of entrypoints) {
+          try {
+            await this.#render(element, { reactive: true, context, state })
+          } catch {
+            // Errors are already reported by the rendering process, and must not prevent other requests from being processed
           }
         }
         queued.forEach(([element, request]) => {

@@ -485,6 +485,21 @@ test("`Renderer.render() // R` does not attribute properties reads of concurrent
   expect(context.target.fn.b).toBeCalledTimes(3)
 })
 
+test("`Renderer.depend()` makes an element react to the same properties as another one", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: 0, fn: fn() })
+  const _depend = { name: "*depend", phase: Phase.TESTING, execute: (renderer: Renderer, element: HTMLElement, { context }: { context: Context }) => renderer.depend(element, element.previousSibling as HTMLElement, { context }) }
+  const renderer = new Renderer(window, { ...options, directives: [_test, _depend as testing] })
+  const element = renderer.createElement("div", { innerHTML: `<span ~test.text="foo"></span><span *depend ~test[testing].eval="fn()"></span>` })
+  renderer.document.body.appendChild(element)
+  await renderer.render(element, { context, reactive: true })
+  expect(context.target.fn).toBeCalledTimes(1)
+  context.target.foo = 1
+  await renderer.flushReactiveRenderQueue()
+  expect(element.children[0].textContent).toBe("1")
+  expect(context.target.fn).toBeCalledTimes(2)
+})
+
 test("`Renderer.render() // R` stops reacting for elements that were replaced", async () => {
   await using window = new Window()
   const context = new Context({ foo: "bar", comment: false })
