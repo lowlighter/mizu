@@ -32,7 +32,7 @@ export const _empty = {
         seen.push(previous)
       }
 
-      // Execute directive on first for loop found (the element reacts along with it)
+      // Execute directive on first for loop found
       if ((renderer.isComment(previous)) && (cache?.has(previous))) {
         renderer.depend(element, previous, { context })
         const items = [...cache.get(previous)!.items.values()].flatMap(({ nodes }) => nodes)

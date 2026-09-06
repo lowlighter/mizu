@@ -592,7 +592,7 @@ export class Renderer {
           }
           request.entrypoint = ancestor === null
         }
-        // Requests are rendered sequentially and in document order, as concurrent renders would attribute their properties reads to each other, and elements may depend on the rendering of previous ones
+        // Requests are rendered sequentially and in document order, as concurrent renders would attribute their properties reads to each other
         const entrypoints = queued.filter(([_, { entrypoint }]) => entrypoint).sort(([a], [b]) => (a.compareDocumentPosition(b) & this.window.Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1)
         for (const [element, { context, state }] of entrypoints) {
           try {

@@ -17,7 +17,7 @@ export const _else = {
         break
       }
 
-      // Force directive to `false` when a previous operand is truthy (the element reacts along with its operands)
+      // Force directive to `false` when a previous operand is truthy
       const closing = cache?.templates.get(cache.generated.get(previous)!)?.end === previous
       const opened = Boolean(cache?.templates.get(previous as Comment)?.end.parentNode)
       if (closing || opened || ((renderer.isHtmlElement(previous)) && (renderer.getAttributes(previous, [_if.name, _else.name] as string[], { first: true })))) {
