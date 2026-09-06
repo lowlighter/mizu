@@ -26,3 +26,23 @@ Enable _**mizu.js**_ rendering for the element and its children.
 ### `$root: HTMLElement`
 
 The closest element that declares a [`*mizu`](#mizu) directive.
+
+# `!ephemeral`
+
+| Version                               | Phase             |
+| ------------------------------------- | ----------------- |
+| ![](https://jsr.io/badges/@mizu/mizu) | 1 — `ELIGIBILITY` |
+
+Evaluate a directive a single time and remove it automatically after being processed.
+
+```html
+<input type="button" value="Click me!" !@click="this.value = 'Clicked!'">
+```
+
+## Notes
+
+> [!NOTE]
+> Directives using the `*` prefix may omit it _(e.g. `!directive` is equivalent to `!*directive`)_.
+
+> [!NOTE]
+> Directives that have placement restrictions must also be marked as ephemeral _(e.g. `!if` / `!else`)_.

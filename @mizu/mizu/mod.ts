@@ -13,5 +13,13 @@ export const _mizu = {
   Name: string
 }>
 
+/** `!ephemeral` marker. */
+export const _ephemeral = {
+  name: "!ephemeral",
+  phase: Phase.ELIGIBILITY,
+} as const satisfies Directive<{
+  Name: string
+}>
+
 /** Default exports. */
 export default _mizu
