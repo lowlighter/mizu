@@ -30,7 +30,7 @@ Render an element for each iteration performed.
 > [`var`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/var) declarations inside `for` loops, but future versions may introduce specific behavior for these.
 
 > [!NOTE]
-> When used on a [`<template>`](https://developer.mozilla.org/docs/Web/HTML/Element/template) element, its content is rendered for each iteration instead of the element itself which allows to generate several elements per iteration.
+> When used on a [`<template>`](https://developer.mozilla.org/docs/Web/HTML/Element/template) element, its content is rendered for each iteration instead of the element itself which allows to generate several elements per iteration, unless it carries other directives.
 
 ## Variables
 
