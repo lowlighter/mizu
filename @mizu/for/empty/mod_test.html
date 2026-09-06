@@ -186,3 +186,35 @@
     </ul>
   </expect>
 </test>
+
+<test name="[*empty] reacts along with its iterative directive">
+  <script>
+  context.value = [0]
+  </script>
+  <render>
+    <ul>
+      <li *for="const i of value" *id="i"></li>
+      <li *empty>foo</li>
+    </ul>
+  </render>
+  <script>
+  await testing.renderer.render(rendered, { context: testing.context, reactive: true })
+  context.value = []
+  await testing.renderer.flushReactiveRenderQueue()
+  </script>
+  <expect comments="false">
+    <ul>
+      <li>foo</li>
+    </ul>
+  </expect>
+  <script>
+  context.value = [0, 1]
+  await testing.renderer.flushReactiveRenderQueue()
+  </script>
+  <expect comments="false">
+    <ul>
+      <li *id="0"></li>
+      <li *id="1"></li>
+    </ul>
+  </expect>
+</test>
