@@ -44,6 +44,18 @@
   </expect>
 </test>
 
+<test name="[*if] toggles templates carrying other directives instead of rendering their content">
+  <load directives="@mizu/if,@mizu/custom-element,@mizu/test"></load>
+  <render>
+    <template *if="true" *custom-element="'x-rendered'"></template>
+    <template *if="false" *custom-element="'x-skipped'"></template>
+  </render>
+  <script>
+  expect(testing.renderer.window.customElements.get("x-rendered")).toBeDefined()
+  expect(testing.renderer.window.customElements.get("x-skipped")).toBeUndefined()
+  </script>
+</test>
+
 <test name="[*if] renders template content on truthy expressions">
   <render>
     <template *if="true">
