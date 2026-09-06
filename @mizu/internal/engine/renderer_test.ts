@@ -3,6 +3,7 @@ import { expect, fn, test, TestingError } from "@libs/testing"
 import { delay, retry } from "@std/async"
 import { Window } from "../vdom/mod.ts"
 import { type Compilation, Context, type Directive, Phase, Renderer } from "./renderer.ts"
+import { quote } from "./compile.ts"
 import _mizu from "@mizu/mizu"
 import _test, { PHASE_TESTING_DELTA } from "@mizu/test"
 const options = { directives: [_mizu] }
@@ -1007,4 +1008,8 @@ test("`Renderer.debug()` calls the `debug()` callback", async () => {
   const element = renderer.createElement("div")
   renderer.debug("foo", element)
   expect(debug).toBeCalledWith("foo", element)
+})
+
+test("`quote()` serializes strings into literals safe for inline scripts", () => {
+  expect(quote("</script>\u2028\u2029")).toBe(`"\\u003c/script>\\u2028\\u2029"`)
 })

@@ -1,5 +1,5 @@
 // Imports
-import { type Cache, type Callback, type Context, type Directive, Phase } from "@mizu/internal/engine"
+import { type Cache, type Callback, type Context, type Directive, Phase, quote } from "@mizu/internal/engine"
 import { keyboard } from "./keyboard.ts"
 export type * from "@mizu/internal/engine"
 
@@ -181,7 +181,7 @@ export const _event = {
         `let $callback = async function ($event) { with ($context) { with ($scope) { with ({ $event }) { const $result = (${expression || this.default}); return (typeof $result === "function") ? $result.call(this, $event) : $result } } } }`,
       ]
       if (modifiers.keys) {
-        lines.push(`$callback = (($callback, $check) => function ($event) { return $check($event) ? $callback.call(this, $event) : false })($callback, (${keyboard.toString()})(${JSON.stringify(modifiers.keys)}))`)
+        lines.push(`$callback = (($callback, $check) => function ($event) { return $check($event) ? $callback.call(this, $event) : false })($callback, (${keyboard.toString()})(${quote(modifiers.keys)}))`)
       }
       if (modifiers.throttle) {
         lines.push(
@@ -194,7 +194,7 @@ export const _event = {
       const target = ({ window: "window", document: "document" } as Record<string, string>)[modifiers.attach as string] ?? "$element"
       const guards = [modifiers.prevent ? "$event.preventDefault()" : "", modifiers.stop ? "$event.stopPropagation()" : "", modifiers.self ? "if ($event.target !== $element) { return }" : ""].filter(Boolean)
       lines.push(
-        `${target}.addEventListener(${JSON.stringify(event)}, function ($event) { ${guards.map((guard) => `${guard}; `).join("")}return $callback.call($element, $event) }, { passive: ${Boolean(modifiers.passive)}, once: ${Boolean(modifiers.once)}, capture: ${
+        `${target}.addEventListener(${quote(event)}, function ($event) { ${guards.map((guard) => `${guard}; `).join("")}return $callback.call($element, $event) }, { passive: ${Boolean(modifiers.passive)}, once: ${Boolean(modifiers.once)}, capture: ${
           Boolean(modifiers.capture)
         } })`,
       )

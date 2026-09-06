@@ -1,5 +1,5 @@
 // Imports
-import type { Callback } from "@mizu/internal/engine"
+import { type Callback, quote } from "@mizu/internal/engine"
 
 /**
  * Serialize a value into JavaScript source.
@@ -17,7 +17,7 @@ export function serialize(value: unknown, seen = new WeakSet<object>()): string 
     case "bigint":
       return `${value}n`
     case "string":
-      return JSON.stringify(value)
+      return quote(value)
     case "symbol":
       throw new TypeError("symbols are not supported")
     case "function":
@@ -49,7 +49,7 @@ export function serialize(value: unknown, seen = new WeakSet<object>()): string 
   if ((prototype !== Object.prototype) && (prototype !== null)) {
     throw new TypeError(`${prototype.constructor?.name ?? "object"} instances are not supported`)
   }
-  return `{ ${Object.entries(value as Record<string, unknown>).map(([key, item]) => `${JSON.stringify(key)}: ${serialize(item, seen)}`).join(", ")} }`
+  return `{ ${Object.entries(value as Record<string, unknown>).map(([key, item]) => `${quote(key)}: ${serialize(item, seen)}`).join(", ")} }`
 }
 
 /** Serialize a function into a JavaScript expression (method shorthands are converted into function expressions). */

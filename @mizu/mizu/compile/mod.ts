@@ -1,5 +1,5 @@
 // Imports
-import { type Compilation, type Context, type Directive, Phase } from "@mizu/internal/engine"
+import { type Compilation, type Context, type Directive, Phase, quote } from "@mizu/internal/engine"
 import { serialize } from "./serialize.ts"
 export type * from "@mizu/internal/engine"
 
@@ -92,7 +92,7 @@ function literal(entries: Entry[], warn: (message: string) => void) {
   const serialized = []
   for (const [key, value, silent] of entries) {
     try {
-      serialized.push(`${JSON.stringify(key)}: ${serialize(value)}`)
+      serialized.push(`${quote(key)}: ${serialize(value)}`)
     } catch (error) {
       if (!silent) {
         warn(`unable to serialize "${key}" (${error.message}), skipping`)
