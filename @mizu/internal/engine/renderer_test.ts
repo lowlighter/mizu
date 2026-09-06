@@ -984,7 +984,7 @@ test("`Renderer.debug()` calls the `debug()` callback", async () => {
   expect(debug).toBeCalledWith("foo", element)
 })
 
-test("`Renderer.render()` evaluates directives with the once operator a single time and removes their attribute", async () => {
+test("`Renderer.render()` evaluates ephemeral directives a single time and removes their attribute", async () => {
   await using window = new Window()
   const renderer = new Renderer(window, { ...options, directives: [_test] })
   const element = renderer.createElement("div", { innerHTML: `<span !~test[content].text="foo"></span>` })
@@ -994,7 +994,7 @@ test("`Renderer.render()` evaluates directives with the once operator a single t
   expect(element.innerHTML).toBe("<span>bar</span>")
 })
 
-test("`Renderer.render()` removes attributes with the once operator once all siblings are processed", async () => {
+test("`Renderer.render()` removes ephemeral attributes once all siblings are processed", async () => {
   await using window = new Window()
   const renderer = new Renderer(window, { ...options, directives: [_test] })
   const element = renderer.createElement("div", { innerHTML: `<span !~test[content].text="foo"></span><span ~test[content].text="this.previousSibling.attributes.length"></span>` })
@@ -1002,7 +1002,7 @@ test("`Renderer.render()` removes attributes with the once operator once all sib
   expect(element.innerHTML).toBe(`<span>bar</span><span ~test[content].text="this.previousSibling.attributes.length">1</span>`)
 })
 
-test("`Renderer.render() // R` does not react for directives with the once operator", async () => {
+test("`Renderer.render() // R` does not react for ephemeral directives", async () => {
   await using window = new Window()
   const context = new Context({ foo: "bar" })
   const queued = fn()
@@ -1017,13 +1017,13 @@ test("`Renderer.render() // R` does not react for directives with the once opera
   expect(element.innerHTML).toBe("<span>bar</span>")
 })
 
-test("`Renderer.parseAttribute()` and `Renderer.getAttributes()` resolve the once operator", async () => {
+test("`Renderer.parseAttribute()` and `Renderer.getAttributes()` resolve the ephemeral marker", async () => {
   await using window = new Window()
   const renderer = new Renderer(window, options)
   const element = renderer.createElement("div", { attributes: { "!text": "foo", "!@click": "bar", "*text": "baz" } })
-  expect(renderer.parseAttribute(element.attributes[0])).toMatchObject({ name: "*text", once: true })
-  expect(renderer.parseAttribute(element.attributes[1])).toMatchObject({ name: "@click", once: true })
-  expect(renderer.parseAttribute(element.attributes[2])).toMatchObject({ name: "*text", once: false })
+  expect(renderer.parseAttribute(element.attributes[0])).toMatchObject({ name: "*text", ephemeral: true })
+  expect(renderer.parseAttribute(element.attributes[1])).toMatchObject({ name: "@click", ephemeral: true })
+  expect(renderer.parseAttribute(element.attributes[2])).toMatchObject({ name: "*text", ephemeral: false })
   expect(renderer.getAttributes(element, "*text")).toHaveLength(2)
   expect(renderer.getAttributes(element, "@click")).toHaveLength(1)
 })

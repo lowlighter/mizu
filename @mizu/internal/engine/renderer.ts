@@ -267,19 +267,19 @@ export class Renderer {
   /** Explicit rendering attribute name. */
   static readonly #explicit = "*mizu"
 
-  /** Operator for directives evaluated a single time and removed after processing. */
-  static readonly #once = "!"
+  /** Marker for ephemeral directives, evaluated a single time and removed after processing. */
+  static readonly #ephemeral = "!"
 
   /** Resolve the directive name of an attribute. */
   #normalize(name: string): string {
-    if (!name.startsWith(Renderer.#once)) {
+    if (!name.startsWith(Renderer.#ephemeral)) {
       return name
     }
-    name = name.slice(Renderer.#once.length)
+    name = name.slice(Renderer.#ephemeral.length)
     return /^[\p{L}\p{N}_]/u.test(name) ? `*${name}` : name
   }
 
-  /** Remove attributes with the once operator. */
+  /** Remove ephemeral attributes. */
   #expire(attributes: Attr[]) {
     attributes.forEach((attribute) => attribute.ownerElement?.removeAttributeNode(attribute))
   }
@@ -337,9 +337,9 @@ export class Renderer {
     let subtrees = implicit || (element.hasAttribute(Renderer.#explicit)) ? [element] : Array.from(element.querySelectorAll<HTMLElement>(`[${escape(Renderer.#explicit)}]`))
     subtrees = subtrees.filter((element) => subtrees.every((ancestor) => (ancestor === element) || (!ancestor.contains(element))))
     // Render subtrees
-    const once = [] as Attr[]
-    const rendered = await Promise.allSettled(subtrees.map((element) => this.#render(element, { context, state, reactive, once })))
-    this.#expire(once)
+    const ephemeral = [] as Attr[]
+    const rendered = await Promise.allSettled(subtrees.map((element) => this.#render(element, { context, state, reactive, ephemeral })))
+    this.#expire(ephemeral)
     const rejected = rendered.filter((render) => render.status === "rejected")
     if (rejected.length) {
       const error = new AggregateError(rejected.map((render) => render.reason))
@@ -362,7 +362,7 @@ export class Renderer {
    *
    * For more information, see the {@link https://mizu.sh/#concept-rendering | mizu.sh documentation}.
    */
-  async #render(element: HTMLElement | Comment, { context, state, reactive, once }: { context: Context; state: State; reactive: boolean; once: Attr[] }) {
+  async #render(element: HTMLElement | Comment, { context, state, reactive, ephemeral }: { context: Context; state: State; reactive: boolean; ephemeral: Attr[] }) {
     // 1. Ignore non-element nodes unless they were processed before and put into cache
     if ((element.nodeType !== this.window.Node.ELEMENT_NODE) && (!this.cache("*").has(element))) {
       return
@@ -415,7 +415,7 @@ export class Renderer {
         }
         // 4.3 Execute directive
         phases.set(directive.phase, directive.name)
-        const expiring = attributes.filter((attribute) => attribute.name.startsWith(Renderer.#once))
+        const expiring = attributes.filter((attribute) => attribute.name.startsWith(Renderer.#ephemeral))
         const untracked = reactive && (expiring.length > 0) && (expiring.length === attributes.length)
         if (untracked) {
           this.#unwatch(context, element)
@@ -424,7 +424,7 @@ export class Renderer {
         if (untracked) {
           this.#watch(context, element)
         }
-        once.push(...expiring)
+        ephemeral.push(...expiring)
         if (changes?.element) {
           if (reactive && (this.#watched.get(context)?.has(element))) {
             this.#watch(context, changes.element)
@@ -448,7 +448,7 @@ export class Renderer {
           Object.assign(state, changes.state)
         }
       }
-      // 5. Recurse on child nodes (attributes with the once operator are removed once all siblings are processed)
+      // 5. Recurse on child nodes (ephemeral attributes are removed once all siblings are processed)
       if (reactive) {
         this.#unwatch(context, element)
       }
@@ -458,7 +458,7 @@ export class Renderer {
       }
       const expired = [] as Attr[]
       for (const child of children) {
-        await this.#render(child, { context, state, reactive, once: expired })
+        await this.#render(child, { context, state, reactive, ephemeral: expired })
       }
       this.#expire(expired)
       if (reactive) {
@@ -610,13 +610,13 @@ export class Renderer {
         // Requests are rendered sequentially, as concurrent renders would attribute their properties reads to each other
         for (const [element, { entrypoint, ...options }] of queued) {
           if (entrypoint) {
-            const once = [] as Attr[]
+            const ephemeral = [] as Attr[]
             try {
-              await this.#render(element, { reactive: true, once, ...options })
+              await this.#render(element, { reactive: true, ephemeral, ...options })
             } catch {
               // Errors are already reported by the rendering process, and must not prevent other requests from being processed
             }
-            this.#expire(once)
+            this.#expire(ephemeral)
           }
         }
         queued.forEach(([element, request]) => {
@@ -1105,7 +1105,7 @@ export class Renderer {
     if (!this.#parsed.has(attribute)) {
       const normalized = this.#normalize(attribute.name)
       const { a: _a, b: _b, name = `${_a}${_b}`, tag = "", modifiers: _modifiers = "" } = normalized.match(this.#extractor.attribute)?.groups ?? { name: normalized }
-      const cached = { name, tag, once: attribute.name.startsWith(Renderer.#once), modifiers: {} as Record<PropertyKey, unknown> }
+      const cached = { name, tag, ephemeral: attribute.name.startsWith(Renderer.#ephemeral), modifiers: {} as Record<PropertyKey, unknown> }
       if (modifiers && (typings?.modifiers)) {
         const modifiers = Object.fromEntries(
           _modifiers.split(".").map((modifier) => {
@@ -1124,7 +1124,7 @@ export class Renderer {
     }
     // Copy cached values and the ones that might have changed since last parsing
     const cached = this.#parsed.get(attribute)!
-    const parsed = { name: cached.name, tag: cached.tag, once: cached.once, attribute, value: this.#parseAttributeValue(attribute.parentElement, cached.name, "value", attribute.value, typings as AttrAny) } as InferAttrTypings<T>
+    const parsed = { name: cached.name, tag: cached.tag, ephemeral: cached.ephemeral, attribute, value: this.#parseAttributeValue(attribute.parentElement, cached.name, "value", attribute.value, typings as AttrAny) } as InferAttrTypings<T>
     if (modifiers) {
       parsed.modifiers = { ...cached.modifiers } as typeof parsed.modifiers
     }
@@ -1136,7 +1136,7 @@ export class Renderer {
 
   /** Internal cache used to store parsed already parsed {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr/name | Attr.name}. */
   // deno-lint-ignore ban-types
-  readonly #parsed = new WeakMap<Attr, Pick<InferAttrTypings<{}>, "name" | "tag" | "once" | "modifiers">>()
+  readonly #parsed = new WeakMap<Attr, Pick<InferAttrTypings<{}>, "name" | "tag" | "ephemeral" | "modifiers">>()
 
   /** Used by {@linkcode Renderer.parseAttribute()} to parse a single {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr/value | Attr.value} according to specified {@linkcode AttrAny} typing. */
   #parseAttributeValue<T extends AttrAny>(element: Nullable<HTMLElement>, name: string, key: string, value: Optional<string>, typings: T): Optional<boolean | number | string> {
@@ -1423,8 +1423,8 @@ export type InferAttrTypings<T extends AttrTypings> = {
   value: InferAttrAny<T>
   /** Parsed {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} tag. */
   tag: string
-  /** Whether the {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} uses the once operator. */
-  once: boolean
+  /** Whether the {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} is ephemeral. */
+  ephemeral: boolean
   /** Parsed {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} modifiers. */
   modifiers: { [P in keyof T["modifiers"]]: T["modifiers"][P] extends { enforce: true } ? InferAttrAny<T["modifiers"][P]> : Optional<InferAttrAny<T["modifiers"][P]>> }
 }
