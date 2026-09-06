@@ -13,7 +13,7 @@ export const _mizu = {
   Name: string
 }>
 
-/** `!ephemeral` marker (resolved by the renderer, exported for documentation purposes). */
+/** `!ephemeral` marker. */
 export const _ephemeral = {
   name: "!ephemeral",
   phase: Phase.ELIGIBILITY,
