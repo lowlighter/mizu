@@ -4,7 +4,7 @@
 | --------------------------------------------- | ----------------- |
 | ![](https://jsr.io/badges/@mizu/mizu/compile) | 1 — `ELIGIBILITY` |
 
-Compile the element and its children into self-contained HTML, where directives with client-side behaviour are turned into a vanilla script.
+Mark an element to be rendered client-side by a self-contained bundle of _**mizu.js**_, reduced to the directives it uses.
 
 ```html
 <main *mizu.compile>
@@ -15,11 +15,10 @@ Compile the element and its children into self-contained HTML, where directives 
 ## Notes
 
 > [!NOTE]
-> Directives implementing a `compile()` hook _(such as [`@event`](#event))_ are compiled instead of being executed, and their attributes are removed. Their scripts are collected into a single `<script data-mizu>` appended to the element, and compiled elements are identified by a
-> `data-mizu` attribute.
+> The element and its children are skipped by the server renderer. `Server.compile()` appends a `<script>` to the element, bundling _**mizu.js**_ with the directives found in its subtree along with the current context.
 
 > [!NOTE]
-> The context is shipped to the client as the default context of the script. Functions lose their closure but can still resolve shipped variables, and values that cannot be serialized are skipped with a warning.
+> When the value is a selector matching a `<script>` of the document, rendering is deferred until `Mizu.hydrate()` is called from it _(e.g. `Mizu.hydrate({ context: { foo: "bar" } })`)_, otherwise it happens on load.
 
 > [!CAUTION]
-> Compiled elements are not meant to be rendered again by _**mizu.js**_, and the shipped context is not shared with it.
+> Context values are shipped as code: functions lose their closure, native functions must be reachable from `globalThis` _(e.g. `Math.random`)_, and other values are skipped with a warning. `Server.compile()` requires `Deno.bundle()`.

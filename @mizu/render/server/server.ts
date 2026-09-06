@@ -5,8 +5,12 @@ import type { CallbackSource, GlobSource, StringSource, URLSource } from "./gene
 import type { Buffer } from "node:buffer"
 import { Context, Renderer } from "@mizu/internal/engine"
 import { Window } from "@mizu/internal/vdom"
+import type { Arrayable } from "@libs/typing/types"
+import _mizu_compile, { type Cache as CompileCache } from "@mizu/mizu/compile"
 import defaults from "./defaults.ts"
+import { bundle, entrypoint } from "./compile.ts"
 import { generate } from "./generate.ts"
+import modules from "./modules.ts"
 // deno-lint-ignore no-external-import
 import { mkdir, readdir, readFile as read, rm, stat, writeFile as write } from "node:fs/promises"
 export type * from "@mizu/internal/engine"
@@ -123,6 +127,52 @@ export class Server {
    * )
    * ```
    */
+  /**
+   * Render content like {@linkcode Server.render()}, and compile the elements marked with `*mizu.compile` into self-contained fragments.
+   *
+   * Marked elements are left unrendered, and a `<script>` bundling _mizu.js_ with the directives used in their subtree is appended to them, along with the current context.
+   * When the `*mizu.compile` value is a selector matching a `<script>` of the document, rendering is deferred until `Mizu.hydrate()` is called from it, otherwise it happens on load.
+   *
+   * > [!IMPORTANT]
+   * > This method requires `Deno.bundle()` and is not available on other runtimes.
+   *
+   * ```ts ignore
+   * const mizu = new Server({ context: { count: 0 } })
+   * const html = await mizu.compile(`<main *mizu.compile><button @click="count++" *text="count"></button></main>`)
+   * ```
+   */
+  async compile(content: string | Arg<Renderer["render"]>, options?: ServerCompileOptions): Promise<string> {
+    if (typeof (globalThis as { Deno?: { bundle?: unknown } }).Deno?.bundle !== "function") {
+      throw new TypeError("Server.compile() requires Deno.bundle()")
+    }
+    await using window = new Window(typeof content === "string" ? content : `<body>${content.outerHTML}</body>`)
+    const { directives, warn, debug, context: _context } = { ...this.#options, ...options }
+    const renderer = await new Renderer(window, { directives, warn, debug }).ready
+    let context = this.#context
+    if (_context) {
+      context = context.with(_context)
+    }
+    await renderer.render(renderer.document.documentElement, { implicit: true, ...options, select: "", context, state: { $renderer: "server", $compile: true, ...options?.state }, stringify: false })
+    for (const [element, { context, entrypoint: selector }] of renderer.cache<CompileCache>(_mizu_compile.name)) {
+      const exported = Boolean(selector) && (renderer.document.querySelector(selector)?.tagName === "SCRIPT")
+      if (selector && (!exported)) {
+        renderer.warn(`[${_mizu_compile.name}] no script matches "${selector}", rendering on load instead`, element)
+      }
+      const source = entrypoint(renderer, element, { context, exported, modules: { ...modules, ...options?.modules }, warn: (message) => renderer.warn(`[${_mizu_compile.name}] ${message}`, element) })
+      if (!this.#bundles.has(source)) {
+        this.#bundles.set(source, bundle(source).catch((error) => (this.#bundles.delete(source), Promise.reject(error))))
+      }
+      const script = renderer.document.createElement("script")
+      script.textContent = (await this.#bundles.get(source)!).replace(/<\/script/gi, "<\\/script")
+      element.appendChild(script)
+    }
+    const html = (options?.select ? renderer.document.querySelector(options.select) : renderer.document.documentElement)?.outerHTML ?? ""
+    return options?.select ? html : `<!DOCTYPE html>${html}`
+  }
+
+  /** Compiled bundles, indexed by entrypoint source. */
+  readonly #bundles = new Map<string, Promise<string>>()
+
   generate(sources: Array<StringSource | GlobSource | CallbackSource | URLSource>, options?: ServerGenerateOptions): Promise<void> {
     return generate(this, sources, { ...this.#options.generate, ...options, fs: { ...this.#options.generate.fs, ...options?.fs } } as Arg<typeof generate, 2>)
   }
@@ -162,6 +212,12 @@ export type ServerRenderOptions = Pick<RendererRenderOptions, "implicit" | "sele
 }
 
 /** {@linkcode Server.generate} options. */
+/** {@linkcode Server.compile()} options. */
+export type ServerCompileOptions = ServerRenderOptions & Pick<ServerOptions, "warn"> & {
+  /** Additional directive modules known to the compiler, indexed by specifier. */
+  modules?: Record<string, Arrayable<Directive>>
+}
+
 export type ServerGenerateOptions = {
   /** Output directory. */
   output?: string

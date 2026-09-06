@@ -416,16 +416,8 @@ export class Renderer {
         if ((attributes.length > 1) && (!directive.multiple)) {
           this.warn(`Using multiple [${directive.name}] directives might result in unexpected behaviour`, element)
         }
-        // 4.3 Execute directive, or compile it when a compilation is in progress
+        // 4.3 Execute directive
         phases.set(directive.phase, directive.name)
-        const compilation = state[this.internal("compile")] as Optional<Compilation>
-        if (compilation && directive.compile) {
-          const script = await directive.compile(this, element, { cache: this.cache(directive.name), context, state, attributes })
-          if (script) {
-            compilation.push({ element, attributes, context, state: { ...state }, script })
-          }
-          continue
-        }
         const expiring = attributes.filter((attribute) => attribute.name.startsWith(Renderer.#ephemeral))
         const untracked = reactive && (expiring.length > 0) && (expiring.length === attributes.length)
         if (untracked) {
@@ -1386,9 +1378,6 @@ export type RendererParseAttributeOptions = {
 
 /** Current {@linkcode Renderer.render()} state. */
 export type State = Record<`$${string}` | `${typeof Renderer.internal}_${string}`, unknown>
-
-/** Scripts collected from {@linkcode Directive.compile()} calls, stored in the {@linkcode State} under `Renderer.internal("compile")` while a compilation is in progress. */
-export type Compilation = Array<{ element: HTMLElement | Comment; attributes: Readonly<Attr[]>; context: Context; state: State; script: string }>
 
 /** Boolean type definition. */
 export type AttrBoolean = {

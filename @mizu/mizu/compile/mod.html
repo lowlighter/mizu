@@ -1,7 +1,7 @@
 <mizu-directive id="mizu-compile" directory="mizu/compile">
   <code #name><span class="hljs-keyword">*mizu.compile</span></code>
   <p #description>
-    Compile the element and its children into self-contained HTML, where directives with client-side behaviour are turned into a vanilla script.
+    Mark an element to be rendered client-side by a self-contained bundle of <em>mizu.js</em>, reduced to the directives it uses.
   </p>
   <code #example *skip>
     <main *mizu.compile>
@@ -9,13 +9,12 @@
     </main>
   </code>
   <mizu-note #note>
-    Directives implementing a <code>compile()</code> hook <i>(such as <a href="#event"><code class="hljs-keyword">@event</code></a>)</i> are compiled instead of being executed, and their attributes are removed. Their scripts are collected into a single
-    <code>&lt;script data-mizu&gt;</code> appended to the element, and compiled elements are identified by a <code>data-mizu</code> attribute.
+    The element and its children are skipped by the server renderer. <code>Server.compile()</code> appends a <code>&lt;script&gt;</code> to the element, bundling <em>mizu.js</em> with the directives found in its subtree along with the current context.
   </mizu-note>
   <mizu-note #note>
-    The context is shipped to the client as the default context of the script. Functions lose their closure but can still resolve shipped variables, and values that cannot be serialized are skipped with a warning.
+    When the value is a selector matching a <code>&lt;script&gt;</code> of the document, rendering is deferred until <code>Mizu.hydrate()</code> is called from it <i>(e.g. <code>Mizu.hydrate({ context: { foo: "bar" } })</code>)</i>, otherwise it happens on load.
   </mizu-note>
   <mizu-restriction #note>
-    Compiled elements are not meant to be rendered again by <em>mizu.js</em>, and the shipped context is not shared with it.
+    Context values are shipped as code: functions lose their closure, native functions must be reachable from <code>globalThis</code> <i>(e.g. <code>Math.random</code>)</i>, and other values are skipped with a warning. <code>Server.compile()</code> requires <code>Deno.bundle()</code>.
   </mizu-restriction>
 </mizu-directive>

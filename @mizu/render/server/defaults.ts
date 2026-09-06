@@ -7,7 +7,6 @@ import _clean from "@mizu/clean"
 import _code from "@mizu/code"
 import _custom_element from "@mizu/custom-element"
 import _eval from "@mizu/eval"
-import _event from "@mizu/event"
 import _for from "@mizu/for/empty"
 import _html from "@mizu/html"
 import _http from "@mizu/http"
@@ -32,7 +31,6 @@ export default [
   _code,
   _custom_element,
   _eval,
-  _event,
   _for,
   _html,
   _http,

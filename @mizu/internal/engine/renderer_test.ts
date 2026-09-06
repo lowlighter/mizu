@@ -2,8 +2,7 @@ import type { testing } from "@libs/testing"
 import { expect, fn, test, TestingError } from "@libs/testing"
 import { delay, retry } from "@std/async"
 import { Window } from "../vdom/mod.ts"
-import { type Compilation, Context, type Directive, Phase, Renderer } from "./renderer.ts"
-import { quote } from "./compile.ts"
+import { Context, type Directive, Phase, Renderer } from "./renderer.ts"
 import _mizu from "@mizu/mizu"
 import _test, { PHASE_TESTING_DELTA } from "@mizu/test"
 const options = { directives: [_mizu] }
@@ -357,22 +356,6 @@ test("`Renderer.#render() // 6` calls `directive.cleanup()`", async () => {
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "" } }))).not.resolves.toThrow()
   expect(directives[0].cleanup).toBeCalled()
   expect(directives[1].cleanup).toBeCalled()
-})
-
-test("`Renderer.render()` compiles directives with a `compile()` hook instead of executing them", async () => {
-  await using window = new Window()
-  const directive = { name: "*foo", phase: Phase.TESTING, execute: fn(), compile: fn(() => "script") }
-  const renderer = await new Renderer(window, { ...options, directives: [directive as testing] }).ready
-  const element = renderer.createElement("div", { attributes: { "*foo": "bar" } })
-  const compilation = [] as Compilation
-  await renderer.render(element, { state: { [renderer.internal("compile")]: compilation } })
-  expect(directive.execute).not.toBeCalled()
-  expect(directive.compile).toBeCalledTimes(1)
-  expect(compilation).toMatchObject([{ element, script: "script" }])
-  expect(compilation[0].attributes).toHaveLength(1)
-  await renderer.render(element)
-  expect(directive.execute).toBeCalledTimes(1)
-  expect(directive.compile).toBeCalledTimes(1)
 })
 
 test("`Renderer.getAttributes()` and `Renderer.parseAttribute()` resolve directive names containing dots", async () => {
@@ -1023,10 +1006,6 @@ test("`Renderer.debug()` calls the `debug()` callback", async () => {
   const element = renderer.createElement("div")
   renderer.debug("foo", element)
   expect(debug).toBeCalledWith("foo", element)
-})
-
-test("`quote()` serializes strings into literals safe for inline scripts", () => {
-  expect(quote("</script>\u2028\u2029")).toBe(`"\\u003c/script>\\u2028\\u2029"`)
 })
 
 test("`Renderer.render()` evaluates ephemeral directives a single time and removes their attribute", async () => {
