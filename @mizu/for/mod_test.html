@@ -438,6 +438,17 @@
   </expect>
 </test>
 
+<test name="[*for] iterates templates carrying other directives instead of their content">
+  <load directives="@mizu/for,@mizu/custom-element,@mizu/test"></load>
+  <render>
+    <template *for="const v of ['foo', 'bar']" *custom-element="`x-${v}`"></template>
+  </render>
+  <script>
+  expect(testing.renderer.window.customElements.get("x-foo")).toBeDefined()
+  expect(testing.renderer.window.customElements.get("x-bar")).toBeDefined()
+  </script>
+</test>
+
 <test name="[*for] supports templates containing conditional directives">
   <load directives="@mizu/for,@mizu/if,@mizu/test"></load>
   <script>
