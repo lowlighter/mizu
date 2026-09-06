@@ -26,3 +26,25 @@ Enable _**mizu.js**_ rendering for the element and its children.
 ### `$root: HTMLElement`
 
 The closest element that declares a [`*mizu`](#mizu) directive.
+
+# `!ephemeral`
+
+| Version                               |
+| ------------------------------------- |
+| ![](https://jsr.io/badges/@mizu/mizu) |
+
+Evaluate a directive a single time, without reactivity, and remove its attribute once processed.
+
+```html
+<button !@click="console.log('clicked')">
+  <!--...-->
+</button>
+```
+
+## Notes
+
+> [!NOTE]
+> The `!` marker replaces the `*` of generic directives and precedes the other prefixes _(e.g. `!text`, `!@click`, `!:value`)_.
+
+> [!CAUTION]
+> Chained directives _(such as `*else` or `*empty`)_ must use the marker when the directive they follow does _(mixing `!if` with `*else` is not supported)_.

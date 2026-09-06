@@ -20,3 +20,21 @@
     The closest element that declares a <a href="#mizu"><code class="hljs-keyword">*mizu</code></a> directive.
   </mizu-variable>
 </mizu-directive>
+
+<mizu-directive id="ephemeral" directory="mizu">
+  <code #name><span class="hljs-keyword">!ephemeral</span></code>
+  <p #description>
+    Evaluate a directive a single time, without reactivity, and remove its attribute once processed.
+  </p>
+  <code #example *skip>
+    <button !@click="console.log('clicked')">
+      <!--...-->
+    </button>
+  </code>
+  <mizu-note #note>
+    The <code class="hljs-keyword">!</code> marker replaces the <code class="hljs-keyword">*</code> of generic directives and precedes the other prefixes <i>(e.g. <code class="hljs-keyword">!text</code>, <code class="hljs-keyword">!@click</code>, <code class="hljs-keyword">!:value</code>)</i>.
+  </mizu-note>
+  <mizu-restriction #note>
+    Chained directives <i>(such as <code class="hljs-keyword">*else</code> or <code class="hljs-keyword">*empty</code>)</i> must use the marker when the directive they follow does <i>(mixing <code class="hljs-keyword">!if</code> with <code class="hljs-keyword">*else</code> is not supported)</i>.
+  </mizu-restriction>
+</mizu-directive>

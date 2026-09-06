@@ -54,7 +54,12 @@ export async function htmlToMd(html: string) {
         // Directive name, metatada, description and examples
         const content = [`# ${toMarkdown(directive.querySelector("[\\#name]"))}`]
         const metadata = await (await server.fetch(new Request(`https://mizu.invalid/about/directives/${directive.getAttribute("directory")}?name=${directive.getAttribute("id")}`, { headers: { accept: "application/json" } }))).json()
-        const table = ["| Version | Phase |", "| --- | --- |", `| ![](https://jsr.io/badges/@mizu/${directive.getAttribute("directory")}) | ${metadata.phase.value} — \`${metadata.phase.name}\` |`]
+        const table = ["| Version |", "| --- |", `| ![](https://jsr.io/badges/@mizu/${directive.getAttribute("directory")}) |`]
+        if ("phase" in metadata) {
+          table[0] += " Phase |"
+          table[1] += " --- |"
+          table[2] += ` ${metadata.phase.value} — \`${metadata.phase.name}\` |`
+        }
         if ("default" in metadata) {
           table[0] += " Default |"
           table[1] += " --- |"

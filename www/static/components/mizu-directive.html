@@ -9,7 +9,7 @@
         <span *if="meta?.multiple" class="bd-muted bg-muted muted">
           Multiple
         </span>
-        <span *if="!Number.isNaN(meta?.phase?.value)" class="bd-accent bg-accent">
+        <span *if="meta?.phase && !Number.isNaN(meta.phase.value)" class="bd-accent bg-accent">
           <span class="accent">Phase</span><code *text="`${meta.phase.value} — ${meta.phase.name}`"></code>
         </span>
       </div>

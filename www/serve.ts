@@ -93,10 +93,12 @@ const handler = {
                 [`_${toSnakeCase(url.searchParams.get("name") ?? name)}`]: _a,
                 // Match: _directive
                 [`_${toSnakeCase(url.searchParams.get("name") ?? name)}`.replace(`_${name.split("/")[0]}_`, "_")]: _b,
-                // Fallback to first export
-                ..._c
               } = await import(Deno.build.os === "windows" ? toFileUrl(join(path, "mod.ts")).href : join(path, "mod.ts"))
-              const directive = _a ?? _b ?? [_c].flat()[0]
+              const directive = _a ?? _b
+              // Documented features that are not directives (such as the ephemeral marker) have no metadata
+              if (!directive) {
+                return new Response(JSON.stringify({ preset: [] }), { headers })
+              }
               const json = JSON.parse(JSON.stringify(directive))
               if (directive.name instanceof RegExp) {
                 json.name = `/${directive.name.source}/`
