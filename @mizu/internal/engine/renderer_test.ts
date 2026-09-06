@@ -1020,10 +1020,11 @@ test("`Renderer.render() // R` does not react for ephemeral directives", async (
 test("`Renderer.parseAttribute()` and `Renderer.getAttributes()` resolve the ephemeral marker", async () => {
   await using window = new Window()
   const renderer = new Renderer(window, options)
-  const element = renderer.createElement("div", { attributes: { "!text": "foo", "!@click": "bar", "*text": "baz" } })
+  const element = renderer.createElement("div", { attributes: { "!text": "foo", "!@click": "bar", "*text": "baz", "!*text": "qux" } })
   expect(renderer.parseAttribute(element.attributes[0])).toMatchObject({ name: "*text", ephemeral: true })
   expect(renderer.parseAttribute(element.attributes[1])).toMatchObject({ name: "@click", ephemeral: true })
   expect(renderer.parseAttribute(element.attributes[2])).toMatchObject({ name: "*text", ephemeral: false })
-  expect(renderer.getAttributes(element, "*text")).toHaveLength(2)
+  expect(renderer.parseAttribute(element.attributes[3])).toMatchObject({ name: "*text", ephemeral: true })
+  expect(renderer.getAttributes(element, "*text")).toHaveLength(3)
   expect(renderer.getAttributes(element, "@click")).toHaveLength(1)
 })

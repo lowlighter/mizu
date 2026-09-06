@@ -33,18 +33,16 @@ The closest element that declares a [`*mizu`](#mizu) directive.
 | ------------------------------------- | ----------------- |
 | ![](https://jsr.io/badges/@mizu/mizu) | 1 — `ELIGIBILITY` |
 
-Evaluate a directive a single time, without reactivity, and remove its attribute once processed.
+Evaluate a directive a single time and remove it automatically after being processed.
 
 ```html
-<button !@click="console.log('clicked')">
-  <!--...-->
-</button>
+<input type="button" value="Click me!" !@click="this.value = 'Clicked!'">
 ```
 
 ## Notes
 
 > [!NOTE]
-> The `!` marker replaces the `*` of generic directives and precedes the other prefixes _(e.g. `!text`, `!@click`, `!:value`)_.
+> Directives using the `*` prefix may omit it _(e.g. `!directive` is equivalent to `!*directive`)_.
 
-> [!CAUTION]
-> Chained directives _(such as `*else` or `*empty`)_ must use the marker when the directive they follow does _(mixing `!if` with `*else` is not supported)_.
+> [!NOTE]
+> Directives that have placement restrictions must also be marked as ephemeral _(e.g. `!if` / `!else`)_.

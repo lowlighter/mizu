@@ -22,19 +22,17 @@
 </mizu-directive>
 
 <mizu-directive id="ephemeral" directory="mizu">
-  <code #name><span class="hljs-keyword">!ephemeral</span></code>
+  <code #name><span class="hljs-keyword">!</span><span class="hljs-meta underline-dotted">ephemeral</span></code>
   <p #description>
-    Evaluate a directive a single time, without reactivity, and remove its attribute once processed.
+    Evaluate a directive a single time and remove it automatically after being processed.
   </p>
   <code #example *skip>
-    <button !@click="console.log('clicked')">
-      <!--...-->
-    </button>
+    <input type="button" value="Click me!" !@click="this.value = 'Clicked!'" />
   </code>
   <mizu-note #note>
-    The <code class="hljs-keyword">!</code> marker replaces the <code class="hljs-keyword">*</code> of generic directives and precedes the other prefixes <i>(e.g. <code class="hljs-keyword">!text</code>, <code class="hljs-keyword">!@click</code>, <code class="hljs-keyword">!:value</code>)</i>.
+    Directives using the <code class="hljs-keyword">*</code> prefix may omit it <i>(e.g. <code class="hljs-keyword">!directive</code> is equivalent to <code class="hljs-keyword">!*directive</code>)</i>.
   </mizu-note>
-  <mizu-restriction #note>
-    Chained directives <i>(such as <code class="hljs-keyword">*else</code> or <code class="hljs-keyword">*empty</code>)</i> must use the marker when the directive they follow does <i>(mixing <code class="hljs-keyword">!if</code> with <code class="hljs-keyword">*else</code> is not supported)</i>.
-  </mizu-restriction>
+  <mizu-note #note>
+    Directives that have placement restrictions must also be marked as ephemeral <i>(e.g. <code class="hljs-keyword">!if</code> / <code class="hljs-keyword">!else</code>)</i>.
+  </mizu-note>
 </mizu-directive>
