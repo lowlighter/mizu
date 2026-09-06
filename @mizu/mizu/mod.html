@@ -20,3 +20,19 @@
     The closest element that declares a <a href="#mizu"><code class="hljs-keyword">*mizu</code></a> directive.
   </mizu-variable>
 </mizu-directive>
+
+<mizu-directive id="ephemeral" directory="mizu">
+  <code #name><span class="hljs-keyword">!</span><span class="hljs-meta underline-dotted">ephemeral</span></code>
+  <p #description>
+    Evaluate a directive a single time and remove it automatically after being processed.
+  </p>
+  <code #example *skip>
+    <input type="button" value="Click me!" !@click="this.value = 'Clicked!'" />
+  </code>
+  <mizu-note #note>
+    Directives using the <code class="hljs-keyword">*</code> prefix may omit it <i>(e.g. <code class="hljs-keyword">!directive</code> is equivalent to <code class="hljs-keyword">!*directive</code>)</i>.
+  </mizu-note>
+  <mizu-note #note>
+    Directives that have placement restrictions must also be marked as ephemeral <i>(e.g. <code class="hljs-keyword">!if</code> / <code class="hljs-keyword">!else</code>)</i>.
+  </mizu-note>
+</mizu-directive>

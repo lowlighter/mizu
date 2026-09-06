@@ -1028,3 +1028,48 @@ test("`Renderer.debug()` calls the `debug()` callback", async () => {
 test("`quote()` serializes strings into literals safe for inline scripts", () => {
   expect(quote("</script>\u2028\u2029")).toBe(`"\\u003c/script>\\u2028\\u2029"`)
 })
+
+test("`Renderer.render()` evaluates ephemeral directives a single time and removes their attribute", async () => {
+  await using window = new Window()
+  const renderer = new Renderer(window, { ...options, directives: [_test] })
+  const element = renderer.createElement("div", { innerHTML: `<span !~test[content].text="foo"></span>` })
+  await renderer.render(element, { context: new Context({ foo: "bar" }) })
+  expect(element.innerHTML).toBe("<span>bar</span>")
+  await renderer.render(element, { context: new Context({ foo: "baz" }) })
+  expect(element.innerHTML).toBe("<span>bar</span>")
+})
+
+test("`Renderer.render()` removes ephemeral attributes once all siblings are processed", async () => {
+  await using window = new Window()
+  const renderer = new Renderer(window, { ...options, directives: [_test] })
+  const element = renderer.createElement("div", { innerHTML: `<span !~test[content].text="foo"></span><span ~test[content].text="this.previousSibling.attributes.length"></span>` })
+  await renderer.render(element, { context: new Context({ foo: "bar" }) })
+  expect(element.innerHTML).toBe(`<span>bar</span><span ~test[content].text="this.previousSibling.attributes.length">1</span>`)
+})
+
+test("`Renderer.render() // R` does not react for ephemeral directives", async () => {
+  await using window = new Window()
+  const context = new Context({ foo: "bar" })
+  const queued = fn()
+  const renderer = new Renderer(window, { ...options, directives: [_test], debug: (message: string) => message.endsWith("queuing reactive render request") && queued() })
+  const element = renderer.createElement("div", { innerHTML: `<span !~test[content].text="foo"></span>` })
+  renderer.document.body.appendChild(element)
+  await renderer.render(element, { context, reactive: true })
+  expect(element.innerHTML).toBe("<span>bar</span>")
+  context.target.foo = "baz"
+  await renderer.flushReactiveRenderQueue()
+  expect(queued).not.toBeCalled()
+  expect(element.innerHTML).toBe("<span>bar</span>")
+})
+
+test("`Renderer.parseAttribute()` and `Renderer.getAttributes()` resolve the ephemeral marker", async () => {
+  await using window = new Window()
+  const renderer = new Renderer(window, options)
+  const element = renderer.createElement("div", { attributes: { "!text": "foo", "!@click": "bar", "*text": "baz", "!*text": "qux" } })
+  expect(renderer.parseAttribute(element.attributes[0])).toMatchObject({ name: "*text", ephemeral: true })
+  expect(renderer.parseAttribute(element.attributes[1])).toMatchObject({ name: "@click", ephemeral: true })
+  expect(renderer.parseAttribute(element.attributes[2])).toMatchObject({ name: "*text", ephemeral: false })
+  expect(renderer.parseAttribute(element.attributes[3])).toMatchObject({ name: "*text", ephemeral: true })
+  expect(renderer.getAttributes(element, "*text")).toHaveLength(3)
+  expect(renderer.getAttributes(element, "@click")).toHaveLength(1)
+})

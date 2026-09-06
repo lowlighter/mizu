@@ -260,6 +260,44 @@
   </expect>
 </test>
 
+<test name="[*else] with ephemeral marker is evaluated a single time along with [!if]">
+  <script>
+  context.value = true
+  </script>
+  <render>
+    <p !if="value">foo</p>
+    <p !else>bar</p>
+  </render>
+  <expect>
+    <p>foo</p>
+    <!--[*else=""]-->
+  </expect>
+  <script>
+  context.value = false
+  </script>
+  <render></render>
+  <expect>
+    <p>foo</p>
+    <!--[*else=""]-->
+  </expect>
+  <render>
+    <p !if="value">foo</p>
+    <p !else>bar</p>
+  </render>
+  <expect>
+    <!--[*if="value"]-->
+    <p>bar</p>
+  </expect>
+  <script>
+  context.value = true
+  </script>
+  <render></render>
+  <expect>
+    <!--[*if="value"]-->
+    <p>bar</p>
+  </expect>
+</test>
+
 <test name="[*else] reacts along with its conditional directives">
   <script>
   context.value = 0
