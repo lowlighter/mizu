@@ -259,3 +259,73 @@
     <!--[*else=""]-->
   </expect>
 </test>
+
+<test name="[*else] reacts along with its conditional directives">
+  <script>
+  context.value = 0
+  </script>
+  <render>
+    <p *if="value === 0">foo</p>
+    <p *else="value === 1">bar</p>
+    <p *else>baz</p>
+  </render>
+  <script>
+  await testing.renderer.render(rendered, { context: testing.context, reactive: true })
+  context.value = 1
+  await testing.renderer.flushReactiveRenderQueue()
+  </script>
+  <expect>
+    <!--[*if="value === 0"]-->
+    <p>bar</p>
+    <!--[*else=""]-->
+  </expect>
+  <script>
+  context.value = 2
+  await testing.renderer.flushReactiveRenderQueue()
+  </script>
+  <expect>
+    <!--[*if="value === 0"]-->
+    <!--[*else="value === 1"]-->
+    <p>baz</p>
+  </expect>
+  <script>
+  context.value = 0
+  await testing.renderer.flushReactiveRenderQueue()
+  </script>
+  <expect>
+    <p>foo</p>
+    <!--[*else="value === 1"]-->
+    <!--[*else=""]-->
+  </expect>
+</test>
+
+<test name="[*else] reacts along with conditional templates">
+  <script>
+  context.value = true
+  </script>
+  <render>
+    <template *if="value">
+      <p>foo</p>
+    </template>
+    <p *else>bar</p>
+  </render>
+  <script>
+  await testing.renderer.render(rendered, { context: testing.context, reactive: true })
+  context.value = false
+  await testing.renderer.flushReactiveRenderQueue()
+  </script>
+  <expect>
+    <!--[*if="value"]-->
+    <p>bar</p>
+  </expect>
+  <script>
+  context.value = true
+  await testing.renderer.flushReactiveRenderQueue()
+  </script>
+  <expect>
+    <!--[*if="value"]-->
+    <p>foo</p>
+    <!--[/*if]-->
+    <!--[*else=""]-->
+  </expect>
+</test>

@@ -16,7 +16,7 @@ export const _empty = {
   name: "*empty",
   phase: Phase.TOGGLE,
   typings,
-  execute(renderer, element, { attributes: [attribute] }) {
+  async execute(renderer, element, { attributes: [attribute], context }) {
     const parsed = renderer.parseAttribute(attribute, this.typings, { modifiers: true })
     const cache = renderer.cache<Cache<typeof _for>>(_for.name)
     const seen = [] as HTMLElement[]
@@ -34,13 +34,14 @@ export const _empty = {
 
       // Execute directive on first for loop found
       if ((renderer.isComment(previous)) && (cache?.has(previous))) {
+        renderer.depend(element, previous, { context })
         const items = [...cache.get(previous)!.items.values()].flatMap(({ nodes }) => nodes)
         const $generated = cache.get(previous)!.items.size
         if (seen.some((item) => !items.includes(item))) {
           break
         }
         return {
-          ..._if.execute(renderer, element, { ...arguments[2], _directive: { directive: this.name, expression: attribute.value, value: `!${parsed.modifiers.not ? "!" : ""}${$generated}` } }),
+          ...await _if.execute(renderer, element, { ...arguments[2], _directive: { directive: this.name, expression: attribute.value, value: `!${parsed.modifiers.not ? "!" : ""}${$generated}` } }),
           state: { $generated },
         }
       }
