@@ -26,9 +26,10 @@ export const _if = {
   },
   async execute(renderer, element, { attributes: [attribute], context, state }) {
     const result = Boolean(await renderer.evaluate(element, arguments[2]._directive?.value ?? attribute.value, { context, state }))
-    // Templates are kept commented out and their content is inserted after the comment when truthy
+    // Templates are kept commented out and their content is inserted after the comment when truthy (unless they carry other directives)
     const template = (renderer.isComment(element) ? renderer.cache("*").get(element) : element) as Nullable<HTMLElement>
-    if (template?.tagName === "TEMPLATE") {
+    const names = [_if.name, arguments[2]._directive?.directive]
+    if ((template?.tagName === "TEMPLATE") && (!renderer.directives.some((directive) => (!names.includes(directive.name)) && (renderer.getAttributes(template, directive.name, { first: true }))))) {
       const cache = renderer.cache<Cache>("*if") ?? renderer.cache<Cache>("*if", { templates: new WeakMap(), generated: new WeakMap() })
       let comment = element as Comment
       if (!renderer.isComment(element)) {

@@ -50,6 +50,8 @@ export const _for = {
     const cached = cache.get(comment)!
     element = cached.element
     const identifiable = renderer.getAttributes(element, _id.name, { first: true })?.value
+    // Templates carrying other directives are iterated as elements
+    const expandable = (element.tagName === "TEMPLATE") && (!renderer.directives.some((directive) => (![this.name, _id.name].includes(directive.name)) && (renderer.getAttributes(element, directive.name, { first: true }))))
 
     // Generate items
     let position = comment as Node
@@ -75,7 +77,7 @@ export const _for = {
       if (!cached.items.has(id)) {
         let nodes = [] as Node[]
         let end = null as Nullable<Comment>
-        if (element.tagName === "TEMPLATE") {
+        if (expandable) {
           nodes = Array.from((element as HTMLTemplateElement).content.cloneNode(true).childNodes)
           end = renderer.document.createComment(`[/${this.name}]`)
         } else {
