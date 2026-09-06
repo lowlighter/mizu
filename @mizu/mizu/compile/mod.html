@@ -1,0 +1,21 @@
+<mizu-directive id="mizu-compile" directory="mizu/compile">
+  <code #name><span class="hljs-keyword">*mizu.compile</span></code>
+  <p #description>
+    Compile the element and its children into self-contained HTML, where directives with client-side behaviour are turned into a vanilla script.
+  </p>
+  <code #example *skip>
+    <main *mizu.compile>
+      <!--...-->
+    </main>
+  </code>
+  <mizu-note #note>
+    Directives implementing a <code>compile()</code> hook <i>(such as <a href="#event"><code class="hljs-keyword">@event</code></a>)</i> are compiled instead of being executed, and their attributes are removed. Their scripts are collected into a single
+    <code>&lt;script data-mizu&gt;</code> appended to the element, and compiled elements are identified by a <code>data-mizu</code> attribute.
+  </mizu-note>
+  <mizu-note #note>
+    The context is shipped to the client as the default context of the script. Functions lose their closure but can still resolve shipped variables, and values that cannot be serialized are skipped with a warning.
+  </mizu-note>
+  <mizu-restriction #note>
+    Compiled elements are not meant to be rendered again by <em>mizu.js</em>, and the shipped context is not shared with it.
+  </mizu-restriction>
+</mizu-directive>

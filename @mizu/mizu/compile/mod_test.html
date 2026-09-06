@@ -1,0 +1,102 @@
+<load directives="@mizu/mizu/compile,@mizu/event,@mizu/for,@mizu/text"></load>
+
+<test name="[*mizu.compile] compiles directives into a single script and removes their attributes">
+  <script>
+  context.count = 0
+  </script>
+  <render>
+    <div *mizu.compile>
+      <button @click="count++, document.body.dataset.count = count"></button>
+      <p *text="count"></p>
+    </div>
+  </render>
+  <script>
+  const div = rendered.querySelector("div")
+  expect(div.hasAttribute("*mizu.compile")).toBe(false)
+  const button = div.querySelector("button")
+  expect(button.hasAttribute("@click")).toBe(false)
+  expect(button.getAttribute("data-mizu")).toBe("1")
+  expect(div.querySelector("p").textContent).toBe("0")
+  const script = div.querySelector("script[data-mizu]")
+  expect(div.lastElementChild).toBe(script)
+  expect(script.textContent).toContain(`"count": 0`)
+  new Function("document", "window", script.textContent)(document, window)
+  button.dispatchEvent(new Event("click"))
+  button.dispatchEvent(new Event("click"))
+  expect(document.body.dataset.count).toBe("2")
+  </script>
+</test>
+
+<test name="[*mizu.compile] ships context functions and local scopes">
+  <script>
+  context.name = "foo"
+  context.greet = function () {
+    return `hi ${name}`
+  }
+  context.items = ["a", "b"]
+  </script>
+  <render>
+    <ul *mizu.compile>
+      <li *for="const item of items" @click="document.body.dataset.clicked = `${greet()} ${item} ${$i}`"></li>
+    </ul>
+  </render>
+  <script>
+  const script = rendered.querySelector("script[data-mizu]")
+  new Function("document", "window", script.textContent)(document, window)
+  const [a, b] = rendered.querySelectorAll("li")
+  expect(a.getAttribute("data-mizu")).toBe("1")
+  expect(b.getAttribute("data-mizu")).toBe("2")
+  b.dispatchEvent(new Event("click"))
+  expect(document.body.dataset.clicked).toBe("hi foo b 1")
+  a.dispatchEvent(new Event("click"))
+  expect(document.body.dataset.clicked).toBe("hi foo a 0")
+  </script>
+</test>
+
+<test name="[*mizu.compile] compiles [@event] modifiers">
+  <render>
+    <div *mizu.compile>
+      <a @click.prevent.once="document.body.dataset.clicks = Number(document.body.dataset.clicks ?? 0) + 1"></a>
+    </div>
+  </render>
+  <script>
+  new Function("document", "window", rendered.querySelector("script[data-mizu]").textContent)(document, window)
+  const a = rendered.querySelector("a")
+  const event = new Event("click", { cancelable: true })
+  a.dispatchEvent(event)
+  expect(event.defaultPrevented).toBe(true)
+  a.dispatchEvent(new Event("click", { cancelable: true }))
+  expect(document.body.dataset.clicks).toBe("1")
+  </script>
+</test>
+
+<test name="[*mizu.compile] skips values that cannot be serialized">
+  <script>
+  context.value = "foo"
+  context.unsupported = new WeakMap()
+  </script>
+  <render>
+    <div *mizu.compile>
+      <button @click="document.body.dataset.value = value"></button>
+    </div>
+  </render>
+  <script>
+  expect(rendered.querySelector("div").getAttribute("*warn")).toContain(`unable to serialize "unsupported"`)
+  new Function("document", "window", rendered.querySelector("script[data-mizu]").textContent)(document, window)
+  rendered.querySelector("button").dispatchEvent(new Event("click"))
+  expect(document.body.dataset.value).toBe("foo")
+  </script>
+</test>
+
+<test name="[*mizu.compile] emits no script without compiled directives">
+  <render>
+    <div *mizu.compile>
+      <p *text="'foo'"></p>
+    </div>
+  </render>
+  <expect>
+    <div>
+      <p>foo</p>
+    </div>
+  </expect>
+</test>

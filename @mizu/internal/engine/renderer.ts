@@ -172,6 +172,9 @@ export class Renderer {
       }
       await directive.init?.(this)
       this.#directives.push(directive as Directive)
+      if ((typeof directive.name === "string") && (directive.name.includes("."))) {
+        this.#dotted.push(directive.name)
+      }
     }
     this.#directives.sort((a, b) => a.phase - b.phase)
     return this
@@ -394,8 +397,16 @@ export class Renderer {
         if ((attributes.length > 1) && (!directive.multiple)) {
           this.warn(`Using multiple [${directive.name}] directives might result in unexpected behaviour`, element)
         }
-        // 4.3 Execute directive
+        // 4.3 Execute directive, or compile it when a compilation is in progress
         phases.set(directive.phase, directive.name)
+        const compilation = state[this.internal("compile")] as Optional<Compilation>
+        if (compilation && directive.compile) {
+          const script = await directive.compile(this, element, { cache: this.cache(directive.name), context, state, attributes })
+          if (script) {
+            compilation.push({ element, attributes, context, state: { ...state }, script })
+          }
+          continue
+        }
         const changes = await directive.execute?.(this, element, { cache: this.cache(directive.name), context, state, attributes })
         if (changes?.element) {
           if (reactive && (this.#watched.get(context)?.has(element))) {
@@ -850,6 +861,7 @@ export class Renderer {
   /** A collection of {@linkcode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp | RegExp} used by {@linkcode Renderer.getAttributes()} and {@linkcode Renderer.parseAttribute()}. */
   readonly #extractor = {
     attribute: /^(?:(?:(?<a>\S*?)\{(?<b>\S+?)\})|(?<name>[^{}]\S*?))(?:\[(?<tag>\S+?)\])?(?:\.(?<modifiers>\S+))?$/,
+    suffix: /^(?:\[(?<tag>\S+?)\])?(?:\.(?<modifiers>\S+))?$/,
     modifier: /^(?<key>\S*?)(?:\[(?<value>\S*)\])?$/,
     boolean: /^(?<truthy>yes|on|true)|(?<falsy>no|off|false)$/,
     duration: /^(?<delay>(?:\d+)|(?:\d*\.\d+))(?<unit>(?:ms|s|m)?)$/,
@@ -858,12 +870,23 @@ export class Renderer {
   /** Internal cache used to store the extracted name of already processed {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr | Attr}. */
   readonly #names = new WeakMap<Attr, string>()
 
+  /** Names of loaded directives containing a dot (e.g. `*mizu.compile`), which take precedence over the extracted name. */
+  readonly #dotted = [] as string[]
+
+  /** Resolve the dotted directive name matching an {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr | Attr}, if any. */
+  #dottedName(attribute: Attr): Optional<string> {
+    return this.#dotted.find((name) => (attribute.name === name) || (attribute.name.startsWith(`${name}.`)) || (attribute.name.startsWith(`${name}[`)))
+  }
+
   /** Extract the name (without tag and modifiers) of an {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr | Attr}, which is memoized as {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr/name | Attr.name} is immutable. */
   #name(attribute: Attr): string {
     let name = this.#names.get(attribute)
     if (name === undefined) {
-      const { a: _a, b: _b, name: _name = `${_a}${_b}` } = attribute.name.match(this.#extractor.attribute)?.groups ?? { name: attribute.name }
-      name = _name
+      name = this.#dottedName(attribute)
+      if (name === undefined) {
+        const { a: _a, b: _b, name: _name = `${_a}${_b}` } = attribute.name.match(this.#extractor.attribute)?.groups ?? { name: attribute.name }
+        name = _name
+      }
       this.#names.set(attribute, name)
     }
     return name
@@ -1070,7 +1093,8 @@ export class Renderer {
   parseAttribute<T extends AttrTypings>(attribute: Attr, typings?: Nullable<T>, { modifiers = false, prefix = "" } = {} as RendererParseAttributeOptions) {
     // Parse attribute name
     if (!this.#parsed.has(attribute)) {
-      const { a: _a, b: _b, name = `${_a}${_b}`, tag = "", modifiers: _modifiers = "" } = attribute.name.match(this.#extractor.attribute)?.groups ?? { name: attribute.name }
+      const dotted = this.#dottedName(attribute)
+      const { a: _a, b: _b, name = dotted ?? `${_a}${_b}`, tag = "", modifiers: _modifiers = "" } = (dotted ? attribute.name.slice(dotted.length).match(this.#extractor.suffix) : attribute.name.match(this.#extractor.attribute))?.groups ?? { name: attribute.name }
       const cached = { name, tag, modifiers: {} as Record<PropertyKey, unknown> }
       if (modifiers && (typings?.modifiers)) {
         const modifiers = Object.fromEntries(
@@ -1314,6 +1338,9 @@ export type RendererParseAttributeOptions = {
 
 /** Current {@linkcode Renderer.render()} state. */
 export type State = Record<`$${string}` | `${typeof Renderer.internal}_${string}`, unknown>
+
+/** Scripts collected from {@linkcode Directive.compile()} calls, stored in the {@linkcode State} under `Renderer.internal("compile")` while a compilation is in progress. */
+export type Compilation = Array<{ element: HTMLElement | Comment; attributes: Readonly<Attr[]>; context: Context; state: State; script: string }>
 
 /** Boolean type definition. */
 export type AttrBoolean = {

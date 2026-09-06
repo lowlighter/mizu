@@ -2,7 +2,7 @@ import type { testing } from "@libs/testing"
 import { expect, fn, test, TestingError } from "@libs/testing"
 import { delay, retry } from "@std/async"
 import { Window } from "../vdom/mod.ts"
-import { Context, type Directive, Phase, Renderer } from "./renderer.ts"
+import { type Compilation, Context, type Directive, Phase, Renderer } from "./renderer.ts"
 import _mizu from "@mizu/mizu"
 import _test, { PHASE_TESTING_DELTA } from "@mizu/test"
 const options = { directives: [_mizu] }
@@ -356,6 +356,31 @@ test("`Renderer.#render() // 6` calls `directive.cleanup()`", async () => {
   await expect(renderer.render(renderer.createElement("div", { attributes: { "*foo": "" } }))).not.resolves.toThrow()
   expect(directives[0].cleanup).toBeCalled()
   expect(directives[1].cleanup).toBeCalled()
+})
+
+test("`Renderer.render()` compiles directives with a `compile()` hook instead of executing them", async () => {
+  await using window = new Window()
+  const directive = { name: "*foo", phase: Phase.TESTING, execute: fn(), compile: fn(() => "script") }
+  const renderer = await new Renderer(window, { ...options, directives: [directive as testing] }).ready
+  const element = renderer.createElement("div", { attributes: { "*foo": "bar" } })
+  const compilation = [] as Compilation
+  await renderer.render(element, { state: { [renderer.internal("compile")]: compilation } })
+  expect(directive.execute).not.toBeCalled()
+  expect(directive.compile).toBeCalledTimes(1)
+  expect(compilation).toMatchObject([{ element, script: "script" }])
+  expect(compilation[0].attributes).toHaveLength(1)
+  await renderer.render(element)
+  expect(directive.execute).toBeCalledTimes(1)
+  expect(directive.compile).toBeCalledTimes(1)
+})
+
+test("`Renderer.getAttributes()` and `Renderer.parseAttribute()` resolve directive names containing dots", async () => {
+  await using window = new Window()
+  const renderer = await new Renderer(window, { ...options, directives: [{ name: "*foo", phase: Phase.TESTING }, { name: "*foo.bar", phase: Phase.TESTING }] as testing }).ready
+  const element = renderer.createElement("div", { attributes: { "*foo": "", "*foo.baz": "", "*foo.bar": "", "*foo.bar[qux].baz": "" } })
+  expect(renderer.getAttributes(element, "*foo")).toHaveLength(2)
+  expect(renderer.getAttributes(element, "*foo.bar")).toHaveLength(2)
+  expect(renderer.parseAttribute(element.attributes[3], { modifiers: { baz: { type: Boolean } } }, { modifiers: true })).toMatchObject({ name: "*foo.bar", tag: "qux", modifiers: { baz: true } })
 })
 
 test("`Renderer.render() // R` reacts to properties changes using the closest possible subtree and context", async () => {

@@ -157,6 +157,50 @@ export const _event = {
       cache.get(element)?.get(attribute)?.set(event, { target, listener, context, state, expression })
     }
   },
+  async compile(renderer, element, { attributes, context, state }) {
+    if (!renderer.isHtmlElement(element)) {
+      return
+    }
+    const parsed = attributes.map((attribute) => renderer.parseAttribute(attribute, this.typings, { prefix: this.prefix, modifiers: true }))
+
+    // Handle shorthand listeners attachment (only expressions can be compiled)
+    const shorthands = parsed.filter(({ name }) => !name.length)
+    for (const shorthand of shorthands) {
+      const [attribute] = parsed.splice(parsed.indexOf(shorthand), 1)
+      const value = await renderer.evaluate(element, attribute.value, { context, state })
+      if ((typeof value !== "object") || (Object.values(value ?? {}).some((expression) => typeof expression !== "string"))) {
+        renderer.warn(`[${this.name}] empty shorthand expects an object of expressions when compiled, ignoring`, element)
+        continue
+      }
+      parsed.unshift(...Object.entries(value ?? {}).map(([name, value]) => ({ ...attribute, name, value: value as string })))
+    }
+
+    // Compile listeners
+    return parsed.map(({ name: event, value: expression, modifiers }) => {
+      const lines = [
+        `let $callback = async function ($event) { with ($context) { with ($scope) { with ({ $event }) { const $result = (${expression || this.default}); return (typeof $result === "function") ? $result.call(this, $event) : $result } } } }`,
+      ]
+      if (modifiers.keys) {
+        lines.push(`$callback = (($callback, $check) => function ($event) { return $check($event) ? $callback.call(this, $event) : false })($callback, (${keyboard.toString()})(${JSON.stringify(modifiers.keys)}))`)
+      }
+      if (modifiers.throttle) {
+        lines.push(
+          `$callback = (($callback) => { let $throttled = false; return function ($event) { if ($throttled) { return false } $throttled = true; try { return $callback.call(this, $event) } finally { setTimeout(() => $throttled = false, ${modifiers.throttle}) } } })($callback)`,
+        )
+      }
+      if (modifiers.debounce) {
+        lines.push(`$callback = (($callback) => { let $timeout; return function ($event) { clearTimeout($timeout); $timeout = setTimeout(() => $callback.call(this, $event), ${modifiers.debounce}); return false } })($callback)`)
+      }
+      const target = ({ window: "window", document: "document" } as Record<string, string>)[modifiers.attach as string] ?? "$element"
+      const guards = [modifiers.prevent ? "$event.preventDefault()" : "", modifiers.stop ? "$event.stopPropagation()" : "", modifiers.self ? "if ($event.target !== $element) { return }" : ""].filter(Boolean)
+      lines.push(
+        `${target}.addEventListener(${JSON.stringify(event)}, function ($event) { ${guards.map((guard) => `${guard}; `).join("")}return $callback.call($element, $event) }, { passive: ${Boolean(modifiers.passive)}, once: ${Boolean(modifiers.once)}, capture: ${
+          Boolean(modifiers.capture)
+        } })`,
+      )
+      return `{\n${lines.join("\n")}\n}`
+    }).join("\n")
+  },
 } as const satisfies Directive<{
   Name: RegExp
   Cache: WeakMap<HTMLElement, WeakMap<Attr, Map<string, { target: EventTarget; listener: EventListener; context: Context; state: Record<PropertyKey, unknown>; expression: string }>>>

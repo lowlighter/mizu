@@ -180,6 +180,28 @@ export type Directive<
       _: { cache: Definition["Cache"]; context: Context; state: DeepReadonly<State>; attributes: Readonly<Attr[]> },
     ) => Promisable<void | Partial<{ element: HTMLElement | Comment; context: Context; state: State; final: boolean }>>
     /**
+     * Directive compilation callback.
+     *
+     * This callback is executed during {@linkcode Renderer.render()} in place of {@linkcode Directive.execute()} when a compilation is in progress (see `*mizu.compile`).
+     *
+     * The returned script is collected and later run client-side without _mizu.js_, with `$element` bound to the element, `$context` to the shipped {@linkcode Context} and `$scope` to the local variables of the element.
+     *
+     * ```ts
+     * const foo = {
+     *   name: "*foo",
+     *   phase: Phase.UNKNOWN,
+     *   compile(renderer, element, { attributes: [ attribute ] }) {
+     *     return `$element.textContent = ${JSON.stringify(attribute.value)}`
+     *   },
+     * } as const satisfies Directive
+     * ```
+     */
+    readonly compile?: (
+      renderer: Renderer,
+      element: HTMLElement | Comment,
+      _: { cache: Definition["Cache"]; context: Context; state: DeepReadonly<State>; attributes: Readonly<Attr[]> },
+    ) => Promisable<void | string>
+    /**
      * Directive cleanup callback.
      *
      * This callback is executed during {@linkcode Renderer.render()} after all {@linkcode Directive.execute()} have been applied and all {@linkcode https://developer.mozilla.org/docs/Web/API/Node/childNodes | Element.childNodes} have been processed.
