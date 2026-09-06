@@ -22,8 +22,11 @@ if (typeof (globalThis as { Deno?: { bundle?: unknown } }).Deno?.bundle === "fun
       },
     })
     const html = await mizu.compile(`<main *mizu.compile><p *text="foo"></p><ul><template *for="items"><li *text="$value"></li></template></ul></main><p *text="foo"></p>`, { select: "body" })
-    expect(html).toMatch(/^<body><main \*mizu\.compile=""><p \*text="foo"><\/p><ul><template \*for="items"><li \*text="\$value"><\/li><\/template><\/ul><script>[\s\S]+<\/script><\/main><p \*text="foo">bar<\/p><\/body>$/)
-    const script = html.match(/<script>([\s\S]+)<\/script>/)![1]
+    const open = html.indexOf("<script>")
+    const close = html.lastIndexOf("</script>")
+    expect(html.slice(0, open)).toBe(`<body><main *mizu.compile=""><p *text="foo"></p><ul><template *for="items"><li *text="$value"></li></template></ul>`)
+    expect(html.slice(close)).toBe(`</script></main><p *text="foo">bar</p></body>`)
+    const script = html.slice(open + "<script>".length, close)
     expect(script).toContain(`"*text"`)
     expect(script).toContain(`"*for"`)
     expect(script).not.toContain(`"*html"`)
