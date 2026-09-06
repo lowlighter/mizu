@@ -29,9 +29,9 @@ The closest element that declares a [`*mizu`](#mizu) directive.
 
 # `!ephemeral`
 
-| Version                               |
-| ------------------------------------- |
-| ![](https://jsr.io/badges/@mizu/mizu) |
+| Version                               | Phase             |
+| ------------------------------------- | ----------------- |
+| ![](https://jsr.io/badges/@mizu/mizu) | 1 — `ELIGIBILITY` |
 
 Evaluate a directive a single time, without reactivity, and remove its attribute once processed.
 
