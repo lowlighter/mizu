@@ -58,7 +58,7 @@ test("`serialize()` serializes values into code", () => {
   expect(serialize(Math.random)).toBe("Math.random")
   expect(serialize(Array.prototype.map)).toBe("Array.prototype.map")
   expect(serialize((a: number) => a + 1)).toMatch(/^\(\(?a\)? ?=> ?a ?\+ ?1\)$/)
-  expect(serialize({ greet() {} }.greet)).toMatch(/^\(function greet ?\(\) \{\s*\}\)$/)
+  expect(serialize({ greet() {} }.greet)).toMatch(/^\(function greet ?\(\) ?\{\s*\}\)$/)
   expect(serialize("</script>")).toBe(`"\\u003c/script>"`)
   expect(() => serialize(Symbol())).toThrow(TypeError)
   expect(() => serialize(new WeakMap())).toThrow(TypeError)
