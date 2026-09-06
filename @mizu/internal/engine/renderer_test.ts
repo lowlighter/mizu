@@ -994,6 +994,14 @@ test("`Renderer.render()` evaluates directives with the once operator a single t
   expect(element.innerHTML).toBe("<span>bar</span>")
 })
 
+test("`Renderer.render()` removes attributes with the once operator once all siblings are processed", async () => {
+  await using window = new Window()
+  const renderer = new Renderer(window, { ...options, directives: [_test] })
+  const element = renderer.createElement("div", { innerHTML: `<span !~test[content].text="foo"></span><span ~test[content].text="this.previousSibling.attributes.length"></span>` })
+  await renderer.render(element, { context: new Context({ foo: "bar" }) })
+  expect(element.innerHTML).toBe(`<span>bar</span><span ~test[content].text="this.previousSibling.attributes.length">1</span>`)
+})
+
 test("`Renderer.render() // R` does not react for directives with the once operator", async () => {
   await using window = new Window()
   const context = new Context({ foo: "bar" })

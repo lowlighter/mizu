@@ -270,13 +270,18 @@ export class Renderer {
   /** Operator for directives evaluated a single time and removed after processing. */
   static readonly #once = "!"
 
-  /** Resolve the directive name of an attribute (the once operator replaces the generic prefix and precedes the other prefixes). */
+  /** Resolve the directive name of an attribute. */
   #normalize(name: string): string {
     if (!name.startsWith(Renderer.#once)) {
       return name
     }
     name = name.slice(Renderer.#once.length)
     return /^[\p{L}\p{N}_]/u.test(name) ? `*${name}` : name
+  }
+
+  /** Remove attributes with the once operator. */
+  #expire(attributes: Attr[]) {
+    attributes.forEach((attribute) => attribute.ownerElement?.removeAttributeNode(attribute))
   }
 
   /**
@@ -332,7 +337,9 @@ export class Renderer {
     let subtrees = implicit || (element.hasAttribute(Renderer.#explicit)) ? [element] : Array.from(element.querySelectorAll<HTMLElement>(`[${escape(Renderer.#explicit)}]`))
     subtrees = subtrees.filter((element) => subtrees.every((ancestor) => (ancestor === element) || (!ancestor.contains(element))))
     // Render subtrees
-    const rendered = await Promise.allSettled(subtrees.map((element) => this.#render(element, { context, state, reactive })))
+    const once = [] as Attr[]
+    const rendered = await Promise.allSettled(subtrees.map((element) => this.#render(element, { context, state, reactive, once })))
+    this.#expire(once)
     const rejected = rendered.filter((render) => render.status === "rejected")
     if (rejected.length) {
       const error = new AggregateError(rejected.map((render) => render.reason))
@@ -355,7 +362,7 @@ export class Renderer {
    *
    * For more information, see the {@link https://mizu.sh/#concept-rendering | mizu.sh documentation}.
    */
-  async #render(element: HTMLElement | Comment, { context, state, reactive }: { context: Context; state: State; reactive: boolean }) {
+  async #render(element: HTMLElement | Comment, { context, state, reactive, once }: { context: Context; state: State; reactive: boolean; once: Attr[] }) {
     // 1. Ignore non-element nodes unless they were processed before and put into cache
     if ((element.nodeType !== this.window.Node.ELEMENT_NODE) && (!this.cache("*").has(element))) {
       return
@@ -406,10 +413,10 @@ export class Renderer {
         if ((attributes.length > 1) && (!directive.multiple)) {
           this.warn(`Using multiple [${directive.name}] directives might result in unexpected behaviour`, element)
         }
-        // 4.3 Execute directive (attributes with the once operator are not tracked and are removed after processing)
+        // 4.3 Execute directive
         phases.set(directive.phase, directive.name)
-        const once = attributes.filter((attribute) => attribute.name.startsWith(Renderer.#once))
-        const untracked = reactive && (once.length > 0) && (once.length === attributes.length)
+        const expiring = attributes.filter((attribute) => attribute.name.startsWith(Renderer.#once))
+        const untracked = reactive && (expiring.length > 0) && (expiring.length === attributes.length)
         if (untracked) {
           this.#unwatch(context, element)
         }
@@ -417,7 +424,7 @@ export class Renderer {
         if (untracked) {
           this.#watch(context, element)
         }
-        once.forEach((attribute) => attribute.ownerElement?.removeAttributeNode(attribute))
+        once.push(...expiring)
         if (changes?.element) {
           if (reactive && (this.#watched.get(context)?.has(element))) {
             this.#watch(context, changes.element)
@@ -441,7 +448,7 @@ export class Renderer {
           Object.assign(state, changes.state)
         }
       }
-      // 5. Recurse on child nodes
+      // 5. Recurse on child nodes (attributes with the once operator are removed once all siblings are processed)
       if (reactive) {
         this.#unwatch(context, element)
       }
@@ -449,9 +456,11 @@ export class Renderer {
       for (let child = element.firstChild; child; child = child.nextSibling) {
         children.push(child as HTMLElement | Comment)
       }
+      const expired = [] as Attr[]
       for (const child of children) {
-        await this.#render(child, { context, state, reactive })
+        await this.#render(child, { context, state, reactive, once: expired })
       }
+      this.#expire(expired)
       if (reactive) {
         this.#watch(context, element)
       }
@@ -601,11 +610,13 @@ export class Renderer {
         // Requests are rendered sequentially, as concurrent renders would attribute their properties reads to each other
         for (const [element, { entrypoint, ...options }] of queued) {
           if (entrypoint) {
+            const once = [] as Attr[]
             try {
-              await this.#render(element, { reactive: true, ...options })
+              await this.#render(element, { reactive: true, once, ...options })
             } catch {
               // Errors are already reported by the rendering process, and must not prevent other requests from being processed
             }
+            this.#expire(once)
           }
         }
         queued.forEach(([element, request]) => {
@@ -1412,7 +1423,7 @@ export type InferAttrTypings<T extends AttrTypings> = {
   value: InferAttrAny<T>
   /** Parsed {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} tag. */
   tag: string
-  /** Whether the {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} uses the once operator (evaluated a single time and removed after processing). */
+  /** Whether the {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} uses the once operator. */
   once: boolean
   /** Parsed {@linkcode https://developer.mozilla.org/docs/Web/API/Attr | Attr} modifiers. */
   modifiers: { [P in keyof T["modifiers"]]: T["modifiers"][P] extends { enforce: true } ? InferAttrAny<T["modifiers"][P]> : Optional<InferAttrAny<T["modifiers"][P]>> }

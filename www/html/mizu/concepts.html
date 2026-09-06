@@ -68,7 +68,7 @@
         <li><code class="hljs-keyword">!@click</code> attaches the listener of <code class="hljs-keyword">@click</code> once, and the listener is kept after the attribute is removed.</li>
       </ul>
       <p>
-        Directives that rely on the presence of another directive on a sibling <i>(such as <code class="hljs-keyword">*else</code> or <code class="hljs-keyword">*empty</code>)</i> cannot follow a directive using this operator.
+        Chained directives <i>(such as <code class="hljs-keyword">*else</code> or <code class="hljs-keyword">*empty</code>)</i> must use the operator when the directive they follow does <i>(mixing <code class="hljs-keyword">!if</code> with <code class="hljs-keyword">*else</code> is not supported)</i>.
       </p>
     </section>
     <section>

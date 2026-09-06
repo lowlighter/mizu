@@ -186,3 +186,49 @@
     </ul>
   </expect>
 </test>
+
+<test name="[*empty] with once operator is evaluated a single time along with [!for]">
+  <script>
+  context.value = []
+  </script>
+  <render>
+    <ul>
+      <li !for="const i of value" ~test[content].text="i"></li>
+      <li !empty>empty</li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>empty</li>
+    </ul>
+  </expect>
+  <script>
+  context.value = [0]
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li>empty</li>
+    </ul>
+  </expect>
+  <render>
+    <ul>
+      <li !for="const i of value" ~test[content].text="i"></li>
+      <li !empty>empty</li>
+    </ul>
+  </render>
+  <expect comments="false">
+    <ul>
+      <li>0</li>
+    </ul>
+  </expect>
+  <script>
+  context.value = []
+  </script>
+  <render></render>
+  <expect comments="false">
+    <ul>
+      <li>0</li>
+    </ul>
+  </expect>
+</test>
