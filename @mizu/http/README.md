@@ -21,6 +21,9 @@ Perform a [`fetch()`](https://developer.mozilla.org/docs/Web/API/Fetch_API) call
 > Valid [URLs](https://developer.mozilla.org/docs/Web/API/URL/canParse_static) may be specified « as is ».
 
 > [!NOTE]
+> XML bodies and responses dynamically import [`@libs/xml`](https://jsr.io/@libs/xml).
+
+> [!NOTE]
 > A new request is triggered for the same element if:
 >
 > - Its reference changes.

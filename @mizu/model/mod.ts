@@ -1,6 +1,5 @@
 // Imports
 import { type Arg, type Arrayable, type Cache, type Callback, type Directive, type InferAttrTypings, type Nullable, Phase } from "@mizu/internal/engine"
-import { equal } from "@std/assert"
 import { _event } from "@mizu/event"
 export type * from "@mizu/internal/engine"
 
@@ -180,4 +179,22 @@ function parse(value: ReturnType<typeof read>, modifiers: InferAttrTypings<typeo
     return value
   })
   return Array.isArray(value) ? parsed : parsed[0]
+}
+
+/** Deep equality check for model values. */
+function equal(a: unknown, b: unknown): boolean {
+  if (Object.is(a, b)) {
+    return true
+  }
+  if ((typeof a !== "object") || (typeof b !== "object") || (a === null) || (b === null)) {
+    return false
+  }
+  if ((a instanceof Date) && (b instanceof Date)) {
+    return a.getTime() === b.getTime()
+  }
+  if (Array.isArray(a) !== Array.isArray(b)) {
+    return false
+  }
+  const keys = Object.keys(a)
+  return (keys.length === Object.keys(b).length) && keys.every((key) => equal((a as Record<PropertyKey, unknown>)[key], (b as Record<PropertyKey, unknown>)[key]))
 }

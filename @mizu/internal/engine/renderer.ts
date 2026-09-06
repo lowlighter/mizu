@@ -5,7 +5,7 @@ import { escape } from "@std/regexp"
 import { AsyncFunction } from "@libs/typing/func"
 import { Context } from "@libs/reactive"
 import { Phase } from "./phase.ts"
-import { delay } from "@std/async"
+import { delay } from "@std/async/delay"
 export { Context, Phase }
 export type { Arg, Arrayable, Cache, Callback, Directive, NonVoid, Nullable, Optional }
 export type * from "./directive.ts"
