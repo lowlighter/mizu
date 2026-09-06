@@ -76,6 +76,24 @@
   </expect>
 </test>
 
+<test name="[*clean] with `.directives.comments` modifiers removes closing comments of templates">
+  <load directives="@mizu/for,@mizu/clean,@mizu/test"></load>
+  <render>
+    <div *clean.directives[true].comments[true]>
+      <template *for="[1, 2]">
+        <span ~test.text="$value"></span>
+      </template>
+    </div>
+  </render>
+  <render></render>
+  <expect>
+    <div>
+      <span>1</span>
+      <span>2</span>
+    </div>
+  </expect>
+</test>
+
 <test name="[*clean] with `.templates` modifier removes all templates from element">
   <render>
     <p ~test *clean.templates[true]>

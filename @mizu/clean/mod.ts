@@ -13,6 +13,7 @@ const regexp = {
   condense: new RegExp(`${spacing}+`, "g"),
   trim: new RegExp(`(?:^${spacing}*)|(?:${spacing}*$)`, "g"),
   clean: new RegExp(`${spacing}*(\\u00a0)${spacing}*`, "g"),
+  closing: /^\[\/\S+\]$/,
 }
 
 /** `*clean` typings. */
@@ -99,7 +100,7 @@ export const _clean = {
       // Cleanup filtered nodes
       nodes.forEach((node) => {
         // Cleanup directives comments
-        if ((node.nodeType === renderer.window.Node.COMMENT_NODE) && (renderer.cache("*").has(node as Comment))) {
+        if ((node.nodeType === renderer.window.Node.COMMENT_NODE) && ((renderer.cache("*").has(node as Comment)) || (regexp.closing.test((node as Comment).data)))) {
           ;(node as Comment).remove()
           cache.comments.delete(element)
         } // Cleanup directives attributes
