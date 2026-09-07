@@ -6,11 +6,10 @@ import type { Buffer } from "node:buffer"
 import { Context, Renderer } from "@mizu/internal/engine"
 import { Window } from "@mizu/internal/vdom"
 import type { Arrayable } from "@libs/typing/types"
-import _mizu_compile, { type Cache as CompileCache } from "@mizu/mizu/compile"
+import { _mizu_compile, _mizu_compile_entrypoint, type Cache as CompileCache } from "@mizu/mizu/compile"
 import defaults from "./defaults.ts"
-import { bundle, entrypoint } from "./compile.ts"
+import { bundle, entrypoint, modules } from "./compile.ts"
 import { generate } from "./generate.ts"
-import modules from "./modules.ts"
 // deno-lint-ignore no-external-import
 import { mkdir, readdir, readFile as read, rm, stat, writeFile as write } from "node:fs/promises"
 export type * from "@mizu/internal/engine"
@@ -130,8 +129,8 @@ export class Server {
   /**
    * Render content like {@linkcode Server.render()}, and compile the elements marked with `*mizu.compile` into self-contained fragments.
    *
-   * Marked elements are left unrendered, and a `<script>` bundling _mizu.js_ with the directives used in their subtree is appended to them, along with the current context.
-   * When the `*mizu.compile` value is a selector matching a `<script>` of the document, rendering is deferred until `Mizu.hydrate()` is called from it, otherwise it happens on load.
+   * Marked elements are left unrendered (unless the `render` mode is used), and a `<script>` bundling _mizu.js_ with the directives used in their subtree is appended to them, along with the current context.
+   * A `<script>` using `*mizu.compile-entrypoint` receives the bundle instead, and its content is bundled along with it so it can call `Mizu.hydrate()` itself.
    *
    * > [!IMPORTANT]
    * > This method requires `Deno.bundle()` and is not available on other runtimes.
@@ -153,19 +152,39 @@ export class Server {
       context = context.with(_context)
     }
     await renderer.render(renderer.document.documentElement, { implicit: true, ...options, select: "", context, state: { $renderer: "server", $compile: true, ...options?.state }, stringify: false })
-    for (const [element, { context, entrypoint: selector }] of renderer.cache<CompileCache>(_mizu_compile.name)) {
-      const exported = Boolean(selector) && (renderer.document.querySelector(selector)?.tagName === "SCRIPT")
-      if (selector && (!exported)) {
-        renderer.warn(`[${_mizu_compile.name}] no script matches "${selector}", rendering on load instead`, element)
+    for (const [element, { context }] of renderer.cache<CompileCache>(_mizu_compile.name) ?? []) {
+      element.removeAttribute(_mizu_compile.name)
+
+      // Resolve the entrypoint script, defaulting to a script appended to the element
+      const entrypoints = Array.from(element.querySelectorAll("script")).filter((script) => script.hasAttribute(_mizu_compile_entrypoint.name))
+      entrypoints.forEach((script, i) => {
+        script.removeAttribute(_mizu_compile_entrypoint.name)
+        if (i) {
+          renderer.warn(`[${_mizu_compile_entrypoint.name}] element already has an entrypoint, ignoring`, script)
+        }
+      })
+      let script = entrypoints[0] ?? null
+      let depth = 1
+      let content = "Mizu.hydrate()"
+      if (script) {
+        content = script.textContent ?? ""
+        for (let node = script.parentElement; node && (node !== element); node = node.parentElement) {
+          depth++
+        }
       }
-      const source = entrypoint(renderer, element, { context, exported, modules: { ...modules, ...options?.modules }, warn: (message) => renderer.warn(`[${_mizu_compile.name}] ${message}`, element) })
+
+      // Bundle the entrypoint and insert it
+      const source = entrypoint(renderer, element, { context, modules: { ...modules, ...options?.modules }, script: { depth, content }, warn: (message) => renderer.warn(`[${_mizu_compile.name}] ${message}`, element) })
       if (!this.#bundles.has(source)) {
         this.#bundles.set(source, bundle(source).catch((error) => (this.#bundles.delete(source), Promise.reject(error))))
       }
-      const script = renderer.document.createElement("script")
+      script ??= element.appendChild(renderer.document.createElement("script"))
       script.textContent = (await this.#bundles.get(source)!).replace(/<\/script/gi, "<\\/script")
-      element.appendChild(script)
     }
+    Array.from(renderer.document.querySelectorAll("script")).filter((script) => script.hasAttribute(_mizu_compile_entrypoint.name)).forEach((script) => {
+      renderer.warn(`[${_mizu_compile_entrypoint.name}] must be placed within a [${_mizu_compile.name}] element, ignoring`, script)
+      script.removeAttribute(_mizu_compile_entrypoint.name)
+    })
     const html = (options?.select ? renderer.document.querySelector(options.select) : renderer.document.documentElement)?.outerHTML ?? ""
     return options?.select ? html : `<!DOCTYPE html>${html}`
   }

@@ -9,12 +9,33 @@
     </main>
   </code>
   <mizu-note #note>
-    The element and its children are skipped by the server renderer. <code>Server.compile()</code> appends a <code>&lt;script&gt;</code> to the element, bundling <em>mizu.js</em> with the directives found in its subtree along with the current context.
+    The subtree is skipped by the server renderer, unless the <code>render</code> mode is used, in which case it is rendered before being compiled.
   </mizu-note>
   <mizu-note #note>
-    When the value is a selector matching a <code>&lt;script&gt;</code> of the document, rendering is deferred until <code>Mizu.hydrate()</code> is called from it <i>(e.g. <code>Mizu.hydrate({ context: { foo: "bar" } })</code>)</i>, otherwise it happens on load.
+    <code>Server.compile()</code> appends a <code>&lt;script&gt;</code> to the element, bundling <em>mizu.js</em> with the directives found in its subtree along with the current context. Use <a href="#mizu-compile-entrypoint"><code
+        class="hljs-keyword">*mizu.compile-entrypoint</code></a> to control where and when it is rendered.
   </mizu-note>
   <mizu-restriction #note>
     Context values are shipped as code: functions lose their closure, native functions must be reachable from <code>globalThis</code> <i>(e.g. <code>Math.random</code>)</i>, and other values are skipped with a warning. <code>Server.compile()</code> requires <code>Deno.bundle()</code>.
+  </mizu-restriction>
+</mizu-directive>
+
+<mizu-directive id="mizu-compile-entrypoint" directory="mizu/compile">
+  <code #name><span class="hljs-keyword">*mizu.compile-entrypoint</span></code>
+  <p #description>
+    Use a <code>&lt;script&gt;</code> as the entrypoint of a compiled element.
+  </p>
+  <code #example *skip>
+    <main *mizu.compile>
+      <script *mizu.compile-entrypoint>
+      Mizu.hydrate({ context: { foo: "bar" } })
+      </script>
+    </main>
+  </code>
+  <mizu-note #note>
+    Its content is bundled along with <em>mizu.js</em> and replaces the script, with <code>Mizu.hydrate()</code> available in scope to render the element <i>(rather than on load)</i>. Options are merged over the shipped context.
+  </mizu-note>
+  <mizu-restriction #note>
+    Must be placed within an element using the <a href="#mizu-compile"><code class="hljs-keyword">*mizu.compile</code></a> directive.
   </mizu-restriction>
 </mizu-directive>

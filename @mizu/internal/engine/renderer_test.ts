@@ -358,15 +358,6 @@ test("`Renderer.#render() // 6` calls `directive.cleanup()`", async () => {
   expect(directives[1].cleanup).toBeCalled()
 })
 
-test("`Renderer.getAttributes()` and `Renderer.parseAttribute()` resolve directive names containing dots", async () => {
-  await using window = new Window()
-  const renderer = await new Renderer(window, { ...options, directives: [{ name: "*foo", phase: Phase.TESTING }, { name: "*foo.bar", phase: Phase.TESTING }] as testing }).ready
-  const element = renderer.createElement("div", { attributes: { "*foo": "", "*foo.baz": "", "*foo.bar": "", "*foo.bar[qux].baz": "" } })
-  expect(renderer.getAttributes(element, "*foo")).toHaveLength(2)
-  expect(renderer.getAttributes(element, "*foo.bar")).toHaveLength(2)
-  expect(renderer.parseAttribute(element.attributes[3], { modifiers: { baz: { type: Boolean } } }, { modifiers: true })).toMatchObject({ name: "*foo.bar", tag: "qux", modifiers: { baz: true } })
-})
-
 test("`Renderer.render() // R` reacts to properties changes using the closest possible subtree and context", async () => {
   await using window = new Window()
   const context = new Context({ foo: "bar", fn: { a: fn(), b: fn(), c: fn() } })

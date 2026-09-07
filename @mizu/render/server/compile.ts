@@ -1,22 +1,76 @@
 // Imports
 import type { Arrayable, Callback, Nullable, Optional } from "@libs/typing/types"
 import type { Context, Directive, Renderer } from "@mizu/internal/engine"
-import { join } from "@std/path"
+import _mizu from "@mizu/mizu"
+import _bind from "@mizu/bind"
+import _clean from "@mizu/clean"
+import _code from "@mizu/code"
+import _custom_element from "@mizu/custom-element"
+import _eval from "@mizu/eval"
+import _event from "@mizu/event"
+import _for from "@mizu/for/empty"
+import _html from "@mizu/html"
+import _http from "@mizu/http/event"
+import _if from "@mizu/if/else"
+import _is from "@mizu/is"
+import _markdown from "@mizu/markdown"
+import _model from "@mizu/model"
+import _mustache from "@mizu/mustache"
+import _once from "@mizu/once"
+import _ref from "@mizu/ref"
+import _refresh from "@mizu/refresh"
+import _set from "@mizu/set"
+import _show from "@mizu/show"
+import _skip from "@mizu/skip"
+import _text from "@mizu/text"
+import _toc from "@mizu/toc"
+
+/**
+ * Directives that can be bundled by `Server.compile()`, indexed by module specifier.
+ *
+ * A directive found in a compiled subtree is looked up here to know which module the generated entrypoint must import.
+ * Additional entries may be passed through the `modules` option for custom directives.
+ */
+export const modules = {
+  [import.meta.resolve("@mizu/mizu")]: _mizu,
+  [import.meta.resolve("@mizu/bind")]: _bind,
+  [import.meta.resolve("@mizu/clean")]: _clean,
+  [import.meta.resolve("@mizu/code")]: _code,
+  [import.meta.resolve("@mizu/custom-element")]: _custom_element,
+  [import.meta.resolve("@mizu/eval")]: _eval,
+  [import.meta.resolve("@mizu/event")]: _event,
+  [import.meta.resolve("@mizu/for/empty")]: _for,
+  [import.meta.resolve("@mizu/html")]: _html,
+  [import.meta.resolve("@mizu/http/event")]: _http,
+  [import.meta.resolve("@mizu/if/else")]: _if,
+  [import.meta.resolve("@mizu/is")]: _is,
+  [import.meta.resolve("@mizu/markdown")]: _markdown,
+  [import.meta.resolve("@mizu/model")]: _model,
+  [import.meta.resolve("@mizu/mustache")]: _mustache,
+  [import.meta.resolve("@mizu/once")]: _once,
+  [import.meta.resolve("@mizu/ref")]: _ref,
+  [import.meta.resolve("@mizu/refresh")]: _refresh,
+  [import.meta.resolve("@mizu/set")]: _set,
+  [import.meta.resolve("@mizu/show")]: _show,
+  [import.meta.resolve("@mizu/skip")]: _skip,
+  [import.meta.resolve("@mizu/text")]: _text,
+  [import.meta.resolve("@mizu/toc")]: _toc,
+} as Record<string, Arrayable<Directive>>
 
 /** Compilation options. */
 export type CompileOptions = {
   /** Context shipped with the element. */
   context: Context
-  /** Whether rendering is deferred until `Mizu.hydrate()` is called. */
-  exported: boolean
-  /** Directive modules, indexed by specifier. */
+  /** Directives that can be bundled, indexed by module specifier. */
   modules: Record<string, Arrayable<Directive>>
+  /** Entrypoint script, given by its depth relative to the compiled element and its content. */
+  script: { depth: number; content: string }
   /** Warning callback. */
   warn: (message: string) => void
 }
 
-/** Generate the entrypoint of a compiled element, importing the engine and the directives used in its subtree and shipping its context. */
-export function entrypoint(renderer: Renderer, element: HTMLElement, { context, exported, modules, warn }: CompileOptions): string {
+/** Generate the entrypoint of a compiled element, importing the engine along with the directives used in its subtree, and shipping its context. */
+export function entrypoint(renderer: Renderer, element: HTMLElement, { context, modules, script, warn }: CompileOptions): string {
   const elements = Array.from(walk(element))
   const imports = Object.entries(modules)
     .filter(([_, directives]) => ([directives].flat(Infinity) as Directive[]).some((directive) => elements.some((element) => renderer.getAttributes(element, directive.name, { first: true }))))
@@ -24,18 +78,15 @@ export function entrypoint(renderer: Renderer, element: HTMLElement, { context, 
   return [
     `import { Context, Renderer } from ${quote(import.meta.resolve("@mizu/internal/engine"))}`,
     ...imports.map((specifier, i) => `import $${i} from ${quote(specifier)}`),
-    "const $element = document.currentScript.parentElement",
+    `const $element = document.currentScript${".parentElement".repeat(script.depth)}`,
     `const $context = ${literal(context, warn)}`,
-    "const $hydrate = async ({ context = {}, ...options } = {}) => {",
-    `  const renderer = await new Renderer(globalThis, { directives: [${imports.map((_, i) => `$${i}`).join(", ")}], warn: console.warn }).ready`,
-    `  return renderer.render($element, { reactive: true, ...options, context: new Context({ ...$context, ...context }), state: { $renderer: "client", ...options.state } })`,
+    "const Mizu = {",
+    "  async hydrate({ context = {}, ...options } = {}) {",
+    `    const renderer = await new Renderer(globalThis, { directives: [${imports.map((_, i) => `$${i}`).join(", ")}], warn: console.warn }).ready`,
+    `    return renderer.render($element, { reactive: true, ...options, context: new Context({ ...$context, ...context }), state: { $renderer: "client", ...options.state } })`,
+    "  },",
     "}",
-    exported
-      ? [
-        "const Mizu = globalThis.Mizu ??= { fragments: [], hydrate: (options) => Promise.all(Mizu.fragments.splice(0).map((hydrate) => hydrate(options))) }",
-        "Mizu.fragments.push($hydrate)",
-      ].join("\n")
-      : "$hydrate()",
+    script.content,
   ].join("\n")
 }
 
@@ -44,22 +95,16 @@ type Bundler = (options: { entrypoints: string[]; write: false; minify: boolean;
 
 /** Bundle an entrypoint into a minified classic script with `Deno.bundle()`. */
 export async function bundle(source: string): Promise<string> {
-  const directory = await Deno.makeTempDir({ prefix: "mizu_" })
-  try {
-    const path = join(directory, "mod.ts")
-    await Deno.writeTextFile(path, source)
-    const result = await (Deno as unknown as { bundle: Bundler }).bundle({ entrypoints: [path], write: false, minify: true, platform: "browser", format: "iife" })
-    if ((!result.success) || (!result.outputFiles?.length)) {
-      throw new Error(`Failed to bundle compiled element:\n${result.errors.map((error) => error.text).join("\n")}`)
-    }
-    return result.outputFiles[0].text()
-  } finally {
-    await Deno.remove(directory, { recursive: true })
+  const entrypoints = [`data:text/javascript,${encodeURIComponent(source)}`]
+  const result = await (Deno as unknown as { bundle: Bundler }).bundle({ entrypoints, write: false, minify: true, platform: "browser", format: "iife" })
+  if ((!result.success) || (!result.outputFiles?.length)) {
+    throw new Error(`Failed to bundle compiled element:\n${result.errors.map((error) => error.text).join("\n")}`)
   }
+  return result.outputFiles[0].text()
 }
 
 /** Iterate over an element, its descendants and their template contents. */
-function* walk(node: HTMLElement | DocumentFragment): Generator<HTMLElement> {
+export function* walk(node: HTMLElement | DocumentFragment): Generator<HTMLElement> {
   if ("tagName" in node) {
     yield node
   }

@@ -172,9 +172,6 @@ export class Renderer {
       }
       await directive.init?.(this)
       this.#directives.push(directive as Directive)
-      if ((typeof directive.name === "string") && (directive.name.includes("."))) {
-        this.#dotted.push(directive.name)
-      }
     }
     this.#directives.sort((a, b) => a.phase - b.phase)
     return this
@@ -899,7 +896,6 @@ export class Renderer {
   /** A collection of {@linkcode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp | RegExp} used by {@linkcode Renderer.getAttributes()} and {@linkcode Renderer.parseAttribute()}. */
   readonly #extractor = {
     attribute: /^(?:(?:(?<a>\S*?)\{(?<b>\S+?)\})|(?<name>[^{}]\S*?))(?:\[(?<tag>\S+?)\])?(?:\.(?<modifiers>\S+))?$/,
-    suffix: /^(?:\[(?<tag>\S+?)\])?(?:\.(?<modifiers>\S+))?$/,
     modifier: /^(?<key>\S*?)(?:\[(?<value>\S*)\])?$/,
     boolean: /^(?<truthy>yes|on|true)|(?<falsy>no|off|false)$/,
     duration: /^(?<delay>(?:\d+)|(?:\d*\.\d+))(?<unit>(?:ms|s|m)?)$/,
@@ -908,24 +904,13 @@ export class Renderer {
   /** Internal cache used to store the extracted name of already processed {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr | Attr}. */
   readonly #names = new WeakMap<Attr, string>()
 
-  /** Names of loaded directives containing a dot (e.g. `*mizu.compile`), which take precedence over the extracted name. */
-  readonly #dotted = [] as string[]
-
-  /** Resolve the dotted directive name matching a normalized attribute name, if any. */
-  #dottedName(name: string): Optional<string> {
-    return this.#dotted.find((dotted) => (name === dotted) || (name.startsWith(`${dotted}.`)) || (name.startsWith(`${dotted}[`)))
-  }
-
   /** Extract the name (without tag and modifiers) of an {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr | Attr}, which is memoized as {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Attr/name | Attr.name} is immutable. */
   #name(attribute: Attr): string {
     let name = this.#names.get(attribute)
     if (name === undefined) {
       const normalized = this.#normalize(attribute.name)
-      name = this.#dottedName(normalized)
-      if (name === undefined) {
-        const { a: _a, b: _b, name: _name = `${_a}${_b}` } = normalized.match(this.#extractor.attribute)?.groups ?? { name: normalized }
-        name = _name
-      }
+      const { a: _a, b: _b, name: _name = `${_a}${_b}` } = normalized.match(this.#extractor.attribute)?.groups ?? { name: normalized }
+      name = _name
       this.#names.set(attribute, name)
     }
     return name
@@ -1133,8 +1118,7 @@ export class Renderer {
     // Parse attribute name
     if (!this.#parsed.has(attribute)) {
       const normalized = this.#normalize(attribute.name)
-      const dotted = this.#dottedName(normalized)
-      const { a: _a, b: _b, name = dotted ?? `${_a}${_b}`, tag = "", modifiers: _modifiers = "" } = (dotted ? normalized.slice(dotted.length).match(this.#extractor.suffix) : normalized.match(this.#extractor.attribute))?.groups ?? { name: normalized }
+      const { a: _a, b: _b, name = `${_a}${_b}`, tag = "", modifiers: _modifiers = "" } = normalized.match(this.#extractor.attribute)?.groups ?? { name: normalized }
       const cached = { name, tag, ephemeral: attribute.name.startsWith(Renderer.#ephemeral), modifiers: {} as Record<PropertyKey, unknown> }
       if (modifiers && (typings?.modifiers)) {
         const modifiers = Object.fromEntries(
