@@ -101,7 +101,7 @@ export const _body = {
         if (modifiers.header) {
           headers.set("Content-Type", "application/xml")
         }
-        const { stringify } = await import("@libs/xml/stringify")
+        const { stringify } = await import(import.meta.resolve("@libs/xml/stringify"))
         body = stringify(body as Arg<typeof stringify>, { format: { indent: "", breakline: Infinity } })
         break
       }
@@ -294,7 +294,7 @@ export const _response = {
         }
         // XML response
         case (modifiers.consume === "xml") || (modifiers.xml): {
-          const { parse } = await import("@libs/xml/parse")
+          const { parse } = await import(import.meta.resolve("@libs/xml/parse"))
           $content = parse(await $response.text())
           break
         }
