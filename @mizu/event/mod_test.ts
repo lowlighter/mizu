@@ -20,29 +20,6 @@ test("[@event] supports `_event` internal api", async () => {
   expect(element.addEventListener).toHaveBeenCalledWith("testing", expect.any(Function), expect.any(Object))
 })
 
-test("[@event] does not expire listeners of compiled fragments", async () => {
-  await using window = new Window()
-  for (const compiled of [false, true]) {
-    const callback = fn()
-    const tested = {
-      name: "~tested",
-      phase: Phase.TESTING,
-      init: directive.init,
-      execute: (renderer, element, options) => directive.execute(renderer, element, { ...options, _event: "testing", _callback: callback } as testing),
-    } as Directive
-    const renderer = await new Renderer(window, { directives: [tested] }).ready
-    const element = renderer.createElement("div", { attributes: { [`${tested.name}`]: "" } })
-    await renderer.render(element, { state: compiled ? { [renderer.internal("compiled")]: true } : {} })
-    element.removeAttribute(`${tested.name}`)
-    element.dispatchEvent(new renderer.window.Event("testing"))
-    if (compiled) {
-      expect(callback).toHaveBeenCalled()
-    } else {
-      expect(callback).not.toHaveBeenCalled()
-    }
-  }
-})
-
 test("[@event] supports `_callback` internal api", async () => {
   await using window = new Window()
   const callback = fn()

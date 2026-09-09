@@ -8,7 +8,7 @@ import { Window } from "@mizu/internal/vdom"
 import type { Arrayable } from "@libs/typing/types"
 import { _mizu_compile, _mizu_compile_entrypoint, type Cache as CompileCache } from "@mizu/mizu/compile"
 import defaults from "./defaults.ts"
-import { bundle, clean, entrypoint, modules } from "./compile.ts"
+import { bundle, dehydrate, entrypoint, modules } from "./compile.ts"
 import { generate } from "./generate.ts"
 // deno-lint-ignore no-external-import
 import { mkdir, readdir, readFile as read, rm, stat, writeFile as write } from "node:fs/promises"
@@ -152,7 +152,7 @@ export class Server {
     for (const [element, { context, mode }] of renderer.cache<CompileCache>(_mizu_compile.name) ?? []) {
       element.removeAttribute(_mizu_compile.name)
       if (mode === "render") {
-        clean(renderer, element)
+        dehydrate(renderer, element)
       }
 
       // Resolve the entrypoint script, defaulting to a script appended to the element
@@ -174,7 +174,7 @@ export class Server {
       }
 
       // Bundle the entrypoint and insert it
-      const source = entrypoint(renderer, element, { context, modules: { ...modules, ...options?.modules }, script: { depth, content }, warn: (message) => renderer.warn(`[${_mizu_compile.name}] ${message}`, element) })
+      const source = entrypoint(renderer, element, { context, modules: { ...modules, ...options?.modules }, script: { depth, content }, hydrate: mode === "render", warn: (message) => renderer.warn(`[${_mizu_compile.name}] ${message}`, element) })
       if (!this.#bundles.has(source)) {
         this.#bundles.set(source, bundle(source).catch((error) => (this.#bundles.delete(source), Promise.reject(error))))
       }
