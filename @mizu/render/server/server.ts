@@ -8,7 +8,7 @@ import { Window } from "@mizu/internal/vdom"
 import type { Arrayable } from "@libs/typing/types"
 import { _mizu_compile, _mizu_compile_entrypoint, type Cache as CompileCache } from "@mizu/mizu/compile"
 import defaults from "./defaults.ts"
-import { bundle, entrypoint, modules } from "./compile.ts"
+import { bundle, clean, entrypoint, modules } from "./compile.ts"
 import { generate } from "./generate.ts"
 // deno-lint-ignore no-external-import
 import { mkdir, readdir, readFile as read, rm, stat, writeFile as write } from "node:fs/promises"
@@ -149,8 +149,11 @@ export class Server {
       context = context.with(_context)
     }
     await renderer.render(renderer.document.documentElement, { implicit: true, ...options, select: "", context, state: { $renderer: "server", $compile: true, ...options?.state }, stringify: false })
-    for (const [element, { context }] of renderer.cache<CompileCache>(_mizu_compile.name) ?? []) {
+    for (const [element, { context, mode }] of renderer.cache<CompileCache>(_mizu_compile.name) ?? []) {
       element.removeAttribute(_mizu_compile.name)
+      if (mode === "render") {
+        clean(renderer, element)
+      }
 
       // Resolve the entrypoint script, defaulting to a script appended to the element
       const entrypoints = Array.from(element.querySelectorAll("script")).filter((script) => script.hasAttribute(_mizu_compile_entrypoint.name))
