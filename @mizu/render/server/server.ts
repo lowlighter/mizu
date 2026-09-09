@@ -129,9 +129,6 @@ export class Server {
   /**
    * Render content like {@linkcode Server.render()}, and compile the elements marked with `*mizu.compile` into self-contained fragments.
    *
-   * Marked elements are left unrendered (unless the `render` mode is used), and a `<script>` bundling _mizu.js_ with the directives used in their subtree is appended to them, along with the current context.
-   * A `<script>` using `*mizu.compile-entrypoint` receives the bundle instead, and its content is bundled along with it so it can call `Mizu.hydrate()` itself.
-   *
    * > [!IMPORTANT]
    * > This method requires `Deno.bundle()` and is not available on other runtimes.
    *
@@ -179,7 +176,7 @@ export class Server {
         this.#bundles.set(source, bundle(source).catch((error) => (this.#bundles.delete(source), Promise.reject(error))))
       }
       script ??= element.appendChild(renderer.document.createElement("script"))
-      script.textContent = (await this.#bundles.get(source)!).replace(/<\/script/gi, "<\\/script")
+      script.textContent = await this.#bundles.get(source)!
     }
     Array.from(renderer.document.querySelectorAll("script")).filter((script) => script.hasAttribute(_mizu_compile_entrypoint.name)).forEach((script) => {
       renderer.warn(`[${_mizu_compile_entrypoint.name}] must be placed within a [${_mizu_compile.name}] element, ignoring`, script)
@@ -230,13 +227,13 @@ export type ServerRenderOptions = Pick<RendererRenderOptions, "implicit" | "sele
   state?: Arg<Renderer["render"], 1, true>["state"]
 }
 
-/** {@linkcode Server.generate} options. */
-/** {@linkcode Server.compile()} options. */
+/** {@linkcode Server.compile} options. */
 export type ServerCompileOptions = ServerRenderOptions & Pick<ServerOptions, "warn"> & {
   /** Additional directive modules known to the compiler, indexed by specifier. */
   modules?: Record<string, Arrayable<Directive>>
 }
 
+/** {@linkcode Server.generate} options. */
 export type ServerGenerateOptions = {
   /** Output directory. */
   output?: string

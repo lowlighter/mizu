@@ -16,6 +16,9 @@
         class="hljs-keyword">*mizu.compile-entrypoint</code></a> to control where and when it is rendered.
   </mizu-note>
   <mizu-restriction #note>
+    Elements commented out by the server <i>(e.g. by <a href="#if"><code class="hljs-keyword">*if</code></a> in the <code>render</code> mode)</i> cannot be restored client-side.
+  </mizu-restriction>
+  <mizu-restriction #note>
     Context values are shipped as code: functions lose their closure, native functions must be reachable from <code>globalThis</code> <i>(e.g. <code>Math.random</code>)</i>, and other values are skipped with a warning. <code>Server.compile()</code> requires <code>Deno.bundle()</code>.
   </mizu-restriction>
 </mizu-directive>

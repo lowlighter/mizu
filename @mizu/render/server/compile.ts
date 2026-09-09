@@ -93,14 +93,19 @@ export function entrypoint(renderer: Renderer, element: HTMLElement, { context, 
 /** `Deno.bundle()` typings (unstable). */
 type Bundler = (options: { entrypoints: string[]; write: false; minify: boolean; platform: "browser"; format: "iife" }) => Promise<{ success: boolean; errors: Array<{ text: string }>; outputFiles?: Array<{ text(): string }> }>
 
-/** Bundle an entrypoint into a minified classic script with `Deno.bundle()`. */
+/**
+ * Bundle an entrypoint into a minified classic script with `Deno.bundle()`.
+ *
+ * `</script` is already escaped by the bundler within literals, but `<!--` is not and would switch the HTML parser to its escaped state,
+ * preventing the closing tag from being recognized. It is escaped here, which the bundler never emits outside of a literal.
+ */
 export async function bundle(source: string): Promise<string> {
   const entrypoints = [`data:text/javascript,${encodeURIComponent(source)}`]
   const result = await (Deno as unknown as { bundle: Bundler }).bundle({ entrypoints, write: false, minify: true, platform: "browser", format: "iife" })
   if ((!result.success) || (!result.outputFiles?.length)) {
     throw new Error(`Failed to bundle compiled element:\n${result.errors.map((error) => error.text).join("\n")}`)
   }
-  return result.outputFiles[0].text()
+  return result.outputFiles[0].text().replace(/<!--/g, "<\\x21--")
 }
 
 /** Iterate over an element, its descendants and their template contents. */

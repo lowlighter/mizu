@@ -21,6 +21,9 @@ Mark an element to be rendered client-side by a self-contained bundle of _**mizu
 > `Server.compile()` appends a `<script>` to the element, bundling _**mizu.js**_ with the directives found in its subtree along with the current context. Use [`*mizu.compile-entrypoint`](#mizu-compile-entrypoint) to control where and when it is rendered.
 
 > [!CAUTION]
+> Elements commented out by the server _(e.g. by [`*if`](#if) in the `render` mode)_ cannot be restored client-side.
+
+> [!CAUTION]
 > Context values are shipped as code: functions lose their closure, native functions must be reachable from `globalThis` _(e.g. `Math.random`)_, and other values are skipped with a warning. `Server.compile()` requires `Deno.bundle()`.
 
 # `*mizu.compile-entrypoint`

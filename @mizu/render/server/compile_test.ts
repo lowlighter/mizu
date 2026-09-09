@@ -59,6 +59,17 @@ if (typeof (globalThis as { Deno?: { bundle?: unknown } }).Deno?.bundle === "fun
     expect(warn).toBeCalledTimes(1)
   }, { permissions: "inherit" })
 
+  test("`Server.compile()` escapes sequences that would break out of the bundled script", async () => {
+    const mizu = new Server({ context: { evil: `</script><!--<script>` } })
+    const html = await mizu.compile(`<main *mizu.compile><p *text="evil"></p></main><p id="after"></p>`, { select: "body" })
+    const [, script, after] = split(html)
+    expect(script).not.toMatch(/<\/script/i)
+    expect(script).not.toContain(`<!--`)
+    expect(script).toContain(`<\\/script`)
+    expect(script).toContain(`<\\x21--`)
+    expect(after).toBe(`</main><p id="after"></p></body>`)
+  }, { permissions: "inherit" })
+
   test("`Server.compile()` skips context values that cannot be serialized", async () => {
     const warn = fn() as testing
     const mizu = new Server({ warn, context: { foo: "bar", unsupported: new WeakMap() } })

@@ -5,11 +5,7 @@ export type * from "@mizu/internal/engine"
 /** `*mizu.compile` cache. */
 export type Cache = Map<HTMLElement, { context: Context; mode: string }>
 
-/**
- * `*mizu.compile` directive.
- *
- * The element is registered when the `$compile` state is set (see `Server.compile()`), and its subtree is skipped unless the `render` mode is used.
- */
+/** `*mizu.compile` directive. */
 export const _mizu_compile = {
   name: "*mizu.compile",
   phase: Phase.ELIGIBILITY,
@@ -37,11 +33,7 @@ export const _mizu_compile = {
   Cache: Cache
 }>
 
-/**
- * `*mizu.compile-entrypoint` directive.
- *
- * The content of the `<script>` is skipped during rendering, and replaced by the bundle of its closest `*mizu.compile` ancestor.
- */
+/** `*mizu.compile-entrypoint` directive. */
 export const _mizu_compile_entrypoint = {
   name: "*mizu.compile-entrypoint",
   phase: Phase.ELIGIBILITY,
