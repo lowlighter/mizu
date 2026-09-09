@@ -1,6 +1,7 @@
 // Imports
 import type { Directive } from "@mizu/internal/engine"
 import _mizu from "@mizu/mizu"
+import _mizu_compile from "@mizu/mizu/compile"
 import _bind from "@mizu/bind"
 import _clean from "@mizu/clean"
 import _code from "@mizu/code"
@@ -24,6 +25,7 @@ import _toc from "@mizu/toc"
 /** Defaults directives. */
 export default [
   _mizu,
+  _mizu_compile,
   _bind,
   _clean,
   _code,

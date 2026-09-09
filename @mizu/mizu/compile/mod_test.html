@@ -1,0 +1,61 @@
+<load directives="@mizu/mizu/compile,@mizu/test"></load>
+
+<test name="[*mizu.compile] skips the element and its children">
+  <render>
+    <div *mizu.compile>
+      <p ~test.text="'foo'"></p>
+    </div>
+    <p ~test.text="'bar'"></p>
+  </render>
+  <expect directives="~test">
+    <div *mizu.compile="">
+      <p ~test.text="'foo'"></p>
+    </div>
+    <p ~test.text="'bar'">bar</p>
+  </expect>
+</test>
+
+<test name="[*mizu.compile] with `render` mode renders the element and its children">
+  <render>
+    <div *mizu.compile="render">
+      <p ~test.text="'foo'"></p>
+    </div>
+  </render>
+  <expect directives="~test">
+    <div *mizu.compile="render">
+      <p ~test.text="'foo'">foo</p>
+    </div>
+  </expect>
+</test>
+
+<test name="[*mizu.compile] (error) expects a supported mode">
+  <render>
+    <div *mizu.compile="unsupported">
+      <p ~test.text="'foo'"></p>
+    </div>
+  </render>
+  <expect directives="~test">
+    <div *mizu.compile="unsupported" *warn='[*mizu.compile] expects either "" or "render" but got "unsupported", ignoring'>
+      <p ~test.text="'foo'"></p>
+    </div>
+  </expect>
+</test>
+
+<test name="[*mizu.compile-entrypoint] skips the script content">
+  <render>
+    <div *mizu.compile="render">
+      <p ~test.text="'foo'"></p>
+      <script *mizu.compile-entrypoint>
+      Mizu.hydrate()
+      </script>
+    </div>
+  </render>
+  <expect directives="~test">
+    <div *mizu.compile="render">
+      <p ~test.text="'foo'">foo</p>
+      <script *mizu.compile-entrypoint="">
+      Mizu.hydrate()
+      </script>
+    </div>
+  </expect>
+</test>

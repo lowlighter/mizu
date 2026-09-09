@@ -197,6 +197,7 @@
     "@std/yaml": "jsr:@std/yaml@^1.2.0"
   },
   "unstable": [
+    "bundle",
     "worker-options"
   ],
   "workspace": [

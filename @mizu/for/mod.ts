@@ -45,7 +45,9 @@ export const _for = {
     let comment = element as unknown as Comment
     if (!renderer.isComment(element)) {
       comment = renderer.comment(element, { directive: this.name as string, expression: attribute.value })
-      cache.set(comment, { element, items: new Map(), contexts: new Map(), iteration: null })
+    }
+    if (!cache.has(comment)) {
+      cache.set(comment, { element: (renderer.cache("*").get(comment) ?? element) as HTMLElement, items: new Map(), contexts: new Map(), iteration: null })
     }
     const cached = cache.get(comment)!
     element = cached.element

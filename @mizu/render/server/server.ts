@@ -5,7 +5,10 @@ import type { CallbackSource, GlobSource, StringSource, URLSource } from "./gene
 import type { Buffer } from "node:buffer"
 import { Context, Renderer } from "@mizu/internal/engine"
 import { Window } from "@mizu/internal/vdom"
+import type { Arrayable } from "@libs/typing/types"
+import { _mizu_compile, _mizu_compile_entrypoint, type Cache as CompileCache } from "@mizu/mizu/compile"
 import defaults from "./defaults.ts"
+import { bundle, dehydrate, entrypoint, modules } from "./compile.ts"
 import { generate } from "./generate.ts"
 // deno-lint-ignore no-external-import
 import { mkdir, readdir, readFile as read, rm, stat, writeFile as write } from "node:fs/promises"
@@ -123,6 +126,72 @@ export class Server {
    * )
    * ```
    */
+  /**
+   * Render content like {@linkcode Server.render()}, and compile the elements marked with `*mizu.compile` into self-contained fragments.
+   *
+   * > [!IMPORTANT]
+   * > This method requires `Deno.bundle()` and is not available on other runtimes.
+   *
+   * ```ts ignore
+   * const mizu = new Server({ context: { count: 0 } })
+   * const html = await mizu.compile(`<main *mizu.compile><button @click="count++" *text="count"></button></main>`)
+   * ```
+   */
+  async compile(content: string | Arg<Renderer["render"]>, options?: ServerCompileOptions): Promise<string> {
+    if (typeof (globalThis as { Deno?: { bundle?: unknown } }).Deno?.bundle !== "function") {
+      throw new TypeError("Server.compile() requires Deno.bundle()")
+    }
+    await using window = new Window(typeof content === "string" ? content : `<body>${content.outerHTML}</body>`)
+    const { directives, warn, debug, context: _context } = { ...this.#options, ...options }
+    const renderer = await new Renderer(window, { directives, warn, debug }).ready
+    let context = this.#context
+    if (_context) {
+      context = context.with(_context)
+    }
+    await renderer.render(renderer.document.documentElement, { implicit: true, ...options, select: "", context, state: { $renderer: "server", $compile: true, ...options?.state }, stringify: false })
+    for (const [element, { context, mode }] of renderer.cache<CompileCache>(_mizu_compile.name) ?? []) {
+      element.removeAttribute(_mizu_compile.name)
+      if (mode === "render") {
+        dehydrate(renderer, element)
+      }
+
+      // Resolve the entrypoint script, defaulting to a script appended to the element
+      const entrypoints = Array.from(element.querySelectorAll("script")).filter((script) => script.hasAttribute(_mizu_compile_entrypoint.name))
+      entrypoints.forEach((script, i) => {
+        script.removeAttribute(_mizu_compile_entrypoint.name)
+        if (i) {
+          renderer.warn(`[${_mizu_compile_entrypoint.name}] element already has an entrypoint, ignoring`, script)
+        }
+      })
+      let script = entrypoints[0] ?? null
+      let depth = 1
+      let content = "Mizu.hydrate()"
+      if (script) {
+        content = script.textContent ?? ""
+        for (let node = script.parentElement; node && (node !== element); node = node.parentElement) {
+          depth++
+        }
+      }
+
+      // Bundle the entrypoint and insert it
+      const source = entrypoint(renderer, element, { context, modules: { ...modules, ...options?.modules }, script: { depth, content }, hydrate: mode === "render", warn: (message) => renderer.warn(`[${_mizu_compile.name}] ${message}`, element) })
+      if (!this.#bundles.has(source)) {
+        this.#bundles.set(source, bundle(source).catch((error) => (this.#bundles.delete(source), Promise.reject(error))))
+      }
+      script ??= element.appendChild(renderer.document.createElement("script"))
+      script.textContent = await this.#bundles.get(source)!
+    }
+    Array.from(renderer.document.querySelectorAll("script")).filter((script) => script.hasAttribute(_mizu_compile_entrypoint.name)).forEach((script) => {
+      renderer.warn(`[${_mizu_compile_entrypoint.name}] must be placed within a [${_mizu_compile.name}] element, ignoring`, script)
+      script.removeAttribute(_mizu_compile_entrypoint.name)
+    })
+    const html = (options?.select ? renderer.document.querySelector(options.select) : renderer.document.documentElement)?.outerHTML ?? ""
+    return options?.select ? html : `<!DOCTYPE html>${html}`
+  }
+
+  /** Compiled bundles, indexed by entrypoint source. */
+  readonly #bundles = new Map<string, Promise<string>>()
+
   generate(sources: Array<StringSource | GlobSource | CallbackSource | URLSource>, options?: ServerGenerateOptions): Promise<void> {
     return generate(this, sources, { ...this.#options.generate, ...options, fs: { ...this.#options.generate.fs, ...options?.fs } } as Arg<typeof generate, 2>)
   }
@@ -159,6 +228,12 @@ export type ServerRenderOptions = Pick<RendererRenderOptions, "implicit" | "sele
    * It is populated with `$renderer: "server"` by default.
    */
   state?: Arg<Renderer["render"], 1, true>["state"]
+}
+
+/** {@linkcode Server.compile} options. */
+export type ServerCompileOptions = ServerRenderOptions & Pick<ServerOptions, "warn"> & {
+  /** Additional directive modules known to the compiler, indexed by specifier. */
+  modules?: Record<string, Arrayable<Directive>>
 }
 
 /** {@linkcode Server.generate} options. */

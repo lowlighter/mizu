@@ -2,6 +2,8 @@
   "name": "@mizu/mizu",
   "version": "0.10.1",
   "exports": {
-    ".": "./mod.ts"
+    ".": "./mod.ts",
+    "./compile": "./compile/mod.ts",
+    "./compile/hydrate": "./compile/hydrate.ts"
   }
 }

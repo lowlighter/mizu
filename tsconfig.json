@@ -22,6 +22,8 @@
       "@mizu/is": ["./@mizu/is/mod.ts"],
       "@mizu/markdown": ["./@mizu/markdown/mod.ts"],
       "@mizu/mizu": ["./@mizu/mizu/mod.ts"],
+      "@mizu/mizu/compile": ["./@mizu/mizu/compile/mod.ts"],
+      "@mizu/mizu/compile/hydrate": ["./@mizu/mizu/compile/hydrate.ts"],
       "@mizu/model": ["./@mizu/model/mod.ts"],
       "@mizu/mustache": ["./@mizu/mustache/mod.ts"],
       "@mizu/once": ["./@mizu/once/mod.ts"],
