@@ -60,7 +60,8 @@ export const _event = {
       }
     }
 
-    // Attach listeners
+    // Attach listeners (compiled fragments may have their attributes removed, e.g. by [*clean])
+    const compiled = Boolean(state[renderer.internal("compiled")])
     for (const { name: event, value: expression, modifiers, attribute, ephemeral } of parsed) {
       // Ensure listener is not duplicated
       if (!cache.has(element)) {
@@ -79,7 +80,7 @@ export const _event = {
       let callback = function (event: Event) {
         const registered = cache.get(element)?.get(attribute)?.get(event.type)
         // Ignore and remove expired listeners
-        if (((!ephemeral) && (!element.hasAttribute(attribute.name))) || (registered && (registered.target !== element) && (!element.isConnected))) {
+        if (((!ephemeral) && (!compiled) && (!element.hasAttribute(attribute.name))) || (registered && (registered.target !== element) && (!element.isConnected))) {
           if (registered) {
             registered.target.removeEventListener(event.type, registered.listener)
           }
