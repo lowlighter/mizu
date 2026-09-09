@@ -93,7 +93,7 @@ export function entrypoint(renderer: Renderer, element: HTMLElement, { context, 
     `    return renderer.render($element, { reactive: true, ...options, context: new Context({ ...$context, ...context }), state: { $renderer: "client", ...options.state } })`,
     "  },",
     "}",
-    script.content,
+    `;(async () => {\n${script.content}\n})()`,
   ].filter(Boolean).join("\n")
 }
 
@@ -107,7 +107,8 @@ type Bundler = (options: { entrypoints: string[]; write: false; minify: boolean;
  * preventing the closing tag from being recognized. It is escaped here, which the bundler never emits outside of a literal.
  */
 export async function bundle(source: string): Promise<string> {
-  const entrypoints = [`data:text/javascript,${encodeURIComponent(source)}`]
+  // Asterisks are escaped as the entrypoint would otherwise be expanded as a glob pattern
+  const entrypoints = [`data:text/javascript,${encodeURIComponent(source).replaceAll("*", "%2A")}`]
   const result = await (Deno as unknown as { bundle: Bundler }).bundle({ entrypoints, write: false, minify: true, platform: "browser", format: "iife" })
   if ((!result.success) || (!result.outputFiles?.length)) {
     throw new Error(`Failed to bundle compiled element:\n${result.errors.map((error) => error.text).join("\n")}`)

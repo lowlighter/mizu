@@ -78,6 +78,12 @@ if (typeof (globalThis as { Deno?: { bundle?: unknown } }).Deno?.bundle === "fun
     expect(after).toBe(`</main><p id="after"></p></body>`)
   }, { permissions: "inherit" })
 
+  test("`Server.compile()` supports asterisks in compiled fragments", async () => {
+    const mizu = new Server({ context: { star: "*" } })
+    const [, script] = split(await mizu.compile(`<main *mizu.compile><p *text="star"></p><script *mizu.compile-entrypoint>await Mizu.hydrate({ context: { origin: "*" } })</script></main>`, { select: "main" }))
+    expect(script).toContain(`"*"`)
+  }, { permissions: "inherit" })
+
   test("`Server.compile()` skips context values that cannot be serialized", async () => {
     const warn = fn() as testing
     const mizu = new Server({ warn, context: { foo: "bar", unsupported: new WeakMap() } })
